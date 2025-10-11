@@ -1,0 +1,551 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-input-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	position: relative;
+
+	&--fullWidth {
+		width: 100%;
+	}
+}
+
+.eidos-input-label {
+	@include flex-center-y;
+	gap: var(--spacing-xs);
+	@include font-size(small);
+	@include font-weight(medium);
+	color: var(--gray-600);
+	line-height: 1.4;
+	transition: all 0.2s ease;
+	position: relative;
+	z-index: 1;
+
+	&--floating {
+		color: var(--primary-color);
+		@include font-size(xs);
+	}
+
+	&--with-icon {
+		gap: var(--spacing-xs);
+	}
+
+	&--error {
+		color: var(--danger-color);
+	}
+
+	.eidos-input-disclaimer-icon {
+		@include flex-center;
+		color: var(--primary-color);
+		font-size: 1em;
+		line-height: 1;
+		flex-shrink: 0;
+		margin-left: var(--spacing-xs);
+
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+	}
+
+	.eidos-input-label-text {
+		transition: all 0.2s ease;
+	}
+
+	.eidos-input-required-asterisk {
+		color: var(--danger-color);
+		font-weight: var(--font-weight-bold);
+	}
+}
+
+.eidos-input-wrapper {
+	@include flex-center;
+	position: relative;
+	@include border-radius(md);
+	transition: all 0.2s ease;
+	gap: var(--spacing-sm);
+	border: 1.5px solid var(--gray-300);
+	background-color: var(--white);
+
+	// Focus state
+	&:focus-within {
+		border-color: var(--primary-color);
+		@include focus-ring(primary, 3px);
+	}
+
+	// Focused state for additional styling
+	&--focused {
+		&.eidos-input-wrapper--filled {
+			background-color: var(--white);
+		}
+	}
+
+	// Sizes
+	&--small {
+		height: var(--component-size-sm);
+		padding: var(--spacing-xs) var(--spacing-sm);
+	}
+
+	&--medium {
+		height: var(--component-size-md);
+		padding: var(--spacing-sm) var(--spacing-md);
+	}
+
+	&--large {
+		height: var(--component-size-lg);
+		padding: var(--spacing-md) var(--spacing-lg);
+	}
+
+	// Filled variant (default) - has background
+	&--filled {
+		background-color: var(--gray-50);
+		border-color: var(--gray-300);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+		&:hover:not(:disabled) {
+			background-color: var(--gray-100);
+			border-color: var(--gray-400);
+		}
+
+		&:focus-within {
+			background-color: var(--white);
+			border-color: var(--primary-color);
+			box-shadow:
+				0 0 0 3px rgba(var(--primary-rgb), 0.1),
+				0 4px 12px rgba(0, 0, 0, 0.08),
+				0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+
+		&.eidos-input-wrapper--secondary {
+			&:hover:not(:disabled) {
+				border-color: var(--secondary-color);
+			}
+
+			&:focus-within {
+				border-color: var(--secondary-color);
+				box-shadow:
+					0 0 0 3px rgba(var(--secondary-rgb), 0.1),
+					0 4px 12px rgba(0, 0, 0, 0.08),
+					0 1px 3px rgba(0, 0, 0, 0.05);
+			}
+		}
+
+		&.eidos-input-wrapper--success {
+			&:hover:not(:disabled) {
+				border-color: var(--success-color);
+			}
+
+			&:focus-within {
+				border-color: var(--success-color);
+				box-shadow:
+					0 0 0 3px rgba(var(--success-rgb), 0.1),
+					0 4px 12px rgba(0, 0, 0, 0.08),
+					0 1px 3px rgba(0, 0, 0, 0.05);
+			}
+		}
+
+		&.eidos-input-wrapper--danger {
+			&:hover:not(:disabled) {
+				border-color: var(--danger-color);
+			}
+
+			&:focus-within {
+				border-color: var(--danger-color);
+				box-shadow:
+					0 0 0 3px rgba(var(--danger-rgb), 0.1),
+					0 4px 12px rgba(0, 0, 0, 0.08),
+					0 1px 3px rgba(0, 0, 0, 0.05);
+			}
+		}
+	}
+
+	// Outlined variant - transparent background
+	&--outlined {
+		background-color: transparent;
+		border-color: var(--primary-color);
+
+		&:hover:not(:disabled) {
+			border-color: var(--primary-dark);
+		}
+
+		&:focus-within {
+			border-color: var(--primary-color);
+			box-shadow:
+				0 0 0 3px rgba(var(--primary-rgb), 0.1),
+				0 4px 12px rgba(0, 0, 0, 0.08),
+				0 1px 3px rgba(0, 0, 0, 0.05);
+		}
+
+		&.eidos-input-wrapper--secondary {
+			border-color: var(--secondary-color);
+
+			&:hover:not(:disabled) {
+				border-color: var(--secondary-dark);
+			}
+
+			&:focus-within {
+				border-color: var(--secondary-color);
+				box-shadow:
+					0 0 0 3px rgba(var(--secondary-rgb), 0.1),
+					0 4px 12px rgba(0, 0, 0, 0.08),
+					0 1px 3px rgba(0, 0, 0, 0.05);
+			}
+		}
+
+		&.eidos-input-wrapper--success {
+			border-color: var(--success-color);
+
+			&:hover:not(:disabled) {
+				border-color: var(--success-dark);
+			}
+
+			&:focus-within {
+				border-color: var(--success-color);
+				box-shadow:
+					0 0 0 3px rgba(var(--success-rgb), 0.1),
+					0 4px 12px rgba(0, 0, 0, 0.08),
+					0 1px 3px rgba(0, 0, 0, 0.05);
+			}
+		}
+
+		&.eidos-input-wrapper--danger {
+			border-color: var(--danger-color);
+
+			&:hover:not(:disabled) {
+				border-color: var(--danger-dark);
+			}
+
+			&:focus-within {
+				border-color: var(--danger-color);
+				box-shadow:
+					0 0 0 3px rgba(var(--danger-rgb), 0.1),
+					0 4px 12px rgba(0, 0, 0, 0.08),
+					0 1px 3px rgba(0, 0, 0, 0.05);
+			}
+		}
+	}
+
+	// Text variant - only bottom border with rounded top corners
+	&--text {
+		background-color: transparent;
+		border: none;
+		border-bottom: 2px solid var(--primary-color);
+		border-top-left-radius: var(--border-radius-md);
+		border-top-right-radius: var(--border-radius-md);
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		&:hover:not(:disabled) {
+			background-color: rgba(var(--primary-rgb), 0.05);
+			border-bottom-color: var(--primary-dark);
+		}
+
+		&:focus-within {
+			border-bottom-color: var(--primary-color);
+			box-shadow: none;
+		}
+
+		&.eidos-input-wrapper--secondary {
+			border-bottom-color: var(--secondary-color);
+
+			&:hover:not(:disabled) {
+				background-color: rgba(var(--secondary-rgb), 0.05);
+				border-bottom-color: var(--secondary-dark);
+			}
+
+			&:focus-within {
+				border-bottom-color: var(--secondary-color);
+			}
+		}
+
+		&.eidos-input-wrapper--success {
+			border-bottom-color: var(--success-color);
+
+			&:hover:not(:disabled) {
+				background-color: rgba(var(--success-rgb), 0.05);
+				border-bottom-color: var(--success-dark);
+			}
+
+			&:focus-within {
+				border-bottom-color: var(--success-color);
+			}
+		}
+
+		&.eidos-input-wrapper--danger {
+			border-bottom-color: var(--danger-color);
+
+			&:hover:not(:disabled) {
+				background-color: rgba(var(--danger-rgb), 0.05);
+				border-bottom-color: var(--danger-dark);
+			}
+
+			&:focus-within {
+				border-bottom-color: var(--danger-color);
+			}
+		}
+	}
+
+	// Error state
+	&--error {
+		border-color: var(--danger-color) !important;
+
+		&:focus-within {
+			border-color: var(--danger-color) !important;
+			@include focus-ring(danger, 3px);
+		}
+	}
+
+	// Loading state
+	&--loading {
+		border-style: dashed;
+	}
+
+	// Disabled state
+	&--disabled {
+		background-color: var(--gray-100);
+		border-color: var(--gray-200);
+		cursor: not-allowed;
+		opacity: 0.6;
+
+		&:focus-within {
+			border-color: var(--gray-200);
+			box-shadow: none;
+		}
+	}
+}
+
+.eidos-input {
+	flex: 1;
+	@include input-reset;
+	color: var(--dark-color);
+	line-height: 1.4;
+	min-width: 0; // Allow text overflow
+	text-overflow: ellipsis;
+
+	// Remove native search clear button
+	&[type='search']::-webkit-search-cancel-button,
+	&[type='search']::-webkit-search-decoration,
+	&[type='search']::-webkit-search-results-button,
+	&[type='search']::-webkit-search-results-decoration {
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	// Placeholder styles
+	&::placeholder {
+		color: var(--gray-400);
+		opacity: 1;
+	}
+
+	// Sizes
+	&--small {
+		@include font-size(small);
+	}
+
+	&--medium {
+		@include font-size(base);
+	}
+
+	&--large {
+		@include font-size(large);
+	}
+
+	&--fullWidth {
+		width: 100%;
+	}
+
+	// Loading state
+	&--loading {
+		cursor: wait;
+	}
+
+	// Disabled state
+	&:disabled:not(.eidos-input--loading) {
+		cursor: not-allowed;
+		color: var(--gray-500);
+	}
+
+	// Error state
+	&--error {
+		color: var(--danger-color);
+	}
+}
+
+// Icon styles
+.eidos-input-pre-icon,
+.eidos-input-pos-icon {
+	@include flex-center;
+	color: var(--gray-500);
+	font-size: 1.1em;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+.eidos-input-pre-icon-svg,
+.eidos-input-pos-icon-svg {
+	width: auto;
+	height: 1em;
+	line-height: 1;
+}
+
+// Password toggle button
+.eidos-input-password-toggle {
+	@include button-reset;
+	@include flex-center;
+	color: var(--gray-500);
+	cursor: pointer;
+	padding: var(--spacing-xs);
+	@include border-radius(sm);
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+
+	&:hover:not(:disabled) {
+		background-color: var(--gray-100);
+		color: var(--gray-700);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--gray-200);
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+}
+
+.eidos-input-password-toggle-icon {
+	width: 1.2em;
+	height: 1.2em;
+}
+
+// Clear button
+.eidos-input-clear-button {
+	@include button-reset;
+	@include flex-center;
+	color: var(--gray-400);
+	cursor: pointer;
+	padding: var(--spacing-xs);
+	@include border-radius(sm);
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+
+	&:hover:not(:disabled) {
+		background-color: var(--gray-100);
+		color: var(--gray-600);
+	}
+
+	&:active:not(:disabled) {
+		background-color: var(--gray-200);
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+}
+
+.eidos-input-clear-button-icon {
+	width: 1em;
+	height: 1em;
+}
+
+// Position icon button (for search, etc.)
+.eidos-input-pos-icon-button {
+	@include button-reset;
+	@include flex-center;
+	color: var(--primary-color);
+	cursor: pointer;
+	padding: var(--spacing-xs);
+	@include border-radius(sm);
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+	background: transparent;
+	border: none;
+	line-height: 1;
+
+	&:hover:not(:disabled) {
+		background-color: rgba(var(--primary-rgb), 0.1);
+		color: var(--primary-dark);
+	}
+
+	&:active:not(:disabled) {
+		background-color: rgba(var(--primary-rgb), 0.2);
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	// Ensure icon is properly sized and aligned
+	svg {
+		width: 1.2em;
+		height: 1.2em;
+	}
+}
+
+// Select chevron (always shown for select inputs)
+.eidos-input-select-chevron {
+	@include flex-center;
+	color: var(--gray-500);
+	font-size: 1.1em;
+	line-height: 1;
+	flex-shrink: 0;
+	pointer-events: none;
+}
+
+// Error message
+.eidos-input-error-message {
+	@include flex-center-y;
+	gap: var(--spacing-xs);
+	color: var(--danger-color);
+	@include font-size(small);
+	line-height: 1.4;
+	margin-top: var(--spacing-xs);
+}
+
+.eidos-input-error-icon {
+	width: 1em;
+	height: 1em;
+	flex-shrink: 0;
+}
+
+// Responsive adjustments
+@include mobile-up {
+	.eidos-input-wrapper {
+		&--large {
+			min-height: var(--component-size-md);
+			padding: var(--spacing-sm) var(--spacing-md);
+		}
+	}
+
+	.eidos-input {
+		&--large {
+			@include font-size(base);
+		}
+	}
+
+	.eidos-input-label {
+		&--floating {
+			@include font-size(xs);
+		}
+	}
+}
+
+// Focus visible for better accessibility
+.eidos-input:focus-visible {
+	outline: none;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+	.eidos-input-wrapper {
+		border-width: 2px;
+	}
+
+	.eidos-input-wrapper:focus-within {
+		border-width: 3px;
+	}
+}

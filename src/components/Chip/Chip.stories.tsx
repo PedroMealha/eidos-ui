@@ -47,14 +47,14 @@ const meta = {
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     preIcon: {
-      control: false,
-      description: 'Icon to display before text. Pass Lucide component (Tag).',
-      table: { type: { summary: 'React.ComponentType' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      control: 'text',
+      description: 'Icon to display before text. Pass Lucide component (Tag) or string ("tag").',
+      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
     },
     posIcon: {
-      control: false,
-      description: 'Icon to display after text. Pass Lucide component (Check).',
-      table: { type: { summary: 'React.ComponentType' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      control: 'text',
+      description: 'Icon to display after text. Pass Lucide component (Check) or string ("check").',
+      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
     },
     onClick: {
       control: false,
@@ -118,11 +118,20 @@ export const Examples = {
       </div>
 
       <div>
-        <h3>With Icons</h3>
+        <h3>With Icons (Component-based)</h3>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <Chip preIcon={Tag}>Tagged</Chip>
           <Chip posIcon={Check}>Verified</Chip>
           <Chip preIcon={Star} posIcon={Check}>Featured</Chip>
+        </div>
+      </div>
+
+      <div>
+        <h3>With Icons (String-based Lucide)</h3>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <Chip preIcon="tag">Tagged</Chip>
+          <Chip posIcon="check">Verified</Chip>
+          <Chip preIcon="star" posIcon="check">Featured</Chip>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-type IconType = React.ComponentType<{ className?: string }>;
+export type IconType = React.ComponentType<{ className?: string }> | string;
 
 interface BaseChipProps {
   variant?: "filled" | "outlined" | "soft";
@@ -12,12 +12,10 @@ interface BaseChipProps {
   onRemove?: () => void;
 }
 
-interface TextChipProps extends BaseChipProps {
+export interface TextChipProps extends BaseChipProps {
   children: React.ReactNode;
   preIcon?: IconType;
   posIcon?: IconType;
 }
 
-type ChipProps = TextChipProps;
-
-export type { ChipProps, IconType, TextChipProps };
+export type ChipProps = TextChipProps;

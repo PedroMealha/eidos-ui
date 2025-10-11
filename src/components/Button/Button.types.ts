@@ -1,4 +1,4 @@
-type IconType = React.ComponentType<{ className?: string }> | string;
+export type IconType = React.ComponentType<{ className?: string }> | string;
 
 interface BaseButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,20 +12,18 @@ interface BaseButtonProps
   tooltip?: string;
 }
 
-interface TextButtonProps extends BaseButtonProps {
+export interface TextButtonProps extends BaseButtonProps {
   children: React.ReactNode;
   preIcon?: IconType;
   posIcon?: IconType;
   icon?: never;
 }
 
-interface IconButtonProps extends BaseButtonProps {
+export interface IconButtonProps extends BaseButtonProps {
   icon: IconType;
   children?: never;
   preIcon?: never;
   posIcon?: never;
 }
 
-type ButtonProps = TextButtonProps | IconButtonProps;
-
-export type { ButtonProps, IconButtonProps, TextButtonProps };
+export type ButtonProps = TextButtonProps | IconButtonProps;

@@ -5,16 +5,21 @@ export { Chip } from './components/Chip';
 export { Divider } from './components/Divider';
 export { Spinner } from './components/Spinner';
 export { Dropdown, DropdownProvider } from './components/Dropdown';
+export { Input } from './components/Input';
 
 // Hooks
 export { useDropdownContext } from './components/Dropdown';
 
 // Types
-export type { ButtonProps, IconButtonProps, TextButtonProps } from './components/Button';
+export type { ButtonProps, IconButtonProps, TextButtonProps, IconType as ButtonIconType } from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
-export type { ChipProps } from './components/Chip';
+export type { ChipProps, TextChipProps, IconType as ChipIconType } from './components/Chip';
 export type { DividerProps } from './components/Divider';
 export type { DropdownProps, DropdownState, DropdownPosition, NestedDropdownItem } from './components/Dropdown';
+export type { InputProps, IconType as InputIconType } from './components/Input';
+
+// Shared type (all IconTypes are the same)
+export type { IconType } from './components/Input';
 
 // Styles - users can import this separately
 // import '@pmea/eidos-ui/styles';
