@@ -1,0 +1,279 @@
+.eidos-button {
+  @include flex-center;
+  position: relative;
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  gap: var(--spacing-sm);
+  min-width: 3.5ch;
+
+  // Sizes
+  &--small {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    min-height: var(--component-size-sm);
+  }
+
+  &--medium {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-base);
+    min-height: var(--component-size-md);
+  }
+
+  &--large {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-lg);
+    min-height: var(--component-size-lg);
+  }
+
+  // Icon-only variant
+  &--icon-only {
+    aspect-ratio: 1;
+    padding: var(--spacing-sm);
+    width: var(--component-size-md);
+    height: var(--component-size-md);
+
+    &.eidos-button--small {
+      width: var(--component-size-sm);
+      height: var(--component-size-sm);
+      padding: var(--spacing-xs);
+    }
+
+    &.eidos-button--large {
+      width: var(--component-size-lg);
+      height: var(--component-size-lg);
+      padding: var(--spacing-md);
+    }
+  }
+
+  // Filled variant (default)
+  &--filled {
+    &:hover:not(:disabled) {
+      background-color: var(--primary-dark);
+    }
+
+    &.eidos-button--primary {
+      background-color: var(--primary-color);
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--secondary-dark);
+      }
+    }
+
+    &.eidos-button--secondary {
+      background-color: var(--secondary-color);
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--secondary-dark);
+      }
+    }
+
+    &.eidos-button--success {
+      background-color: var(--success-color);
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--success-dark);
+      }
+    }
+
+    &.eidos-button--danger {
+      background-color: var(--danger-color);
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--danger-dark);
+      }
+    }
+  }
+
+  // Outlined variant
+  &--outlined {
+    background-color: transparent;
+    border: 1.5px solid var(--primary-color);
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+
+    // Color variants for outlined
+    &.eidos-button--primary {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+
+      &:hover:not(:disabled) {
+        background-color: var(--primary-color);
+        color: var(--white);
+      }
+    }
+
+    &.eidos-button--secondary {
+      border-color: var(--secondary-color);
+      color: var(--secondary-color);
+
+      &:hover:not(:disabled) {
+        background-color: var(--secondary-color);
+        color: var(--white);
+      }
+    }
+
+    &.eidos-button--success {
+      border-color: var(--success-color);
+      color: var(--success-color);
+
+      &:hover:not(:disabled) {
+        background-color: var(--success-color);
+        color: var(--white);
+      }
+    }
+
+    &.eidos-button--danger {
+      border-color: var(--danger-color);
+      color: var(--danger-color);
+
+      &:hover:not(:disabled) {
+        background-color: var(--danger-color);
+        color: var(--white);
+      }
+    }
+  }
+
+  // Text variant
+  &--text {
+    background-color: transparent;
+    border: none;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(var(--primary-rgb), 0.1);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgba(var(--primary-rgb), 0.2);
+    }
+
+    // Color variants for text
+    &.eidos-button--primary {
+      color: var(--primary-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--primary-rgb), 0.1);
+      }
+
+      &:active:not(:disabled) {
+        background-color: rgba(var(--primary-rgb), 0.2);
+      }
+    }
+
+    &.eidos-button--secondary {
+      color: var(--secondary-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--secondary-rgb), 0.1);
+      }
+
+      &:active:not(:disabled) {
+        background-color: rgba(var(--secondary-rgb), 0.2);
+      }
+    }
+
+    &.eidos-button--success {
+      color: var(--success-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--success-rgb), 0.1);
+      }
+
+      &:active:not(:disabled) {
+        background-color: rgba(var(--success-rgb), 0.2);
+      }
+    }
+
+    &.eidos-button--danger {
+      color: var(--danger-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--danger-rgb), 0.1);
+      }
+
+      &:active:not(:disabled) {
+        background-color: rgba(var(--danger-rgb), 0.2);
+      }
+    }
+  }
+
+  // Disabled state
+  &--disabled {
+    background-color: var(--gray-200) !important;
+    color: var(--gray-500) !important;
+    border-color: var(--gray-200) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+
+    &:hover {
+      background-color: var(--gray-200) !important;
+      color: var(--gray-500) !important;
+      transform: none !important;
+    }
+  }
+
+  // Loading state
+  &--loading {
+    cursor: wait;
+    pointer-events: none;
+
+    .preIcon,
+    .posIcon,
+    .icon {
+      opacity: 0;
+    }
+  }
+}
+
+// Icon styles
+.eidos-button--pre-icon,
+.eidos-button--pos-icon,
+.eidos-button--icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  transition: opacity 0.2s ease;
+  line-height: 1;
+  width: auto;
+  height: 1em;
+}
+
+.eidos-button--loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.eidos-button--spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+.eidos-button--copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+// Loading animation
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

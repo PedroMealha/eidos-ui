@@ -1,0 +1,16 @@
+src
+dev
+index.html
+.storybook
+storybook-static
+scripts
+*.config.ts
+*.config.js
+.eslintrc.cjs
+.gitignore
+tsconfig.json
+tsconfig.node.json
+.vscode
+.idea
+*.log
+
