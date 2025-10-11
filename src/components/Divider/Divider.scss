@@ -1,0 +1,14 @@
+.eidos-divider {
+	margin: 1rem 0;
+	background-color: var(--gray-200);
+
+	&--horizontal {
+		height: 1px;
+		width: 100%;
+	}
+
+	&--vertical {
+		width: 1px;
+		height: 100%;
+	}
+}

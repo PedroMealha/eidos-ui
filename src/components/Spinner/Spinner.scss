@@ -1,0 +1,28 @@
+.eidos-spinner-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 3rem;
+	line-height: 1;
+	height: 100vh;
+	background-image: linear-gradient(133deg, rgba(var(--primary-rgb), 0.2), rgba(var(--secondary-rgb), 0.2));
+	color: var(--primary-color);
+}
+
+.eidos-spinner {
+	width: 1em;
+	height: 1em;
+	animation: spin-pulse 1s linear infinite;
+}
+
+@keyframes spin-pulse {
+	0% {
+		transform: rotate(0deg) scale(1);
+	}
+	50% {
+		transform: rotate(180deg) scale(1.1);
+	}
+	100% {
+		transform: rotate(360deg) scale(1);
+	}
+}

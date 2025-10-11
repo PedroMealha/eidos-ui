@@ -1,0 +1,55 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-dropdown-trigger {
+	user-select: none;
+	cursor: pointer;
+}
+
+.eidos-dropdown-content {
+	position: fixed;
+	z-index: 1000;
+	background-color: var(--white);
+	border: 1px solid var(--gray-200);
+	border-radius: var(--border-radius-md);
+	box-shadow: var(--box-shadow-lg);
+	pointer-events: auto;
+	transition:
+		opacity 0.2s ease-in-out,
+		transform 0.2s ease-in-out;
+
+	// Better scrollbar styling
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background-color: var(--gray-100);
+		border-radius: 3px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--gray-300);
+		border-radius: 3px;
+
+		&:hover {
+			background-color: var(--gray-400);
+		}
+	}
+
+	// Placement-specific styles (optional, for future animations)
+	&.eidos-dropdown-content--top {
+		transform-origin: bottom center;
+	}
+
+	&.eidos-dropdown-content--bottom {
+		transform-origin: top center;
+	}
+
+	&.eidos-dropdown-content--left {
+		transform-origin: right center;
+	}
+
+	&.eidos-dropdown-content--right {
+		transform-origin: left center;
+	}
+}

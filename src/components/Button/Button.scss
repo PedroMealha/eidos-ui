@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .eidos-button {
   @include flex-center;
   position: relative;

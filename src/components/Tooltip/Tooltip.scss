@@ -1,3 +1,5 @@
+@use '../../styles/mixins.scss' as *;
+
 .eidos-tooltip-trigger {
 	display: flex;
 }

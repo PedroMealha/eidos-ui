@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Tooltip } from './Tooltip';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Tooltip } from './Tooltip.component';
 import { Button } from '../Button';
 import { Info } from 'lucide-react';
 
@@ -53,9 +53,6 @@ const meta = {
       },
     },
     children: {
-      table: { disable: true },
-    },
-    componentProps: {
       table: { disable: true },
     },
     closeOnClickOutside: {

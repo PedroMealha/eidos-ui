@@ -1,4 +1,8 @@
-@import './global.scss';
-@import '../components/Button/Button.scss';
-@import '../components/Tooltip/Tooltip.scss';
+@use './global.scss';
+@use '../components/Button/Button.scss';
+@use '../components/Tooltip/Tooltip.scss';
+@use '../components/Chip/Chips.scss';
+@use '../components/Divider/Divider.scss';
+@use '../components/Spinner/Spinner.scss';
+@use '../components/Dropdown/Dropdown.scss';
 

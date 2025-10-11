@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Plus, Trash2, ArrowBigDownDash, ArrowRight } from 'lucide-react';
-import { Button, IconButton } from './Button';
+import { Button, IconButton } from './Button.component';
 
 const meta = {
   title: 'Components/Button',
