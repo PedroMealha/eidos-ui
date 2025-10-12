@@ -7,6 +7,7 @@ export { Spinner } from './components/Spinner';
 export { Dropdown, DropdownProvider } from './components/Dropdown';
 export { Input } from './components/Input';
 export { Menu } from './components/Menu';
+export { Modal } from './components/Modal';
 
 // Hooks
 export { useDropdownContext } from './components/Dropdown';
@@ -19,6 +20,7 @@ export type { DividerProps } from './components/Divider';
 export type { DropdownProps, DropdownState, DropdownPosition, NestedDropdownItem } from './components/Dropdown';
 export type { InputProps, IconType as InputIconType } from './components/Input';
 export type { MenuProps, MenuWrapperProps, MenuItemType, MenuItem, MenuComponentItem, MenuSeparator, MenuNestedItem, IconType as MenuIconType } from './components/Menu';
+export type { ModalProps, ModalAction, IconType as ModalIconType } from './components/Modal';
 
 // Shared type (all IconTypes are the same)
 export type { IconType } from './components/Input';
