@@ -10,6 +10,7 @@ export { Menu } from './components/Menu';
 export { Modal } from './components/Modal';
 export { Select } from './components/Select';
 export { SnackbarProvider, SnackbarContainer } from './components/Snackbar';
+export { DatePicker, Calendar, TimeInput } from './components/DatePicker';
 
 // Hooks
 export { useDropdownContext } from './components/Dropdown';
@@ -26,6 +27,7 @@ export type { MenuProps, MenuWrapperProps, MenuItemType, MenuItem, MenuComponent
 export type { ModalProps, ModalAction, IconType as ModalIconType } from './components/Modal';
 export type { SelectProps, SelectOption, IconType as SelectIconType } from './components/Select';
 export type { SnackbarProps, SnackbarVariant, SnackbarAction, SnackbarState, SnackbarItem, SnackbarContextValue, UseSnackbarReturn } from './components/Snackbar';
+export type { DatePickerProps, DateSelectionMode, TimeConfig, DateTimeValue, TimeValue, RangeTimeValue, CalendarConfig, DateFormatConfig, CalendarProps } from './components/DatePicker';
 
 // Shared type (all IconTypes are the same)
 export type { IconType } from './utils';

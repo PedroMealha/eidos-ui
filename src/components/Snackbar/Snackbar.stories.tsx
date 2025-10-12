@@ -173,7 +173,7 @@ export const Interactive: Story = {
 export const SuccessVariant: Story = {
   render: () => {
     const { showSuccess } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button onClick={() => showSuccess("Operation completed successfully!")}>
@@ -187,7 +187,7 @@ export const SuccessVariant: Story = {
 export const ErrorVariant: Story = {
   render: () => {
     const { showError } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button onClick={() => showError("An error occurred while processing your request.")}>
@@ -201,7 +201,7 @@ export const ErrorVariant: Story = {
 export const WarningVariant: Story = {
   render: () => {
     const { showWarning } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button onClick={() => showWarning("Warning: Please review your changes before saving.")}>
@@ -215,7 +215,7 @@ export const WarningVariant: Story = {
 export const InfoVariant: Story = {
   render: () => {
     const { showInfo } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button onClick={() => showInfo("Here's some useful information for you.")}>
@@ -229,7 +229,7 @@ export const InfoVariant: Story = {
 export const WithAction: Story = {
   render: () => {
     const { showSuccess } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button
@@ -252,7 +252,7 @@ export const WithAction: Story = {
 export const PersistentNotification: Story = {
   render: () => {
     const { showWarning } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button
@@ -272,7 +272,7 @@ export const PersistentNotification: Story = {
 export const MultipleNotifications: Story = {
   render: () => {
     const { showSuccess, showInfo, showWarning, showError } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button
@@ -293,7 +293,7 @@ export const MultipleNotifications: Story = {
 export const CustomComponent: Story = {
   render: () => {
     const { showSnackbar } = useSnackbar();
-    
+
     return (
       <div style={{ padding: "20px" }}>
         <Button

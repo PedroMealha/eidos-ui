@@ -1,0 +1,286 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-calendar {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+	padding: var(--spacing-md);
+	background-color: var(--white);
+	border-radius: var(--border-radius-md);
+	min-width: 280px;
+	user-select: none;
+}
+
+// Header with navigation and selectors
+.eidos-calendar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--spacing-sm);
+	margin-bottom: var(--spacing-sm);
+}
+
+.eidos-calendar-nav-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border: 1px solid var(--gray-300);
+	border-radius: var(--border-radius-sm);
+	background-color: var(--white);
+	color: var(--gray-600);
+	cursor: pointer;
+	transition: all 0.2s ease;
+
+	&:hover {
+		border-color: var(--gray-400);
+		background-color: var(--gray-50);
+		color: var(--gray-700);
+	}
+
+	&:active {
+		background-color: var(--gray-100);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+
+		&:hover {
+			border-color: var(--gray-300);
+			background-color: var(--white);
+			color: var(--gray-600);
+		}
+	}
+}
+
+.eidos-calendar-selectors {
+	display: flex;
+	gap: var(--spacing-xs);
+	flex: 1;
+	justify-content: center;
+}
+
+// Calendar grid layout
+.eidos-calendar-grid {
+	display: flex;
+	gap: var(--spacing-xs);
+}
+
+.eidos-calendar-week-numbers-column {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 32px;
+}
+
+.eidos-calendar-week-number-header {
+	height: 32px;
+}
+
+.eidos-calendar-week-number {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-medium);
+	color: var(--gray-500);
+}
+
+.eidos-calendar-content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+// Weekday headers
+.eidos-calendar-week-days {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 1px;
+	margin-bottom: var(--spacing-xs);
+}
+
+.eidos-calendar-week-day {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 32px;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	color: var(--gray-600);
+	text-transform: uppercase;
+}
+
+// Date cells grid
+.eidos-calendar-date-cells {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 1px;
+}
+
+.eidos-calendar-date-cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	min-width: 36px;
+	border: none;
+	background-color: var(--white);
+	color: var(--dark-color);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	cursor: pointer;
+	border-radius: var(--border-radius-sm);
+	transition: all 0.15s ease;
+	position: relative;
+
+	&:hover:not(.eidos-calendar-disabled) {
+		background-color: var(--gray-100);
+		color: var(--dark-color);
+	}
+
+	&:active:not(.eidos-calendar-disabled) {
+		background-color: var(--gray-200);
+	}
+
+	// Other month dates (grayed out)
+	&.eidos-calendar-other-month {
+		color: var(--gray-400);
+
+		&:hover:not(.eidos-calendar-disabled) {
+			color: var(--gray-600);
+		}
+	}
+
+	// Today's date
+	&.eidos-calendar-today {
+		background-color: var(--primary-50);
+		color: var(--primary-700);
+		font-weight: var(--font-weight-bold);
+		border: 2px solid var(--primary-400);
+		position: relative;
+
+		&:hover:not(.disabled) {
+			background-color: var(--primary-100);
+			border-color: var(--primary-500);
+		}
+
+		// Today + Selected combination
+		&.eidos-calendar-selected {
+			background-color: var(--primary-600);
+			color: var(--white);
+			border-color: var(--primary-300);
+
+			&:hover:not(.eidos-calendar-disabled) {
+				background-color: var(--primary-700);
+				border-color: var(--primary-300);
+			}
+		}
+
+		// Today + Range start/end combination
+		&.eidos-calendar-range-start,
+		&.eidos-calendar-range-end {
+			border-color: var(--primary-300);
+		}
+
+		// Today + In range combination
+		&.eidos-calendar-in-range {
+			border-color: var(--primary-400);
+			background-color: var(--primary-200);
+			color: var(--primary-800);
+		}
+	}
+
+	// Selected date
+	&.eidos-calendar-selected {
+		background-color: var(--primary-600);
+		color: var(--white);
+		font-weight: var(--font-weight-semibold);
+
+		&:hover:not(.eidos-calendar-disabled) {
+			background-color: var(--primary-700);
+		}
+	}
+
+	// Disabled date
+	&.eidos-calendar-disabled {
+		color: var(--gray-300);
+		cursor: not-allowed;
+		background-color: var(--gray-50);
+
+		&:hover {
+			background-color: var(--gray-50);
+			color: var(--gray-300);
+		}
+	}
+
+	// Range styling
+	&.eidos-calendar-range-start {
+		background-color: var(--primary-600);
+		color: var(--white);
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+
+		&:hover:not(.eidos-calendar-disabled) {
+			background-color: var(--primary-700);
+		}
+	}
+
+	&.eidos-calendar-range-end {
+		background-color: var(--primary-600);
+		color: var(--white);
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+
+		&:hover:not(.eidos-calendar-disabled) {
+			background-color: var(--primary-700);
+		}
+	}
+
+	&.eidos-calendar-in-range {
+		background-color: var(--primary-100);
+		color: var(--primary-800);
+		border-radius: 0;
+
+		&:hover:not(.eidos-calendar-disabled) {
+			background-color: var(--primary-200);
+		}
+	}
+
+	// Special case: same start and end date
+	&.eidos-calendar-range-start.eidos-calendar-range-end {
+		border-radius: var(--border-radius-sm);
+	}
+
+	// Focus styles
+	&:focus-visible {
+		outline: 2px solid var(--primary-500);
+		outline-offset: 1px;
+		z-index: 1;
+	}
+}
+
+// Responsive adjustments
+@media (max-width: 480px) {
+	.eidos-calendar {
+		min-width: 260px;
+		padding: var(--spacing-sm);
+	}
+
+	.eidos-calendar-date-cell {
+		height: 32px;
+		min-width: 32px;
+		font-size: var(--font-size-xs);
+	}
+
+	.eidos-calendar-week-day {
+		height: 28px;
+		font-size: var(--font-size-xs);
+	}
+}
+
+// Dark mode support removed - using light theme only

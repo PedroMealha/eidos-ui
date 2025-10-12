@@ -36,9 +36,9 @@
   "author": "Pedro Mealha",
   "license": "MIT",
   "peerDependencies": {
+    "lucide-react": "^0.300.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "lucide-react": "^0.300.0"
+    "react-dom": "^18.0.0"
   },
   "peerDependenciesMeta": {
     "lucide-react": {
@@ -46,6 +46,7 @@
     }
   },
   "devDependencies": {
+    "@storybook/addon-docs": "^9.1.10",
     "@storybook/addon-links": "^9.1.10",
     "@storybook/react-vite": "^9.1.10",
     "@types/react": "^18.2.66",
@@ -64,11 +65,13 @@
     "storybook": "^9.1.10",
     "tsup": "^8.0.2",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0",
-    "@storybook/addon-docs": "^9.1.10"
+    "vite": "^5.2.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/pmea/eidos-ui"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.18"
   }
 }

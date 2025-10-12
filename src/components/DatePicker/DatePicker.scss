@@ -1,0 +1,129 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-date-picker-container {
+	position: relative;
+	width: 100%;
+}
+
+.eidos-date-picker-trigger {
+	position: relative;
+	width: 100%;
+	cursor: pointer;
+
+	// Ensure the input inside shows pointer cursor
+	input {
+		cursor: pointer;
+	}
+
+	// Style the calendar icon
+	:global(.eidos-input-pre-icon) {
+		color: var(--gray-500);
+	}
+
+	// Style the clear (X) icon button
+	:global(.eidos-input-pos-icon-button) {
+		color: var(--gray-500) !important;
+		background: none !important;
+		border: none !important;
+		padding: var(--spacing-xs) !important;
+		transition: all 0.2s ease !important;
+
+		&:hover {
+			color: var(--gray-700) !important;
+			background-color: var(--gray-100) !important;
+			border-radius: var(--border-radius-sm) !important;
+		}
+
+		svg {
+			width: 1.2em !important;
+			height: 1.2em !important;
+		}
+	}
+}
+
+.eidos-date-picker-content {
+	padding: 0;
+	width: 100%;
+	min-width: 300px;
+	background-color: var(--white);
+	border-radius: var(--border-radius-md);
+}
+
+// Align navigation buttons with calendar headers
+.eidos-date-picker-container-nav-button {
+	flex-shrink: 0;
+	// Align with calendar header - calendar has padding + header height
+	margin-top: var(--spacing-md); // calendar padding + header height
+}
+
+.eidos-date-picker-calendars-wrapper {
+	display: flex;
+	gap: var(--spacing-md);
+	padding: var(--spacing-lg) var(--spacing-sm);
+}
+
+.eidos-date-picker-time-container {
+	padding: var(--spacing-md);
+	border-top: 1px solid var(--gray-200);
+	background-color: var(--gray-50);
+	text-align: center;
+	justify-items: center;
+}
+
+.eidos-date-picker-range-time-inputs {
+	display: flex;
+	gap: var(--spacing-md);
+}
+
+// Responsive styles
+@media (max-width: 1200px) {
+	.eidos-date-picker-calendars-wrapper {
+		flex-direction: column;
+		width: 100%;
+		gap: var(--spacing-sm);
+	}
+
+	.eidos-date-picker-container-nav-button {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 10;
+		margin-top: 0; // Reset margin for absolute positioning
+
+		&:first-of-type {
+			left: var(--spacing-xs);
+		}
+
+		&:last-of-type {
+			right: var(--spacing-xs);
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	.eidos-date-picker-calendars-container {
+		padding: var(--spacing-xs);
+	}
+
+	.eidos-date-picker-container-nav-button {
+		&:first-of-type {
+			left: 4px;
+		}
+
+		&:last-of-type {
+			right: 4px;
+		}
+	}
+}
+
+// Placeholder styles (will be replaced with actual calendar)
+.eidos-date-picker-placeholder {
+	text-align: center;
+	color: var(--gray-600);
+	font-size: var(--font-size-sm);
+	line-height: 1.5;
+	padding: var(--spacing-lg);
+	background-color: var(--gray-50);
+	border-radius: var(--border-radius-md);
+	border: 2px dashed var(--gray-300);
+}

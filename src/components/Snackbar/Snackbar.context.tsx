@@ -34,6 +34,15 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
   }, []);
 
   const removeSnackbar = useCallback((id: string): void => {
+    // Call onClose callback if it exists
+    setSnackbars((prev) => {
+      const snackbar = prev.find((item) => item.id === id);
+      if (snackbar?.onClose) {
+        snackbar.onClose(id);
+      }
+      return prev;
+    });
+
     // First transition to exiting state
     setSnackbars((prev) =>
       prev.map((item) =>
