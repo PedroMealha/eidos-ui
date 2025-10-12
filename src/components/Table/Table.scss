@@ -1,0 +1,304 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-table-container {
+	background: var(--white);
+	border-radius: var(--border-radius-md);
+	border: 1px solid var(--gray-200);
+	box-shadow: var(--box-shadow);
+	overflow: hidden;
+}
+
+.eidos-table-toolbar {
+	position: relative;
+	padding: var(--spacing-sm);
+	background: var(--gray-50);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.eidos-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+}
+
+.eidos-table-header-cell {
+	background: var(--gray-100);
+	padding: 1rem;
+	font-weight: var(--font-weight-semibold);
+	border-bottom: 1px solid var(--gray-200);
+	position: relative;
+
+	&.eidos-table-sortable {
+		cursor: pointer;
+		user-select: none;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background: var(--gray-200);
+		}
+	}
+
+	&.eidos-table-sorted {
+		background: var(--primary-50);
+		color: var(--primary-700);
+	}
+}
+
+.eidos-table-header-content {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+
+	&.eidos-table-align-left {
+		justify-content: space-between;
+	}
+
+	&.eidos-table-align-center {
+		justify-content: center;
+	}
+
+	&.eidos-table-align-right {
+		justify-content: flex-end;
+	}
+}
+
+.eidos-table-sort-indicator {
+	display: flex;
+	font-size: 0.75rem;
+	color: var(--gray-500);
+	transition: color 0.2s ease;
+
+	.eidos-table-sortable:hover & {
+		color: var(--gray-700);
+	}
+
+	.eidos-table-sorted & {
+		color: var(--primary-600);
+	}
+}
+
+.eidos-table-row {
+	border-bottom: 1px solid var(--gray-100);
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background: var(--gray-50);
+	}
+
+	&:last-child {
+		border-bottom: none;
+	}
+}
+
+.eidos-table-clickable {
+	cursor: pointer;
+
+	&:hover {
+		background: var(--primary-50);
+	}
+}
+
+.eidos-table-cell {
+	padding: 1rem;
+	color: var(--gray-700);
+	vertical-align: middle;
+}
+
+.eidos-table-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem;
+	color: var(--gray-600);
+
+	.eidos-table-spinner {
+		width: 2rem;
+		height: 2rem;
+		border: 2px solid var(--gray-200);
+		border-top: 2px solid var(--primary-color);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin-bottom: 1rem;
+	}
+
+	p {
+		margin: 0;
+		font-size: 0.9rem;
+	}
+}
+
+.eidos-table-empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem;
+	color: var(--gray-600);
+
+	p {
+		margin: 0;
+		font-size: 0.9rem;
+	}
+}
+
+.eidos-table-empty-row {
+	border-bottom: 1px solid var(--gray-100);
+
+	&:hover {
+		background: transparent;
+	}
+}
+
+.eidos-table-empty-cell {
+	text-align: center;
+	padding: 3rem 1rem;
+	color: var(--gray-600);
+}
+
+.eidos-table-empty-message {
+	font-size: 0.9rem;
+	color: var(--gray-600);
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+// Column type styles
+.eidos-table-header-cell-icon,
+.eidos-table-cell-icon {
+	width: var(--component-size-lg);
+	padding: 0 var(--spacing-md);
+	text-align: center;
+	
+	// Prevent menu from being cut off
+	overflow: visible;
+}
+
+.eidos-table-header-cell-action,
+.eidos-table-cell-action {
+	width: auto;
+	min-width: 120px;
+	text-align: center;
+	
+	// Prevent menu from being cut off
+	overflow: visible;
+}
+
+// Alignment classes
+.eidos-table-align-left {
+	text-align: left;
+	justify-items: flex-start;
+}
+
+.eidos-table-align-center {
+	text-align: center;
+	justify-items: center;
+}
+
+.eidos-table-align-right {
+	text-align: right;
+	justify-items: flex-end;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+	.eidos-table-container {
+		overflow-x: auto;
+	}
+
+	.eidos-table {
+		min-width: 600px;
+	}
+
+	.eidos-table-header-cell,
+	.eidos-table-cell {
+		padding: 0.75rem 0.5rem;
+		font-size: 0.8rem;
+	}
+}
+
+// Footer styles
+.eidos-table-footer {
+	background: var(--gray-50);
+	border-top: 1px solid var(--gray-200);
+	padding: var(--spacing-md);
+}
+
+.eidos-table-footer-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.eidos-table-results-info {
+	color: var(--gray-600);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+}
+
+// Pagination controls
+.eidos-table-pagination-controls {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-lg);
+}
+
+.eidos-table-page-size-selector {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+
+	label {
+		color: var(--gray-600);
+		font-size: var(--font-size-sm);
+		font-weight: var(--font-weight-medium);
+	}
+}
+
+// Page size select is now handled by our custom Select component
+
+.eidos-table-page-navigation {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+}
+
+.eidos-table-page-numbers {
+	display: flex;
+	gap: var(--spacing-xs);
+	align-items: center;
+}
+
+// Page buttons are now handled by our custom Button component
+
+// Responsive pagination
+@media (max-width: 768px) {
+	.eidos-table-footer-content {
+		flex-direction: column;
+		gap: var(--spacing-sm);
+		align-items: flex-start;
+	}
+
+	.eidos-table-pagination-controls {
+		flex-direction: column;
+		gap: var(--spacing-sm);
+		width: 100%;
+	}
+
+	.eidos-table-page-navigation {
+		justify-content: center;
+		width: 100%;
+	}
+
+	.eidos-table-page-numbers {
+		justify-content: center;
+	}
+}
