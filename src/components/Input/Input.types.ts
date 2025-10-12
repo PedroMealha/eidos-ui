@@ -1,6 +1,5 @@
 import React from "react";
-
-export type IconType = React.ComponentType<{ className?: string }> | string;
+import type { IconType } from "../../utils";
 
 interface BaseInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -49,3 +48,5 @@ export type InputProps =
   | PasswordInputProps
   | NumberInputProps
   | DateInputProps;
+
+export type { IconType };

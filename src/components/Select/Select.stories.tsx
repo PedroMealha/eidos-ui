@@ -256,7 +256,7 @@ export const FullWidth: Story = {
 export const ControlledExample: Story = {
   render: (args) => {
     const [value, setValue] = useState<string>("");
-    
+
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <Select
@@ -277,7 +277,7 @@ export const ControlledExample: Story = {
 export const MultipleControlled: Story = {
   render: (args) => {
     const [values, setValues] = useState<string[]>([]);
-    
+
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <Select

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-
-export type IconType = React.ComponentType<{ className?: string }> | string;
+import type { IconType } from "../../utils";
 
 export interface ModalAction {
   id: string;

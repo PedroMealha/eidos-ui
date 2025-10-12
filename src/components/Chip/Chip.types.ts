@@ -1,4 +1,4 @@
-export type IconType = React.ComponentType<{ className?: string }> | string;
+import type { IconType } from "../../utils";
 
 interface BaseChipProps {
   variant?: "filled" | "outlined" | "soft";

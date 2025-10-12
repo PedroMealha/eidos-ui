@@ -25,7 +25,10 @@ export type { ModalProps, ModalAction, IconType as ModalIconType } from './compo
 export type { SelectProps, SelectOption, IconType as SelectIconType } from './components/Select';
 
 // Shared type (all IconTypes are the same)
-export type { IconType } from './components/Input';
+export type { IconType } from './utils';
+
+// Utilities
+export { renderIcon } from './utils';
 
 // Styles - users can import this separately
 // import '@pmea/eidos-ui/styles';

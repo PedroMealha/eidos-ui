@@ -1,38 +1,8 @@
 import React from "react";
-import { X, icons } from "lucide-react";
+import { X } from "lucide-react";
 import type { ChipProps } from "./Chip.types";
 import { Tooltip } from "../Tooltip/Tooltip.component";
-
-/**
- * Helper to render an icon (either string name or component)
- */
-const renderIcon = (
-  icon: string | React.ComponentType<{ className?: string }>,
-  className: string
-) => {
-  if (!icon) return null;
-
-  if (typeof icon === 'string') {
-    // String-based icon name (Lucide dynamic icons)
-    // Convert to PascalCase (e.g., "arrow-right" -> "ArrowRight")
-    const iconName = icon
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
-
-    const LucideIcon = (icons as Record<string, React.ComponentType<{ className?: string }>>)[iconName];
-
-    if (LucideIcon) {
-      return React.createElement(LucideIcon, { className });
-    }
-
-    // Fallback: treat as CSS class (for Font Awesome, etc.)
-    return <i className={icon} aria-hidden="true" />;
-  }
-
-  // Component-based icon (Lucide, MUI, etc.)
-  return React.createElement(icon, { className });
-};
+import { renderIcon } from "../../utils";
 
 export const Chip: React.FC<ChipProps> = ({
   variant = "filled",

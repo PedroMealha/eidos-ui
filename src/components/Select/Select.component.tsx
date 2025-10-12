@@ -5,42 +5,11 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { X, Check, icons } from "lucide-react";
+import { X, Check } from "lucide-react";
 import { Input } from "../Input/Input.component";
 import { Dropdown } from "../Dropdown/Dropdown.component";
-import type { SelectProps, SelectOption, IconType } from "./Select.types";
-
-// Helper function to render icons (component or string-based)
-const renderIcon = (
-  icon: IconType | undefined,
-  className?: string
-): React.ReactNode => {
-  if (!icon) return null;
-
-  if (typeof icon === "string") {
-    // Convert kebab-case to PascalCase for Lucide icons
-    const iconName = icon
-      .split("-")
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join("");
-
-    // Try to find the icon in lucide-react
-    const LucideIcon = icons[iconName as keyof typeof icons] as
-      | React.ComponentType<{ className?: string }>
-      | undefined;
-
-    if (LucideIcon) {
-      return <LucideIcon className={className} aria-hidden="true" />;
-    }
-
-    // Fallback: render as a CSS class (for Font Awesome, Remixicon, etc.)
-    return <i className={`${icon} ${className || ""}`} aria-hidden="true" />;
-  }
-
-  // It's a React component
-  const IconComponent = icon;
-  return <IconComponent className={className} aria-hidden="true" />;
-};
+import type { SelectProps, SelectOption } from "./Select.types";
+import { renderIcon } from "../../utils";
 
 export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
   (
