@@ -1,0 +1,26 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-snackbar-container {
+	position: fixed;
+	top: var(--spacing-lg);
+	right: var(--spacing-lg);
+	z-index: 9999;
+	pointer-events: none;
+	max-width: 500px;
+	width: 100%;
+
+	// Responsive adjustments
+	@media (max-width: 640px) {
+		top: var(--spacing-md);
+		right: var(--spacing-md);
+		left: var(--spacing-md);
+		max-width: none;
+	}
+}
+
+.eidos-snackbar-wrapper {
+	position: absolute;
+	right: 0;
+	width: 100%;
+	pointer-events: auto;
+}

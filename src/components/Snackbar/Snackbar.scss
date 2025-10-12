@@ -1,0 +1,191 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-snackbar {
+	@include flex-center-y;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-md) var(--spacing-lg);
+	@include border-radius(md);
+	@include elevation(3);
+	background-color: var(--white);
+	border: 1px solid var(--gray-200);
+	min-width: 300px;
+	max-width: 500px;
+	min-height: 60px;
+	position: relative;
+	overflow: hidden;
+
+	// Animation states
+	&--entering {
+		opacity: 0;
+		transform: translateX(100%) scale(0.95);
+	}
+
+	&--entered {
+		opacity: 1;
+		transform: translateX(0) scale(1);
+		transition: all 0.3s ease-out;
+	}
+
+	&--exiting {
+		opacity: 0;
+		transform: translateX(100%) scale(0.85);
+		transition: all 0.3s ease-in;
+	}
+
+	&--exited {
+		opacity: 0;
+		transform: translateX(0) scale(0.85);
+	}
+
+	// Variant styles
+	&--success {
+		border-color: var(--success-color);
+		background-color: var(--white);
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 4px;
+			height: 100%;
+			background-color: var(--success-color);
+		}
+
+		.eidos-snackbar-message {
+			color: var(--success-dark);
+		}
+	}
+
+	&--danger {
+		border-color: var(--danger-color);
+		background-color: var(--white);
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 4px;
+			height: 100%;
+			background-color: var(--danger-color);
+		}
+
+		.eidos-snackbar-message {
+			color: var(--danger-dark);
+		}
+	}
+
+	&--warning {
+		border-color: var(--warning-color);
+		background-color: var(--white);
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 4px;
+			height: 100%;
+			background-color: var(--warning-color);
+		}
+
+		.eidos-snackbar-message {
+			color: var(--warning-dark);
+		}
+	}
+
+	&--info {
+		border-color: var(--info-color);
+		background-color: var(--white);
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 4px;
+			height: 100%;
+			background-color: var(--info-color);
+		}
+
+		.eidos-snackbar-message {
+			color: var(--info-dark);
+		}
+	}
+
+	.eidos-snackbar-content {
+		flex: 1;
+		@include flex-center-y;
+		gap: var(--spacing-sm);
+	}
+
+	.eidos-snackbar-message {
+		@include font-size(sm);
+		font-weight: var(--font-weight-medium);
+		line-height: 1.4;
+		color: var(--dark-color);
+	}
+
+	.eidos-snackbar-actions {
+		@include flex-center-y;
+		gap: var(--spacing-xs);
+		margin-left: var(--spacing-sm);
+	}
+
+	.eidos-snackbar-action-button {
+		@include font-size(sm);
+		font-weight: var(--font-weight-semibold);
+		padding: var(--spacing-xs) var(--spacing-sm);
+		min-height: auto;
+		height: auto;
+	}
+
+	.eidos-snackbar-close-button {
+		@include button-reset;
+		@include flex-center;
+		width: 24px;
+		height: 24px;
+		@include border-radius(sm);
+		color: var(--gray-500);
+		margin-left: var(--spacing-sm);
+		transition: all 0.2s ease;
+
+		&:hover {
+			background-color: var(--gray-100);
+			color: var(--gray-700);
+		}
+
+		&:focus {
+			@include focus-ring(gray, 2px);
+		}
+	}
+
+	.eidos-snackbar-close-icon {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+// Animations
+@keyframes snackbarEnter {
+	from {
+		opacity: 0;
+		transform: translateX(100%) scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0) scale(1);
+	}
+}
+
+@keyframes snackbarExit {
+	from {
+		opacity: 1;
+		transform: translateX(0) scale(1);
+	}
+	to {
+		opacity: 0;
+		transform: translateX(0) scale(0.85);
+	}
+}
