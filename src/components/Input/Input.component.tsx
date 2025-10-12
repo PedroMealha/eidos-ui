@@ -64,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		ref
 	) => {
 		const [showPassword, setShowPassword] = useState(false);
-		const [localValue, setLocalValue] = useState('');
+		const [localValue, setLocalValue] = useState(inputProps.defaultValue || '');
 		const [isFocused, setIsFocused] = useState(false);
 
 		// Auto-generate id and name if not provided
@@ -72,12 +72,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		const inputId = id || `input-${generatedId}`;
 		const inputName = name || inputId;
 
+		// Determine if using controlled or uncontrolled mode
+		const isControlled = inputProps.value !== undefined;
+		const currentValue = isControlled ? inputProps.value : localValue;
+
 		// For select inputs, don't manage localValue - let the select component handle it
 		// This prevents the Input's clear button from showing
 
 		// Determine if label should float (only when there's content - static behavior)
 		// For select inputs, keep label completely static (never float)
-		const shouldFloatLabel = isSelect ? false : inputProps.value || inputProps.defaultValue;
+		const shouldFloatLabel = isSelect ? false : currentValue || inputProps.defaultValue;
 
 		// Check if field is required (from props or enhanced register function)
 		const isRequired = required || Boolean('required' in inputProps && inputProps.required);
@@ -131,38 +135,41 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 			}
 		};
 
-		// Handle input change for number inputs
-		const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-			const value = e.target.value;
-			// Don't update localValue for select inputs - they handle their own state
-			if (!isSelect) {
-				setLocalValue(value);
-			}
-			inputProps.onChange?.(e);
-		};
+	// Handle input change for number inputs
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		// Only update localValue if uncontrolled and not a select input
+		if (!isControlled && !isSelect) {
+			setLocalValue(value);
+		}
+		inputProps.onChange?.(e);
+	};
 
-		// Handle clear button
-		const handleClear = () => {
+	// Handle clear button
+	const handleClear = () => {
+		// Update localValue if uncontrolled
+		if (!isControlled) {
 			setLocalValue('');
+		}
 
-			// Create a proper synthetic event for React Hook Form
-			const syntheticEvent = {
-				target: {
-					value: '',
-					name: inputName,
-					id: inputId,
-					type: actualType,
-				},
-			} as React.ChangeEvent<HTMLInputElement>;
+		// Create a proper synthetic event for React Hook Form
+		const syntheticEvent = {
+			target: {
+				value: '',
+				name: inputName,
+				id: inputId,
+				type: actualType,
+			},
+		} as React.ChangeEvent<HTMLInputElement>;
 
-			// Call the form's onChange handler
-			inputProps.onChange?.(syntheticEvent);
+		// Call the form's onChange handler
+		inputProps.onChange?.(syntheticEvent);
 
-			// Also try to update the input element directly
-			if (ref && typeof ref === 'object' && ref.current) {
-				ref.current.value = '';
-			}
-		};
+		// Also try to update the input element directly
+		if (ref && typeof ref === 'object' && ref.current) {
+			ref.current.value = '';
+		}
+	};
 
 		// Handle focus and blur
 		const handleFocus = () => {
@@ -255,8 +262,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 						}
 						disabled={disabled || loading}
 						onKeyDown={handleNumberInput}
-						value={localValue}
 						{...inputProps}
+						value={currentValue}
 						onFocus={e => {
 							handleFocus();
 							inputProps.onFocus?.(e);
@@ -285,7 +292,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 					)}
 
 					{/* Clear button - show when there's content and clearable is enabled (default: true) */}
-					{localValue && localValue.trim().length > 0 && type !== 'password' && !isSelect && clearable !== false && (
+					{currentValue && String(currentValue).trim().length > 0 && type !== 'password' && !isSelect && clearable !== false && (
 						<button
 							type="button"
 							className={`eidos-input-clear-button`}

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Mail, Lock, Search, User, HelpCircle, DollarSign, Calendar } from 'lucide-react';
+import { Mail, Search, User, HelpCircle, DollarSign, Calendar } from 'lucide-react';
 import { Input } from './Input.component';
 
 const meta = {
