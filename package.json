@@ -1,6 +1,6 @@
 {
-  "name": "@pedro.mealha/eidos-ui",
-  "version": "0.1.0",
+  "name": "@pmealha/eidos-ui",
+  "version": "0.1.1",
   "description": "A modern React component library with TypeScript and SCSS",
   "type": "module",
   "main": "./dist/index.cjs",
