@@ -1,4 +1,4 @@
-# @pmea/eidos-ui
+# @pmealha/eidos-ui
 
 A modern, accessible React component library built with TypeScript, SCSS, and CSS custom properties.
 
@@ -16,19 +16,19 @@ A modern, accessible React component library built with TypeScript, SCSS, and CS
 ## 📦 Installation
 
 ```bash
-npm install @pmea/eidos-ui lucide-react
+npm install @pmealha/eidos-ui lucide-react
 ```
 
 or with yarn:
 
 ```bash
-yarn add @pmea/eidos-ui lucide-react
+yarn add @pmealha/eidos-ui lucide-react
 ```
 
 or with pnpm:
 
 ```bash
-pnpm add @pmea/eidos-ui lucide-react
+pnpm add @pmealha/eidos-ui lucide-react
 ```
 
 > **Note:** `lucide-react` is an optional peer dependency. Install it only if you want to use icon features.
@@ -38,9 +38,9 @@ pnpm add @pmea/eidos-ui lucide-react
 ### Import Components and Styles
 
 ```tsx
-import { Button, IconButton, Tooltip } from '@pmea/eidos-ui';
+import { Button, IconButton, Tooltip } from '@pmealha/eidos-ui';
 import { Plus } from 'lucide-react';
-import '@pmea/eidos-ui/styles';
+import '@pmealha/eidos-ui/styles';
 
 function App() {
   return (
@@ -84,7 +84,7 @@ A versatile button component with multiple variants, colors, and icon support.
 #### Examples
 
 ```tsx
-import { Button, IconButton } from '@pmea/eidos-ui';
+import { Button, IconButton } from '@pmealha/eidos-ui';
 import { Download, Plus, Trash2, ChevronRight } from 'lucide-react';
 
 // Basic buttons
@@ -145,7 +145,7 @@ An accessible tooltip component with smart positioning and multiple trigger opti
 #### Examples
 
 ```tsx
-import { Tooltip, Button } from '@pmea/eidos-ui';
+import { Tooltip, Button } from '@pmealha/eidos-ui';
 
 // Basic tooltip
 <Tooltip message="This is helpful information">
@@ -364,14 +364,14 @@ eidos-ui/
 ### Installation
 
 ```bash
-npm install @pmea/eidos-ui lucide-react
+npm install @pmealha/eidos-ui lucide-react
 ```
 
 ### Import Components
 
 ```tsx
-import { Button, Tooltip } from '@pmea/eidos-ui';
-import '@pmea/eidos-ui/styles';
+import { Button, Tooltip } from '@pmealha/eidos-ui';
+import '@pmealha/eidos-ui/styles';
 ```
 
 ### TypeScript Support
@@ -379,7 +379,7 @@ import '@pmea/eidos-ui/styles';
 Full TypeScript support out of the box:
 
 ```tsx
-import type { ButtonProps, TooltipProps } from '@pmea/eidos-ui';
+import type { ButtonProps, TooltipProps } from '@pmealha/eidos-ui';
 
 const MyButton: React.FC<ButtonProps> = (props) => {
   return <Button {...props} />;
