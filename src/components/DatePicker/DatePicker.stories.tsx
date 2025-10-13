@@ -347,7 +347,7 @@ export const UsageExample: Story = {
         }}
       >
         {`// Single date selection
-import { DatePicker } from '@pmea/eidos-ui';
+import { DatePicker } from '@pmealha/eidos-ui';
 import { useState } from 'react';
 
 function MyComponent() {

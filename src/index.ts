@@ -38,5 +38,5 @@ export type { IconType } from './utils';
 export { renderIcon } from './utils';
 
 // Styles - users can import this separately
-// import '@pmea/eidos-ui/styles';
+// import '@pmealha/eidos-ui/styles';
 

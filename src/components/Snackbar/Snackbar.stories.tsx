@@ -358,7 +358,7 @@ export const UsageExample: Story = {
         }}
       >
         {`// 1. Wrap your app with SnackbarProvider
-import { SnackbarProvider, SnackbarContainer } from '@pmea/eidos-ui';
+import { SnackbarProvider, SnackbarContainer } from '@pmealha/eidos-ui';
 
 function App() {
   return (
@@ -370,7 +370,7 @@ function App() {
 }
 
 // 2. Use in your components
-import { useSnackbar } from '@pmea/eidos-ui';
+import { useSnackbar } from '@pmealha/eidos-ui';
 
 function MyComponent() {
   const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
