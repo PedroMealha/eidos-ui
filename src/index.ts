@@ -18,15 +18,15 @@ export { useDropdownContext } from './components/Dropdown';
 export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 
 // Types
-export type { ButtonProps, IconButtonProps, TextButtonProps, IconType as ButtonIconType } from './components/Button';
+export type { ButtonProps, IconButtonProps, TextButtonProps } from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
-export type { ChipProps, TextChipProps, IconType as ChipIconType } from './components/Chip';
+export type { ChipProps, TextChipProps } from './components/Chip';
 export type { DividerProps } from './components/Divider';
 export type { DropdownProps, DropdownState, DropdownPosition, NestedDropdownItem } from './components/Dropdown';
-export type { InputProps, IconType as InputIconType } from './components/Input';
-export type { MenuProps, MenuWrapperProps, MenuItemType, MenuItem, MenuComponentItem, MenuSeparator, MenuNestedItem, IconType as MenuIconType } from './components/Menu';
-export type { ModalProps, ModalAction, IconType as ModalIconType } from './components/Modal';
-export type { SelectProps, SelectOption, IconType as SelectIconType } from './components/Select';
+export type { InputProps } from './components/Input';
+export type { MenuProps, MenuWrapperProps, MenuItemType, MenuItem, MenuComponentItem, MenuSeparator, MenuNestedItem } from './components/Menu';
+export type { ModalProps, ModalAction } from './components/Modal';
+export type { SelectProps, SelectOption } from './components/Select';
 export type { SnackbarProps, SnackbarVariant, SnackbarAction, SnackbarState, SnackbarItem, SnackbarContextValue, UseSnackbarReturn } from './components/Snackbar';
 export type { DatePickerProps, DateSelectionMode, TimeConfig, DateTimeValue, TimeValue, RangeTimeValue, CalendarConfig, DateFormatConfig, CalendarProps } from './components/DatePicker';
 export type { TableProps, TableColumn, TableFilters, FilterValue } from './components/Table';

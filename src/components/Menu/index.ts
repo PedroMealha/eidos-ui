@@ -7,6 +7,5 @@ export type {
 	MenuComponentItem,
 	MenuSeparator,
 	MenuNestedItem,
-	IconType,
 } from './Menu.types';
 
