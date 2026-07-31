@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Plus, X, Check, RotateCcw, Filter } from 'lucide-react';
+import { Plus, X, Check, RotateCcw, Funnel } from 'lucide-react';
 import { Button } from '../Button';
 import { DatePicker } from '../DatePicker';
 import { Dropdown } from '../Dropdown';
@@ -333,7 +333,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 	const canAddMore = filterRows.length < filterableColumns.length;
 
 	const triggerButton = (
-		<Button variant="text" size="small" icon={Filter} className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''} />
+		<Button variant="text" size="small" icon={Funnel} className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''} />
 	);
 
 	const dropdownContent = (

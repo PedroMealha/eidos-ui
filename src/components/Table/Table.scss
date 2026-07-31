@@ -20,12 +20,12 @@
 .eidos-table {
 	width: 100%;
 	border-collapse: collapse;
-	font-size: 0.9rem;
+	font-size: var(--font-size-sm);
 }
 
 .eidos-table-header-cell {
 	background: var(--gray-100);
-	padding: 1rem;
+	padding: var(--spacing-md);
 	font-weight: var(--font-weight-semibold);
 	border-bottom: 1px solid var(--gray-200);
 	position: relative;
@@ -66,7 +66,7 @@
 
 .eidos-table-sort-indicator {
 	display: flex;
-	font-size: 0.75rem;
+	font-size: var(--font-size-xs);
 	color: var(--gray-500);
 	transition: color 0.2s ease;
 
@@ -101,7 +101,7 @@
 }
 
 .eidos-table-cell {
-	padding: 1rem;
+	padding: var(--spacing-md);
 	color: var(--gray-700);
 	vertical-align: middle;
 }
@@ -111,22 +111,13 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 3rem;
+	gap: var(--spacing-md);
+	padding: var(--spacing-xl);
 	color: var(--gray-600);
-
-	.eidos-table-spinner {
-		width: 2rem;
-		height: 2rem;
-		border: 2px solid var(--gray-200);
-		border-top: 2px solid var(--primary-color);
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-		margin-bottom: 1rem;
-	}
 
 	p {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: var(--font-size-sm);
 	}
 }
 
@@ -134,12 +125,12 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 3rem;
+	padding: var(--spacing-xl);
 	color: var(--gray-600);
 
 	p {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: var(--font-size-sm);
 	}
 }
 
@@ -153,22 +144,13 @@
 
 .eidos-table-empty-cell {
 	text-align: center;
-	padding: 3rem 1rem;
+	padding: var(--spacing-xl) var(--spacing-md);
 	color: var(--gray-600);
 }
 
 .eidos-table-empty-message {
-	font-size: 0.9rem;
+	font-size: var(--font-size-sm);
 	color: var(--gray-600);
-}
-
-@keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
 }
 
 // Column type styles
@@ -220,8 +202,8 @@
 
 	.eidos-table-header-cell,
 	.eidos-table-cell {
-		padding: 0.75rem 0.5rem;
-		font-size: 0.8rem;
+		padding: var(--spacing-sm);
+		font-size: var(--font-size-xs);
 	}
 }
 

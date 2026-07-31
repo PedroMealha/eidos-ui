@@ -1,12 +1,12 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-tooltip-trigger {
-	display: flex;
+	display: inline-flex;
 }
 
 .eidos-tooltip {
 	position: fixed;
-	z-index: 1000;
+	z-index: var(--z-index-tooltip);
 	background-color: rgba(var(--white-rgb), 0.95);
 	border: 1px solid var(--gray-50);
 	border-radius: var(--border-radius-md);

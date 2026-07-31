@@ -1,8 +1,18 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 
-export const Spinner: React.FC = () => (
-  <div className="eidos-spinner-wrapper">
-    <Loader2 className="eidos-spinner" />
+interface SpinnerProps {
+  size?: "small" | "medium" | "large";
+  color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+  className?: string;
+}
+
+export const Spinner: React.FC<SpinnerProps> = ({
+  size = "medium",
+  color = "primary",
+  className = "",
+}) => (
+  <div className={`eidos-spinner-wrapper eidos-spinner-wrapper--${size} eidos-spinner-wrapper--${color} ${className}`.trim()}>
+    <LoaderCircle className="eidos-spinner" />
   </div>
 );

@@ -1,39 +1,9 @@
 import React, { useCallback } from 'react';
-import { ChevronRight, icons } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import type { MenuProps, MenuItemType, MenuItem, MenuWrapperProps } from './Menu.types';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Tooltip } from '../Tooltip/Tooltip.component';
-
-/**
- * Helper to render an icon (either string name or component)
- */
-const renderIcon = (
-	icon: string | React.ComponentType<{ className?: string }>,
-	className: string
-) => {
-	if (!icon) return null;
-
-	if (typeof icon === 'string') {
-		// String-based icon name (Lucide dynamic icons)
-		// Convert to PascalCase (e.g., "arrow-right" -> "ArrowRight")
-		const iconName = icon
-			.split('-')
-			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-			.join('');
-
-		const LucideIcon = (icons as Record<string, React.ComponentType<{ className?: string }>>)[iconName];
-
-		if (LucideIcon) {
-			return React.createElement(LucideIcon, { className });
-		}
-
-		// Fallback: treat as CSS class (for Font Awesome, etc.)
-		return <i className={icon} aria-hidden="true" />;
-	}
-
-	// Component-based icon (Lucide, MUI, etc.)
-	return React.createElement(icon, { className });
-};
+import { renderIcon } from '../../utils';
 
 const MenuElement: React.FC<MenuProps> = ({ items, className = '', onItemClick }) => {
 	// Handle menu item click

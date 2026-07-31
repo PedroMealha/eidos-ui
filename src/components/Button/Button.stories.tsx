@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
   args: {
     // Default values to show all props in docs
     children: undefined,

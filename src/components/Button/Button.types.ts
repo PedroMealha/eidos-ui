@@ -7,7 +7,6 @@ interface BaseButtonProps
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   loading?: boolean;
-  loadingText?: string;
   className?: string;
   tooltip?: string;
 }
@@ -17,6 +16,7 @@ export interface TextButtonProps extends BaseButtonProps {
   preIcon?: IconType;
   posIcon?: IconType;
   icon?: never;
+  loadingText?: string;
 }
 
 export interface IconButtonProps extends BaseButtonProps {
@@ -24,6 +24,7 @@ export interface IconButtonProps extends BaseButtonProps {
   children?: never;
   preIcon?: never;
   posIcon?: never;
+  loadingText?: never;
 }
 
 export type ButtonProps = TextButtonProps | IconButtonProps;

@@ -1,38 +1,9 @@
 import React, { forwardRef, useState, useId } from 'react';
-import { Eye, EyeOff, AlertCircle, X, ChevronDown, icons } from 'lucide-react';
+import { Eye, EyeOff, CircleAlert, X, ChevronDown } from 'lucide-react';
+import { renderIcon } from '../../utils';
 import type { InputProps } from './Input.types';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 
-/**
- * Helper to render an icon (either string name or component)
- */
-const renderIcon = (
-	icon: string | React.ComponentType<{ className?: string }>,
-	className: string
-) => {
-	if (!icon) return null;
-
-	if (typeof icon === 'string') {
-		// String-based icon name (Lucide dynamic icons)
-		// Convert to PascalCase (e.g., "arrow-right" -> "ArrowRight")
-		const iconName = icon
-			.split('-')
-			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-			.join('');
-
-		const LucideIcon = (icons as Record<string, React.ComponentType<{ className?: string }>>)[iconName];
-
-		if (LucideIcon) {
-			return React.createElement(LucideIcon, { className });
-		}
-
-		// Fallback: treat as CSS class (for Font Awesome, etc.)
-		return <i className={icon} aria-hidden="true" />;
-	}
-
-	// Component-based icon (Lucide, MUI, etc.)
-	return React.createElement(icon, { className });
-};
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
 	(
@@ -256,7 +227,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 										width: typeof width === 'number' ? `${width}px` : width,
 										minWidth: typeof width === 'number' ? `${width}px` : width,
 										maxWidth: typeof width === 'number' ? `${width}px` : width,
-										textAlign: 'center',
 									}
 								: undefined
 						}
@@ -330,7 +300,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
 				{error && (
 					<div className={`eidos-input-error-message`}>
-						<AlertCircle className={`eidos-input-error-icon`} />
+						<CircleAlert className={`eidos-input-error-icon`} />
 						<span>{error}</span>
 					</div>
 				)}

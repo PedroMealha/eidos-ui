@@ -2,11 +2,19 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 3rem;
 	line-height: 1;
-	height: 100vh;
-	background-image: linear-gradient(133deg, rgba(var(--primary-rgb), 0.2), rgba(var(--secondary-rgb), 0.2));
 	color: var(--primary-color);
+
+	&--small  { font-size: 1.5rem; }
+	&--medium { font-size: 2.5rem; }
+	&--large  { font-size: 4rem; }
+
+	&--primary   { color: var(--primary-color); }
+	&--secondary { color: var(--secondary-color); }
+	&--success   { color: var(--success-color); }
+	&--danger    { color: var(--danger-color); }
+	&--warning   { color: var(--warning-color); }
+	&--info      { color: var(--info-color); }
 }
 
 .eidos-spinner {

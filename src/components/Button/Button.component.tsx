@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { Tooltip } from "../Tooltip";
 import { ButtonProps, IconButtonProps } from "./Button.types";
 import { renderIcon } from "../../utils";
@@ -31,10 +31,6 @@ export const Button: React.FC<ButtonProps> = ({
     if (posIcon) {
       throw new Error("Icon-only buttons cannot have posIcon");
     }
-  } else {
-    if (icon) {
-      throw new Error("Text buttons cannot have icon prop");
-    }
   }
 
   const buttonClasses = [
@@ -61,14 +57,14 @@ export const Button: React.FC<ButtonProps> = ({
           {!isIconOnly && (
             <>
               <span className="eidos-button--loading-spinner">
-                <Loader2 className="eidos-button--spinner-icon" />
+                <LoaderCircle className="eidos-button--spinner-icon" />
               </span>
               <span className="eidos-button--copy">{loadingText}</span>
             </>
           )}
           {isIconOnly && (
             <span className="eidos-button--loading-spinner">
-              <Loader2 className="eidos-button--spinner-icon" />
+              <LoaderCircle className="eidos-button--spinner-icon" />
             </span>
           )}
         </>

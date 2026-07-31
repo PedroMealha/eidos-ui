@@ -229,9 +229,9 @@
     cursor: wait;
     pointer-events: none;
 
-    .preIcon,
-    .posIcon,
-    .icon {
+    .eidos-button--pre-icon,
+    .eidos-button--pos-icon,
+    .eidos-button--icon {
       opacity: 0;
     }
   }

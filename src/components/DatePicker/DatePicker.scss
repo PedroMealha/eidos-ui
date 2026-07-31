@@ -2,13 +2,19 @@
 
 .eidos-date-picker-container {
 	position: relative;
-	width: 100%;
+
+	&--fullWidth {
+		width: 100%;
+	}
 }
 
 .eidos-date-picker-trigger {
 	position: relative;
-	width: 100%;
 	cursor: pointer;
+
+	&--fullWidth {
+		width: 100%;
+	}
 
 	// Ensure the input inside shows pointer cursor
 	input {

@@ -112,7 +112,7 @@
 	--border-radius-xs: 2px;
 	--border-radius-sm: 4px;
 	--border-radius-md: 8px;
-	--border-radius-lg: 8px;
+	--border-radius-lg: 10px;
 	--border-radius-xl: 12px;
 	--border-radius-2xl: 16px;
 	--border-radius-3xl: 24px;
@@ -131,4 +131,10 @@
 	--component-size-sm: 32px;
 	--component-size-md: 40px;
 	--component-size-lg: 48px;
+
+	// Z-index layers
+	--z-index-dropdown: 1000;
+	--z-index-modal: 1001;
+	--z-index-tooltip: 1002;
+	--z-index-snackbar: 9999;
 }

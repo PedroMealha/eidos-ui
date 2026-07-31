@@ -36,6 +36,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 	// disabledDates = [],
 	// disabledDaysOfWeek = [],
 	className = '',
+	fullWidth = false,
 	minWidth,
 	maxWidth,
 	minHeight,
@@ -342,7 +343,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
 	// Create trigger element
 	const triggerElement = (
-		<div ref={triggerRef} className={'eidos-date-picker-trigger'}>
+		<div ref={triggerRef} className={`eidos-date-picker-trigger${fullWidth ? ' eidos-date-picker-trigger--fullWidth' : ''}`}>
 			<Input
 				value={displayValue}
 				placeholder={placeholder}
@@ -478,7 +479,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 	);
 
 	return (
-		<div className={`eidos-date-picker-container ${className}`}>
+		<div className={`eidos-date-picker-container${fullWidth ? ' eidos-date-picker-container--fullWidth' : ''} ${className}`.trim()}>
 			<Dropdown
 				key={dropdownKey}
 				trigger={triggerElement}

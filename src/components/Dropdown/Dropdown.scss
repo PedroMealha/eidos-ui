@@ -7,7 +7,7 @@
 
 .eidos-dropdown-content {
 	position: fixed;
-	z-index: 1000;
+	z-index: var(--z-index-dropdown);
 	background-color: var(--white);
 	border: 1px solid var(--gray-200);
 	border-radius: var(--border-radius-md);

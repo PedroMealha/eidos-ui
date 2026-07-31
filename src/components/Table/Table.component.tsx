@@ -16,6 +16,7 @@ import type {
 export type { TableColumn, TableProps, TableFilters, FilterValue };
 import { Button } from "../Button";
 import { Select } from "../Select";
+import { Spinner } from "../Spinner";
 import { TableFiltersDropdown } from "./TableFiltersDropdown.component";
 
 export const Table = <T extends Record<string, unknown>>({
@@ -88,7 +89,7 @@ export const Table = <T extends Record<string, unknown>>({
     return (
       <div className={`eidos-table-container ${className || ""}`}>
         <div className="eidos-table-loading">
-          <div className="eidos-table-spinner"></div>
+          <Spinner size="medium" />
           <p>Loading...</p>
         </div>
       </div>

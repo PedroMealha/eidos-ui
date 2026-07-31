@@ -14,7 +14,7 @@
 .eidos-input-label {
 	@include flex-center-y;
 	gap: var(--spacing-xs);
-	@include font-size(small);
+	@include font-size(sm);
 	@include font-weight(medium);
 	color: var(--gray-600);
 	line-height: 1.4;
@@ -340,7 +340,7 @@
 
 	// Sizes
 	&--small {
-		@include font-size(small);
+		@include font-size(sm);
 	}
 
 	&--medium {
@@ -348,7 +348,7 @@
 	}
 
 	&--large {
-		@include font-size(large);
+		@include font-size(lg);
 	}
 
 	&--fullWidth {
@@ -501,7 +501,7 @@
 	@include flex-center-y;
 	gap: var(--spacing-xs);
 	color: var(--danger-color);
-	@include font-size(small);
+	@include font-size(sm);
 	line-height: 1.4;
 	margin-top: var(--spacing-xs);
 }

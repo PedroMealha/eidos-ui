@@ -20,40 +20,6 @@
 	margin-bottom: var(--spacing-sm);
 }
 
-.eidos-calendar-nav-button {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32px;
-	height: 32px;
-	border: 1px solid var(--gray-300);
-	border-radius: var(--border-radius-sm);
-	background-color: var(--white);
-	color: var(--gray-600);
-	cursor: pointer;
-	transition: all 0.2s ease;
-
-	&:hover {
-		border-color: var(--gray-400);
-		background-color: var(--gray-50);
-		color: var(--gray-700);
-	}
-
-	&:active {
-		background-color: var(--gray-100);
-	}
-
-	&:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-
-		&:hover {
-			border-color: var(--gray-300);
-			background-color: var(--white);
-			color: var(--gray-600);
-		}
-	}
-}
 
 .eidos-calendar-selectors {
 	display: flex;

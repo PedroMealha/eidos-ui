@@ -23,25 +23,6 @@
 	input {
 		cursor: pointer;
 	}
-
-	:global(.posIconButton) {
-		color: var(--gray-500) !important;
-		background: none !important;
-		border: none !important;
-		padding: var(--spacing-xs) !important;
-		transition: all 0.2s ease !important;
-
-		&:hover {
-			color: var(--gray-700) !important;
-			background-color: var(--gray-100) !important;
-			border-radius: var(--border-radius-sm) !important;
-		}
-
-		svg {
-			width: 1.2em !important;
-			height: 1.2em !important;
-		}
-	}
 }
 
 // Select options container

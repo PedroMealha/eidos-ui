@@ -1,0 +1,40 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './Button.stories';
+
+<Meta of={ButtonStories} />
+
+# Button
+
+Buttons trigger actions or events. Use them for the main call-to-action in a form, dialog, or card. The component supports text buttons, icon-only buttons, and a wide range of visual styles.
+
+## Usage
+
+```tsx
+import { Button } from '@pmealha/eidos-ui';
+
+<Button variant="filled" color="primary" size="medium">
+  Click me
+</Button>
+```
+
+## Text button
+
+The default text button. Use the controls below to explore the available props.
+
+<Canvas of={ButtonStories.TextButton} />
+
+<Controls of={ButtonStories.TextButton} />
+
+## Icon button
+
+For actions represented by a single icon. The `IconButton` convenience wrapper can also be used for the same result.
+
+<Canvas of={ButtonStories.IconOnly} />
+
+<Controls of={ButtonStories.IconOnly} />
+
+## Examples
+
+A visual overview of the supported variants, colors, sizes, icon modes, and states.
+
+<Canvas of={ButtonStories.Examples} />

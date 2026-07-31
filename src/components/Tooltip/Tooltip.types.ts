@@ -11,11 +11,15 @@ interface BaseTooltipProps {
   closeOnEscape?: boolean;
 }
 
-interface TooltipProps extends BaseTooltipProps {
-  message?: string;
-  component?: React.ComponentType<Record<string, unknown>>;
-  componentProps?: Record<string, unknown>;
-}
+type TooltipProps = BaseTooltipProps &
+  (
+    | { message: string; component?: never; componentProps?: never }
+    | {
+        message?: never;
+        component: React.ComponentType<Record<string, unknown>>;
+        componentProps?: Record<string, unknown>;
+      }
+  );
 
 interface TooltipState {
   isVisible: boolean;

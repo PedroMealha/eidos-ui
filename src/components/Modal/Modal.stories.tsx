@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { AlertCircle, CheckCircle, Info, XCircle, Trash2 } from 'lucide-react';
+import { CircleAlert, CircleCheck, Info, CircleX, Trash2 } from 'lucide-react';
 import { Modal } from './Modal.component';
 import { Button } from '../Button';
 
@@ -9,6 +9,10 @@ const meta = {
 	component: Modal,
 	parameters: { layout: 'centered' },
 	tags: ['autodocs'],
+	args: {
+		isOpen: false,
+		onClose: () => {},
+	},
 	argTypes: {
 		isOpen: {
 			control: 'boolean',
@@ -27,7 +31,7 @@ const meta = {
 		},
 		icon: {
 			control: 'text',
-			description: 'Icon to display in header. Pass Lucide component (AlertCircle) or string ("alert-circle")',
+			description: 'Icon to display in header. Pass Lucide component (CircleAlert) or string ("circle-alert")',
 			table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
 		},
 		type: {
@@ -145,7 +149,7 @@ export const Examples = {
 						isOpen={successOpen}
 						onClose={() => setSuccessOpen(false)}
 						title="Success!"
-						icon={CheckCircle}
+						icon={CircleCheck}
 						type="success"
 					>
 						<p>Your action was completed successfully!</p>
@@ -155,7 +159,7 @@ export const Examples = {
 						isOpen={warningOpen}
 						onClose={() => setWarningOpen(false)}
 						title="Warning"
-						icon={AlertCircle}
+						icon={CircleAlert}
 						type="warning"
 					>
 						<p>Please review the following information before proceeding.</p>
@@ -165,7 +169,7 @@ export const Examples = {
 						isOpen={dangerOpen}
 						onClose={() => setDangerOpen(false)}
 						title="Delete Item"
-						icon={XCircle}
+						icon={CircleX}
 						type="danger"
 					>
 						<p>Are you sure you want to delete this item? This action cannot be undone.</p>
@@ -193,7 +197,7 @@ export const Examples = {
 						isOpen={actionsOpen}
 						onClose={() => setActionsOpen(false)}
 						title="Confirm Action"
-						icon={AlertCircle}
+						icon={CircleAlert}
 						type="warning"
 						actions={[
 							{

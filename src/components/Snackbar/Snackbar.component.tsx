@@ -46,7 +46,7 @@ export const SnackbarComponent: React.FC<SnackbarComponentProps> = ({ snackbar, 
 			{action && (
 				<div className={'eidos-snackbar-actions'}>
 					<Button
-						variant={action.variant === 'primary' ? 'text' : 'text'}
+						variant={action.variant === 'primary' ? 'filled' : 'text'}
 						size="small"
 						onClick={handleActionClick}
 						className={'eidos-snackbar-action-button'}

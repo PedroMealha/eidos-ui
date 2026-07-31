@@ -1,6 +1,6 @@
 import type { IconType } from "../../utils";
 
-interface BaseChipProps {
+interface BaseChipProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onClick'> {
   variant?: "filled" | "outlined" | "soft";
   color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
   size?: "small" | "medium" | "large";

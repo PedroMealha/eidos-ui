@@ -93,6 +93,7 @@ interface DatePickerProps<T extends DateSelectionMode = "single"> {
 
   // Styling
   className?: string;
+  fullWidth?: boolean;
 
   // Dropdown sizing (inherited from our design system)
   minWidth?: number | string;
