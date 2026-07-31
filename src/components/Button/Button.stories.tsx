@@ -117,10 +117,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// TEXT BUTTON - Main interactive example with all controls
+// DEFAULT - Main interactive example with all controls
 // ============================================================================
 
-export const TextButton: Story = {
+export const Default: Story = {
   args: {
     variant: 'filled',
     color: 'primary',
@@ -170,84 +170,73 @@ export const IconOnly: Story = {
 // ============================================================================
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      {/* Variants */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          Variants
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Button variant="filled" color="primary">Filled</Button>
-          <Button variant="outlined" color="primary">Outlined</Button>
-          <Button variant="text" color="primary">Text</Button>
-        </div>
-      </div>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
+    const row: React.CSSProperties = { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' };
 
-      {/* Colors */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          Colors
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Button color="primary">Primary</Button>
-          <Button color="secondary">Secondary</Button>
-          <Button color="success">Success</Button>
-          <Button color="danger">Danger</Button>
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+        gap: '2rem 3rem',
+        padding: '1.5rem',
+      }}>
+        <div>
+          <p style={label}>Variants</p>
+          <div style={row}>
+            <Button variant="filled">Filled</Button>
+            <Button variant="outlined">Outlined</Button>
+            <Button variant="text">Text</Button>
+          </div>
         </div>
-      </div>
 
-      {/* Sizes */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          Sizes
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <Button size="small">Small</Button>
-          <Button size="medium">Medium</Button>
-          <Button size="large">Large</Button>
+        <div>
+          <p style={label}>Colors</p>
+          <div style={row}>
+            <Button color="primary">Primary</Button>
+            <Button color="secondary">Secondary</Button>
+            <Button color="success">Success</Button>
+            <Button color="danger">Danger</Button>
+          </div>
         </div>
-      </div>
 
-      {/* With Icons - Component */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          With Icons (Component-based)
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Button preIcon={Download}>Download</Button>
-          <Button posIcon={ArrowRight}>Next</Button>
-          <Button icon={Plus} />
-          <IconButton icon={ArrowBigDownDash} tooltip="Using IconButton" />
-          <IconButton icon={Trash2} color="danger" variant="outlined" />
+        <div>
+          <p style={label}>Sizes</p>
+          <div style={row}>
+            <Button size="small">Small</Button>
+            <Button size="medium">Medium</Button>
+            <Button size="large">Large</Button>
+          </div>
         </div>
-      </div>
 
-      {/* With Icons - String */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          With Icons (String-based - Dynamic)
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Button preIcon="download">Download</Button>
-          <Button posIcon="arrow-right">Next</Button>
-          <Button icon="plus" />
-          <IconButton icon="arrow-big-down-dash" tooltip="String icon name" />
-          <IconButton icon="trash-2" color="danger" variant="outlined" />
+        <div>
+          <p style={label}>States</p>
+          <div style={row}>
+            <Button disabled>Disabled</Button>
+            <Button loading>Loading</Button>
+            <Button tooltip="Helpful hint">With Tooltip</Button>
+          </div>
         </div>
-      </div>
 
-      {/* States */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          States
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Button disabled>Disabled</Button>
-          <Button loading>Loading</Button>
-          <Button tooltip="Helpful hint">With Tooltip</Button>
+        {/* Icons spans both columns */}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <p style={label}>Icons &amp; Icon Buttons</p>
+          <div style={row}>
+            <Button preIcon={Download}>Download</Button>
+            <Button posIcon={ArrowRight}>Next</Button>
+            <Button icon={Plus} />
+            <IconButton icon={ArrowBigDownDash} tooltip="Icon-only button" />
+            <IconButton icon={Trash2} color="danger" variant="outlined" />
+          </div>
         </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };

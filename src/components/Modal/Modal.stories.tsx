@@ -104,10 +104,19 @@ export const Examples = {
 		const [sizesOpen, setSizesOpen] = useState<'small' | 'medium' | 'large' | 'full' | null>(null);
 		const [stringIconOpen, setStringIconOpen] = useState(false);
 
+		const label: React.CSSProperties = {
+			marginBottom: '0.625rem',
+			fontSize: '0.7rem',
+			fontWeight: 600,
+			textTransform: 'uppercase',
+			letterSpacing: '0.07em',
+			color: '#94a3b8',
+		};
+
 		return (
-			<div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', padding: '3rem' }}>
+			<div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
 				<div>
-					<h3>Basic Modal</h3>
+					<p style={label}>Basic</p>
 					<Button onClick={() => setBasicOpen(true)}>Open Basic Modal</Button>
 					<Modal
 						isOpen={basicOpen}
@@ -119,7 +128,7 @@ export const Examples = {
 				</div>
 
 				<div>
-					<h3>Modal Types (with component icons)</h3>
+					<p style={label}>Types</p>
 					<div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
 						<Button variant="filled" color="primary" onClick={() => setInfoOpen(true)}>
 							Info Modal
@@ -177,7 +186,7 @@ export const Examples = {
 				</div>
 
 				<div>
-					<h3>With String-based Icon (Lucide)</h3>
+					<p style={label}>With Icon</p>
 					<Button onClick={() => setStringIconOpen(true)}>Open with String Icon</Button>
 					<Modal
 						isOpen={stringIconOpen}
@@ -191,7 +200,7 @@ export const Examples = {
 				</div>
 
 				<div>
-					<h3>With Actions</h3>
+					<p style={label}>With Actions</p>
 					<Button onClick={() => setActionsOpen(true)}>Open Modal with Actions</Button>
 					<Modal
 						isOpen={actionsOpen}
@@ -224,7 +233,7 @@ export const Examples = {
 				</div>
 
 				<div>
-					<h3>Different Sizes</h3>
+					<p style={label}>Sizes</p>
 					<div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
 						<Button onClick={() => setSizesOpen('small')}>Small</Button>
 						<Button onClick={() => setSizesOpen('medium')}>Medium</Button>
@@ -272,7 +281,7 @@ export const Examples = {
 				</div>
 
 				<div>
-					<h3>Complex Example</h3>
+					<p style={label}>Complex Example</p>
 					<Button onClick={() => setActionsOpen(true)}>Open Complex Modal</Button>
 					<Modal
 						isOpen={actionsOpen}

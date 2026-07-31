@@ -16,27 +16,49 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <div>
-        <h3 style={{ padding: '1rem' }}>Full Page Loading</h3>
-        <div style={{ height: '400px', position: 'relative' }}>
-          <Spinner />
-        </div>
-      </div>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
 
-      <div style={{ padding: '1rem' }}>
-        <h3>Custom Usage (Icon Only)</h3>
-        <p>You can use the Loader2 icon from lucide-react directly for inline loading states:</p>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: '1rem' }}>
-          <span>Loading</span>
-          <span style={{ animation: 'spin-pulse 1s linear infinite', display: 'inline-flex' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-            </svg>
-          </span>
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+        gap: '2rem 2.5rem',
+        padding: '1.5rem',
+      }}>
+        <div>
+          <p style={label}>Sizes</p>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <Spinner size="small" />
+            <Spinner size="medium" />
+            <Spinner size="large" />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Colors</p>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <Spinner color="primary" />
+            <Spinner color="secondary" />
+            <Spinner color="success" />
+            <Spinner color="danger" />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Contained</p>
+          <div style={{ height: '80px', position: 'relative', border: '1px dashed #e2e8f0', borderRadius: '8px' }}>
+            <Spinner />
+          </div>
         </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };

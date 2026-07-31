@@ -47,36 +47,52 @@ export const Vertical: Story = {
 };
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '2rem' }}>
-      <div>
-        <h3>Horizontal Divider</h3>
-        <div style={{ padding: '1rem' }}>
-          <p>Content above</p>
-          <Divider direction="horizontal" />
-          <p>Content below</p>
-        </div>
-      </div>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
 
-      <div>
-        <h3>Vertical Divider</h3>
-        <div style={{ display: 'flex', alignItems: 'center', height: '100px', gap: '1rem' }}>
-          <div>Left content</div>
-          <Divider direction="vertical" />
-          <div>Right content</div>
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+        gap: '2rem 2.5rem',
+        padding: '1.5rem',
+      }}>
+        <div>
+          <p style={label}>Horizontal</p>
+          <div>
+            <div style={{ padding: '0.5rem 0', color: '#64748b', fontSize: '0.875rem' }}>Content above</div>
+            <Divider direction="horizontal" />
+            <div style={{ padding: '0.5rem 0', color: '#64748b', fontSize: '0.875rem' }}>Content below</div>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>In a Menu</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', width: '200px', border: '1px solid var(--gray-300)', borderRadius: 'var(--border-radius-md)' }}>
-          <div style={{ padding: '0.75rem' }}>Menu Item 1</div>
-          <Divider />
-          <div style={{ padding: '0.75rem' }}>Menu Item 2</div>
-          <Divider />
-          <div style={{ padding: '0.75rem' }}>Menu Item 3</div>
+        <div>
+          <p style={label}>Vertical</p>
+          <div style={{ display: 'flex', alignItems: 'center', height: '60px', gap: '1rem' }}>
+            <span style={{ color: '#64748b', fontSize: '0.875rem' }}>Left</span>
+            <Divider direction="vertical" />
+            <span style={{ color: '#64748b', fontSize: '0.875rem' }}>Right</span>
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>In a List</p>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '180px', border: '1px solid var(--gray-300)', borderRadius: 'var(--border-radius-md)' }}>
+            <div style={{ padding: '0.625rem 0.875rem', fontSize: '0.875rem' }}>Item 1</div>
+            <Divider />
+            <div style={{ padding: '0.625rem 0.875rem', fontSize: '0.875rem' }}>Item 2</div>
+            <Divider />
+            <div style={{ padding: '0.625rem 0.875rem', fontSize: '0.875rem' }}>Item 3</div>
+          </div>
         </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };

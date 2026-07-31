@@ -123,66 +123,52 @@ export const ComponentTooltip: Story = {
 // ============================================================================
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '2rem' }}>
-      {/* Placements */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          Placements
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Tooltip message="Top tooltip" placement="top">
-            <Button variant="outlined" size="small">Top</Button>
-          </Tooltip>
-          <Tooltip message="Bottom tooltip" placement="bottom">
-            <Button variant="outlined" size="small">Bottom</Button>
-          </Tooltip>
-          <Tooltip message="Left tooltip" placement="left">
-            <Button variant="outlined" size="small">Left</Button>
-          </Tooltip>
-          <Tooltip message="Right tooltip" placement="right">
-            <Button variant="outlined" size="small">Right</Button>
-          </Tooltip>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
+    const row: React.CSSProperties = { display: 'flex', gap: '1rem', flexWrap: 'wrap' };
+
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+        gap: '2rem 2.5rem',
+        padding: '1.5rem',
+      }}>
+        <div>
+          <p style={label}>Placements</p>
+          <div style={row}>
+            <Tooltip message="Top" placement="top"><Button variant="outlined" size="small">Top</Button></Tooltip>
+            <Tooltip message="Bottom" placement="bottom"><Button variant="outlined" size="small">Bottom</Button></Tooltip>
+            <Tooltip message="Left" placement="left"><Button variant="outlined" size="small">Left</Button></Tooltip>
+            <Tooltip message="Right" placement="right"><Button variant="outlined" size="small">Right</Button></Tooltip>
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Triggers</p>
+          <div style={row}>
+            <Tooltip message="Triggered on hover" triggerType="hover"><Button variant="outlined" size="small">Hover</Button></Tooltip>
+            <Tooltip message="Triggered on click" triggerType="click"><Button variant="outlined" size="small">Click</Button></Tooltip>
+            <Tooltip message="Triggered on focus" triggerType="focus"><Button variant="outlined" size="small">Focus</Button></Tooltip>
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Common Use Cases</p>
+          <div style={row}>
+            <Tooltip message="More information"><Button preIcon={Info} variant="text">Info</Button></Tooltip>
+            <Tooltip message="Delete permanently" placement="bottom"><Button color="danger">Delete</Button></Tooltip>
+            <Tooltip message="This action is disabled"><Button disabled>Disabled</Button></Tooltip>
+          </div>
         </div>
       </div>
-
-      {/* Triggers */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          Triggers
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Tooltip message="Triggered on hover" triggerType="hover">
-            <Button variant="outlined" size="small">Hover</Button>
-          </Tooltip>
-          <Tooltip message="Triggered on click" triggerType="click">
-            <Button variant="outlined" size="small">Click</Button>
-          </Tooltip>
-          <Tooltip message="Triggered on focus" triggerType="focus">
-            <Button variant="outlined" size="small">Focus</Button>
-          </Tooltip>
-        </div>
-      </div>
-
-      {/* Use Cases */}
-      <div>
-        <h3 style={{ marginBottom: '1rem', fontSize: '0.875rem', fontWeight: '600', color: '#64748b' }}>
-          Common Use Cases
-        </h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Tooltip message="Download the file">
-            <Button preIcon={Info} variant="text">Info</Button>
-          </Tooltip>
-
-          <Tooltip message="Delete permanently" placement="bottom">
-            <Button color="danger">Delete</Button>
-          </Tooltip>
-
-          <Tooltip message="This action is disabled" placement="top">
-            <Button disabled>Disabled Action</Button>
-          </Tooltip>
-        </div>
-      </div>
-    </div>
-  ),
+    );
+  },
 };

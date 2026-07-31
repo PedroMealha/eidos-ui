@@ -85,92 +85,92 @@ export const Default: Story = {
 };
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '2rem' }}>
-      <div>
-        <h3>Variants</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip variant="filled">Filled</Chip>
-          <Chip variant="outlined">Outlined</Chip>
-          <Chip variant="soft">Soft</Chip>
-        </div>
-      </div>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
+    const row: React.CSSProperties = { display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' };
 
-      <div>
-        <h3>Colors</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip color="primary">Primary</Chip>
-          <Chip color="secondary">Secondary</Chip>
-          <Chip color="success">Success</Chip>
-          <Chip color="danger">Danger</Chip>
-          <Chip color="warning">Warning</Chip>
-          <Chip color="info">Info</Chip>
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+        gap: '2rem 2.5rem',
+        padding: '1.5rem',
+      }}>
+        <div>
+          <p style={label}>Variants</p>
+          <div style={row}>
+            <Chip variant="filled">Filled</Chip>
+            <Chip variant="outlined">Outlined</Chip>
+            <Chip variant="soft">Soft</Chip>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>Sizes</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <Chip size="small">Small</Chip>
-          <Chip size="medium">Medium</Chip>
-          <Chip size="large">Large</Chip>
+        <div>
+          <p style={label}>Sizes</p>
+          <div style={row}>
+            <Chip size="small">Small</Chip>
+            <Chip size="medium">Medium</Chip>
+            <Chip size="large">Large</Chip>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>With Icons (Component-based)</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip preIcon={Tag}>Tagged</Chip>
-          <Chip posIcon={Check}>Verified</Chip>
-          <Chip preIcon={Star} posIcon={Check}>Featured</Chip>
+        <div>
+          <p style={label}>States</p>
+          <div style={row}>
+            <Chip>Default</Chip>
+            <Chip disabled>Disabled</Chip>
+            <Chip tooltip="Helpful information">With Tooltip</Chip>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>With Icons (String-based Lucide)</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip preIcon="tag">Tagged</Chip>
-          <Chip posIcon="check">Verified</Chip>
-          <Chip preIcon="star" posIcon="check">Featured</Chip>
+        <div style={{ gridColumn: '1 / -1' }}>
+          <p style={label}>Colors</p>
+          <div style={row}>
+            <Chip color="primary">Primary</Chip>
+            <Chip color="secondary">Secondary</Chip>
+            <Chip color="success">Success</Chip>
+            <Chip color="danger">Danger</Chip>
+            <Chip color="warning">Warning</Chip>
+            <Chip color="info">Info</Chip>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>Interactive</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip onClick={() => alert('Clicked!')}>Clickable</Chip>
-          <Chip onRemove={() => alert('Removed!')}>Removable</Chip>
-          <Chip onClick={() => alert('Clicked!')} onRemove={() => alert('Removed!')}>
-            Both
-          </Chip>
+        <div>
+          <p style={label}>Icons</p>
+          <div style={row}>
+            <Chip preIcon={Tag}>Tagged</Chip>
+            <Chip posIcon={Check}>Verified</Chip>
+            <Chip preIcon={Star} posIcon={Check}>Featured</Chip>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>States</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip>Default</Chip>
-          <Chip disabled>Disabled</Chip>
-          <Chip tooltip="Helpful information">With Tooltip</Chip>
+        <div>
+          <p style={label}>Interactive</p>
+          <div style={row}>
+            <Chip onClick={() => alert('Clicked!')}>Clickable</Chip>
+            <Chip onRemove={() => alert('Removed!')}>Removable</Chip>
+            <Chip onClick={() => alert('Clicked!')} onRemove={() => alert('Removed!')}>Both</Chip>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h3>Combined Styles</h3>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Chip variant="outlined" color="success" preIcon={Check} size="small">
-            Verified
-          </Chip>
-          <Chip variant="soft" color="warning" posIcon={Star}>
-            Premium
-          </Chip>
-          <Chip variant="filled" color="danger" onRemove={() => {}}>
-            Error
-          </Chip>
+        <div>
+          <p style={label}>Combined</p>
+          <div style={row}>
+            <Chip variant="outlined" color="success" preIcon={Check} size="small">Verified</Chip>
+            <Chip variant="soft" color="warning" posIcon={Star}>Premium</Chip>
+            <Chip variant="filled" color="danger" onRemove={() => {}}>Error</Chip>
+          </div>
         </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };
 
 

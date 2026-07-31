@@ -130,184 +130,125 @@ export const Default: Story = {
 };
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', padding: '2rem', maxWidth: '600px' }}>
-      <div>
-        <h3>Basic Inputs</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input label="Email" type="email" placeholder="Enter your email" preIcon={Mail} />
-          <Input label="Password" type="password" placeholder="Enter password" />
-          <Input label="Username" placeholder="Choose a username" preIcon={User} />
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
+    const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '0.75rem' };
+
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+        gap: '2rem 2.5rem',
+        padding: '1.5rem',
+      }}>
+        {/* ── Row 1 ── */}
+        <div>
+          <p style={label}>Basic</p>
+          <div style={col}>
+            <Input label="Email" type="email" placeholder="Enter your email" preIcon={Mail} />
+            <Input label="Password" type="password" placeholder="Enter password" />
+            <Input label="Username" placeholder="Choose a username" preIcon={User} />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Variants</p>
+          <div style={col}>
+            <Input variant="filled" label="Filled" placeholder="Filled (default)" />
+            <Input variant="outlined" label="Outlined" placeholder="Outlined" />
+            <Input variant="text" label="Text" placeholder="Text" />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Colors</p>
+          <div style={col}>
+            <Input color="primary" label="Primary" placeholder="Primary" />
+            <Input color="secondary" label="Secondary" placeholder="Secondary" />
+            <Input color="success" label="Success" placeholder="Success" />
+            <Input color="danger" label="Danger" placeholder="Danger" />
+          </div>
+        </div>
+
+        {/* ── Row 2 ── */}
+        <div>
+          <p style={label}>Sizes</p>
+          <div style={col}>
+            <Input size="small" label="Small" placeholder="Small" />
+            <Input size="medium" label="Medium" placeholder="Medium (default)" />
+            <Input size="large" label="Large" placeholder="Large" />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>States</p>
+          <div style={col}>
+            <Input label="Required" placeholder="Required field" required />
+            <Input label="Disabled" placeholder="Disabled" disabled />
+            <Input label="Loading" placeholder="Loading..." loading />
+            <Input label="Error" placeholder="Invalid" error="This field is required" />
+            <Input label="No Clear" placeholder="Type something..." clearable={false} />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Icons &amp; Actions</p>
+          <div style={col}>
+            <Input label="Pre-icon" placeholder="Search..." preIcon={Search} />
+            <Input label="Post-icon" type="date" posIcon={Calendar} />
+            <Input label="Amount" type="number" placeholder="0.00" preIcon={DollarSign} />
+            <Input
+              label="Clickable icon"
+              placeholder="Type to search..."
+              posIcon={Search}
+              posIconButton
+              onPosIconClick={() => alert('Search clicked!')}
+            />
+          </div>
+        </div>
+
+        {/* ── Row 3 ── */}
+        <div>
+          <p style={label}>Disclaimer</p>
+          <div style={col}>
+            <Input
+              label="API Key"
+              placeholder="Enter your API key"
+              disclaimerIcon={HelpCircle}
+              disclaimerContent="Found in your account settings"
+            />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Select Style</p>
+          <div style={col}>
+            <Input label="Category" placeholder="Select a category" isSelect clearable={false} />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Custom Width</p>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
+            <Input label="PIN" type="number" placeholder="0000" width={100} maxLength={4} />
+            <Input label="Year" type="number" placeholder="2025" width={120} />
+          </div>
+        </div>
+
+        {/* ── Full Width — spans all columns ── */}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <p style={label}>Full Width</p>
+          <Input label="Full Width Input" placeholder="This input spans the full container width" fullWidth />
         </div>
       </div>
-
-      <div>
-        <h3>Variants</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input variant="filled" placeholder="Filled variant (default)" label="Filled" />
-          <Input variant="outlined" placeholder="Outlined variant" label="Outlined" />
-          <Input variant="text" placeholder="Text variant" label="Text" />
-        </div>
-      </div>
-
-      <div>
-        <h3>Colors</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input color="primary" label="Primary" placeholder="Primary color" />
-          <Input color="secondary" label="Secondary" placeholder="Secondary color" />
-          <Input color="success" label="Success" placeholder="Success color" />
-          <Input color="danger" label="Danger" placeholder="Danger color" />
-        </div>
-      </div>
-
-      <div>
-        <h3>Sizes</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input size="small" label="Small" placeholder="Small input" />
-          <Input size="medium" label="Medium" placeholder="Medium input (default)" />
-          <Input size="large" label="Large" placeholder="Large input" />
-        </div>
-      </div>
-
-      <div>
-        <h3>With Icons (Component-based)</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input label="Search" type="search" placeholder="Search..." preIcon={Search} />
-          <Input label="Email" type="email" placeholder="you@example.com" preIcon={Mail} />
-          <Input label="Amount" type="number" placeholder="0.00" preIcon={DollarSign} />
-          <Input label="Date" type="date" posIcon={Calendar} />
-        </div>
-      </div>
-
-      <div>
-        <h3>With Icons (String-based Lucide)</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input label="Search" type="search" placeholder="Search..." preIcon="search" />
-          <Input label="Email" type="email" placeholder="you@example.com" preIcon="mail" />
-          <Input label="Amount" type="number" placeholder="0.00" preIcon="dollar-sign" />
-          <Input label="Username" placeholder="@username" preIcon="user" />
-        </div>
-      </div>
-
-      <div>
-        <h3>Search with Icon Button</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input
-            label="Search"
-            type="search"
-            placeholder="Type to search..."
-            posIcon={Search}
-            posIconButton
-            onPosIconClick={() => alert('Search clicked!')}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3>States</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input label="Required Field" placeholder="This field is required" required />
-          <Input label="Disabled" placeholder="Disabled input" disabled />
-          <Input label="Loading" placeholder="Loading..." loading />
-          <Input label="Error" placeholder="Invalid input" error="This field is required" />
-        </div>
-      </div>
-
-      <div>
-        <h3>With Disclaimer</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input
-            label="API Key (component icon)"
-            placeholder="Enter your API key"
-            disclaimerIcon={HelpCircle}
-            disclaimerContent="Your API key can be found in your account settings"
-          />
-          <Input
-            label="Secret Token (string icon)"
-            placeholder="Enter your token"
-            disclaimerIcon="help-circle"
-            disclaimerContent="This token is used for authentication"
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3>Number Input</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input
-            label="Price"
-            type="number"
-            placeholder="0.00"
-            preIcon={DollarSign}
-            min={0}
-            step={0.01}
-          />
-          <Input
-            label="Quantity"
-            type="number"
-            placeholder="0"
-            min={1}
-            max={100}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3>Select Style</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input
-            label="Category"
-            placeholder="Select a category"
-            isSelect
-            clearable={false}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3>Full Width</h3>
-        <Input
-          label="Full Width Input"
-          placeholder="This input spans the full width"
-          fullWidth
-        />
-      </div>
-
-      <div>
-        <h3>Custom Width</h3>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-          <Input
-            label="PIN"
-            type="number"
-            placeholder="0000"
-            width={100}
-            maxLength={4}
-          />
-          <Input
-            label="Year"
-            type="number"
-            placeholder="2025"
-            width={120}
-          />
-        </div>
-      </div>
-
-      <div>
-        <h3>Clearable Input</h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Input
-            label="With Clear Button"
-            placeholder="Type something..."
-            clearable={true}
-          />
-          <Input
-            label="No Clear Button"
-            placeholder="Type something..."
-            clearable={false}
-          />
-        </div>
-      </div>
-    </div>
-  ),
+    );
+  },
 };
 

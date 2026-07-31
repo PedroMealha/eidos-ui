@@ -107,10 +107,82 @@ const meta: Meta<typeof Table<User>> = {
     },
   },
   tags: ["autodocs"],
+  argTypes: {
+    loading: {
+      control: "boolean",
+      description: "Show loading state with spinner",
+      table: { defaultValue: { summary: "false" } },
+    },
+    emptyMessage: {
+      control: "text",
+      description: "Message shown when data array is empty",
+      table: { defaultValue: { summary: "'No data available'" } },
+    },
+    showFooter: {
+      control: "boolean",
+      description: "Show the footer row (item count etc.)",
+      table: { defaultValue: { summary: "false" } },
+    },
+    showPagination: {
+      control: "boolean",
+      description: "Enable client-side pagination controls",
+      table: { defaultValue: { summary: "false" } },
+    },
+    pageSize: {
+      control: { type: "select" },
+      options: [10, 25, 50, 100],
+      description: "Number of rows per page",
+      table: { defaultValue: { summary: "25" } },
+    },
+    showFilters: {
+      control: "boolean",
+      description: "Show the column-filter toolbar",
+      table: { defaultValue: { summary: "false" } },
+    },
+    // Non-controllable props
+    data:             { control: false },
+    columns:          { control: false },
+    onRowClick:       { control: false },
+    currentSort:      { control: false },
+    onSortChange:     { control: false },
+    filters:          { control: false },
+    onFiltersChange:  { control: false },
+    defaultFilters:   { control: false },
+    totalItems:       { control: false },
+    pageSizeOptions:  { control: false },
+    className:        { table: { disable: true } },
+  },
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+// Shared columns definition used by the Default (args-driven) story.
+const defaultColumns: TableColumn<User>[] = [
+  { key: "name", label: "Name", sortable: true },
+  { key: "email", label: "Email" },
+  { key: "role", label: "Role" },
+  { key: "status", label: "Status" },
+];
+
+export const Default: Story = {
+  name: "Default (interactive controls)",
+  args: {
+    loading: false,
+    emptyMessage: "No data available",
+    showFooter: false,
+    showPagination: false,
+    pageSize: 25,
+    showFilters: false,
+  },
+  // Destructure out data/columns from args (they're not user-controlled) so
+  // spreading the remainder alongside our fixed values doesn't duplicate props.
+  render: ({ data: _d, columns: _c, ...rest }) => (
+    <div style={{ width: "100%" }}>
+      <Table data={sampleUsers} columns={defaultColumns} {...rest} />
+    </div>
+  ),
+};
 
 // Basic table
 export const Basic: Story = {
@@ -533,7 +605,7 @@ export const EmptyState: Story = {
 };
 
 // Complete example
-export const CompleteExample: Story = {
+export const Examples: Story = {
   render: () => {
     const [sortKey, setSortKey] = useState<string>("name");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");

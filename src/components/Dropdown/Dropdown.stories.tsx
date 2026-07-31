@@ -118,10 +118,20 @@ export const Default: Story = {
 };
 
 export const Examples = {
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', padding: '3rem' }}>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+    };
+
+    return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
       <div>
-        <h3>Basic Menu</h3>
+        <p style={label}>Basic Menu</p>
         <Dropdown
           trigger={
             <Button variant="outlined" posIcon={ChevronDown}>
@@ -177,7 +187,7 @@ export const Examples = {
       </div>
 
       <div>
-        <h3>Different Placements</h3>
+        <p style={label}>Placements</p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <Dropdown
             placement="top"
@@ -203,7 +213,7 @@ export const Examples = {
       </div>
 
       <div>
-        <h3>Custom Sizing</h3>
+        <p style={label}>Sizing</p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <Dropdown
             trigger={<Button variant="outlined">Min Width 300px</Button>}
@@ -229,16 +239,16 @@ export const Examples = {
       </div>
 
       <div>
-        <h3>With Delay</h3>
+        <p style={label}>With Delay</p>
         <Dropdown
           delay={500}
-          trigger={<Button variant="soft">Click me (500ms delay)</Button>}
+          trigger={<Button variant="outlined">Click me (500ms delay)</Button>}
           content={<div style={{ padding: '1rem' }}>This appeared after a delay!</div>}
         />
       </div>
 
       <div>
-        <h3>Dropdown Group (only one can be open)</h3>
+        <p style={label}>Grouped (mutual exclusion)</p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <Dropdown
             dropdownGroup="actions"
@@ -256,13 +266,10 @@ export const Examples = {
             content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 3 content</div>}
           />
         </div>
-        <p style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginTop: '0.5rem' }}>
-          Opening one dropdown automatically closes the others in the same group
-        </p>
       </div>
 
       <div>
-        <h3>With Custom Trigger</h3>
+        <p style={label}>Custom Trigger</p>
         <Dropdown
           trigger={
             <div style={{
@@ -289,6 +296,7 @@ export const Examples = {
         />
       </div>
     </div>
-  ),
+    );
+  },
 };
 

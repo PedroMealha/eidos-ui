@@ -1,7 +1,7 @@
 import React from "react";
 import { LoaderCircle } from "lucide-react";
 
-interface SpinnerProps {
+export interface SpinnerProps {
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
   className?: string;

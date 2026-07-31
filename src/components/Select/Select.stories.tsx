@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Select } from "./Select.component";
-import { User, Mail, Phone, MapPin, Calendar, Heart } from "lucide-react";
+import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useState } from "react";
 
 const meta: Meta<typeof Select> = {
@@ -169,14 +169,6 @@ const optionsWithComponentIcons = [
   { id: "5", label: "2025-10-12", value: "date", icon: Calendar },
 ];
 
-// Options with string-based icons
-const optionsWithStringIcons = [
-  { id: "1", label: "Heart", value: "heart", icon: "heart" },
-  { id: "2", label: "Star", value: "star", icon: "star" },
-  { id: "3", label: "Circle", value: "circle", icon: "circle" },
-  { id: "4", label: "Square", value: "square", icon: "square" },
-  { id: "5", label: "Triangle", value: "triangle", icon: "triangle" },
-];
 
 // Options with disabled state
 const optionsWithDisabled = [
@@ -197,13 +189,6 @@ export const WithComponentIcons: Story = {
   args: {
     options: optionsWithComponentIcons,
     placeholder: "Select an option...",
-  },
-};
-
-export const WithStringIcons: Story = {
-  args: {
-    options: optionsWithStringIcons,
-    placeholder: "Select a shape...",
   },
 };
 
@@ -297,115 +282,68 @@ export const MultipleControlled: Story = {
 };
 
 export const Examples: Story = {
-  render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "32px", width: "400px" }}>
-      {/* Basic Single Select */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          Basic Single Select
-        </h3>
-        <Select
-          options={basicOptions}
-          placeholder="Select a fruit..."
-        />
-      </div>
+  render: () => {
+    const label: React.CSSProperties = {
+      marginBottom: "0.625rem",
+      fontSize: "0.7rem",
+      fontWeight: 600,
+      textTransform: "uppercase",
+      letterSpacing: "0.07em",
+      color: "#94a3b8",
+    };
 
-      {/* Multiple Select */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          Multiple Selection
-        </h3>
-        <Select
-          options={basicOptions}
-          multiple
-          placeholder="Select multiple fruits..."
-        />
-      </div>
+    return (
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gap: "2rem 3rem",
+        padding: "1.5rem",
+      }}>
+        <div>
+          <p style={label}>Single Select</p>
+          <Select options={basicOptions} placeholder="Select a fruit..." />
+        </div>
 
-      {/* With Component Icons */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          With Component Icons (Lucide)
-        </h3>
-        <Select
-          options={optionsWithComponentIcons}
-          placeholder="Select with icons..."
-        />
-      </div>
+        <div>
+          <p style={label}>Multiple Selection</p>
+          <Select options={basicOptions} multiple placeholder="Select multiple fruits..." />
+        </div>
 
-      {/* With String Icons */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          With String Icons (Lucide names)
-        </h3>
-        <Select
-          options={optionsWithStringIcons}
-          placeholder="Select a shape..."
-        />
-      </div>
+        <div>
+          <p style={label}>With Icons</p>
+          <Select options={optionsWithComponentIcons} placeholder="Select with icons..." />
+        </div>
 
-      {/* With Disabled Options */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          With Disabled Options
-        </h3>
-        <Select
-          options={optionsWithDisabled}
-          placeholder="Some options are disabled..."
-        />
-      </div>
+        <div>
+          <p style={label}>With Disabled Options</p>
+          <Select options={optionsWithDisabled} placeholder="Some options are disabled..." />
+        </div>
 
-      {/* Required Field */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          Required Field
-        </h3>
-        <Select
-          options={basicOptions}
-          required
-          placeholder="This field is required..."
-        />
-      </div>
+        <div>
+          <p style={label}>Required</p>
+          <Select options={basicOptions} required placeholder="This field is required..." />
+        </div>
 
-      {/* Not Clearable */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          Not Clearable
-        </h3>
-        <Select
-          options={basicOptions}
-          clearable={false}
-          placeholder="No clear button..."
-        />
-      </div>
+        <div>
+          <p style={label}>Not Clearable</p>
+          <Select options={basicOptions} clearable={false} placeholder="No clear button..." />
+        </div>
 
-      {/* Disabled */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          Disabled State
-        </h3>
-        <Select
-          options={basicOptions}
-          disabled
-          placeholder="This select is disabled..."
-        />
-      </div>
+        <div>
+          <p style={label}>Disabled</p>
+          <Select options={basicOptions} disabled placeholder="This select is disabled..." />
+        </div>
 
-      {/* With Custom Input Props */}
-      <div>
-        <h3 style={{ marginBottom: "8px", fontSize: "14px", fontWeight: 600 }}>
-          With Custom Input Styling
-        </h3>
-        <Select
-          options={optionsWithComponentIcons}
-          placeholder="With custom input props..."
-          inputProps={{
-            variant: "filled",
-            color: "success",
-          }}
-        />
+        <div>
+          <p style={label}>Custom Input Styling</p>
+          <Select
+            options={optionsWithComponentIcons}
+            placeholder="Success variant..."
+            inputProps={{ variant: "filled", color: "success" }}
+          />
+        </div>
       </div>
-    </div>
-  ),
+    );
+  },
 };
 

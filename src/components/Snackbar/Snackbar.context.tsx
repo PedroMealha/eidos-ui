@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useRef } from "react";
 import type {
   SnackbarContextValue,
   SnackbarItem,
@@ -28,29 +28,32 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
   children,
 }) => {
   const [snackbars, setSnackbars] = useState<SnackbarItem[]>([]);
+  // Mirror state in a ref so removeSnackbar can read current items synchronously
+  // without placing side-effects inside a setState updater (which StrictMode calls twice).
+  const snackbarsRef = useRef<SnackbarItem[]>([]);
+  snackbarsRef.current = snackbars;
 
   const generateId = useCallback((): string => {
     return `snackbar-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }, []);
 
   const removeSnackbar = useCallback((id: string): void => {
-    // Call onClose callback if it exists
-    setSnackbars((prev) => {
-      const snackbar = prev.find((item) => item.id === id);
-      if (snackbar?.onClose) {
-        snackbar.onClose(id);
-      }
-      return prev;
-    });
+    // Read from ref — safe to call outside a setState updater.
+    // Calling side-effects inside a setState updater is wrong: React StrictMode
+    // deliberately invokes updaters twice, which would fire onClose 2× from here
+    // plus 1× from SnackbarComponent.handleClose = 3× total.
+    const snackbar = snackbarsRef.current.find((item) => item.id === id);
+    if (snackbar?.onClose) {
+      snackbar.onClose(id);
+    }
 
-    // First transition to exiting state
+    // Transition to exiting state, then remove after the CSS animation (300ms).
     setSnackbars((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, state: "exiting" } : item
       )
     );
 
-    // Remove after animation completes (300ms to match CSS animation)
     setTimeout(() => {
       setSnackbars((prev) => prev.filter((item) => item.id !== id));
     }, 300);

@@ -12,9 +12,8 @@ export const SnackbarComponent: React.FC<SnackbarComponentProps> = ({ snackbar, 
 	const { id, variant = 'info', message, component: Component, componentProps, action, state } = snackbar;
 
 	const handleClose = () => {
-		if (snackbar.onClose) {
-			snackbar.onClose(id);
-		}
+		// onClose callback is fired by removeSnackbar (context) to cover both
+		// manual and auto-close paths without duplication.
 		onClose(id);
 	};
 

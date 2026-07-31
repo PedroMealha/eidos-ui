@@ -4,137 +4,111 @@ import { useSnackbar } from "./Snackbar.hooks";
 import { Button } from "../Button";
 import { UserCircle } from "lucide-react";
 
-// Wrapper component that uses the Snackbar hook
+const label: React.CSSProperties = {
+  marginBottom: "0.5rem",
+  fontSize: "0.7rem",
+  fontWeight: 600,
+  textTransform: "uppercase",
+  letterSpacing: "0.07em",
+  color: "#94a3b8",
+};
+
+// Wrapper component used by the Examples story
 const SnackbarDemo = () => {
   const { showSuccess, showError, showWarning, showInfo, showSnackbar, clearAll } = useSnackbar();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "20px" }}>
-      <h3 style={{ marginBottom: "8px" }}>Basic Notifications</h3>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Button onClick={() => showSuccess("Operation completed successfully!")}>
-          Show Success
-        </Button>
-        <Button onClick={() => showError("An error occurred!")}>
-          Show Error
-        </Button>
-        <Button onClick={() => showWarning("Warning: Please review your changes.")}>
-          Show Warning
-        </Button>
-        <Button onClick={() => showInfo("Here's some useful information.")}>
-          Show Info
-        </Button>
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", padding: "1.5rem" }}>
+      <div>
+        <p style={label}>Variants</p>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button onClick={() => showSuccess("Operation completed successfully!")}>Success</Button>
+          <Button onClick={() => showError("An error occurred!")}>Error</Button>
+          <Button onClick={() => showWarning("Warning: Please review your changes.")}>Warning</Button>
+          <Button onClick={() => showInfo("Here's some useful information.")}>Info</Button>
+        </div>
       </div>
 
-      <h3 style={{ marginBottom: "8px", marginTop: "16px" }}>With Custom Duration</h3>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Button onClick={() => showSuccess("This will stay for 10 seconds", { duration: 10000 })}>
-          10 Second Success
-        </Button>
-        <Button onClick={() => showError("This will stay for 2 seconds", { duration: 2000 })}>
-          2 Second Error
-        </Button>
-        <Button onClick={() => showInfo("This won't auto-close", { duration: 0 })}>
-          No Auto-Close
-        </Button>
+      <div>
+        <p style={label}>With Actions</p>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button
+            onClick={() =>
+              showSuccess("File uploaded successfully", {
+                action: { label: "View", onClick: () => alert("Viewing file...") },
+              })
+            }
+          >
+            Success + Action
+          </Button>
+          <Button
+            onClick={() =>
+              showError("Failed to delete item", {
+                action: { label: "Retry", onClick: () => alert("Retrying...") },
+              })
+            }
+          >
+            Error + Retry
+          </Button>
+          <Button
+            onClick={() =>
+              showWarning("You have unsaved changes", {
+                action: { label: "Save", onClick: () => alert("Saving...") },
+                duration: 0,
+              })
+            }
+          >
+            Warning + Save
+          </Button>
+        </div>
       </div>
 
-      <h3 style={{ marginBottom: "8px", marginTop: "16px" }}>With Actions</h3>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Button
-          onClick={() =>
-            showSuccess("File uploaded successfully", {
-              action: {
-                label: "View",
-                onClick: () => alert("Viewing file..."),
-              },
-            })
-          }
-        >
-          Success with Action
-        </Button>
-        <Button
-          onClick={() =>
-            showError("Failed to delete item", {
-              action: {
-                label: "Retry",
-                onClick: () => alert("Retrying..."),
-              },
-            })
-          }
-        >
-          Error with Retry
-        </Button>
-        <Button
-          onClick={() =>
-            showWarning("You have unsaved changes", {
-              action: {
-                label: "Save",
-                onClick: () => alert("Saving..."),
-              },
-              duration: 0,
-            })
-          }
-        >
-          Warning with Save
-        </Button>
+      <div>
+        <p style={label}>Duration</p>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button onClick={() => showSuccess("Stays 10 seconds", { duration: 10000 })}>10s</Button>
+          <Button onClick={() => showError("Stays 2 seconds", { duration: 2000 })}>2s</Button>
+          <Button onClick={() => showInfo("No auto-close", { duration: 0 })}>Persistent</Button>
+        </div>
       </div>
 
-      <h3 style={{ marginBottom: "8px", marginTop: "16px" }}>Multiple Notifications</h3>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Button
-          onClick={() => {
-            showSuccess("First notification");
-            setTimeout(() => showInfo("Second notification"), 300);
-            setTimeout(() => showWarning("Third notification"), 600);
-          }}
-        >
-          Show Multiple
-        </Button>
-        <Button onClick={clearAll} color="danger" variant="outlined">
-          Clear All
-        </Button>
-      </div>
-
-      <h3 style={{ marginBottom: "8px", marginTop: "16px" }}>Custom Component</h3>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Button
-          onClick={() =>
-            showSnackbar({
-              component: () => (
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <UserCircle size={40} style={{ color: "#667eea" }} />
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: "14px" }}>New Message</div>
-                    <div style={{ fontSize: "13px", color: "#666" }}>
-                      John Doe sent you a message
+      <div>
+        <p style={label}>Advanced</p>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button
+            onClick={() => {
+              showSuccess("First notification");
+              setTimeout(() => showInfo("Second notification"), 300);
+              setTimeout(() => showWarning("Third notification"), 600);
+            }}
+          >
+            Stack Multiple
+          </Button>
+          <Button
+            onClick={() =>
+              showSnackbar({
+                component: () => (
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <UserCircle size={40} style={{ color: "#667eea" }} />
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: "14px" }}>New Message</div>
+                      <div style={{ fontSize: "13px", color: "#666" }}>
+                        John Doe sent you a message
+                      </div>
                     </div>
                   </div>
-                </div>
-              ),
-              variant: "info",
-              duration: 5000,
-            })
-          }
-        >
-          Show Custom Component
-        </Button>
-      </div>
-
-      <h3 style={{ marginBottom: "8px", marginTop: "16px" }}>With onClose Callback</h3>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Button
-          onClick={() =>
-            showSuccess("This notification logs when closed", {
-              onClose: (id) => {
-                console.log("Snackbar closed:", id);
-                alert(`Snackbar closed: ${id}`);
-              },
-            })
-          }
-        >
-          Show with Callback
-        </Button>
+                ),
+                variant: "info",
+                duration: 5000,
+              })
+            }
+          >
+            Custom Component
+          </Button>
+          <Button onClick={clearAll} color="danger" variant="outlined">
+            Clear All
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -166,7 +140,7 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Interactive: Story = {
+export const Examples: Story = {
   render: () => <SnackbarDemo />,
 };
 
@@ -328,75 +302,4 @@ export const CustomComponent: Story = {
   },
 };
 
-export const UsageExample: Story = {
-  render: () => (
-    <div style={{ padding: "20px", maxWidth: "800px" }}>
-      <h2 style={{ marginBottom: "16px" }}>Snackbar Usage Example</h2>
-      <p style={{ marginBottom: "16px", color: "#666" }}>
-        The Snackbar component requires two main parts:
-      </p>
-      <ol style={{ marginLeft: "20px", marginBottom: "24px", color: "#666" }}>
-        <li style={{ marginBottom: "8px" }}>
-          <strong>SnackbarProvider:</strong> Wrap your app (or a section) with the provider
-        </li>
-        <li style={{ marginBottom: "8px" }}>
-          <strong>SnackbarContainer:</strong> Add once to render notifications (typically at the root)
-        </li>
-        <li style={{ marginBottom: "8px" }}>
-          <strong>useSnackbar hook:</strong> Use in components to show notifications
-        </li>
-      </ol>
-
-      <pre
-        style={{
-          background: "#f5f5f5",
-          padding: "16px",
-          borderRadius: "8px",
-          overflow: "auto",
-          fontSize: "13px",
-          lineHeight: "1.6",
-        }}
-      >
-        {`// 1. Wrap your app with SnackbarProvider
-import { SnackbarProvider, SnackbarContainer } from '@pmealha/eidos-ui';
-
-function App() {
-  return (
-    <SnackbarProvider>
-      <YourApp />
-      <SnackbarContainer />
-    </SnackbarProvider>
-  );
-}
-
-// 2. Use in your components
-import { useSnackbar } from '@pmealha/eidos-ui';
-
-function MyComponent() {
-  const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
-
-  const handleSave = async () => {
-    try {
-      await saveData();
-      showSuccess('Data saved successfully!');
-    } catch (error) {
-      showError('Failed to save data', {
-        action: {
-          label: 'Retry',
-          onClick: () => handleSave()
-        }
-      });
-    }
-  };
-
-  return <button onClick={handleSave}>Save</button>;
-}`}
-      </pre>
-
-      <div style={{ marginTop: "24px" }}>
-        <SnackbarDemo />
-      </div>
-    </div>
-  ),
-};
 

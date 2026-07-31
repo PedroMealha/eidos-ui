@@ -77,10 +77,20 @@ export const Default: Story = {
 };
 
 export const Examples = {
-	render: () => (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', padding: '3rem' }}>
+	render: () => {
+		const label: React.CSSProperties = {
+			marginBottom: '0.625rem',
+			fontSize: '0.7rem',
+			fontWeight: 600,
+			textTransform: 'uppercase',
+			letterSpacing: '0.07em',
+			color: '#94a3b8',
+		};
+
+		return (
+		<div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
 			<div>
-				<h3>Basic Menu</h3>
+				<p style={label}>Basic Menu</p>
 				<Menu
 					trigger={<Button variant="filled">User Menu</Button>}
 					items={[
@@ -93,19 +103,7 @@ export const Examples = {
 			</div>
 
 			<div>
-				<h3>With String-based Icons (Lucide)</h3>
-				<Menu
-					trigger={<Button variant="outlined">Actions</Button>}
-					items={[
-						{ type: 'item', id: '1', label: 'Copy', icon: 'copy', onClick: () => alert('Copy') },
-						{ type: 'item', id: '2', label: 'Share', icon: 'share-2', onClick: () => alert('Share') },
-						{ type: 'item', id: '3', label: 'Delete', icon: 'trash-2', onClick: () => alert('Delete') },
-					]}
-				/>
-			</div>
-
-			<div>
-				<h3>With Keyboard Shortcuts</h3>
+				<p style={label}>Keyboard Shortcuts</p>
 				<Menu
 					trigger={<Button variant="filled" color="secondary">File Menu</Button>}
 					items={[
@@ -138,7 +136,7 @@ export const Examples = {
 			</div>
 
 			<div>
-				<h3>Nested Menu</h3>
+				<p style={label}>Nested Menu</p>
 				<Menu
 					trigger={<Button variant="outlined" color="success">More Options</Button>}
 					items={[
@@ -163,7 +161,7 @@ export const Examples = {
 			</div>
 
 			<div>
-				<h3>With Disabled Items</h3>
+				<p style={label}>With Disabled Items</p>
 				<Menu
 					trigger={<Button variant="text">Edit</Button>}
 					items={[
@@ -191,9 +189,9 @@ export const Examples = {
 			</div>
 
 			<div>
-				<h3>With Component Item</h3>
+				<p style={label}>Custom Component Item</p>
 				<Menu
-					trigger={<Button variant="soft" color="primary">Custom Menu</Button>}
+					trigger={<Button variant="outlined" color="primary">Custom Menu</Button>}
 					items={[
 						{ type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => alert('Profile') },
 						{ type: 'separator', id: 'sep1' },
@@ -216,7 +214,7 @@ export const Examples = {
 			</div>
 
 			<div>
-				<h3>With Custom Sizing</h3>
+				<p style={label}>Sizing</p>
 				<div style={{ display: 'flex', gap: '1rem' }}>
 					<Menu
 						trigger={<Button variant="outlined" size="small">Min Width</Button>}
@@ -242,7 +240,7 @@ export const Examples = {
 			</div>
 
 			<div>
-				<h3>With Tooltip</h3>
+				<p style={label}>With Tooltip</p>
 				<Menu
 					trigger={<Button variant="filled">Hover Me</Button>}
 					items={basicMenuItems}
@@ -250,6 +248,7 @@ export const Examples = {
 				/>
 			</div>
 		</div>
-	),
+		);
+	},
 };
 
