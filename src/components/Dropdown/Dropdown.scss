@@ -1,12 +1,14 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-dropdown-trigger {
+	display: inline-block;
 	user-select: none;
 	cursor: pointer;
 }
 
 .eidos-dropdown-content {
 	position: fixed;
+	width: max-content;
 	z-index: var(--z-index-dropdown);
 	background-color: var(--white);
 	border: 1px solid var(--gray-200);

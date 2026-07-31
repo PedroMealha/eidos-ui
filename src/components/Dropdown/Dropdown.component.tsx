@@ -40,7 +40,11 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 
   const calculateDynamicSizing = useCallback(
     (triggerRect: DOMRect) => {
-      const styles: Record<string, string | number> = {};
+      // Shrink the panel to its content by default. This prevents the
+      // position:fixed element from expanding to viewport width when children
+      // use `width:100%` or `flex:1`. `minWidth` (set below) still wins when
+      // the trigger is wider than the content, as CSS min-width overrides width.
+      const styles: Record<string, string | number> = { width: "max-content" };
 
       if (autoWidth && (externalTriggerRef?.current || triggerRef.current)) {
         const triggerWidth = triggerRect.width;

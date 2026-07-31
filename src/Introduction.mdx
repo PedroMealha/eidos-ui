@@ -1,0 +1,203 @@
+import { Meta, Source } from '@storybook/addon-docs/blocks';
+
+<Meta title="Getting Started" />
+
+{/* ── Hero ─────────────────────────────────────────────────────────── */}
+
+<div style={{
+  background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%)',
+  borderRadius: 16,
+  padding: '2.5rem 2.5rem 2rem',
+  marginBottom: '2.5rem',
+  position: 'relative',
+  overflow: 'hidden',
+}}>
+  {/* decorative circles */}
+  <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
+  <div style={{ position: 'absolute', bottom: -30, right: 80, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
+
+  <div style={{ position: 'relative' }}>
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 6,
+      background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)',
+      borderRadius: 6, padding: '4px 10px', marginBottom: '1.125rem',
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#a78bfa', display: 'inline-block' }} />
+      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)', WebkitTextFillColor: 'rgba(255,255,255,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>eidos-ui</span>
+    </span>
+
+    <div style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#fff', WebkitTextFillColor: '#fff', margin: '0 0 0.75rem', lineHeight: 1.1 }}>
+      Getting Started
+    </div>
+    <p style={{ fontSize: '1.0625rem', color: 'rgba(255,255,255,0.85)', WebkitTextFillColor: 'rgba(255,255,255,0.85)', lineHeight: 1.65, margin: 0, maxWidth: 460 }}>
+      A React component library with a consistent design language.
+      Install it, load the stylesheet, and wire up the required context providers.
+    </p>
+  </div>
+</div>
+
+{/* ── Timeline steps ───────────────────────────────────────────────── */}
+
+{/* Step 1 */}
+<div style={{ display: 'flex', gap: '1.25rem', marginBottom: '0' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+    <div style={{
+      width: 36, height: 36, borderRadius: '50%',
+      background: '#6d28d9', color: '#fff',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: '0.8125rem', fontWeight: 800, flexShrink: 0,
+      boxShadow: '0 0 0 4px #ede9fe',
+    }}>1</div>
+    <div style={{ width: 2, flex: 1, background: '#e4e4e7', minHeight: 24, marginTop: 4 }} />
+  </div>
+  <div style={{ flex: 1, paddingBottom: '2rem' }}>
+    <p style={{ fontSize: '1rem', fontWeight: 700, color: '#09090b', margin: '0.5rem 0 0.75rem', lineHeight: 1 }}>Install</p>
+    <Source dark language="bash" code="npm install @pmealha/eidos-ui" />
+  </div>
+</div>
+
+{/* Step 2 */}
+<div style={{ display: 'flex', gap: '1.25rem', marginBottom: '0' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+    <div style={{
+      width: 36, height: 36, borderRadius: '50%',
+      background: '#6d28d9', color: '#fff',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: '0.8125rem', fontWeight: 800, flexShrink: 0,
+      boxShadow: '0 0 0 4px #ede9fe',
+    }}>2</div>
+    <div style={{ width: 2, flex: 1, background: '#e4e4e7', minHeight: 24, marginTop: 4 }} />
+  </div>
+  <div style={{ flex: 1, paddingBottom: '2rem' }}>
+    <p style={{ fontSize: '1rem', fontWeight: 700, color: '#09090b', margin: '0.5rem 0 0.25rem', lineHeight: 1 }}>Import the stylesheet</p>
+    <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+      Once at your app root — <code style={{ fontSize: '0.8125rem' }}>main.tsx</code> or equivalent. Without it, components render unstyled.
+    </p>
+    <Source dark language="ts" code={`import '@pmealha/eidos-ui/styles';`} />
+  </div>
+</div>
+
+{/* Step 3 */}
+<div style={{ display: 'flex', gap: '1.25rem', marginBottom: '2.5rem' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+    <div style={{
+      width: 36, height: 36, borderRadius: '50%',
+      background: '#6d28d9', color: '#fff',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: '0.8125rem', fontWeight: 800, flexShrink: 0,
+      boxShadow: '0 0 0 4px #ede9fe',
+    }}>3</div>
+    <div style={{ width: 2, flex: 1, background: '#e4e4e7', minHeight: 24, marginTop: 4 }} />
+  </div>
+  <div style={{ flex: 1 }}>
+    <p style={{ fontSize: '1rem', fontWeight: 700, color: '#09090b', margin: '0.5rem 0 0.25rem', lineHeight: 1 }}>Set up providers</p>
+    <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 1.5rem', lineHeight: 1.6 }}>
+      Most components work standalone. Two require a context provider at your app root.
+    </p>
+
+    {/* Snackbar callout */}
+    <div style={{
+      borderRadius: 12, overflow: 'hidden',
+      border: '1px solid #ddd6fe',
+      marginBottom: '1.25rem',
+    }}>
+      <div style={{
+        background: 'linear-gradient(90deg, #6d28d9 0%, #7c3aed 100%)',
+        padding: '0.75rem 1.25rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#fff' }}>Snackbar</span>
+        <span style={{
+          fontSize: '0.6rem', fontWeight: 700, color: '#6d28d9',
+          background: '#fff', borderRadius: 3, padding: '2px 7px', letterSpacing: '0.05em', textTransform: 'uppercase',
+        }}>Required</span>
+      </div>
+      <div style={{ padding: '1rem 1.25rem 0.25rem', background: '#faf5ff' }}>
+        <p style={{ fontSize: '0.875rem', color: '#5b21b6', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+          <code style={{ fontSize: '0.8125rem', background: 'rgba(109,40,217,0.1)', padding: '1px 4px', borderRadius: 3 }}>SnackbarProvider</code> supplies the context.{' '}
+          <code style={{ fontSize: '0.8125rem', background: 'rgba(109,40,217,0.1)', padding: '1px 4px', borderRadius: 3 }}>SnackbarContainer</code> is the portal that renders toasts — add it once at root.
+        </p>
+      </div>
+      <Source dark language="tsx" code={`import { SnackbarProvider, SnackbarContainer } from '@pmealha/eidos-ui';
+
+function Root() {
+  return (
+    <SnackbarProvider>
+      <App />
+      <SnackbarContainer />
+    </SnackbarProvider>
+  );
+}`} />
+    </div>
+
+    <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+      Then use <code style={{ fontSize: '0.8125rem' }}>useSnackbar</code> anywhere inside the tree:
+    </p>
+
+    <Source dark language="tsx" code={`import { useSnackbar } from '@pmealha/eidos-ui';
+
+function SaveButton() {
+  const { showSuccess, showError } = useSnackbar();
+  return (
+    <button onClick={async () => {
+      try { await save(); showSuccess('Saved!'); }
+      catch { showError('Failed to save'); }
+    }}>
+      Save
+    </button>
+  );
+}`} />
+
+    {/* Dropdown callout */}
+    <div style={{
+      borderRadius: 12, overflow: 'hidden',
+      border: '1px solid #e4e4e7',
+      marginTop: '1.5rem',
+    }}>
+      <div style={{
+        background: '#18181b',
+        padding: '0.75rem 1.25rem',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#fff' }}>Dropdown</span>
+        <span style={{
+          fontSize: '0.6rem', fontWeight: 700, color: '#a1a1aa',
+          background: '#27272a', border: '1px solid #3f3f46',
+          borderRadius: 3, padding: '2px 7px', letterSpacing: '0.05em', textTransform: 'uppercase',
+        }}>Optional</span>
+      </div>
+      <div style={{ padding: '1rem 1.25rem 0.25rem' }}>
+        <p style={{ fontSize: '0.875rem', color: '#52525b', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+          Works standalone by default. Add <code style={{ fontSize: '0.8125rem' }}>DropdownProvider</code> only when using <code style={{ fontSize: '0.8125rem' }}>dropdownGroup</code> — ensures only one dropdown in a group is open at a time.
+        </p>
+      </div>
+      <Source dark language="tsx" code={`import { DropdownProvider, Dropdown } from '@pmealha/eidos-ui';
+
+function Toolbar() {
+  return (
+    <DropdownProvider>
+      <Dropdown dropdownGroup="toolbar" trigger={<button>File</button>} content={...} />
+      <Dropdown dropdownGroup="toolbar" trigger={<button>Edit</button>} content={...} />
+    </DropdownProvider>
+  );
+}`} />
+    </div>
+  </div>
+</div>
+
+{/* ── TypeScript ───────────────────────────────────────────────────── */}
+
+<div style={{
+  background: '#f4f4f5',
+  borderRadius: 12,
+  padding: '1.25rem 1.5rem',
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#09090b' }}>TypeScript</span>
+    <span style={{ fontSize: '0.6875rem', color: '#71717a' }}>— all components are fully typed</span>
+  </div>
+  <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+    Import types directly from the main entry point:
+  </p>
+  <Source dark language="ts" code={`import type { ButtonProps, InputProps, SelectOption } from '@pmealha/eidos-ui';`} />
+</div>

@@ -1,4 +1,5 @@
 // Components
+export { Card } from './components/Card';
 export { Button, IconButton } from './components/Button';
 export { Tooltip } from './components/Tooltip';
 export { Chip } from './components/Chip';
@@ -18,6 +19,7 @@ export { useDropdownContext } from './components/Dropdown';
 export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 
 // Types
+export type { CardProps } from './components/Card';
 export type { ButtonProps, IconButtonProps, TextButtonProps } from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
 export type { ChipProps, TextChipProps } from './components/Chip';

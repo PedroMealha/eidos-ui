@@ -6,7 +6,15 @@ import { Button } from '../Button';
 const meta = {
   title: 'Components/Dropdown',
   component: Dropdown,
-  parameters: { layout: 'centered' },
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'A flexible dropdown that positions its content relative to a trigger element. Works standalone by default. To enable **mutual exclusion** between multiple dropdowns (only one open at a time), wrap them with `DropdownProvider` and use the `dropdownGroup` prop.',
+      },
+    },
+  },
   tags: ['autodocs'],
   args: {
     trigger: undefined,
