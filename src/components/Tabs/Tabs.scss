@@ -12,17 +12,13 @@
   &--line {
     .eidos-tabs-list {
       border-bottom: 2px solid var(--gray-200);
+      position: relative; // required for the absolutely-positioned indicator
       gap: 0;
     }
 
     .eidos-tab {
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
       border-radius: 0;
-
-      &--active {
-        border-bottom-color: var(--primary-color);
-      }
+      // No per-tab border — the sliding indicator handles the active state.
     }
   }
 
@@ -156,8 +152,8 @@
     color: var(--primary-color);
   }
 
-  &.eidos-tabs--line .eidos-tab--active {
-    border-bottom-color: var(--primary-color);
+  &.eidos-tabs--line .eidos-tabs-indicator {
+    background: var(--primary-color);
   }
 
   &.eidos-tabs--pills .eidos-tab--active {
@@ -175,8 +171,8 @@
     color: var(--secondary-color);
   }
 
-  &.eidos-tabs--line .eidos-tab--active {
-    border-bottom-color: var(--secondary-color);
+  &.eidos-tabs--line .eidos-tabs-indicator {
+    background: var(--secondary-color);
   }
 
   &.eidos-tabs--pills .eidos-tab--active {
@@ -194,8 +190,8 @@
     color: var(--success-color);
   }
 
-  &.eidos-tabs--line .eidos-tab--active {
-    border-bottom-color: var(--success-color);
+  &.eidos-tabs--line .eidos-tabs-indicator {
+    background: var(--success-color);
   }
 
   &.eidos-tabs--pills .eidos-tab--active {
@@ -213,8 +209,8 @@
     color: var(--danger-color);
   }
 
-  &.eidos-tabs--line .eidos-tab--active {
-    border-bottom-color: var(--danger-color);
+  &.eidos-tabs--line .eidos-tabs-indicator {
+    background: var(--danger-color);
   }
 
   &.eidos-tabs--pills .eidos-tab--active {
@@ -225,6 +221,24 @@
   .eidos-tab:focus-visible {
     box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.3);
   }
+}
+
+// ============================================================================
+// ANIMATED INDICATOR — line variant only; positioned via JS (useLayoutEffect)
+// ============================================================================
+
+.eidos-tabs-indicator {
+  position: absolute;
+  bottom: -2px; // sits flush on top of the list's 2px border-bottom
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color); // overridden by color variants below
+  border-radius: 9999px;
+  // left + width are animated; transition is temporarily disabled on first
+  // render via inline style to avoid the indicator sliding from 0,0.
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 // ============================================================================

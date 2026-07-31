@@ -48,9 +48,10 @@ export const Button: React.FC<ButtonProps> = ({
 
   const ButtonContent = () => (
     <button
+      type="button"
+      {...buttonProps}
       className={buttonClasses}
       disabled={disabled || loading}
-      {...buttonProps}
     >
       {loading ? (
         <>

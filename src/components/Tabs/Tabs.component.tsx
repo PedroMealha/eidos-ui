@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useLayoutEffect } from 'react';
 import { renderIcon } from '../../utils';
 import type { TabsProps, TabProps, TabPanelProps, TabsContextValue } from './Tabs.types';
 
@@ -137,6 +137,38 @@ export const Tabs: React.FC<TabsProps> = ({
   const activeValue = isControlled ? value! : localValue;
 
   const listRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+  // Tracks whether the indicator has been positioned at least once so we can
+  // skip the CSS transition on the very first render and avoid it animating
+  // from the top-left corner to the initial tab.
+  const hasPositioned = useRef(false);
+
+  useLayoutEffect(() => {
+    if (variant !== 'line') return;
+    const list = listRef.current;
+    const indicator = indicatorRef.current;
+    if (!list || !indicator) return;
+
+    const activeTab = list.querySelector('[aria-selected="true"]') as HTMLElement | null;
+    if (!activeTab) return;
+
+    // Suppress the CSS transition on the initial paint so the indicator snaps
+    // into place rather than sliding from 0.
+    if (!hasPositioned.current) {
+      indicator.style.transition = 'none';
+    }
+
+    indicator.style.left = `${activeTab.offsetLeft}px`;
+    indicator.style.width = `${activeTab.offsetWidth}px`;
+
+    if (!hasPositioned.current) {
+      // Force a synchronous reflow so the browser commits the no-transition
+      // position before we re-enable the transition for future clicks.
+      void indicator.offsetWidth;
+      indicator.style.transition = '';
+      hasPositioned.current = true;
+    }
+  }, [activeValue, variant, fullWidth]);
 
   const onSelect = (newValue: string) => {
     if (!isControlled) {
@@ -191,6 +223,9 @@ export const Tabs: React.FC<TabsProps> = ({
       <div className={rootClasses}>
         <div ref={listRef} className={listClasses} role="tablist">
           {tabChildren}
+          {variant === 'line' && (
+            <span ref={indicatorRef} className="eidos-tabs-indicator" aria-hidden="true" />
+          )}
         </div>
         <div className="eidos-tabs-panels">
           {panelChildren}

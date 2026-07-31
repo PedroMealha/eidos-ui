@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useId } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button.component";
 import type { ModalProps } from "./Modal.types";
@@ -17,6 +17,9 @@ export const Modal: React.FC<ModalProps> = ({
   size = "medium",
   className = "",
 }) => {
+  const titleId = useId();
+  const bodyId = useId();
+
   // Handle escape key
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
@@ -60,21 +63,27 @@ export const Modal: React.FC<ModalProps> = ({
         isOpen ? "eidos-modal--is-open" : ""
       } ${className}`}
     >
-      <div className={`eidos-modal-backdrop`} onClick={handleBackdropClick} />
-      <div className={`eidos-modal-content eidos-modal-content--${size}`}>
+      <div className="eidos-modal-backdrop" onClick={handleBackdropClick} aria-hidden="true" />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
+        aria-describedby={bodyId}
+        className={`eidos-modal-content eidos-modal-content--${size}`}
+      >
         {title && (
           <div
             className={`eidos-modal-header ${
               type ? `eidos-modal-header--${type}` : ""
             }`}
           >
-            <h4>
+            <h4 id={titleId}>
               {icon && renderIcon(icon, 'eidos-modal-icon')} {title}
             </h4>
           </div>
         )}
 
-        <div className={`eidos-modal-body`}>{children}</div>
+        <div id={bodyId} className="eidos-modal-body">{children}</div>
 
         {actions.length > 0 && (
           <div className={`eidos-modal-footer`}>

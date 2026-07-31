@@ -12,7 +12,16 @@ export const Spinner: React.FC<SpinnerProps> = ({
   color = "primary",
   className = "",
 }) => (
-  <div className={`eidos-spinner-wrapper eidos-spinner-wrapper--${size} eidos-spinner-wrapper--${color} ${className}`.trim()}>
-    <LoaderCircle className="eidos-spinner" />
+  <div
+    role="status"
+    aria-label="Loading"
+    className={[
+      'eidos-spinner-wrapper',
+      `eidos-spinner-wrapper--${size}`,
+      `eidos-spinner-wrapper--${color}`,
+      className,
+    ].filter(Boolean).join(' ')}
+  >
+    <LoaderCircle className="eidos-spinner" aria-hidden="true" />
   </div>
 );

@@ -1,0 +1,178 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// ACCORDION ROOT
+// ============================================================================
+
+.eidos-accordion {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  // ── Default variant ────────────────────────────────────────────────────────
+  // Flat list with a top/bottom border per item; no outer container border.
+  &--default {
+    .eidos-accordion-item {
+      border-bottom: 1px solid var(--gray-200);
+
+      &:first-child {
+        border-top: 1px solid var(--gray-200);
+      }
+    }
+  }
+
+  // ── Bordered variant ───────────────────────────────────────────────────────
+  // Container has a border and border-radius; dividers between items.
+  &--bordered {
+    border: 1px solid var(--gray-200);
+    @include border-radius(md);
+    overflow: hidden;
+
+    .eidos-accordion-item + .eidos-accordion-item {
+      border-top: 1px solid var(--gray-200);
+    }
+  }
+
+  // ── Separated variant ──────────────────────────────────────────────────────
+  // Each item is a standalone card with elevation and rounded corners.
+  &--separated {
+    gap: var(--spacing-sm);
+
+    .eidos-accordion-item {
+      border: 1px solid var(--gray-200);
+      @include border-radius(md);
+      // overflow:hidden is required here to clip the trigger hover
+      // background to the item's rounded corners.
+      overflow: hidden;
+      @include elevation(1);
+    }
+  }
+}
+
+// ============================================================================
+// ITEM
+// ============================================================================
+
+.eidos-accordion-item {
+  // Note: overflow:hidden is intentionally NOT set on the base item to avoid
+  // clipping the trigger's focus ring (box-shadow). The separated variant
+  // adds it explicitly where border-radius clipping is needed.
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+// ============================================================================
+// TRIGGER BUTTON
+// ============================================================================
+
+.eidos-accordion-trigger {
+  @include button-reset;
+  @include flex-between;
+  width: 100%;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  background: transparent;
+  @include font-weight(medium);
+  color: var(--dark-color);
+  text-align: left;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  // ── Size modifiers ─────────────────────────────────────────────────────────
+  &--small {
+    @include font-size(sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 40px;
+  }
+
+  &--medium {
+    @include font-size(base);
+    padding: var(--spacing-md);
+    min-height: 48px;
+  }
+
+  &--large {
+    font-size: 1.0625rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 56px;
+  }
+
+  // ── Hover (non-disabled) ───────────────────────────────────────────────────
+  &:hover:not(:disabled) {
+    background: var(--gray-100);
+  }
+
+  // ── Focus (keyboard only) ──────────────────────────────────────────────────
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(var(--primary-rgb) / 0.3);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  // ── Open + Color ───────────────────────────────────────────────────────────
+  // Chained class selectors so both modifiers must be present simultaneously.
+  // Produced by the JSX class list: --open and --{color} are only added when isOpen.
+  &.eidos-accordion-trigger--open {
+    &.eidos-accordion-trigger--primary   { color: var(--primary-color); }
+    &.eidos-accordion-trigger--secondary { color: var(--secondary-color); }
+    &.eidos-accordion-trigger--success   { color: var(--success-color); }
+    &.eidos-accordion-trigger--danger    { color: var(--danger-color); }
+  }
+}
+
+// ============================================================================
+// TRIGGER PARTS
+// ============================================================================
+
+.eidos-accordion-trigger-label {
+  flex: 1;
+  @include text-truncate;
+}
+
+.eidos-accordion-trigger-icon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 1.125em;
+  height: 1.125em;
+}
+
+.eidos-accordion-chevron {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  color: var(--gray-400);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Rotate and inherit the trigger's active color when open.
+  // The parent selector targets this icon inside an open trigger.
+  .eidos-accordion-trigger--open & {
+    transform: rotate(180deg);
+    color: inherit;
+  }
+}
+
+// ============================================================================
+// ANIMATED CONTENT WRAPPER
+// ============================================================================
+
+// max-height is driven by inline style set in JS (AccordionItem useEffect).
+// The transition here animates the height change smoothly.
+.eidos-accordion-content-wrapper {
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eidos-accordion-content {
+  padding: var(--spacing-md);
+  padding-top: 0;
+  color: var(--gray-600);
+  @include font-size(sm);
+  line-height: 1.6;
+}

@@ -21,6 +21,7 @@ import { TextareaShowcase } from './design-system/textareas';
 import { BadgeShowcase } from './design-system/badges';
 import { AlertShowcase } from './design-system/alerts';
 import { TabsShowcase } from './design-system/tabs';
+import { AccordionShowcase } from './design-system/accordion';
 import { ProgressShowcase } from './design-system/progress';
 import { SkeletonShowcase } from './design-system/skeleton';
 import { AvatarShowcase } from './design-system/avatars';
@@ -32,7 +33,7 @@ import { AvatarShowcase } from './design-system/avatars';
 type ComponentId =
   | 'Button' | 'Chip' | 'Input' | 'Textarea' | 'Select' | 'Card' | 'Badge' | 'Alert'
   | 'Checkbox' | 'Radio' | 'Switch'
-  | 'Tabs' | 'Dropdown' | 'Menu'
+  | 'Tabs' | 'Accordion' | 'Dropdown' | 'Menu'
   | 'Modal' | 'Snackbar' | 'Tooltip'
   | 'Date Picker' | 'Table'
   | 'Progress' | 'Skeleton' | 'Avatar'
@@ -41,7 +42,7 @@ type ComponentId =
 const NAV: Array<{ group: string; items: ComponentId[] }> = [
   { group: 'ELEMENTS',    items: ['Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar'] },
   { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch'] },
-  { group: 'NAVIGATION',  items: ['Tabs', 'Dropdown', 'Menu'] },
+  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Dropdown', 'Menu'] },
   { group: 'OVERLAYS',    items: ['Modal', 'Snackbar', 'Tooltip'] },
   { group: 'DATA',        items: ['Date Picker', 'Table'] },
   { group: 'FEEDBACK',    items: ['Progress', 'Skeleton'] },
@@ -69,6 +70,7 @@ const SHOWCASES: Record<ComponentId, React.ReactNode> = {
   'Badge':             <BadgeShowcase />,
   'Alert':             <AlertShowcase />,
   'Tabs':              <TabsShowcase />,
+  'Accordion':         <AccordionShowcase />,
   'Progress':          <ProgressShowcase />,
   'Skeleton':          <SkeletonShowcase />,
   'Avatar':            <AvatarShowcase />,
