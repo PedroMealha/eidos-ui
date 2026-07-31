@@ -1,0 +1,176 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// SWITCH WRAPPER
+// ============================================================================
+
+.eidos-switch-wrapper {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	cursor: pointer;
+
+	&--disabled {
+		cursor: not-allowed;
+	}
+
+	// ── Size variants ──────────────────────────────────────────────────────────
+
+	&--small {
+		.eidos-switch-track {
+			width: 28px;
+			height: 16px;
+		}
+
+		.eidos-switch-thumb {
+			width: 10px;
+			height: 10px;
+		}
+
+		.eidos-switch-track--checked .eidos-switch-thumb {
+			left: 15px; // 28 - 10 - 3
+		}
+
+		.eidos-switch-label {
+			@include font-size(xs);
+		}
+	}
+
+	&--medium {
+		.eidos-switch-track {
+			width: 36px;
+			height: 20px;
+		}
+
+		.eidos-switch-thumb {
+			width: 14px;
+			height: 14px;
+		}
+
+		.eidos-switch-track--checked .eidos-switch-thumb {
+			left: 19px; // 36 - 14 - 3
+		}
+
+		.eidos-switch-label {
+			@include font-size(sm);
+		}
+	}
+
+	&--large {
+		.eidos-switch-track {
+			width: 44px;
+			height: 24px;
+		}
+
+		.eidos-switch-thumb {
+			width: 18px;
+			height: 18px;
+		}
+
+		.eidos-switch-track--checked .eidos-switch-thumb {
+			left: 23px; // 44 - 18 - 3
+		}
+
+		.eidos-switch-label {
+			@include font-size(base);
+		}
+	}
+
+	// ── Color variants (checked track background + focus ring) ─────────────────
+
+	&--primary {
+		.eidos-switch-track--checked {
+			background: var(--primary-color);
+		}
+
+		.eidos-switch-input:focus-visible + .eidos-switch-track {
+			box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.3);
+		}
+	}
+
+	&--secondary {
+		.eidos-switch-track--checked {
+			background: var(--secondary-color);
+		}
+
+		.eidos-switch-input:focus-visible + .eidos-switch-track {
+			box-shadow: 0 0 0 3px rgb(var(--secondary-rgb) / 0.3);
+		}
+	}
+
+	&--success {
+		.eidos-switch-track--checked {
+			background: var(--success-color);
+		}
+
+		.eidos-switch-input:focus-visible + .eidos-switch-track {
+			box-shadow: 0 0 0 3px rgb(var(--success-rgb) / 0.3);
+		}
+	}
+
+	&--danger {
+		.eidos-switch-track--checked {
+			background: var(--danger-color);
+		}
+
+		.eidos-switch-input:focus-visible + .eidos-switch-track {
+			box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.3);
+		}
+	}
+}
+
+// ============================================================================
+// SWITCH LABEL
+// ============================================================================
+
+.eidos-switch-label {
+	color: var(--dark-color);
+	// Font size is controlled per-size in wrapper modifiers above
+	user-select: none;
+	line-height: 1.4;
+}
+
+// ============================================================================
+// HIDDEN INPUT
+// ============================================================================
+
+.eidos-switch-input {
+	@include visually-hidden;
+}
+
+// ============================================================================
+// TRACK
+// ============================================================================
+
+.eidos-switch-track {
+	position: relative;
+	border-radius: 9999px;
+	background: var(--gray-300);
+	transition: background 0.2s ease;
+	flex-shrink: 0;
+
+	// Default checked colour — overridden by colour-variant rules above
+	&--checked {
+		background: var(--primary-color);
+	}
+
+	&--disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+// ============================================================================
+// THUMB
+// ============================================================================
+
+.eidos-switch-thumb {
+	position: absolute;
+	top: 50%;
+	left: 3px;
+	transform: translateY(-50%);
+	border-radius: 50%;
+	background: var(--white);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	transition: left 0.2s ease;
+}

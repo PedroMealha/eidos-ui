@@ -1,0 +1,210 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// CONTAINER
+// ============================================================================
+
+.eidos-checkbox-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	width: fit-content;
+}
+
+// ============================================================================
+// WRAPPER (the <label> element)
+// ============================================================================
+
+.eidos-checkbox-wrapper {
+	@include flex-center-y;
+	cursor: pointer;
+	width: fit-content;
+
+	&--disabled {
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	// ── Size variants ──────────────────────────────────────────────────────
+
+	&--small {
+		gap: var(--spacing-xs);
+		@include font-size(xs);
+
+		.eidos-checkbox-control {
+			width: 14px;
+			height: 14px;
+		}
+
+		.eidos-checkbox-icon {
+			width: 9px;
+			height: 9px;
+		}
+	}
+
+	&--medium {
+		gap: var(--spacing-sm);
+		@include font-size(sm);
+
+		.eidos-checkbox-control {
+			width: 18px;
+			height: 18px;
+		}
+
+		.eidos-checkbox-icon {
+			width: 11px;
+			height: 11px;
+		}
+	}
+
+	&--large {
+		gap: var(--spacing-sm);
+		font-size: var(--font-size-base);
+
+		.eidos-checkbox-control {
+			width: 22px;
+			height: 22px;
+		}
+
+		.eidos-checkbox-icon {
+			width: 14px;
+			height: 14px;
+		}
+	}
+
+	// ── Color variants – focus ring + checked/indeterminate fill ───────────
+
+	&--primary {
+		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.3);
+		}
+
+		.eidos-checkbox-control--checked,
+		.eidos-checkbox-control--indeterminate {
+			background: var(--primary-color);
+			border-color: var(--primary-color);
+		}
+	}
+
+	&--secondary {
+		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--secondary-rgb) / 0.3);
+		}
+
+		.eidos-checkbox-control--checked,
+		.eidos-checkbox-control--indeterminate {
+			background: var(--secondary-color);
+			border-color: var(--secondary-color);
+		}
+	}
+
+	&--success {
+		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--success-rgb) / 0.3);
+		}
+
+		.eidos-checkbox-control--checked,
+		.eidos-checkbox-control--indeterminate {
+			background: var(--success-color);
+			border-color: var(--success-color);
+		}
+	}
+
+	&--danger {
+		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.3);
+		}
+
+		.eidos-checkbox-control--checked,
+		.eidos-checkbox-control--indeterminate {
+			background: var(--danger-color);
+			border-color: var(--danger-color);
+		}
+	}
+
+	// ── Hover: darken border on unchecked controls ─────────────────────────
+
+	&:hover:not(&--disabled) {
+		.eidos-checkbox-control:not(.eidos-checkbox-control--checked):not(.eidos-checkbox-control--indeterminate):not(.eidos-checkbox-control--disabled) {
+			border-color: var(--gray-500);
+		}
+	}
+}
+
+// ============================================================================
+// NATIVE INPUT (visually hidden, keyboard-accessible)
+// ============================================================================
+
+.eidos-checkbox-input {
+	@include visually-hidden;
+}
+
+// ============================================================================
+// VISUAL CONTROL (the custom checkbox box)
+// ============================================================================
+
+.eidos-checkbox-control {
+	@include flex-center;
+	flex-shrink: 0;
+	border: 2px solid var(--gray-400);
+	@include border-radius(xs);
+	background: var(--white);
+	transition: all 0.2s ease;
+	overflow: hidden;
+
+	// Size is injected by wrapper size modifier (see above)
+
+	&--disabled {
+		background: var(--gray-100);
+		border-color: var(--gray-300);
+	}
+
+	&--error:not(&--disabled) {
+		border-color: var(--danger-color);
+	}
+}
+
+// ============================================================================
+// ICON (Check / Minus from lucide-react)
+// ============================================================================
+
+.eidos-checkbox-icon {
+	color: var(--white);
+	flex-shrink: 0;
+	// Width/height injected by wrapper size modifier (see above)
+}
+
+// ============================================================================
+// LABEL TEXT
+// ============================================================================
+
+.eidos-checkbox-label {
+	color: var(--dark-color);
+	line-height: 1.4;
+	user-select: none;
+
+	.eidos-checkbox-wrapper--disabled & {
+		color: var(--gray-400);
+	}
+}
+
+// ============================================================================
+// ERROR MESSAGE (matches Input error pattern)
+// ============================================================================
+
+.eidos-checkbox-error-message {
+	@include flex-center-y;
+	gap: var(--spacing-xs);
+	color: var(--danger-color);
+	@include font-size(sm);
+
+	svg {
+		width: 1em;
+		height: 1em;
+		flex-shrink: 0;
+	}
+}

@@ -1,0 +1,217 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// WRAPPER (the <label> element)
+// ============================================================================
+
+.eidos-radio-wrapper {
+	@include flex-center-y;
+	cursor: pointer;
+	width: fit-content;
+
+	&--disabled {
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+
+	// ── Size variants ──────────────────────────────────────────────────────
+
+	&--small {
+		gap: var(--spacing-xs);
+		@include font-size(xs);
+
+		.eidos-radio-control {
+			width: 14px;
+			height: 14px;
+		}
+
+		.eidos-radio-dot {
+			width: 6px;
+			height: 6px;
+		}
+	}
+
+	&--medium {
+		gap: var(--spacing-sm);
+		@include font-size(sm);
+
+		.eidos-radio-control {
+			width: 18px;
+			height: 18px;
+		}
+
+		.eidos-radio-dot {
+			width: 8px;
+			height: 8px;
+		}
+	}
+
+	&--large {
+		gap: var(--spacing-sm);
+		font-size: var(--font-size-base);
+
+		.eidos-radio-control {
+			width: 22px;
+			height: 22px;
+		}
+
+		.eidos-radio-dot {
+			width: 10px;
+			height: 10px;
+		}
+	}
+
+	// ── Color variants – focus ring + checked fill ─────────────────────────
+
+	&--primary {
+		.eidos-radio-input:focus-visible + .eidos-radio-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.3);
+		}
+
+		.eidos-radio-control--checked {
+			background: var(--primary-color);
+			border-color: var(--primary-color);
+		}
+	}
+
+	&--secondary {
+		.eidos-radio-input:focus-visible + .eidos-radio-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--secondary-rgb) / 0.3);
+		}
+
+		.eidos-radio-control--checked {
+			background: var(--secondary-color);
+			border-color: var(--secondary-color);
+		}
+	}
+
+	&--success {
+		.eidos-radio-input:focus-visible + .eidos-radio-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--success-rgb) / 0.3);
+		}
+
+		.eidos-radio-control--checked {
+			background: var(--success-color);
+			border-color: var(--success-color);
+		}
+	}
+
+	&--danger {
+		.eidos-radio-input:focus-visible + .eidos-radio-control {
+			outline: none;
+			box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.3);
+		}
+
+		.eidos-radio-control--checked {
+			background: var(--danger-color);
+			border-color: var(--danger-color);
+		}
+	}
+
+	// ── Hover: darken border on unchecked controls ─────────────────────────
+
+	&:hover:not(&--disabled) {
+		.eidos-radio-control:not(.eidos-radio-control--checked):not(.eidos-radio-control--disabled) {
+			border-color: var(--gray-500);
+		}
+	}
+}
+
+// ============================================================================
+// NATIVE INPUT (visually hidden, keyboard-accessible)
+// ============================================================================
+
+.eidos-radio-input {
+	@include visually-hidden;
+}
+
+// ============================================================================
+// VISUAL CONTROL (the custom radio circle)
+// ============================================================================
+
+.eidos-radio-control {
+	@include flex-center;
+	flex-shrink: 0;
+	border: 2px solid var(--gray-400);
+	border-radius: 50%;
+	background: var(--white);
+	transition: all 0.2s ease;
+
+	// Size is injected by wrapper size modifier (see above)
+
+	&--disabled {
+		background: var(--gray-100);
+		border-color: var(--gray-300);
+	}
+}
+
+// ============================================================================
+// DOT (inner filled circle, shown when checked)
+// ============================================================================
+
+.eidos-radio-dot {
+	border-radius: 50%;
+	background: var(--white);
+	flex-shrink: 0;
+	transform: scale(0);
+	transition: transform 0.2s ease;
+
+	// Size is injected by wrapper size modifier (see above)
+
+	.eidos-radio-control--checked & {
+		transform: scale(1);
+	}
+}
+
+// ============================================================================
+// LABEL TEXT
+// ============================================================================
+
+.eidos-radio-label {
+	color: var(--dark-color);
+	line-height: 1.4;
+	user-select: none;
+
+	.eidos-radio-wrapper--disabled & {
+		color: var(--gray-400);
+	}
+}
+
+// ============================================================================
+// ERROR MESSAGE (matches Checkbox / Input error pattern)
+// ============================================================================
+
+.eidos-radio-error-message {
+	@include flex-center-y;
+	gap: var(--spacing-xs);
+	color: var(--danger-color);
+	@include font-size(sm);
+	margin-top: var(--spacing-xs);
+
+	svg {
+		width: 1em;
+		height: 1em;
+		flex-shrink: 0;
+	}
+}
+
+// ============================================================================
+// GROUP LAYOUT
+// ============================================================================
+
+.eidos-radio-group {
+	&--horizontal {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--spacing-md);
+	}
+
+	&--vertical {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+}

@@ -1,0 +1,161 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-badge {
+	@include flex-center;
+	@include font-weight(bold);
+	// Override flex-center's block flex to inline so badges flow within text/layouts
+	display: inline-flex;
+	line-height: 1;
+	white-space: nowrap;
+	border-radius: 9999px;
+	border: 1px solid transparent;
+
+	// ========================================================================
+	// Sizes
+	// ========================================================================
+
+	&--small {
+		min-width: 16px;
+		height: 16px;
+		padding: 0 4px;
+		font-size: 0.6rem;
+	}
+
+	&--medium {
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
+		font-size: 0.7rem;
+	}
+
+	// ========================================================================
+	// Dot modifier — overrides size dimensions, keeps colour from variant+color
+	// ========================================================================
+
+	&--dot {
+		padding: 0;
+		border-radius: 50%;
+
+		&.eidos-badge--small {
+			width: 6px;
+			height: 6px;
+			min-width: 6px;
+		}
+
+		&.eidos-badge--medium {
+			width: 8px;
+			height: 8px;
+			min-width: 8px;
+		}
+	}
+
+	// ========================================================================
+	// Filled variant
+	// ========================================================================
+
+	&--filled {
+		&.eidos-badge--primary {
+			background-color: var(--primary-color);
+			color: var(--white);
+		}
+
+		&.eidos-badge--secondary {
+			background-color: var(--secondary-color);
+			color: var(--white);
+		}
+
+		&.eidos-badge--success {
+			background-color: var(--success-color);
+			color: var(--white);
+		}
+
+		&.eidos-badge--danger {
+			background-color: var(--danger-color);
+			color: var(--white);
+		}
+
+		&.eidos-badge--warning {
+			background-color: var(--warning-color);
+			color: var(--white);
+		}
+
+		&.eidos-badge--info {
+			background-color: var(--info-color);
+			color: var(--white);
+		}
+	}
+
+	// ========================================================================
+	// Outlined variant
+	// ========================================================================
+
+	&--outlined {
+		background-color: transparent;
+
+		&.eidos-badge--primary {
+			border-color: var(--primary-color);
+			color: var(--primary-color);
+		}
+
+		&.eidos-badge--secondary {
+			border-color: var(--secondary-color);
+			color: var(--secondary-color);
+		}
+
+		&.eidos-badge--success {
+			border-color: var(--success-color);
+			color: var(--success-color);
+		}
+
+		&.eidos-badge--danger {
+			border-color: var(--danger-color);
+			color: var(--danger-color);
+		}
+
+		&.eidos-badge--warning {
+			border-color: var(--warning-color);
+			color: var(--warning-color);
+		}
+
+		&.eidos-badge--info {
+			border-color: var(--info-color);
+			color: var(--info-color);
+		}
+	}
+
+	// ========================================================================
+	// Soft variant — tinted background at low opacity, full-saturation text
+	// ========================================================================
+
+	&--soft {
+		&.eidos-badge--primary {
+			@include bg-color-opacity(primary, 0.12);
+			color: var(--primary-color);
+		}
+
+		&.eidos-badge--secondary {
+			@include bg-color-opacity(secondary, 0.12);
+			color: var(--secondary-color);
+		}
+
+		&.eidos-badge--success {
+			@include bg-color-opacity(success, 0.12);
+			color: var(--success-color);
+		}
+
+		&.eidos-badge--danger {
+			@include bg-color-opacity(danger, 0.12);
+			color: var(--danger-color);
+		}
+
+		&.eidos-badge--warning {
+			@include bg-color-opacity(warning, 0.12);
+			color: var(--warning-color);
+		}
+
+		&.eidos-badge--info {
+			@include bg-color-opacity(info, 0.12);
+			color: var(--info-color);
+		}
+	}
+}

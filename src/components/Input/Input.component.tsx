@@ -34,8 +34,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		},
 		ref
 	) => {
+		// Extract defaultValue so it never reaches the native <input> alongside `value`.
+		// Passing both causes React's "controlled/uncontrolled" warning because we always
+		// set value={currentValue} below — defaultValue is only needed to seed local state.
+		const { defaultValue, ...restInputProps } = inputProps;
+
 		const [showPassword, setShowPassword] = useState(false);
-		const [localValue, setLocalValue] = useState(inputProps.defaultValue || '');
+		const [localValue, setLocalValue] = useState(defaultValue || '');
 		const [isFocused, setIsFocused] = useState(false);
 
 		// Auto-generate id and name if not provided
@@ -44,18 +49,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		const inputName = name || inputId;
 
 		// Determine if using controlled or uncontrolled mode
-		const isControlled = inputProps.value !== undefined;
-		const currentValue = isControlled ? inputProps.value : localValue;
+		const isControlled = restInputProps.value !== undefined;
+		const currentValue = isControlled ? restInputProps.value : localValue;
 
 		// For select inputs, don't manage localValue - let the select component handle it
 		// This prevents the Input's clear button from showing
 
 		// Determine if label should float (only when there's content - static behavior)
 		// For select inputs, keep label completely static (never float)
-		const shouldFloatLabel = isSelect ? false : currentValue || inputProps.defaultValue;
+		const shouldFloatLabel = isSelect ? false : currentValue || defaultValue;
 
 		// Check if field is required (from props or enhanced register function)
-		const isRequired = required || Boolean('required' in inputProps && inputProps.required);
+		const isRequired = required || Boolean('required' in restInputProps && restInputProps.required);
 
 		// Handle number input to allow decimals and negative numbers
 		const handleNumberInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -113,7 +118,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		if (!isControlled && !isSelect) {
 			setLocalValue(value);
 		}
-		inputProps.onChange?.(e);
+		restInputProps.onChange?.(e);
 	};
 
 	// Handle clear button
@@ -134,7 +139,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		} as React.ChangeEvent<HTMLInputElement>;
 
 		// Call the form's onChange handler
-		inputProps.onChange?.(syntheticEvent);
+		restInputProps.onChange?.(syntheticEvent);
 
 		// Also try to update the input element directly
 		if (ref && typeof ref === 'object' && ref.current) {
@@ -232,15 +237,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 						}
 						disabled={disabled || loading}
 						onKeyDown={handleNumberInput}
-						{...inputProps}
+						{...restInputProps}
 						value={currentValue}
 						onFocus={e => {
 							handleFocus();
-							inputProps.onFocus?.(e);
+							restInputProps.onFocus?.(e);
 						}}
 						onBlur={e => {
 							handleBlur();
-							inputProps.onBlur?.(e);
+							restInputProps.onBlur?.(e);
 						}}
 						onChange={handleInputChange}
 					/>

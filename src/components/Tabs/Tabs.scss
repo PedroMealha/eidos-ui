@@ -1,0 +1,256 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// ROOT CONTAINER
+// ============================================================================
+
+.eidos-tabs {
+  display: flex;
+  flex-direction: column;
+
+  // ── Line variant ──────────────────────────────────────────────────────────
+  &--line {
+    .eidos-tabs-list {
+      border-bottom: 2px solid var(--gray-200);
+      gap: 0;
+    }
+
+    .eidos-tab {
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      border-radius: 0;
+
+      &--active {
+        border-bottom-color: var(--primary-color);
+      }
+    }
+  }
+
+  // ── Enclosed variant ──────────────────────────────────────────────────────
+  &--enclosed {
+    .eidos-tabs-list {
+      background: var(--gray-100);
+      @include border-radius(md);
+      padding: 4px;
+      gap: var(--spacing-xs);
+    }
+
+    .eidos-tab {
+      @include border-radius(sm);
+
+      &--active {
+        background: var(--white);
+        @include elevation(1);
+      }
+    }
+  }
+
+  // ── Pills variant ─────────────────────────────────────────────────────────
+  &--pills {
+    .eidos-tabs-list {
+      gap: var(--spacing-xs);
+    }
+
+    .eidos-tab {
+      border-radius: 9999px;
+
+      &--active {
+        background: var(--primary-color);
+        color: var(--white);
+      }
+    }
+  }
+}
+
+// ============================================================================
+// TAB LIST
+// ============================================================================
+
+.eidos-tabs-list {
+  display: flex;
+  align-items: center;
+
+  &--fullWidth {
+    .eidos-tab {
+      flex: 1;
+    }
+  }
+}
+
+// ============================================================================
+// TAB BUTTON — base styles shared across all variants
+// ============================================================================
+
+.eidos-tab {
+  @include button-reset;
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--gray-500);
+  @include font-weight(medium);
+  transition: all 0.2s ease;
+  border-radius: 0; // reset browser default; variants override as needed
+
+  // ── Size modifiers ────────────────────────────────────────────────────────
+
+  &--small {
+    @include font-size(xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    height: var(--component-size-sm);
+  }
+
+  &--medium {
+    @include font-size(sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    height: var(--component-size-md);
+  }
+
+  &--large {
+    @include font-size(base);
+    padding: var(--spacing-sm) var(--spacing-md);
+    height: var(--component-size-lg);
+  }
+
+  // ── Hover (inactive, non-disabled only) ──────────────────────────────────
+
+  &:hover:not(&--disabled):not(&--active) {
+    color: var(--gray-700);
+    background: var(--gray-100);
+  }
+
+  // ── Active ────────────────────────────────────────────────────────────────
+
+  &--active {
+    color: var(--primary-color); // overridden per color variant below
+  }
+
+  // ── Disabled ─────────────────────────────────────────────────────────────
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // ── Full-width content centering ─────────────────────────────────────────
+
+  &--fullWidth {
+    justify-content: center;
+  }
+
+  // ── Focus-visible (keyboard navigation only) ─────────────────────────────
+
+  &:focus-visible {
+    outline: none;
+    // Focus ring color is applied per color variant below
+  }
+}
+
+// ============================================================================
+// COLOR VARIANTS
+// Higher specificity selectors ensure these override variant-level styles.
+// ============================================================================
+
+.eidos-tabs--primary {
+  .eidos-tab--active {
+    color: var(--primary-color);
+  }
+
+  &.eidos-tabs--line .eidos-tab--active {
+    border-bottom-color: var(--primary-color);
+  }
+
+  &.eidos-tabs--pills .eidos-tab--active {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+
+  .eidos-tab:focus-visible {
+    box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.3);
+  }
+}
+
+.eidos-tabs--secondary {
+  .eidos-tab--active {
+    color: var(--secondary-color);
+  }
+
+  &.eidos-tabs--line .eidos-tab--active {
+    border-bottom-color: var(--secondary-color);
+  }
+
+  &.eidos-tabs--pills .eidos-tab--active {
+    background: var(--secondary-color);
+    color: var(--white);
+  }
+
+  .eidos-tab:focus-visible {
+    box-shadow: 0 0 0 3px rgb(var(--secondary-rgb) / 0.3);
+  }
+}
+
+.eidos-tabs--success {
+  .eidos-tab--active {
+    color: var(--success-color);
+  }
+
+  &.eidos-tabs--line .eidos-tab--active {
+    border-bottom-color: var(--success-color);
+  }
+
+  &.eidos-tabs--pills .eidos-tab--active {
+    background: var(--success-color);
+    color: var(--white);
+  }
+
+  .eidos-tab:focus-visible {
+    box-shadow: 0 0 0 3px rgb(var(--success-rgb) / 0.3);
+  }
+}
+
+.eidos-tabs--danger {
+  .eidos-tab--active {
+    color: var(--danger-color);
+  }
+
+  &.eidos-tabs--line .eidos-tab--active {
+    border-bottom-color: var(--danger-color);
+  }
+
+  &.eidos-tabs--pills .eidos-tab--active {
+    background: var(--danger-color);
+    color: var(--white);
+  }
+
+  .eidos-tab:focus-visible {
+    box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.3);
+  }
+}
+
+// ============================================================================
+// TAB ICON
+// ============================================================================
+
+.eidos-tab-icon {
+  @include flex-center;
+  flex-shrink: 0;
+}
+
+.eidos-tab-icon-svg {
+  width: 1em;
+  height: 1em;
+}
+
+// ============================================================================
+// TAB PANEL
+// ============================================================================
+
+.eidos-tab-panel {
+  padding-top: var(--spacing-md);
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}

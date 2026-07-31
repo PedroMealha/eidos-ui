@@ -1,5 +1,15 @@
 // Components
 export { Card } from './components/Card';
+export { Badge } from './components/Badge';
+export { Alert } from './components/Alert';
+export { Tabs, Tab, TabPanel } from './components/Tabs';
+export { Progress } from './components/Progress';
+export { Skeleton } from './components/Skeleton';
+export { Avatar, AvatarGroup } from './components/Avatar';
+export { Checkbox } from './components/Checkbox';
+export { Radio, RadioGroup } from './components/Radio';
+export { Switch } from './components/Switch';
+export { Textarea } from './components/Textarea';
 export { Button, IconButton } from './components/Button';
 export { Tooltip } from './components/Tooltip';
 export { Chip } from './components/Chip';
@@ -20,6 +30,16 @@ export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 
 // Types
 export type { CardProps } from './components/Card';
+export type { BadgeProps } from './components/Badge';
+export type { AlertProps, AlertAction } from './components/Alert';
+export type { TabsProps, TabProps, TabPanelProps } from './components/Tabs';
+export type { ProgressProps } from './components/Progress';
+export type { SkeletonProps } from './components/Skeleton';
+export type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from './components/Avatar';
+export type { CheckboxProps } from './components/Checkbox';
+export type { RadioProps, RadioGroupProps, RadioOption } from './components/Radio';
+export type { SwitchProps } from './components/Switch';
+export type { TextareaProps } from './components/Textarea';
 export type { ButtonProps, IconButtonProps, TextButtonProps } from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
 export type { ChipProps, TextChipProps } from './components/Chip';

@@ -1,0 +1,122 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// Avatar
+// ============================================================================
+
+.eidos-avatar {
+	@include flex-center;
+	flex-shrink: 0;
+	overflow: hidden;
+	background-color: var(--gray-200);
+	color: var(--white);
+	font-weight: var(--font-weight-bold);
+	user-select: none;
+	position: relative;
+
+	// ========================================================================
+	// Shapes
+	// ========================================================================
+
+	&--circle { border-radius: 50%; }
+	&--square { @include border-radius(md); }
+
+	// ========================================================================
+	// Sizes
+	// ========================================================================
+
+	&--xs { width: 24px; height: 24px; font-size: 0.6rem; }
+	&--sm { width: 32px; height: 32px; font-size: 0.75rem; }
+	&--md { width: 40px; height: 40px; font-size: 0.875rem; }
+	&--lg { width: 48px; height: 48px; font-size: 1rem; }
+	&--xl { width: 64px; height: 64px; font-size: 1.25rem; }
+
+	// ========================================================================
+	// Colors — used for initials backgrounds
+	// ========================================================================
+
+	&--primary   { background-color: var(--primary-color); }
+	&--secondary { background-color: var(--secondary-color); }
+	&--success   { background-color: var(--success-color); }
+	&--danger    { background-color: var(--danger-color); }
+	// Warning is a light yellow — use dark text for contrast
+	&--warning   { background-color: var(--warning-color); color: var(--dark-color); }
+	&--info      { background-color: var(--info-color); }
+	&--gray      { background-color: var(--gray-400); }
+
+	// ========================================================================
+	// Overflow indicator (+N)
+	// ========================================================================
+
+	&--overflow {
+		background-color: var(--gray-200);
+		color: var(--gray-600);
+	}
+
+	// ========================================================================
+	// Clickable
+	// ========================================================================
+
+	&--clickable {
+		cursor: pointer;
+		transition: opacity 0.2s ease;
+
+		&:hover { opacity: 0.85; }
+
+		@include focus-ring(primary, 3px);
+	}
+}
+
+// ============================================================================
+// Image
+// ============================================================================
+
+.eidos-avatar-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+// ============================================================================
+// Initials
+// ============================================================================
+
+.eidos-avatar-initials {
+	line-height: 1;
+	letter-spacing: 0.02em;
+}
+
+// ============================================================================
+// Fallback icon
+// ============================================================================
+
+.eidos-avatar-fallback-icon {
+	width: 55%;
+	height: 55%;
+	color: var(--gray-400);
+}
+
+// ============================================================================
+// Avatar Group
+// ============================================================================
+
+.eidos-avatar-group {
+	display: flex;
+	align-items: center;
+}
+
+.eidos-avatar-group-item {
+	margin-left: -8px;
+
+	&:first-child { margin-left: 0; }
+
+	// White ring to visually separate overlapping avatars
+	.eidos-avatar {
+		box-shadow: 0 0 0 2px var(--white);
+	}
+}
+
+.eidos-avatar-group .eidos-avatar--overflow {
+	margin-left: -8px;
+	box-shadow: 0 0 0 2px var(--white);
+}
