@@ -11,7 +11,10 @@ export interface SelectOption {
 
 export interface SelectProps {
   options: SelectOption[];
+  /** Controlled selected value(s). */
   value?: string | string[];
+  /** Initial selected value(s) for uncontrolled usage. Ignored when `value` is provided. */
+  defaultValue?: string | string[];
   onChange?: (value: string | string[]) => void;
   multiple?: boolean;
   placeholder?: string;

@@ -1,0 +1,126 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-number-input {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+
+  &--fullWidth { width: 100%; }
+}
+
+.eidos-number-input-label {
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+}
+
+.eidos-number-input-control {
+  @include flex-center-y;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--border-radius-sm);
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-within:not(.eidos-number-input-control--disabled) {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 99, 102, 241), 0.15);
+  }
+
+  .eidos-number-input--error & {
+    border-color: var(--danger-color);
+    &:focus-within { box-shadow: 0 0 0 3px rgba(var(--danger-rgb, 239, 68, 68), 0.15); }
+  }
+
+  &--disabled {
+    background: var(--gray-100);
+    border-color: var(--gray-200);
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  // Size variants
+  .eidos-number-input--small & { height: 32px; }
+  .eidos-number-input--medium & { height: 40px; }
+  .eidos-number-input--large & { height: 48px; }
+}
+
+.eidos-number-input-btn {
+  @include button-reset;
+  @include flex-center;
+  flex-shrink: 0;
+  height: 100%;
+  cursor: pointer;
+  color: var(--gray-500);
+  transition: background 0.15s ease, color 0.15s ease;
+  border: none;
+
+  .eidos-number-input--small & { width: 28px; }
+  .eidos-number-input--medium & { width: 36px; }
+  .eidos-number-input--large & { width: 44px; }
+
+  &:hover:not(:disabled) {
+    background: var(--gray-100);
+    color: var(--dark-color);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible { outline: 2px solid var(--primary-color); outline-offset: -2px; }
+
+  svg {
+    .eidos-number-input--small &  { width: 14px; height: 14px; }
+    .eidos-number-input--medium & { width: 16px; height: 16px; }
+    .eidos-number-input--large &  { width: 18px; height: 18px; }
+  }
+}
+
+.eidos-number-input-divider {
+  width: 1px;
+  height: 60%;
+  background: var(--gray-200);
+  flex-shrink: 0;
+}
+
+.eidos-number-input-display {
+  flex: 1;
+  text-align: center;
+  @include font-size(sm);
+  color: var(--dark-color);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 var(--spacing-xs);
+  min-width: 0;
+
+  // When it's a span (no-typing mode)
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // When it's an input (typing mode)
+  &[type='text'] {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.eidos-number-input-helper {
+  @include font-size(xs);
+  color: var(--gray-400);
+}
+
+.eidos-number-input-error {
+  @include font-size(xs);
+  color: var(--danger-color);
+}
+
+// Visually hidden native input — present in the DOM for form submission,
+// but invisible and non-interactive to both sighted users and pointer devices.
+.eidos-number-input-hidden {
+  @include visually-hidden;
+}

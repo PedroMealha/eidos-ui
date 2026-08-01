@@ -16,6 +16,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     {
       options = [],
       value,
+      defaultValue,
       onChange,
       className = "",
       multiple = false,
@@ -36,9 +37,16 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     },
     ref
   ) => {
-    const [selectedValues, setSelectedValues] = useState<Set<string>>(
-      new Set()
-    );
+    const isControlled = value !== undefined;
+
+    // Lazy initializer: seed from defaultValue in uncontrolled mode.
+    const [selectedValues, setSelectedValues] = useState<Set<string>>(() => {
+      if (defaultValue !== undefined) {
+        const vals = Array.isArray(defaultValue) ? defaultValue : [defaultValue];
+        return new Set(vals.filter((v) => v !== ''));
+      }
+      return new Set();
+    });
     const [searchQuery, setSearchQuery] = useState("");
     const [menuKey, setMenuKey] = useState(0);
     const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -92,7 +100,11 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           }
         }
 
-        setSelectedValues(newSelectedValues);
+        // In uncontrolled mode, own the state directly.
+        // In controlled mode, let the parent drive via value prop + useEffect sync.
+        if (!isControlled) {
+          setSelectedValues(newSelectedValues);
+        }
 
         if (onChange) {
           const newValue = multiple
@@ -114,7 +126,9 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         if (e) {
           e.stopPropagation();
         }
-        setSelectedValues(new Set());
+        if (!isControlled) {
+          setSelectedValues(new Set());
+        }
 
         setIsOpen(false);
         setMenuKey((prev) => prev + 1);

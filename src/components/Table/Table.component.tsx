@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import {
   ChevronsUpDown,
-  ChevronLeft,
-  ChevronRight,
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
@@ -14,8 +12,7 @@ import type {
 } from "./Table.types";
 
 export type { TableColumn, TableProps, TableFilters, FilterValue };
-import { Button } from "../Button";
-import { Select } from "../Select";
+import { Pagination } from "../Pagination";
 import { Spinner } from "../Spinner";
 import { TableFiltersDropdown } from "./TableFiltersDropdown.component";
 
@@ -58,12 +55,6 @@ export const Table = <T extends Record<string, unknown>>({
   }, [data, showPagination, currentPage, currentPageSize]);
 
   const totalPages = Math.ceil(data.length / currentPageSize);
-  const startItem =
-    data.length === 0 ? 0 : (currentPage - 1) * currentPageSize + 1;
-  const endItem =
-    data.length === 0
-      ? 0
-      : Math.min(currentPage * currentPageSize, data.length);
 
   const handleSort = (key: string) => {
     const newDirection =
@@ -219,79 +210,23 @@ export const Table = <T extends Record<string, unknown>>({
       {showFooter && (
         <div className="eidos-table-footer">
           <div className="eidos-table-footer-content">
-            <span className="eidos-table-results-info">
-              {showPagination
-                ? `Showing ${startItem}-${endItem} of ${
-                    totalItems ?? data.length
-                  } results`
-                : `Showing ${data.length} of ${
-                    totalItems ?? data.length
-                  } results`}
-            </span>
-
-            {showPagination && data.length > 0 && (
-              <div className="eidos-table-pagination-controls">
-                <div className="eidos-table-page-size-selector">
-                  <label htmlFor="pageSize">Show:</label>
-                  <Select
-                    id="pageSize"
-                    value={currentPageSize.toString()}
-                    onChange={(value) => handlePageSizeChange(Number(value))}
-                    options={pageSizeOptions.map((size) => ({
-                      id: size.toString(),
-                      value: size.toString(),
-                      label: size.toString(),
-                    }))}
-                    placeholder="10"
-                    clearable={false}
-                    inputProps={{
-                      size: "small",
-                      width: "3ch",
-                    }}
-                  />
-                </div>
-
-                <div className="eidos-table-page-navigation">
-                  <Button
-                    variant="text"
-                    size="small"
-                    icon={ChevronLeft}
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  />
-
-                  <div className="eidos-table-page-numbers">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      const pageNum =
-                        Math.max(1, Math.min(totalPages - 4, currentPage - 2)) +
-                        i;
-                      return (
-                        <Button
-                          key={pageNum}
-                          variant={
-                            currentPage === pageNum ? "filled" : "outlined"
-                          }
-                          size="small"
-                          color={
-                            currentPage === pageNum ? "primary" : "secondary"
-                          }
-                          onClick={() => handlePageChange(pageNum)}
-                        >
-                          {pageNum}
-                        </Button>
-                      );
-                    })}
-                  </div>
-
-                  <Button
-                    variant="text"
-                    size="small"
-                    icon={ChevronRight}
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  />
-                </div>
-              </div>
+            {showPagination && data.length > 0 ? (
+              // Pagination handles the full footer: results info + page-size
+              // selector + page navigation — all in one component.
+              <Pagination
+                page={currentPage}
+                totalPages={totalPages}
+                onChange={handlePageChange}
+                totalItems={totalItems ?? data.length}
+                pageSize={currentPageSize}
+                onPageSizeChange={handlePageSizeChange}
+                pageSizeOptions={pageSizeOptions}
+                size="small"
+              />
+            ) : (
+              <span className="eidos-table-results-info">
+                Showing {data.length} of {totalItems ?? data.length} results
+              </span>
             )}
           </div>
         </div>

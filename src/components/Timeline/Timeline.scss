@@ -1,0 +1,112 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.eidos-timeline-item {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: var(--spacing-md);
+
+  &--has-connector .eidos-timeline-track {
+    padding-bottom: var(--spacing-md);
+  }
+}
+
+.eidos-timeline-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// ============================================================================
+// DOT
+// ============================================================================
+
+.eidos-timeline-dot {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid var(--gray-300);
+  background: var(--white);
+  position: relative;
+
+  // Color variants
+  .eidos-timeline-item--default   & { border-color: var(--gray-300);        background: var(--gray-200); }
+  .eidos-timeline-item--primary   & { border-color: var(--primary-color);   background: var(--primary-color);   color: var(--white); }
+  .eidos-timeline-item--secondary & { border-color: var(--secondary-color); background: var(--secondary-color); color: var(--white); }
+  .eidos-timeline-item--success   & { border-color: var(--success-color);   background: var(--success-color);   color: var(--white); }
+  .eidos-timeline-item--danger    & { border-color: var(--danger-color);    background: var(--danger-color);    color: var(--white); }
+
+  // Filled circle fallback (when no icon)
+  &::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    .eidos-timeline-item--default   & { background: var(--gray-400); }
+    .eidos-timeline-item--primary   & { background: var(--white); }
+    .eidos-timeline-item--secondary & { background: var(--white); }
+    .eidos-timeline-item--success   & { background: var(--white); }
+    .eidos-timeline-item--danger    & { background: var(--white); }
+  }
+
+  // When an icon is present, hide the ::after fallback dot
+  &:has(.eidos-timeline-dot-icon)::after { display: none; }
+}
+
+.eidos-timeline-dot-icon {
+  @include flex-center;
+
+  svg { width: 14px; height: 14px; }
+}
+
+// ============================================================================
+// CONNECTOR
+// ============================================================================
+
+.eidos-timeline-connector {
+  flex: 1;
+  width: 2px;
+  background: var(--gray-200);
+  margin: var(--spacing-xs) 0;
+  min-height: var(--spacing-md);
+}
+
+// ============================================================================
+// CONTENT
+// ============================================================================
+
+.eidos-timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px; // align cap-height of text with dot center
+  padding-bottom: var(--spacing-md);
+}
+
+.eidos-timeline-timestamp {
+  @include font-size(xs);
+  color: var(--gray-400);
+}
+
+.eidos-timeline-title {
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+}
+
+.eidos-timeline-description {
+  margin: 0;
+  @include font-size(sm);
+  color: var(--gray-500);
+  line-height: 1.6;
+}

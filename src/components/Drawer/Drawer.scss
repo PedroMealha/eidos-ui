@@ -1,0 +1,173 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// DRAWER — fixed overlay container
+// ============================================================================
+
+.eidos-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-index-modal);
+
+  &--open .eidos-drawer-backdrop {
+    opacity: 1;
+  }
+}
+
+// ============================================================================
+// BACKDROP
+// ============================================================================
+
+.eidos-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+// ============================================================================
+// PANEL — base
+// ============================================================================
+
+.eidos-drawer-panel {
+  position: absolute;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  @include elevation(3);
+
+  // ── Left / Right ──────────────────────────────────────────────────────────
+  &--left,
+  &--right {
+    top: 0;
+    bottom: 0;
+
+    &.eidos-drawer-panel--small  { width: 280px; }
+    &.eidos-drawer-panel--medium { width: 400px; }
+    &.eidos-drawer-panel--large  { width: 560px; }
+    &.eidos-drawer-panel--full   { width: 100%; }
+  }
+
+  &--left {
+    left: 0;
+    transform: translateX(-100%);
+    border-right: 1px solid var(--gray-200);
+  }
+
+  &--right {
+    right: 0;
+    transform: translateX(100%);
+    border-left: 1px solid var(--gray-200);
+  }
+
+  // ── Top / Bottom ──────────────────────────────────────────────────────────
+  &--top,
+  &--bottom {
+    left: 0;
+    right: 0;
+
+    &.eidos-drawer-panel--small  { height: 40%; }
+    &.eidos-drawer-panel--medium { height: 50%; }
+    &.eidos-drawer-panel--large  { height: 65%; }
+    &.eidos-drawer-panel--full   { height: 100%; }
+  }
+
+  &--top {
+    top: 0;
+    transform: translateY(-100%);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  &--bottom {
+    bottom: 0;
+    transform: translateY(100%);
+    border-top: 1px solid var(--gray-200);
+  }
+}
+
+// Slide panel to its natural position when open
+.eidos-drawer--open {
+  .eidos-drawer-panel--left   { transform: translateX(0); }
+  .eidos-drawer-panel--right  { transform: translateX(0); }
+  .eidos-drawer-panel--top    { transform: translateY(0); }
+  .eidos-drawer-panel--bottom { transform: translateY(0); }
+}
+
+// ============================================================================
+// HEADER
+// ============================================================================
+
+.eidos-drawer-header {
+  @include flex-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-100);
+  flex-shrink: 0;
+  gap: var(--spacing-sm);
+}
+
+.eidos-drawer-title {
+  margin: 0;
+  @include font-weight(medium);
+  font-size: var(--font-size-base);
+  color: var(--dark-color);
+  flex: 1;
+}
+
+.eidos-drawer-close {
+  @include button-reset;
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-sm);
+  color: var(--gray-400);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    color: var(--dark-color);
+    background-color: var(--gray-100);
+  }
+
+  &:focus-visible {
+    outline: none;
+    @include focus-ring(primary, 3px);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// ============================================================================
+// BODY
+// ============================================================================
+
+.eidos-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  color: var(--gray-600);
+  @include font-size(sm);
+  line-height: 1.6;
+}
+
+// ============================================================================
+// FOOTER
+// ============================================================================
+
+.eidos-drawer-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}

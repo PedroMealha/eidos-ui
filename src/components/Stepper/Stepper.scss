@@ -1,0 +1,151 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// ROOT
+// ============================================================================
+
+.eidos-stepper {
+  display: flex;
+  width: 100%;
+
+  &--horizontal {
+    flex-direction: row;
+    align-items: flex-start;
+
+    .eidos-stepper-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      &:last-child { flex: 0 0 auto; }
+    }
+
+    .eidos-stepper-dot-row {
+      @include flex-center-y;
+      width: 100%;
+    }
+
+    .eidos-stepper-connector {
+      flex: 1;
+      height: 2px;
+      background: var(--gray-200);
+      transition: background 0.25s ease;
+    }
+
+    .eidos-stepper-label-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: var(--spacing-xs);
+      padding: 0 var(--spacing-xs);
+    }
+  }
+
+  &--vertical {
+    flex-direction: column;
+    align-items: stretch;
+
+    .eidos-stepper-step {
+      display: flex;
+      flex-direction: row;
+      gap: var(--spacing-md);
+    }
+
+    .eidos-stepper-dot-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .eidos-stepper-connector {
+      flex: 1;
+      width: 2px;
+      min-height: var(--spacing-lg);
+      background: var(--gray-200);
+      margin: var(--spacing-xs) 0;
+      transition: background 0.25s ease;
+    }
+
+    .eidos-stepper-label-group {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: var(--spacing-md);
+      padding-top: 2px; // align text cap-height with dot center
+    }
+  }
+}
+
+// ============================================================================
+// DOT
+// ============================================================================
+
+.eidos-stepper-dot {
+  @include flex-center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.8125rem;
+  @include font-weight(medium);
+  flex-shrink: 0;
+  border: 2px solid var(--gray-300);
+  background: var(--white);
+  color: var(--gray-400);
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ============================================================================
+// STATUS × COLOR combinations
+// ============================================================================
+
+// Active
+.eidos-stepper-step--active {
+  &.eidos-stepper-step--primary   .eidos-stepper-dot { background: var(--primary-color);   border-color: var(--primary-color);   color: var(--white); }
+  &.eidos-stepper-step--secondary .eidos-stepper-dot { background: var(--secondary-color); border-color: var(--secondary-color); color: var(--white); }
+  &.eidos-stepper-step--success   .eidos-stepper-dot { background: var(--success-color);   border-color: var(--success-color);   color: var(--white); }
+  &.eidos-stepper-step--danger    .eidos-stepper-dot { background: var(--danger-color);    border-color: var(--danger-color);    color: var(--white); }
+}
+
+// Completed — lighter tint background, colored border and icon
+.eidos-stepper-step--completed {
+  &.eidos-stepper-step--primary   .eidos-stepper-dot { background: var(--primary-color);   border-color: var(--primary-color);   color: var(--white); }
+  &.eidos-stepper-step--secondary .eidos-stepper-dot { background: var(--secondary-color); border-color: var(--secondary-color); color: var(--white); }
+  &.eidos-stepper-step--success   .eidos-stepper-dot { background: var(--success-color);   border-color: var(--success-color);   color: var(--white); }
+  &.eidos-stepper-step--danger    .eidos-stepper-dot { background: var(--danger-color);    border-color: var(--danger-color);    color: var(--white); }
+
+  // Connector after completed step is also colored
+  &.eidos-stepper-step--primary   .eidos-stepper-connector { background: var(--primary-color); }
+  &.eidos-stepper-step--secondary .eidos-stepper-connector { background: var(--secondary-color); }
+  &.eidos-stepper-step--success   .eidos-stepper-connector { background: var(--success-color); }
+  &.eidos-stepper-step--danger    .eidos-stepper-connector { background: var(--danger-color); }
+}
+
+// Error
+.eidos-stepper-step--error {
+  .eidos-stepper-dot { background: var(--danger-color); border-color: var(--danger-color); color: var(--white); }
+}
+
+// ============================================================================
+// LABELS
+// ============================================================================
+
+.eidos-stepper-label {
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+
+  .eidos-stepper-step--pending & { color: var(--gray-400); }
+}
+
+.eidos-stepper-description {
+  @include font-size(xs);
+  color: var(--gray-400);
+  margin-top: 2px;
+}

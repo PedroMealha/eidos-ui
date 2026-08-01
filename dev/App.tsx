@@ -22,6 +22,16 @@ import { BadgeShowcase } from './design-system/badges';
 import { AlertShowcase } from './design-system/alerts';
 import { TabsShowcase } from './design-system/tabs';
 import { AccordionShowcase } from './design-system/accordion';
+import { PopoverShowcase } from './design-system/popover';
+import { DrawerShowcase } from './design-system/drawer';
+import { SliderShowcase } from './design-system/slider';
+import { EmptyStateShowcase } from './design-system/empty-state';
+import { BreadcrumbShowcase } from './design-system/breadcrumb';
+import { StepperShowcase } from './design-system/stepper';
+import { PaginationShowcase } from './design-system/pagination';
+import { TimelineShowcase } from './design-system/timeline';
+import { NumberInputShowcase } from './design-system/number-input';
+import { FileUploadShowcase } from './design-system/file-upload';
 import { ProgressShowcase } from './design-system/progress';
 import { SkeletonShowcase } from './design-system/skeleton';
 import { AvatarShowcase } from './design-system/avatars';
@@ -32,19 +42,20 @@ import { AvatarShowcase } from './design-system/avatars';
 
 type ComponentId =
   | 'Button' | 'Chip' | 'Input' | 'Textarea' | 'Select' | 'Card' | 'Badge' | 'Alert'
-  | 'Checkbox' | 'Radio' | 'Switch'
-  | 'Tabs' | 'Accordion' | 'Dropdown' | 'Menu'
-  | 'Modal' | 'Snackbar' | 'Tooltip'
-  | 'Date Picker' | 'Table'
-  | 'Progress' | 'Skeleton' | 'Avatar'
+  | 'Checkbox' | 'Radio' | 'Switch' | 'Slider'
+  | 'Tabs' | 'Accordion' | 'Breadcrumb' | 'Stepper' | 'Pagination' | 'Dropdown' | 'Menu'
+  | 'Modal' | 'Drawer' | 'Snackbar' | 'Tooltip' | 'Popover'
+  | 'Date Picker' | 'Table' | 'Timeline'
+  | 'Progress' | 'Skeleton' | 'Avatar' | 'Empty State'
+  | 'Number Input' | 'File Upload'
   | 'Divider & Spinner';
 
 const NAV: Array<{ group: string; items: ComponentId[] }> = [
-  { group: 'ELEMENTS',    items: ['Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar'] },
-  { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch'] },
-  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Dropdown', 'Menu'] },
-  { group: 'OVERLAYS',    items: ['Modal', 'Snackbar', 'Tooltip'] },
-  { group: 'DATA',        items: ['Date Picker', 'Table'] },
+  { group: 'ELEMENTS',    items: ['Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State'] },
+  { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch', 'Slider', 'Number Input', 'File Upload'] },
+  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu'] },
+  { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover'] },
+  { group: 'DATA',        items: ['Date Picker', 'Table', 'Timeline'] },
   { group: 'FEEDBACK',    items: ['Progress', 'Skeleton'] },
   { group: 'LAYOUT',      items: ['Divider & Spinner'] },
 ];
@@ -71,6 +82,16 @@ const SHOWCASES: Record<ComponentId, React.ReactNode> = {
   'Alert':             <AlertShowcase />,
   'Tabs':              <TabsShowcase />,
   'Accordion':         <AccordionShowcase />,
+  'Popover':           <PopoverShowcase />,
+  'Drawer':            <DrawerShowcase />,
+  'Slider':            <SliderShowcase />,
+  'Empty State':       <EmptyStateShowcase />,
+  'Breadcrumb':        <BreadcrumbShowcase />,
+  'Stepper':           <StepperShowcase />,
+  'Pagination':        <PaginationShowcase />,
+  'Timeline':          <TimelineShowcase />,
+  'Number Input':      <NumberInputShowcase />,
+  'File Upload':       <FileUploadShowcase />,
   'Progress':          <ProgressShowcase />,
   'Skeleton':          <SkeletonShowcase />,
   'Avatar':            <AvatarShowcase />,

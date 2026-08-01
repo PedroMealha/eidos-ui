@@ -1,0 +1,147 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.eidos-file-upload-zone {
+  @include flex-center;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg) var(--spacing-md);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  outline: none;
+
+  &:hover:not(.eidos-file-upload-zone--disabled),
+  &:focus-visible {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.03);
+  }
+
+  &--dragging {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.06);
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.eidos-file-upload-icon {
+  @include flex-center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--gray-400);
+
+  svg { width: 24px; height: 24px; }
+}
+
+.eidos-file-upload-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eidos-file-upload-title {
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+
+  em {
+    font-style: normal;
+    color: var(--primary-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+.eidos-file-upload-hint {
+  @include font-size(xs);
+  color: var(--gray-400);
+}
+
+.eidos-file-upload-error {
+  @include font-size(xs);
+  color: var(--danger-color);
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+}
+
+.eidos-file-upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.eidos-file-upload-item {
+  @include flex-center-y;
+  @include flex-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+}
+
+.eidos-file-upload-item-info {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  min-width: 0;
+
+  // File type icon rendered alongside the filename
+  > svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--gray-400);
+  }
+}
+
+.eidos-file-upload-item-name {
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+  @include text-truncate;
+}
+
+.eidos-file-upload-item-size {
+  @include font-size(xs);
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.eidos-file-upload-item-remove {
+  @include button-reset;
+  @include flex-center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--border-radius-xs);
+  cursor: pointer;
+  color: var(--gray-400);
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover { background: var(--gray-200); color: var(--danger-color); }
+  &:focus-visible { @include focus-ring(primary, 2px); }
+
+  svg { width: 14px; height: 14px; }
+}
+
+// Hides the native <input type="file"> — interaction is handled programmatically.
+.eidos-file-upload-input-hidden {
+  display: none;
+}

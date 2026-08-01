@@ -1,0 +1,204 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// Slider root
+// ============================================================================
+
+.eidos-slider {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	width: 100%;
+}
+
+// ============================================================================
+// Top row (label + value display)
+// ============================================================================
+
+.eidos-slider-top {
+	@include flex-between;
+	gap: var(--spacing-sm);
+}
+
+.eidos-slider-label {
+	@include font-size(sm);
+	@include font-weight(medium);
+	color: var(--dark-color);
+}
+
+.eidos-slider-value {
+	@include font-size(sm);
+	@include font-weight(medium);
+	color: var(--gray-500);
+	min-width: 2.5ch;
+	text-align: right;
+}
+
+// ============================================================================
+// Native range input — appearance reset + track fill via inline style
+// ============================================================================
+
+.eidos-slider-input {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	cursor: pointer;
+	outline: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	// Keep the input's own background transparent — the track pseudo-element
+	// owns all the visual fill.  Setting the input height to the THUMB height
+	// (not the track height) is the correct WebKit technique: it gives the
+	// browser the right bounding box so the thumb centers itself on the track
+	// without z-index tricks or margin-top offsets.
+	background: transparent;
+	transition: opacity 0.2s ease;
+
+	// ── Input height = thumb size (per size) ───────────────────────────────
+	.eidos-slider--small  & { height: 16px; }
+	.eidos-slider--medium & { height: 20px; }
+	.eidos-slider--large  & { height: 24px; }
+
+	// ── WebKit thumb ──────────────────────────────────────────────────────
+	&::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		border-radius: 50%;
+		background: var(--primary-color);
+		border: 2px solid var(--white);
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+		cursor: grab;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+		// margin-top = (track-height − thumb-height) / 2
+		// WebKit aligns thumb-top with track-top by default (not centred).
+		// The negative margin pulls the thumb up so its centre sits on the track centre.
+		.eidos-slider--small  & { width: 16px; height: 16px; margin-top: -6px; }
+		.eidos-slider--medium & { width: 20px; height: 20px; margin-top: -7px; }
+		.eidos-slider--large  & { width: 24px; height: 24px; margin-top: -8px; }
+
+		&:active {
+			cursor: grabbing;
+			transform: scale(1.1);
+		}
+	}
+
+	// ── Firefox thumb ─────────────────────────────────────────────────────
+	&::-moz-range-thumb {
+		border-radius: 50%;
+		background: var(--primary-color);
+		border: 2px solid var(--white);
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+		cursor: grab;
+		transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+		.eidos-slider--small & { width: 16px; height: 16px; }
+		.eidos-slider--medium & { width: 20px; height: 20px; }
+		.eidos-slider--large & { width: 24px; height: 24px; }
+	}
+
+	// ── WebKit track — gradient driven by CSS custom props set inline ─────
+	// Chrome/Safari render the track via this pseudo-element, not the
+	// element's own background.  We always include the danger segment but
+	// default --s-block to 100% so it collapses to zero width when there
+	// is no blocked range.
+	// Height is NOT set here — per-size rules below mirror the thumb rules.
+	&::-webkit-slider-runnable-track {
+		border-radius: 9999px;
+		background: linear-gradient(
+			to right,
+			var(--s-color) var(--s-fill),
+			var(--s-empty) var(--s-fill),
+			var(--s-empty) var(--s-block, 100%),
+			var(--danger-color) var(--s-block, 100%),
+			var(--danger-color) 100%
+		);
+	}
+
+	// ── Firefox track ─────────────────────────────────────────────────────
+	&::-moz-range-track {
+		border-radius: 9999px;
+		background: linear-gradient(
+			to right,
+			var(--s-color) var(--s-fill),
+			var(--s-empty) var(--s-fill),
+			var(--s-empty) var(--s-block, 100%),
+			var(--danger-color) var(--s-block, 100%),
+			var(--danger-color) 100%
+		);
+	}
+
+	// ── Focus ring ────────────────────────────────────────────────────────
+	// Applied via thumb box-shadow to work across WebKit and Firefox.
+	// The per-color rules at the bottom of this file override the colour.
+	&:focus-visible::-webkit-slider-thumb {
+		box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--primary-color);
+	}
+
+	&:focus-visible::-moz-range-thumb {
+		box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--primary-color);
+	}
+
+	// ── Disabled state ────────────────────────────────────────────────────
+	.eidos-slider--disabled & {
+		opacity: 0.5;
+		cursor: not-allowed;
+		pointer-events: none;
+
+		&::-webkit-slider-thumb { cursor: not-allowed; }
+		&::-moz-range-thumb     { cursor: not-allowed; }
+	}
+}
+
+// ============================================================================
+// Track height by size — flat rules mirror the thumb-size rules so the
+// pseudo-element gets the correct height without relying on `height: inherit`
+// (which picks up the input's natural full-height in WebKit, not the 4/6/8px).
+// ============================================================================
+
+.eidos-slider--small  .eidos-slider-input::-webkit-slider-runnable-track { height: 4px; }
+.eidos-slider--medium .eidos-slider-input::-webkit-slider-runnable-track { height: 6px; }
+.eidos-slider--large  .eidos-slider-input::-webkit-slider-runnable-track { height: 8px; }
+
+.eidos-slider--small  .eidos-slider-input::-moz-range-track { height: 4px; }
+.eidos-slider--medium .eidos-slider-input::-moz-range-track { height: 6px; }
+.eidos-slider--large  .eidos-slider-input::-moz-range-track { height: 8px; }
+
+// ============================================================================
+// Color variants — thumb background (track fill handled via inline style)
+// ============================================================================
+
+.eidos-slider--primary   .eidos-slider-input::-webkit-slider-thumb { background: var(--primary-color); }
+.eidos-slider--secondary .eidos-slider-input::-webkit-slider-thumb { background: var(--secondary-color); }
+.eidos-slider--success   .eidos-slider-input::-webkit-slider-thumb { background: var(--success-color); }
+.eidos-slider--danger    .eidos-slider-input::-webkit-slider-thumb { background: var(--danger-color); }
+
+.eidos-slider--primary   .eidos-slider-input::-moz-range-thumb { background: var(--primary-color); }
+.eidos-slider--secondary .eidos-slider-input::-moz-range-thumb { background: var(--secondary-color); }
+.eidos-slider--success   .eidos-slider-input::-moz-range-thumb { background: var(--success-color); }
+.eidos-slider--danger    .eidos-slider-input::-moz-range-thumb { background: var(--danger-color); }
+
+// ============================================================================
+// Focus ring color by variant
+// ============================================================================
+
+.eidos-slider--primary   .eidos-slider-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--primary-color); }
+.eidos-slider--secondary .eidos-slider-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--secondary-color); }
+.eidos-slider--success   .eidos-slider-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--success-color); }
+.eidos-slider--danger    .eidos-slider-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--danger-color); }
+
+.eidos-slider--primary   .eidos-slider-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--primary-color); }
+.eidos-slider--secondary .eidos-slider-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--secondary-color); }
+.eidos-slider--success   .eidos-slider-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--success-color); }
+.eidos-slider--danger    .eidos-slider-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--white), 0 0 0 5px var(--danger-color); }
+
+// ============================================================================
+// Min/max labels
+// ============================================================================
+
+.eidos-slider-minmax {
+	@include flex-between;
+	@include font-size(xs);
+	color: var(--gray-400);
+}

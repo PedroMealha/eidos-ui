@@ -1,0 +1,77 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-popover-trigger {
+	display: inline-flex;
+	cursor: pointer;
+}
+
+.eidos-popover-content {
+	background: var(--white);
+	border: 1px solid var(--gray-200);
+	@include border-radius(md);
+	@include elevation(2);
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.15s ease, transform 0.15s ease;
+	transform-origin: center;
+
+	// Entry transform per placement (subtle scale-up effect)
+	&--top    { transform: translateY(4px) scale(0.98); }
+	&--bottom { transform: translateY(-4px) scale(0.98); }
+	&--left   { transform: translateX(4px) scale(0.98); }
+	&--right  { transform: translateX(-4px) scale(0.98); }
+
+	&--visible {
+		visibility: visible;
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.eidos-popover-header {
+	@include flex-between;
+	padding: var(--spacing-sm) var(--spacing-md);
+	border-bottom: 1px solid var(--gray-100);
+	gap: var(--spacing-sm);
+}
+
+.eidos-popover-title {
+	@include font-weight(medium);
+	@include font-size(sm);
+	color: var(--dark-color);
+	flex: 1;
+}
+
+.eidos-popover-close {
+	@include button-reset;
+	@include flex-center;
+	width: 24px;
+	height: 24px;
+	border-radius: var(--border-radius-xs);
+	color: var(--gray-400);
+	cursor: pointer;
+	transition: color 0.15s ease, background 0.15s ease;
+	flex-shrink: 0;
+
+	&:hover {
+		color: var(--dark-color);
+		background: var(--gray-100);
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.3);
+	}
+
+	svg {
+		width: 14px;
+		height: 14px;
+	}
+}
+
+.eidos-popover-body {
+	padding: var(--spacing-md);
+	@include font-size(sm);
+	color: var(--gray-600);
+	line-height: 1.6;
+}

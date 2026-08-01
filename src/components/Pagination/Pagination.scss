@@ -1,0 +1,157 @@
+@use '../../styles/mixins.scss' as *;
+
+// ── Root — standalone nav mode ────────────────────────────────────────────────
+
+.eidos-pagination {
+  @include flex-center;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+}
+
+// ── Root — table-footer mode ──────────────────────────────────────────────────
+
+.eidos-pagination--table {
+  @include flex-between;
+  @include flex-center-y;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  // Stretch to fill the Table's flex footer so space-between pushes
+  // results text and controls to opposite edges.
+  width: 100%;
+}
+
+// ── Results info ("Showing 1-10 of 200 results") ──────────────────────────────
+
+.eidos-pagination-info {
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+// ── Right-hand controls (page size + nav) ─────────────────────────────────────
+// gap-lg mirrors the original eidos-table-pagination-controls gap.
+
+.eidos-pagination-controls {
+  @include flex-center-y;
+  gap: var(--spacing-lg);
+}
+
+// ── "Show: [selector]" ────────────────────────────────────────────────────────
+
+.eidos-pagination-size {
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+}
+
+.eidos-pagination-size-label {
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+// ── Navigation (prev/next + page numbers) ────────────────────────────────────
+
+.eidos-pagination-nav {
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+}
+
+// ── Page number buttons (custom — not using Button to enforce square) ─────────
+//
+// The Button component's text-content size="small" gives horizontal padding
+// that makes single-digit numbers non-square.  We write our own buttons here
+// that are exactly component-size-{sm|md|lg} × component-size-{sm|md|lg}.
+
+.eidos-pagination-page {
+  // Reset native button/input chrome
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+  outline: none;
+  padding: 0;
+  margin: 0;
+
+  // Layout
+  @include flex-center;
+  text-align: center;
+  @include font-size(sm);
+  @include font-weight(medium);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  color: var(--gray-700);
+  background: transparent;
+  border: 1px solid var(--gray-200);
+  line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  // Square dimensions driven by the root size modifier
+  .eidos-pagination--small  & { width: var(--component-size-sm); height: var(--component-size-sm); }
+  .eidos-pagination--medium & { width: var(--component-size-md); height: var(--component-size-md); }
+  .eidos-pagination--large  & { width: var(--component-size-lg); height: var(--component-size-lg); }
+
+  &:hover:not(:disabled):not(.eidos-pagination-page--active) {
+    background: var(--gray-50);
+    border-color: var(--gray-300);
+    color: var(--dark-color);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  // Active / current page — filled, editable input
+  &--active {
+    border-color: transparent;
+    color: var(--white);
+    cursor: text;
+
+    &.eidos-pagination-page--primary   { background: var(--primary-color); }
+    &.eidos-pagination-page--secondary { background: var(--secondary-color); }
+    &.eidos-pagination-page--success   { background: var(--success-color); }
+    &.eidos-pagination-page--danger    { background: var(--danger-color); }
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.25);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ── Ellipsis ──────────────────────────────────────────────────────────────────
+
+.eidos-pagination-ellipsis {
+  @include flex-center;
+  @include font-size(sm);
+  color: var(--gray-400);
+  padding: 0 var(--spacing-xs);
+  user-select: none;
+}
+
+// ── Responsive — mirrors the original table footer behaviour ─────────────────
+
+@media (max-width: 768px) {
+  .eidos-pagination--table {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .eidos-pagination-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+
+  .eidos-pagination-nav {
+    justify-content: center;
+    width: 100%;
+  }
+}
