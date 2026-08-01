@@ -4,7 +4,7 @@ import { Avatar, AvatarGroup } from "./Avatar.component";
 import type { AvatarColor } from "./Avatar.types";
 
 const meta = {
-  title: "Components/Avatar",
+  title: "Elements/Avatar",
   component: Avatar,
   parameters: {
     layout: "padded",

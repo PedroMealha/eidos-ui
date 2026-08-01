@@ -4,7 +4,7 @@ import { ChevronRight, Settings, User, Star, Bell, Lock } from 'lucide-react';
 import { Accordion, AccordionItem } from './Accordion.component';
 
 const meta = {
-  title: 'Components/Accordion',
+  title: 'Navigation/Accordion',
   component: Accordion,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],

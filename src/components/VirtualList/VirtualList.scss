@@ -1,0 +1,78 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// Scroll container
+// ============================================================================
+
+.eidos-virtual-list {
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
+	box-sizing: border-box;
+
+	// Smooth scrolling on iOS / trackpads
+	-webkit-overflow-scrolling: touch;
+
+	// ── Inner spacer ───────────────────────────────────────────────────────
+	// Height is set inline via JS to match the full virtual content height.
+	// All row divs are absolutely positioned inside this element, so the
+	// spacer itself carries no padding or margin.
+	&-inner {
+		position: relative;
+	}
+
+	// ── Row ───────────────────────────────────────────────────────────────
+	// Absolutely positioned within the inner spacer. `top` and `height` are
+	// always set inline. The row itself is a transparent wrapper — visual
+	// chrome belongs in the consumer's `renderRow` output.
+	&-row {
+		position: absolute;
+		left: 0;
+		right: 0;
+		box-sizing: border-box;
+		// Prevent absolutely-positioned rows from accidentally receiving pointer
+		// events intended for the scroll container itself during fast scroll.
+		will-change: transform;
+	}
+
+	// ── Empty state ────────────────────────────────────────────────────────
+	&-empty {
+		@include flex-center;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+		padding: var(--spacing-xl);
+		min-height: 120px;
+		color: var(--gray-500);
+		@include font-size(sm);
+		text-align: center;
+	}
+
+	// ── Loading skeleton container ─────────────────────────────────────────
+	&-loading {
+		display: flex;
+		flex-direction: column;
+	}
+
+	// ── Skeleton row ───────────────────────────────────────────────────────
+	// Height is set inline to match the configured rowHeight.
+	&-skeleton-row {
+		@include flex-center-y;
+		padding: var(--spacing-sm) var(--spacing-md);
+		gap: var(--spacing-sm);
+		box-sizing: border-box;
+		border-bottom: 1px solid var(--gray-100);
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	// ── Skeleton text lines (right of the avatar circle) ──────────────────
+	&-skeleton-row-content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-xs);
+		min-width: 0; // prevent flex children from overflowing
+	}
+}

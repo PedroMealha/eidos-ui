@@ -4,7 +4,7 @@ import { HelpCircle } from 'lucide-react';
 import { Textarea } from './Textarea.component';
 
 const meta = {
-	title: 'Components/Textarea',
+	title: 'Forms/Textarea',
 	component: Textarea,
 	parameters: { layout: 'padded' },
 	tags: ['autodocs'],

@@ -4,7 +4,7 @@ import { Badge } from "./Badge.component";
 import { Chip } from "../Chip/Chip.component";
 
 const meta = {
-  title: "Components/Badge",
+  title: "Elements/Badge",
   component: Badge,
   parameters: {
     layout: "padded",

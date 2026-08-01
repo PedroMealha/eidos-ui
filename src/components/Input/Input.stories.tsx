@@ -3,7 +3,7 @@ import { Mail, Search, User, HelpCircle, DollarSign, Calendar } from 'lucide-rea
 import { Input } from './Input.component';
 
 const meta = {
-  title: 'Components/Input',
+  title: 'Forms/Input',
   component: Input,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

@@ -25,7 +25,7 @@ const headerRowStyle: React.CSSProperties = {
 };
 
 const meta = {
-  title: "Components/Skeleton",
+  title: "Feedback/Skeleton",
   component: Skeleton,
   parameters: {
     layout: "padded",

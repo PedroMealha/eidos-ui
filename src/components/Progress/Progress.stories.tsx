@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Progress } from "./Progress.component";
 
 const meta = {
-  title: "Components/Progress",
+  title: "Feedback/Progress",
   component: Progress,
   parameters: {
     layout: "padded",

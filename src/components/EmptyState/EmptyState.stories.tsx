@@ -5,7 +5,7 @@ import { EmptyState } from './EmptyState.component';
 import { Button } from '../Button';
 
 const meta = {
-	title: 'Components/EmptyState',
+	title: 'Elements/EmptyState',
 	component: EmptyState,
 	parameters: { layout: 'centered' },
 	tags: ['autodocs'],

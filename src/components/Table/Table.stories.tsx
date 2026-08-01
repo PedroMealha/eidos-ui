@@ -95,7 +95,7 @@ const sampleUsers: User[] = [
 ];
 
 const meta: Meta<typeof Table<User>> = {
-  title: "Components/Table",
+  title: "Data/Table",
   component: Table,
   parameters: {
     layout: "padded",

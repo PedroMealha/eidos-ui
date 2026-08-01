@@ -1,0 +1,214 @@
+@use '../../styles/mixins.scss' as *;
+
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+
+@keyframes eidos-combobox-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+// ─── Container ────────────────────────────────────────────────────────────────
+
+.eidos-combobox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+
+  &--fullWidth {
+    width: 100%;
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  // Error state: override Input's wrapper border without duplicating the
+  // error message that the Input component renders internally (we render
+  // our own .eidos-combobox-error-message below).
+  &--error {
+    .eidos-input-wrapper {
+      border-color: var(--danger-color) !important;
+
+      &:focus-within {
+        border-color: var(--danger-color) !important;
+        box-shadow:
+          0 0 0 3px rgba(var(--danger-rgb), 0.1),
+          0 4px 12px rgba(0, 0, 0, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.05) !important;
+      }
+    }
+
+    .eidos-input-label {
+      color: var(--danger-color);
+    }
+  }
+}
+
+// ─── Trigger ──────────────────────────────────────────────────────────────────
+
+.eidos-combobox-trigger {
+  position: relative;
+  width: 100%;
+
+  // Make the Input cursor text (it is editable)
+  input {
+    cursor: text;
+  }
+
+  // Ensure the 0-height Dropdown span anchor does not affect layout
+  .eidos-dropdown-trigger {
+    line-height: 0;
+    overflow: hidden;
+  }
+}
+
+// ─── Options list (portal-rendered inside eidos-dropdown-content) ─────────────
+
+.eidos-combobox-options {
+  padding: var(--spacing-xs) 0;
+  width: 100%;
+  overflow-y: auto;
+}
+
+// ─── Group label ──────────────────────────────────────────────────────────────
+
+.eidos-combobox-option-group-label {
+  padding: var(--spacing-sm) var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  @include font-size(xs);
+  @include font-weight(semibold);
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  user-select: none;
+  pointer-events: none;
+}
+
+// ─── Option row ───────────────────────────────────────────────────────────────
+
+.eidos-combobox-option {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  color: var(--dark-color);
+  user-select: none;
+
+  &:hover {
+    background-color: var(--gray-50);
+  }
+
+  &:active {
+    background-color: var(--gray-100);
+  }
+
+  &--focused {
+    background-color: var(--gray-100);
+
+    &.eidos-combobox-option--selected {
+      background-color: var(--primary-100);
+    }
+  }
+
+  &--selected {
+    background-color: var(--primary-50);
+    color: var(--primary-700);
+
+    &:hover {
+      background-color: var(--primary-100);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ─── Option: check icon ───────────────────────────────────────────────────────
+
+.eidos-combobox-option-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--primary-600);
+
+  // Hidden (space reserved so labels stay aligned)
+  &--hidden {
+    visibility: hidden;
+  }
+}
+
+// ─── Option: label ────────────────────────────────────────────────────────────
+
+.eidos-combobox-option-label {
+  flex: 1;
+  @include font-size(sm);
+  @include font-weight(medium);
+  @include text-truncate;
+}
+
+// ─── Option: description ──────────────────────────────────────────────────────
+
+.eidos-combobox-option-description {
+  @include font-size(xs);
+  color: var(--gray-500);
+  flex-shrink: 0;
+  @include text-truncate;
+  max-width: 40%;
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+
+.eidos-combobox-empty {
+  padding: var(--spacing-md);
+  text-align: center;
+  @include font-size(sm);
+  color: var(--gray-500);
+}
+
+// ─── Loading state ────────────────────────────────────────────────────────────
+
+.eidos-combobox-loading {
+  @include flex-center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  @include font-size(sm);
+  color: var(--gray-500);
+}
+
+.eidos-combobox-loading-icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  animation: eidos-combobox-spin 0.8s linear infinite;
+}
+
+// ─── Hint ─────────────────────────────────────────────────────────────────────
+
+.eidos-combobox-hint {
+  @include font-size(sm);
+  color: var(--gray-500);
+  line-height: 1.4;
+}
+
+// ─── Error message ────────────────────────────────────────────────────────────
+
+.eidos-combobox-error-message {
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  @include font-size(sm);
+  color: var(--danger-color);
+  line-height: 1.4;
+}
+
+.eidos-combobox-error-icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}

@@ -415,6 +415,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 			trigger={triggerButton}
 			content={dropdownContent}
 			placement="bottom"
+			align="end"
 			autoWidth={false}
 			maxWidth={'auto'}
 			maxHeight={'auto'}

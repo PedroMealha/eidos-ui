@@ -19,7 +19,7 @@ const steps = [
 // ============================================================================
 
 const meta = {
-  title: 'Components/Stepper',
+  title: 'Navigation/Stepper',
   component: Stepper,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],

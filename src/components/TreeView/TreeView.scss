@@ -1,0 +1,193 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// ROOT TREE — ul[role="tree"]
+// ============================================================================
+
+.eidos-tree {
+  // CSS custom property for indent depth — overridden per size variant.
+  --tree-indent: 24px; // medium default
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-family-primary);
+
+  // ── Size modifiers ──────────────────────────────────────────────────────────
+  // Applied as a second class on the root ul (e.g. class="eidos-tree eidos-tree--small").
+
+  &--small {
+    --tree-indent: 20px;
+
+    @include font-size(sm);
+
+    .eidos-tree-node-row {
+      padding: 2px 8px;
+    }
+  }
+
+  &--medium {
+    @include font-size(base);
+
+    .eidos-tree-node-row {
+      padding: 4px 8px;
+    }
+  }
+
+  &--large {
+    --tree-indent: 28px;
+
+    @include font-size(lg);
+
+    .eidos-tree-node-row {
+      padding: 6px 12px;
+    }
+  }
+}
+
+// ============================================================================
+// NODE — li[role="treeitem"]
+// ============================================================================
+
+.eidos-tree-node {
+  list-style: none;
+
+  // Remove the default browser outline; apply a custom ring on the visible row.
+  &:focus {
+    outline: none;
+  }
+
+  // Keyboard focus ring: scoped to the row so it doesn't span the children list.
+  &:focus-visible {
+    outline: none;
+
+    > .eidos-tree-node-row {
+      @include border-radius(sm);
+      box-shadow: 0 0 0 2px rgb(var(--primary-rgb) / 0.3);
+    }
+  }
+}
+
+// ============================================================================
+// NODE ROW — the horizontally-laid-out, clickable part of a node
+// ============================================================================
+
+.eidos-tree-node-row {
+  @include flex-center-y;
+  cursor: pointer;
+  @include border-radius(sm);
+  // Base padding (medium); overridden by .eidos-tree--small/large above.
+  padding: 4px 8px;
+  gap: 4px;
+  user-select: none;
+  transition: background 0.15s ease;
+
+  // Hover: only when neither selected nor disabled.
+  &:hover:not(.eidos-tree-node-row--disabled):not(.eidos-tree-node-row--selected) {
+    background-color: var(--gray-50);
+  }
+
+  // ── Selected ───────────────────────────────────────────────────────────────
+  &--selected {
+    background-color: var(--primary-50);
+    color: var(--primary-700);
+
+    .eidos-tree-icon {
+      color: var(--primary-500);
+    }
+
+    .eidos-tree-toggle {
+      color: var(--primary-500);
+    }
+  }
+
+  // ── Disabled ───────────────────────────────────────────────────────────────
+  &--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ============================================================================
+// TOGGLE BUTTON — chevron that expands / collapses branches
+// ============================================================================
+
+.eidos-tree-toggle {
+  @include button-reset;
+  @include flex-center;
+  @include border-radius(sm);
+
+  // Fixed 20 × 20 px keeps the icon + label vertically aligned across all
+  // branch/leaf combinations at every level of nesting.
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--gray-400);
+  transition: transform 0.15s ease;
+
+  svg {
+    // Slightly smaller than the button area for breathing room.
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  // ── Expanded state: rotate chevron 90° so it points downward ───────────────
+  &--expanded {
+    transform: rotate(90deg);
+    color: var(--gray-500);
+  }
+
+  // ── Leaf placeholder: invisible but occupies space for alignment ────────────
+  &--leaf {
+    opacity: 0;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+// ============================================================================
+// NODE ICON — folder / file icon left of the label
+// ============================================================================
+
+.eidos-tree-icon {
+  @include flex-center;
+  flex-shrink: 0;
+  color: var(--gray-500);
+  // Width/height is driven by the lucide `size` prop in the component;
+  // we only ensure it shrinks correctly here.
+}
+
+// ============================================================================
+// NODE LABEL — text content, truncated when overflowing
+// ============================================================================
+
+.eidos-tree-label {
+  flex: 1;
+  min-width: 0; // required for text-truncate to work inside a flex container
+  @include text-truncate;
+}
+
+// ============================================================================
+// CHILDREN — ul[role="group"] that wraps nested nodes
+// ============================================================================
+
+.eidos-tree-children {
+  list-style: none;
+  padding: 0;
+  // Indentation: uses the --tree-indent custom property set on the root.
+  padding-left: var(--tree-indent);
+  margin: 0;
+
+  // ── Indent guide lines ──────────────────────────────────────────────────────
+  // Instead of the full indent being padding, split it:
+  //   margin-left creates the space where the border line sits (aligned with
+  //   the centre of the 20 px toggle button: 10 px from the row edge).
+  //   padding-left is the remaining gap between the line and child content.
+  &--lines {
+    border-left: 1px dashed var(--gray-200);
+    margin-left: 10px;
+    padding-left: calc(var(--tree-indent) - 10px);
+  }
+}

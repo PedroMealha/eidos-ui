@@ -116,7 +116,7 @@ const SnackbarDemo = () => {
 
 // Meta configuration for Storybook
 const meta: Meta = {
-  title: "Components/Snackbar",
+  title: "Overlays/Snackbar",
   decorators: [
     (Story) => (
       <SnackbarProvider>

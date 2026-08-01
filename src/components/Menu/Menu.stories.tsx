@@ -5,7 +5,7 @@ import { Button } from '../Button';
 import type { MenuItemType } from './Menu.types';
 
 const meta = {
-	title: 'Components/Menu',
+	title: 'Navigation/Menu',
 	component: Menu,
 	parameters: { layout: 'centered' },
 	tags: ['autodocs'],

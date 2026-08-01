@@ -8,7 +8,7 @@ import type { TimelineItem } from './Timeline.types';
 // ============================================================================
 
 const meta = {
-  title: 'Components/Timeline',
+  title: 'Data/Timeline',
   component: Timeline,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],

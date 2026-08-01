@@ -35,6 +35,14 @@ import { FileUploadShowcase } from './design-system/file-upload';
 import { ProgressShowcase } from './design-system/progress';
 import { SkeletonShowcase } from './design-system/skeleton';
 import { AvatarShowcase } from './design-system/avatars';
+import { TagInputShowcase } from './design-system/tag-input';
+import { OTPInputShowcase } from './design-system/otp-input';
+import { ComboboxShowcase } from './design-system/combobox';
+import { ColorPickerShowcase } from './design-system/color-picker';
+import { TreeViewShowcase } from './design-system/tree-view';
+import { CommandPaletteShowcase } from './design-system/command-palette';
+import { VirtualListShowcase } from './design-system/virtual-list';
+import { DataGridShowcase } from './design-system/data-grid';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Navigation structure
@@ -48,14 +56,16 @@ type ComponentId =
   | 'Date Picker' | 'Table' | 'Timeline'
   | 'Progress' | 'Skeleton' | 'Avatar' | 'Empty State'
   | 'Number Input' | 'File Upload'
-  | 'Divider & Spinner';
+  | 'Divider & Spinner'
+  | 'Tag Input' | 'OTP Input' | 'Combobox' | 'Color Picker'
+  | 'Tree View' | 'Command Palette' | 'Virtual List' | 'Data Grid';
 
 const NAV: Array<{ group: string; items: ComponentId[] }> = [
   { group: 'ELEMENTS',    items: ['Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State'] },
-  { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch', 'Slider', 'Number Input', 'File Upload'] },
-  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu'] },
-  { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover'] },
-  { group: 'DATA',        items: ['Date Picker', 'Table', 'Timeline'] },
+  { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch', 'Slider', 'Number Input', 'File Upload', 'Tag Input', 'OTP Input', 'Combobox', 'Color Picker'] },
+  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu', 'Tree View'] },
+  { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover', 'Command Palette'] },
+  { group: 'DATA',        items: ['Date Picker', 'Table', 'Timeline', 'Virtual List', 'Data Grid'] },
   { group: 'FEEDBACK',    items: ['Progress', 'Skeleton'] },
   { group: 'LAYOUT',      items: ['Divider & Spinner'] },
 ];
@@ -95,6 +105,14 @@ const SHOWCASES: Record<ComponentId, React.ReactNode> = {
   'Progress':          <ProgressShowcase />,
   'Skeleton':          <SkeletonShowcase />,
   'Avatar':            <AvatarShowcase />,
+  'Tag Input':         <TagInputShowcase />,
+  'OTP Input':         <OTPInputShowcase />,
+  'Combobox':          <ComboboxShowcase />,
+  'Color Picker':      <ColorPickerShowcase />,
+  'Tree View':         <TreeViewShowcase />,
+  'Command Palette':   <CommandPaletteShowcase />,
+  'Virtual List':      <VirtualListShowcase />,
+  'Data Grid':         <DataGridShowcase />,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

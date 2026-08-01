@@ -1,0 +1,223 @@
+@use '../../styles/mixins.scss' as *;
+
+// ─── Container ────────────────────────────────────────────────────────────────
+
+.eidos-data-grid-container {
+	background: var(--white);
+	border-radius: var(--border-radius-md);
+	border: 1px solid var(--gray-200);
+	box-shadow: var(--box-shadow);
+	overflow: hidden;
+
+	&--sticky-header {
+		overflow-y: auto;
+	}
+}
+
+// ─── Table ────────────────────────────────────────────────────────────────────
+
+.eidos-data-grid {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-size-sm);
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+
+.eidos-data-grid-header-cell {
+	background: var(--gray-100);
+	padding: var(--spacing-md);
+	font-weight: var(--font-weight-semibold);
+	border-bottom: 1px solid var(--gray-200);
+	text-align: left;
+	white-space: nowrap;
+	// Sticky so it stays visible when the container scrolls (stickyHeader mode)
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	color: var(--gray-700);
+}
+
+// ─── Row ──────────────────────────────────────────────────────────────────────
+
+.eidos-data-grid-row {
+	border-bottom: 1px solid var(--gray-100);
+	transition: background-color 0.1s ease;
+
+	&:hover {
+		background: var(--gray-50);
+	}
+
+	&:last-child {
+		border-bottom: none;
+	}
+}
+
+// ─── Cell ─────────────────────────────────────────────────────────────────────
+
+.eidos-data-grid-cell {
+	padding: var(--spacing-sm) var(--spacing-md);
+	vertical-align: middle;
+	position: relative;
+	color: var(--gray-700);
+
+	// Active edit mode: inset ring using primary colour
+	&--editing {
+		padding: var(--spacing-xs);
+		background: var(--white);
+		box-shadow: inset 0 0 0 2px var(--primary-color);
+	}
+
+	// Validation error overrides the primary ring with danger colour
+	&--error {
+		box-shadow: inset 0 0 0 2px var(--danger-color) !important;
+	}
+
+	// Pointer + subtle hover for cells that can be clicked into edit mode
+	&--editable {
+		cursor: pointer;
+
+		&:hover:not(.eidos-data-grid-cell--editing) {
+			background: var(--gray-50);
+		}
+	}
+
+	// Read-only cells are visually dimmed and never get a pointer cursor
+	&--readonly {
+		color: var(--gray-500);
+		cursor: default;
+	}
+}
+
+// ─── Row numbers ──────────────────────────────────────────────────────────────
+
+.eidos-data-grid-row-number-col {
+	width: 40px;
+	text-align: right;
+	padding-right: var(--spacing-md);
+}
+
+.eidos-data-grid-row-number {
+	color: var(--gray-400);
+	font-size: var(--font-size-xs);
+	text-align: right;
+	width: 40px;
+	padding-right: var(--spacing-md);
+	user-select: none;
+}
+
+// ─── Inline validation error ──────────────────────────────────────────────────
+
+.eidos-data-grid-cell-error {
+	position: absolute;
+	bottom: -1.4rem;
+	left: 0;
+	font-size: 10px;
+	color: var(--white);
+	background: var(--danger-color);
+	white-space: nowrap;
+	z-index: 10;
+	padding: 2px 6px;
+	border-radius: var(--border-radius-sm);
+	pointer-events: none;
+
+	// Small triangle pointing upward
+	&::before {
+		content: '';
+		position: absolute;
+		top: -4px;
+		left: 8px;
+		width: 0;
+		height: 0;
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-bottom: 4px solid var(--danger-color);
+	}
+}
+
+// ─── Actions column (delete button) ──────────────────────────────────────────
+
+.eidos-data-grid-actions-col {
+	width: 48px;
+	text-align: center;
+	padding: 0;
+}
+
+.eidos-data-grid-delete-btn {
+	@include button-reset;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--spacing-xs);
+	border-radius: var(--border-radius-sm);
+	color: var(--gray-400);
+	transition:
+		color 0.15s ease,
+		background-color 0.15s ease;
+
+	&:hover {
+		color: var(--danger-color);
+		background: rgb(var(--danger-rgb) / 0.08);
+	}
+}
+
+// ─── Add-row button ───────────────────────────────────────────────────────────
+
+.eidos-data-grid-add-row {
+	@include button-reset;
+
+	width: 100%;
+	padding: var(--spacing-sm) var(--spacing-md);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	color: var(--primary-color);
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	cursor: pointer;
+	border-top: 1px solid var(--gray-200);
+	background: var(--gray-50);
+	transition: background-color 0.1s ease;
+
+	&:hover {
+		background: var(--gray-100);
+	}
+}
+
+// ─── Loading state ────────────────────────────────────────────────────────────
+
+.eidos-data-grid-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-xl);
+	color: var(--gray-600);
+
+	p {
+		margin: 0;
+		font-size: var(--font-size-sm);
+	}
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+
+.eidos-data-grid-empty-row {
+	border-bottom: 1px solid var(--gray-100);
+
+	&:hover {
+		background: transparent;
+	}
+}
+
+.eidos-data-grid-empty-cell {
+	text-align: center;
+	padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.eidos-data-grid-empty-message {
+	font-size: var(--font-size-sm);
+	color: var(--gray-500);
+}

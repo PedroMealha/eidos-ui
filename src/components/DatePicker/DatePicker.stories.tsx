@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { DateTimeValue } from "./DatePicker.types";
 
 const meta: Meta<typeof DatePicker> = {
-  title: "Components/DatePicker",
+  title: "Data/DatePicker",
   component: DatePicker,
   parameters: {
     layout: "centered",

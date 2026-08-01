@@ -14,6 +14,7 @@ export interface DropdownProps {
   trigger: React.ReactNode;
   content: React.ReactNode;
   placement?: "top" | "bottom" | "left" | "right";
+  align?: "start" | "end" | "center";
   delay?: number;
   disabled?: boolean;
   className?: string;

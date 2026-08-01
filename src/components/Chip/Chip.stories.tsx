@@ -3,7 +3,7 @@ import { Tag, Star, Check } from 'lucide-react';
 import { Chip } from './Chip.component';
 
 const meta = {
-  title: 'Components/Chip',
+  title: 'Elements/Chip',
   component: Chip,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

@@ -4,7 +4,7 @@ import { Home, Settings, Bell } from 'lucide-react';
 import { Tabs, Tab, TabPanel } from './Tabs.component';
 
 const meta = {
-  title: 'Components/Tabs',
+  title: 'Navigation/Tabs',
   component: Tabs,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],

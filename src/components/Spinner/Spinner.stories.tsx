@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Spinner } from './Spinner.component';
 
 const meta = {
-  title: 'Components/Spinner',
+  title: 'Layout/Spinner',
   component: Spinner,
   parameters: {
     layout: 'fullscreen',

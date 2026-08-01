@@ -7,7 +7,7 @@ import { Pagination } from './Pagination.component';
 // ============================================================================
 
 const meta = {
-  title: 'Components/Pagination',
+  title: 'Navigation/Pagination',
   component: Pagination,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],

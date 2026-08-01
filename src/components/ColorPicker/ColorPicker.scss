@@ -1,0 +1,432 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// Outer container
+// ============================================================================
+
+.eidos-color-picker {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+// ============================================================================
+// Label
+// ============================================================================
+
+.eidos-color-picker-label {
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+}
+
+// ============================================================================
+// Trigger button (popover mode)
+// ============================================================================
+
+.eidos-color-picker-trigger {
+  @include button-reset;
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  padding: 6px var(--spacing-sm);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background: var(--white);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--gray-400);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.25);
+  }
+
+  .eidos-color-picker--small  & { padding: 4px var(--spacing-xs); }
+  .eidos-color-picker--large  & { padding: 8px var(--spacing-md); }
+}
+
+.eidos-color-picker-trigger-swatch {
+  flex-shrink: 0;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--gray-200);
+
+  .eidos-color-picker--small  & { width: 20px; height: 20px; }
+  .eidos-color-picker--medium & { width: 24px; height: 24px; }
+  .eidos-color-picker--large  & { width: 28px; height: 28px; }
+}
+
+.eidos-color-picker-trigger-value {
+  @include font-mono;
+  @include font-size(sm);
+  color: var(--gray-700);
+}
+
+// ============================================================================
+// Picker panel
+// ============================================================================
+
+.eidos-color-picker-panel {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 240px;
+
+  // Inline variant adds its own border and shadow since it's not inside a Dropdown
+  &--inline {
+    border: 1px solid var(--gray-200);
+    @include elevation(2);
+  }
+}
+
+// ============================================================================
+// 2-D saturation / brightness canvas
+// ============================================================================
+
+.eidos-color-picker-canvas {
+  position: relative;
+  border-radius: var(--border-radius-sm);
+  cursor: crosshair;
+  user-select: none;
+  // Background is set via inline style (hue-dependent gradient)
+
+  .eidos-color-picker--small  & { height: 120px; }
+  .eidos-color-picker--medium & { height: 160px; }
+  .eidos-color-picker--large  & { height: 200px; }
+}
+
+// Circular thumb — tracks the selected sat/val position
+.eidos-color-picker-thumb {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+// ============================================================================
+// Sliders section
+// ============================================================================
+
+.eidos-color-picker-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+// ── Shared range-input base ────────────────────────────────────────────────
+// Applied to both the hue and alpha <input type="range"> elements.
+
+%range-base {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+%range-thumb-webkit {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+  // Centre the thumb on the 10 px track:
+  // margin-top = -(thumb-height - track-height) / 2 = -(16-10)/2 = -3px
+  margin-top: -3px;
+}
+
+%range-thumb-moz {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+}
+
+%range-track-base {
+  height: 10px;
+  border-radius: 9999px;
+}
+
+// ── Hue slider ─────────────────────────────────────────────────────────────
+
+.eidos-color-picker-hue {
+  @extend %range-base;
+
+  &::-webkit-slider-thumb {
+    @extend %range-thumb-webkit;
+
+    &:active { cursor: grabbing; }
+  }
+
+  &::-moz-range-thumb {
+    @extend %range-thumb-moz;
+
+    &:active { cursor: grabbing; }
+  }
+
+  &::-webkit-slider-runnable-track {
+    @extend %range-track-base;
+    // Classic 7-stop rainbow that maps 0–360° hue linearly
+    background: linear-gradient(
+      to right,
+      #f00 0%,
+      #ff0 17%,
+      #0f0 33%,
+      #0ff 50%,
+      #00f 67%,
+      #f0f 83%,
+      #f00 100%
+    );
+  }
+
+  &::-moz-range-track {
+    @extend %range-track-base;
+    background: linear-gradient(
+      to right,
+      #f00 0%,
+      #ff0 17%,
+      #0f0 33%,
+      #0ff 50%,
+      #00f 67%,
+      #f0f 83%,
+      #f00 100%
+    );
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    &::-webkit-slider-thumb { cursor: not-allowed; }
+    &::-moz-range-thumb     { cursor: not-allowed; }
+  }
+}
+
+// ── Alpha slider ────────────────────────────────────────────────────────────
+// The visual checkerboard + gradient is rendered by .eidos-color-picker-alpha-bg
+// (a sibling div) so we only need transparent tracks here.
+
+.eidos-color-picker-alpha-wrapper {
+  position: relative;
+  height: 20px;
+  @include flex-center-y;
+}
+
+// Checkerboard + colour-to-transparent gradient shown behind the range input.
+// Horizontal offsets (left/right: 8px) align the track visually with the
+// thumb edges so the gradient starts and ends where the thumb can reach.
+.eidos-color-picker-alpha-bg {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 10px;
+  border-radius: 9999px;
+  pointer-events: none;
+  // backgroundImage / backgroundSize / backgroundPosition set via inline style
+}
+
+.eidos-color-picker-alpha {
+  @extend %range-base;
+  position: relative;
+  z-index: 1;
+
+  &::-webkit-slider-thumb {
+    @extend %range-thumb-webkit;
+
+    &:active { cursor: grabbing; }
+  }
+
+  &::-moz-range-thumb {
+    @extend %range-thumb-moz;
+
+    &:active { cursor: grabbing; }
+  }
+
+  &::-webkit-slider-runnable-track {
+    @extend %range-track-base;
+    background: transparent;
+  }
+
+  &::-moz-range-track {
+    @extend %range-track-base;
+    background: transparent;
+  }
+
+  // Firefox fills the "progress" segment before the thumb — hide it
+  &::-moz-range-progress {
+    background: transparent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    &::-webkit-slider-thumb { cursor: not-allowed; }
+    &::-moz-range-thumb     { cursor: not-allowed; }
+  }
+}
+
+// ============================================================================
+// Text input row (format toggles + text field + copy button)
+// ============================================================================
+
+.eidos-color-picker-inputs {
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+}
+
+.eidos-color-picker-format-btns {
+  display: flex;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.eidos-color-picker-format-btn {
+  @include button-reset;
+  @include font-size(xs);
+  @include font-weight(medium);
+  padding: 4px 6px;
+  background: var(--gray-50);
+  color: var(--gray-500);
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.12s ease, color 0.12s ease;
+
+  &:hover:not(&--active):not(:disabled) {
+    background: var(--gray-100);
+    color: var(--gray-700);
+  }
+
+  &--active {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.eidos-color-picker-input {
+  flex: 1;
+  min-width: 0;
+  @include font-mono;
+  @include font-size(xs);
+  padding: 5px var(--spacing-xs);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-sm);
+  background: var(--gray-50);
+  color: var(--dark-color);
+  outline: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+
+  &:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgb(var(--primary-rgb) / 0.15);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.eidos-color-picker-copy {
+  @include button-reset;
+  @include flex-center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--gray-200);
+  background: var(--gray-50);
+  color: var(--gray-500);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
+
+  &:hover:not(:disabled):not(.eidos-color-picker-copy--copied) {
+    background: var(--gray-100);
+    color: var(--gray-700);
+  }
+
+  &--copied {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--white);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================================================
+// Swatches
+// ============================================================================
+
+.eidos-color-picker-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.eidos-color-picker-swatch {
+  @include button-reset;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--border-radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transform 0.1s ease, border-color 0.12s ease;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.2);
+  }
+
+  &--active {
+    border-color: var(--primary-color);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+// ============================================================================
+// Disabled state
+// ============================================================================
+
+.eidos-color-picker--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

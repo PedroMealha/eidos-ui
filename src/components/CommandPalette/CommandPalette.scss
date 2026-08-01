@@ -1,0 +1,254 @@
+@use '../../styles/mixins.scss' as *;
+
+// ── Backdrop ───────────────────────────────────────────────────────────────────
+// Full-screen overlay that dims the page content behind the dialog.
+// Starts fully transparent; .eidos-cmd-backdrop--visible drives the fade-in.
+
+.eidos-cmd-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 9000;
+	@include flex-center;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+
+	&--visible {
+		opacity: 1;
+	}
+}
+
+// ── Dialog ─────────────────────────────────────────────────────────────────────
+// The centred card that holds the search input, results list, and footer.
+// Entry animation: scale(0.97) + translateY(-8px) → scale(1) + translateY(0).
+
+.eidos-cmd-dialog {
+	background: var(--white);
+	border-radius: var(--border-radius-lg);
+	@include elevation(4);
+	width: 560px;
+	max-width: calc(100vw - 32px);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	// Initial (off-screen) state — CSS transitions will animate from here
+	opacity: 0;
+	transform: scale(0.97) translateY(-8px);
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+
+	&--visible {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+// ── Search area ────────────────────────────────────────────────────────────────
+// Sticky header containing the leading icon, the text input, and the ⌘K badge.
+
+.eidos-cmd-search {
+	@include flex-center-y;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-md);
+	border-bottom: 1px solid var(--gray-200);
+	flex-shrink: 0;
+}
+
+.eidos-cmd-search-icon {
+	color: var(--gray-400);
+	flex-shrink: 0;
+}
+
+.eidos-cmd-input {
+	@include input-reset;
+	flex: 1;
+	font-size: var(--font-size-base);
+	color: var(--dark-color);
+	line-height: 1.5;
+
+	&::placeholder {
+		color: var(--gray-400);
+	}
+}
+
+// Small "⌘K" keyboard shortcut badge shown at the trailing edge of the search row.
+.eidos-cmd-search-badge {
+	@include flex-center-y;
+	gap: 3px;
+	padding: 2px 6px;
+	border: 1px solid var(--gray-200);
+	border-radius: var(--border-radius-sm);
+	font-size: 11px;
+	font-family: var(--font-family-mono);
+	color: var(--gray-400);
+	background: var(--gray-50);
+	flex-shrink: 0;
+	user-select: none;
+
+	span {
+		line-height: 1;
+	}
+}
+
+// ── Results list ───────────────────────────────────────────────────────────────
+
+.eidos-cmd-list {
+	overflow-y: auto;
+	padding: var(--spacing-xs) 0;
+
+	// Slim, unobtrusive scrollbar
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: var(--gray-200);
+		border-radius: 3px;
+
+		&:hover {
+			background: var(--gray-300);
+		}
+	}
+}
+
+// ── Group label ────────────────────────────────────────────────────────────────
+
+.eidos-cmd-group-label {
+	padding: var(--spacing-xs) var(--spacing-md);
+	font-size: var(--font-size-xs);
+	font-weight: var(--font-weight-semibold);
+	color: var(--gray-500);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	line-height: 1.6;
+
+	// Push group labels down a little when they're not the very first element
+	// so they're visually separated from the previous group's items.
+	& + & {
+		padding-top: var(--spacing-sm);
+	}
+}
+
+// ── Result item ────────────────────────────────────────────────────────────────
+
+.eidos-cmd-item {
+	padding: var(--spacing-sm) var(--spacing-md);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	transition: background 0.1s ease;
+	// Reserve 2px left border space so layout never shifts on focus
+	border-left: 2px solid transparent;
+	user-select: none;
+
+	&:hover:not(.eidos-cmd-item--disabled) {
+		background: var(--gray-50);
+	}
+
+	// Keyboard / mouse focused state
+	&--focused {
+		background: var(--primary-50);
+		border-left-color: var(--primary-color);
+	}
+
+	// Disabled state — fully non-interactive via pointer-events
+	&--disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+}
+
+.eidos-cmd-item-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	color: var(--gray-500);
+	flex-shrink: 0;
+}
+
+.eidos-cmd-item-body {
+	flex: 1;
+	min-width: 0; // allows children to truncate
+}
+
+.eidos-cmd-item-label {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-medium);
+	color: var(--dark-color);
+	line-height: 1.4;
+}
+
+.eidos-cmd-item-description {
+	font-size: var(--font-size-xs);
+	color: var(--gray-500);
+	line-height: 1.4;
+	margin-top: 1px;
+	@include text-truncate;
+}
+
+.eidos-cmd-item-shortcut {
+	@include flex-center-y;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+// Individual keyboard key badge
+kbd.eidos-cmd-kbd {
+	display: inline-flex;
+	align-items: center;
+	border: 1px solid var(--gray-300);
+	border-radius: 3px;
+	padding: 1px 5px;
+	font-size: 10px;
+	font-family: var(--font-family-mono);
+	color: var(--gray-600);
+	background: var(--gray-50);
+	line-height: 1.6;
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────────
+
+.eidos-cmd-empty {
+	padding: var(--spacing-xl) var(--spacing-md);
+	text-align: center;
+	color: var(--gray-500);
+	font-size: var(--font-size-sm);
+	margin: 0;
+}
+
+// ── Footer ─────────────────────────────────────────────────────────────────────
+
+.eidos-cmd-footer {
+	border-top: 1px solid var(--gray-200);
+	padding: var(--spacing-sm) var(--spacing-md);
+	font-size: var(--font-size-xs);
+	color: var(--gray-400);
+	@include flex-between;
+	flex-shrink: 0;
+}
+
+// Left-hand keyboard hint strip: "↑↓ Navigate  ↵ Select  Esc Close"
+.eidos-cmd-hints {
+	@include flex-center-y;
+	gap: var(--spacing-md);
+
+	span {
+		@include flex-center-y;
+		gap: 3px;
+	}
+}
+
+// Right-hand consumer-supplied slot
+.eidos-cmd-footer-slot {
+	@include flex-center-y;
+	gap: var(--spacing-sm);
+}

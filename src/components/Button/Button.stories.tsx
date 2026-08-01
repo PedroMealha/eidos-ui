@@ -3,7 +3,7 @@ import { Download, Plus, Trash2, ArrowBigDownDash, ArrowRight } from 'lucide-rea
 import { Button, IconButton } from './Button.component';
 
 const meta = {
-  title: 'Components/Button',
+  title: 'Elements/Button',
   component: Button,
   parameters: {
     layout: 'centered',

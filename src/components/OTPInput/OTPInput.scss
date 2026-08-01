@@ -1,0 +1,166 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// OTPInput — outer container
+// ============================================================================
+
+.eidos-otp {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+
+	// ── Label ─────────────────────────────────────────────────────────────────
+
+	.eidos-otp-label {
+		@include font-size(sm);
+		@include font-weight(medium);
+		color: var(--gray-700);
+		line-height: 1.4;
+	}
+
+	// ── Slots row ─────────────────────────────────────────────────────────────
+
+	.eidos-otp-slots {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-sm);
+	}
+
+	// ── Individual slot ───────────────────────────────────────────────────────
+
+	.eidos-otp-slot {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+
+		// Default to medium size; overridden by size modifiers below
+		width: var(--component-size-md);
+		height: var(--component-size-md);
+
+		border: 1.5px solid var(--gray-300);
+		@include border-radius(md);
+		background-color: var(--white);
+		transition:
+			border-color 0.2s ease,
+			box-shadow 0.2s ease,
+			background-color 0.2s ease;
+
+		// ── Inner input ────────────────────────────────────────────────────────
+
+		input {
+			@include input-reset;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			background: transparent;
+			color: var(--dark-color);
+			@include font-weight(semibold);
+			@include font-size(base); // overridden by size variants
+			cursor: text;
+			caret-color: var(--primary-color);
+
+			// Password dots should be centred too
+			&[type='password'] {
+				letter-spacing: 0.1em;
+			}
+		}
+
+		// ── State modifiers ────────────────────────────────────────────────────
+
+		&--filled {
+			border-color: var(--primary-300);
+			background-color: var(--primary-50);
+		}
+
+		&--focused {
+			border-color: var(--primary-color);
+			box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.15);
+			background-color: var(--white);
+		}
+
+		&--error {
+			border-color: var(--danger-color);
+			background-color: rgb(var(--danger-rgb) / 0.04);
+
+			&.eidos-otp-slot--focused {
+				box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.15);
+			}
+		}
+
+		&--disabled {
+			opacity: 0.5;
+			background-color: var(--gray-50);
+			cursor: not-allowed;
+
+			input {
+				cursor: not-allowed;
+				pointer-events: none;
+			}
+		}
+	}
+
+	// ── Hint ──────────────────────────────────────────────────────────────────
+
+	.eidos-otp-hint {
+		@include font-size(sm);
+		color: var(--gray-500);
+		line-height: 1.4;
+	}
+
+	// ── Error message ─────────────────────────────────────────────────────────
+
+	.eidos-otp-error-message {
+		@include flex-center-y;
+		gap: var(--spacing-xs);
+		@include font-size(sm);
+		color: var(--danger-color);
+		line-height: 1.4;
+
+		svg {
+			flex-shrink: 0;
+			width: 1em;
+			height: 1em;
+		}
+	}
+
+	// ── Size variants ─────────────────────────────────────────────────────────
+
+	&--small {
+		.eidos-otp-slot {
+			width: var(--component-size-sm);
+			height: var(--component-size-sm);
+
+			input {
+				@include font-size(sm);
+			}
+		}
+	}
+
+	// medium is the default — declared on the slot itself above
+
+	&--large {
+		.eidos-otp-slot {
+			width: var(--component-size-lg);
+			height: var(--component-size-lg);
+
+			input {
+				@include font-size(lg);
+			}
+		}
+	}
+
+	// ── Disabled container modifier ───────────────────────────────────────────
+	// (individual slots also carry --disabled for pointer-events; this covers
+	//  any surrounding chrome if needed in the future)
+
+	&--disabled {
+		.eidos-otp-label {
+			opacity: 0.5;
+		}
+
+		.eidos-otp-hint {
+			opacity: 0.5;
+		}
+	}
+}

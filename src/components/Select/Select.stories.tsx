@@ -4,7 +4,7 @@ import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useState } from "react";
 
 const meta: Meta<typeof Select> = {
-  title: "Components/Select",
+  title: "Forms/Select",
   component: Select,
   parameters: {
     layout: "centered",

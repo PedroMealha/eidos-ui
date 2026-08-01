@@ -8,6 +8,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   trigger,
   content,
   placement: preferredPlacement = "bottom",
+  align = "start",
   delay = 0,
   disabled = false,
   triggerClassName = "",
@@ -99,23 +100,37 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       let top = 0;
       let left = 0;
 
+      // Helpers for cross-axis alignment
+      const alignedLeft = (() => {
+        switch (align) {
+          case "end":    return triggerRect.right - contentRect.width;
+          case "center": return triggerRect.left + (triggerRect.width - contentRect.width) / 2;
+          default:       return triggerRect.left; // "start"
+        }
+      })();
+      const alignedTop = (() => {
+        switch (align) {
+          case "end":    return triggerRect.bottom - contentRect.height;
+          case "center": return triggerRect.top + (triggerRect.height - contentRect.height) / 2;
+          default:       return triggerRect.top; // "start"
+        }
+      })();
+
       switch (preferredPlacement) {
         case "top":
           top = triggerRect.top - contentRect.height - gap;
-          left = triggerRect.left;
+          left = alignedLeft;
           break;
         case "bottom":
           top = triggerRect.bottom + gap;
-          left = triggerRect.left;
+          left = alignedLeft;
           break;
         case "left":
-          top =
-            triggerRect.top + triggerRect.height / 2 - contentRect.height / 2;
+          top = alignedTop;
           left = triggerRect.left - contentRect.width - gap;
           break;
         case "right":
-          top =
-            triggerRect.top + triggerRect.height / 2 - contentRect.height / 2;
+          top = alignedTop;
           left = triggerRect.right + gap;
           break;
       }
@@ -164,7 +179,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 
       return { top, left, placement };
     },
-    [preferredPlacement, minHeight, maxHeight, minWidth, maxWidth]
+    [preferredPlacement, align, minHeight, maxHeight, minWidth, maxWidth]
   );
 
   const handleScroll = useCallback(() => {

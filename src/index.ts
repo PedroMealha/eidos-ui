@@ -34,6 +34,14 @@ export { Select } from './components/Select';
 export { SnackbarProvider, SnackbarContainer } from './components/Snackbar';
 export { DatePicker, Calendar, TimeInput } from './components/DatePicker';
 export { Table, TableFiltersDropdown } from './components/Table';
+export { TagInput } from './components/TagInput';
+export { OTPInput } from './components/OTPInput';
+export { Combobox } from './components/Combobox';
+export { TreeView } from './components/TreeView';
+export { ColorPicker } from './components/ColorPicker';
+export { CommandPalette } from './components/CommandPalette';
+export { VirtualList } from './components/VirtualList';
+export { DataGrid } from './components/DataGrid';
 
 // Hooks
 export { useDropdownContext } from './components/Dropdown';

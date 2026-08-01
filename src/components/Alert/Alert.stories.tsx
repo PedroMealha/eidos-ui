@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Alert } from "./Alert.component";
 
 const meta = {
-  title: "Components/Alert",
+  title: "Elements/Alert",
   component: Alert,
   parameters: {
     layout: "padded",
