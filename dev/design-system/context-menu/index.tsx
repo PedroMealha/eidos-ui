@@ -34,7 +34,7 @@ const CANVAS_ITEMS: MenuItemType[] = [
   { type: 'item', id: 'share',     label: 'Share',     icon: Share2,    onClick: () => {} },
   { type: 'item', id: 'open',      label: 'Open link', icon: ExternalLink, onClick: () => {} },
   { type: 'separator', id: 'sep2' },
-  { type: 'item', id: 'delete',    label: 'Delete',    icon: Trash2,    onClick: () => {} },
+  { type: 'item', id: 'delete',    label: 'Delete',    icon: Trash2,    color: 'danger', onClick: () => {} },
 ];
 
 const files = [
@@ -59,7 +59,7 @@ export const ContextMenuShowcase = () => (
             { type: 'item', id: 'star',   label: 'Add to starred', icon: Star,  onClick: () => {} },
             { type: 'item', id: 'copy',   label: 'Copy',         icon: Copy,    shortcut: '⌘C', onClick: () => {} },
             { type: 'separator', id: 'sep' },
-            { type: 'item', id: 'delete', label: 'Delete',       icon: Trash2,  onClick: () => {} },
+            { type: 'item', id: 'delete', label: 'Delete',       icon: Trash2,  color: 'danger', onClick: () => {} },
           ];
           return (
             <ContextMenu key={file.id} items={items}>

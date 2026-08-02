@@ -1,0 +1,101 @@
+@use '../../styles/mixins' as *;
+
+.eidos-inline-edit {
+  // ── Display mode ──────────────────────────────────────────────────────────
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 0;
+  cursor: text;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  outline: none;
+
+  // Sizes
+  &--small {
+    height: var(--component-size-sm);
+    padding: 0 var(--spacing-sm);
+    @include font-size(sm);
+  }
+
+  &--medium {
+    height: var(--component-size-md);
+    padding: 0 var(--spacing-md);
+    @include font-size(base);
+  }
+
+  &--large {
+    height: var(--component-size-lg);
+    padding: 0 var(--spacing-lg);
+    @include font-size(lg);
+  }
+
+  &--full-width {
+    display: flex;
+    width: 100%;
+  }
+
+  // Pencil icon — hidden at rest, revealed on hover/focus
+  .eidos-inline-edit__icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--gray-400);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+
+    svg {
+      width: 0.875em;
+      height: 0.875em;
+    }
+  }
+
+  .eidos-inline-edit__text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .eidos-inline-edit__placeholder {
+    color: var(--gray-400);
+    font-style: italic;
+  }
+
+  // Hover / focus: show edit affordance
+  &:not(&--disabled) {
+    &:hover,
+    &:focus-visible {
+      background-color: var(--gray-50);
+      border-color: var(--gray-200);
+
+      .eidos-inline-edit__icon {
+        opacity: 1;
+      }
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--primary-focus, rgba(59, 130, 246, 0.25));
+    }
+  }
+
+  // ── Disabled ──────────────────────────────────────────────────────────────
+  &--disabled {
+    cursor: not-allowed;
+    color: var(--gray-400);
+  }
+
+  // ── Edit mode — the Input fills the same slot ─────────────────────────────
+  &--editing {
+    // In edit mode this becomes the Input wrapper itself (className is on Input).
+    // No extra visual treatment needed — Input handles its own styling.
+    display: block;
+    border: none;
+    background: transparent;
+    padding: 0;
+    height: auto;
+    cursor: initial;
+  }
+}

@@ -37,6 +37,22 @@
 			background-color: transparent;
 		}
 	}
+
+	&.eidos-menu-item--danger {
+		color: var(--danger-color, #dc2626);
+
+		.eidos-menu-icon {
+			color: var(--danger-color, #dc2626);
+		}
+
+		&:hover {
+			background-color: var(--danger-subtle, #fef2f2);
+		}
+
+		&:active {
+			background-color: var(--danger-muted, #fee2e2);
+		}
+	}
 }
 
 // Component item (no hover/link state)

@@ -154,7 +154,7 @@ export const Examples = {
 							],
 						},
 						{ type: 'separator', id: 'sep2' },
-						{ type: 'item', id: '3', label: 'Delete', icon: Trash2, onClick: () => alert('Delete') },
+						{ type: 'item', id: '3', label: 'Delete', icon: Trash2, color: 'danger', onClick: () => alert('Delete') },
 					]}
 				/>
 			</div>

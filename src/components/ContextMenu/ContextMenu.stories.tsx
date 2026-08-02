@@ -30,7 +30,7 @@ const EDIT_ITEMS: MenuItemType[] = [
 	{ type: 'item', id: 'rename', label: 'Rename', icon: Pencil,      onClick: () => console.log('rename') },
 	{ type: 'item', id: 'open',   label: 'Open in new tab', icon: ExternalLink, onClick: () => console.log('open') },
 	{ type: 'separator', id: 'sep2' },
-	{ type: 'item', id: 'delete', label: 'Delete', icon: Trash2, onClick: () => console.log('delete') },
+	{ type: 'item', id: 'delete', label: 'Delete', icon: Trash2, color: 'danger', onClick: () => console.log('delete') },
 ];
 
 const TABLE_ITEMS: MenuItemType[] = [

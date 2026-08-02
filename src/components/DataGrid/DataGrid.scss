@@ -210,6 +210,17 @@
 			min-height: 0;
 			border-radius: 0;
 		}
+
+		// When the editor is a Select, the Input sits inside two extra positioned
+		// wrappers (.eidos-select-container, .eidos-select-trigger).  Reset them
+		// to static so that .eidos-input-container's inset:0 still anchors to the
+		// <td> (which has position:relative) instead of collapsing inside the trigger.
+		.eidos-select-container,
+		.eidos-select-trigger {
+			position: static;
+			width: 100%;
+			height: 100%;
+		}
 	}
 
 	// Validation error overrides the primary ring with danger colour

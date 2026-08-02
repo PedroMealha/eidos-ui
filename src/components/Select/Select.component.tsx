@@ -33,6 +33,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       maxHeight = "300px",
       autoWidth = true,
       clearable = true,
+      autoOpen = false,
       dropdownProps = {},
     },
     ref
@@ -366,6 +367,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       >
         <Dropdown
           key={menuKey}
+          defaultOpen={autoOpen}
           trigger={triggerElement}
           content={
             <div

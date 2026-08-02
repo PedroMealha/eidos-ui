@@ -31,6 +31,8 @@ export interface SelectProps {
   maxHeight?: number | string;
   autoWidth?: boolean;
   clearable?: boolean;
+  /** Open the dropdown immediately on mount — useful for inline cell editors. */
+  autoOpen?: boolean;
   dropdownProps?: {
     dropdownLevel?: number;
     dropdownGroup?: string;

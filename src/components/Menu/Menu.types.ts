@@ -12,6 +12,8 @@ export interface MenuItem extends BaseMenuItem {
   icon?: IconType;
   onClick?: () => void;
   shortcut?: string;
+  /** Applies a semantic color to the item. Use `'danger'` for destructive actions. */
+  color?: 'danger';
 }
 
 export interface MenuComponentItem extends BaseMenuItem {

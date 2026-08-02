@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TreeView } from './TreeView.component';
+import { InlineEdit } from '../InlineEdit/InlineEdit.component';
 import type { TreeNode } from './TreeView.types';
 
 // ============================================================================
@@ -313,4 +314,97 @@ export const CustomRenderLabel: Story = {
       )}
     />
   ),
+};
+
+/**
+ * `renderLabel` combined with `InlineEdit` enables in-place node rename.
+ * Hover a node to reveal the pencil icon, then click it to rename. Press
+ * Enter or click away to confirm, Esc to cancel.
+ *
+ * Note: clicking the label itself expands/collapses the node (TreeView
+ * behaviour). The rename is intentionally triggered via the icon button so
+ * the two interactions don't conflict.
+ */
+export const InlineRename = {
+  render: () => {
+    const [data, setData] = React.useState<TreeNode[]>(FILE_TREE);
+    const [editingId, setEditingId] = React.useState<string | null>(null);
+
+    const renameNode = (nodes: TreeNode[], id: string, newLabel: string): TreeNode[] =>
+      nodes.map(n => ({
+        ...n,
+        label: n.id === id ? newLabel : n.label,
+        children: n.children ? renameNode(n.children, id, newLabel) : undefined,
+      }));
+
+    return (
+      <TreeView
+        data={data}
+        defaultExpandAll
+        renderLabel={(node) => (
+          <span
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, minWidth: 0 }}
+            className="treeview-rename-row"
+          >
+            <InlineEdit
+              value={node.label}
+              editing={editingId === node.id}
+              onEditingChange={(open) => setEditingId(open ? node.id : null)}
+              onConfirm={(v) => {
+                setData(prev => renameNode(prev, node.id, v));
+                setEditingId(null);
+              }}
+              onCancel={() => setEditingId(null)}
+              size="small"
+              inputVariant="outlined"
+              showEditIcon={false}
+              renderDisplay={(v) => (
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {v}
+                </span>
+              )}
+            />
+            {editingId !== node.id && (
+              <button
+                aria-label={`Rename ${node.label}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingId(node.id);
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '1px',
+                  border: 'none',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  color: 'var(--gray-400)',
+                  borderRadius: '3px',
+                  opacity: 0,
+                  transition: 'opacity 0.15s',
+                }}
+                className="treeview-rename-btn"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+            )}
+          </span>
+        )}
+      />
+    );
+  },
+  decorators: [
+    (Story: React.ComponentType) => (
+      <>
+        <style>{`
+          .treeview-rename-row:hover .treeview-rename-btn,
+          .treeview-rename-row:focus-within .treeview-rename-btn { opacity: 1 !important; }
+        `}</style>
+        <Story />
+      </>
+    ),
+  ],
 };

@@ -47,6 +47,7 @@ import { ButtonGroupShowcase } from './design-system/button-group';
 import { SegmentedControlShowcase } from './design-system/segmented-control';
 import { SplitButtonShowcase } from './design-system/split-button';
 import { ContextMenuShowcase } from './design-system/context-menu';
+import { InlineEditShowcase } from './design-system/inline-edit';
 import { KbdShowcase } from './design-system/kbd';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -55,7 +56,7 @@ import { KbdShowcase } from './design-system/kbd';
 
 type ComponentId =
   | 'Button' | 'Button Group' | 'Split Button' | 'Chip' | 'Badge' | 'Alert' | 'Card' | 'Avatar'
-  | 'Empty State' | 'Kbd'
+  | 'Empty State' | 'Kbd' | 'Inline Edit'
   | 'Input' | 'Textarea' | 'Select' | 'Checkbox' | 'Radio' | 'Switch' | 'Slider'
   | 'Number Input' | 'File Upload' | 'Tag Input' | 'OTP Input' | 'Combobox' | 'Color Picker'
   | 'Tabs' | 'Accordion' | 'Breadcrumb' | 'Stepper' | 'Pagination'
@@ -66,7 +67,7 @@ type ComponentId =
   | 'Divider & Spinner';
 
 const NAV: Array<{ group: string; items: ComponentId[] }> = [
-  { group: 'ELEMENTS',    items: ['Button', 'Button Group', 'Split Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State', 'Kbd'] },
+  { group: 'ELEMENTS',    items: ['Button', 'Button Group', 'Split Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State', 'Kbd', 'Inline Edit'] },
   { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch', 'Slider', 'Number Input', 'File Upload', 'Tag Input', 'OTP Input', 'Combobox', 'Color Picker'] },
   { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu', 'Tree View', 'Segmented Control'] },
   { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover', 'Context Menu', 'Command Palette'] },
@@ -113,6 +114,7 @@ const SHOWCASES: Record<ComponentId, React.ReactNode> = {
   'Skeleton':          <SkeletonShowcase />,
   'Avatar':            <AvatarShowcase />,
   'Kbd':               <KbdShowcase />,
+  'Inline Edit':       <InlineEditShowcase />,
   'Segmented Control': <SegmentedControlShowcase />,
   'Context Menu':      <ContextMenuShowcase />,
   'Tag Input':         <TagInputShowcase />,

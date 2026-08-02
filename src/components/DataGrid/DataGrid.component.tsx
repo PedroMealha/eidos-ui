@@ -823,6 +823,8 @@ function DataGridInner<T extends Record<string, unknown>>({
 			case 'select': {
 				// Auto-commit as soon as the user picks an option; the Dropdown's portal
 				// means we can't rely on a simple onBlur for this cell type.
+				// autoOpen=true so the dropdown opens on the same click that entered
+				// edit mode — no second click needed.
 				const selectOptions = (col.options ?? []).map(o => ({
 					id: o.value,
 					value: o.value,
@@ -833,6 +835,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 					<Select
 						options={selectOptions}
 						value={String(value ?? '')}
+						autoOpen
 						inputProps={{ variant: 'bare', size: 'small' }}
 						onChange={v => {
 							const selected = Array.isArray(v) ? (v[0] ?? '') : v;

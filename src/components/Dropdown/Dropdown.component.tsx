@@ -11,6 +11,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   align = "start",
   delay = 0,
   disabled = false,
+  defaultOpen = false,
   triggerClassName = "",
   contentClassName = "",
   closeOnClickOutside = true,
@@ -29,7 +30,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   const actualLevel =
     dropdownLevel !== undefined ? dropdownLevel : context.level;
   const [dropdownState, setDropdownState] = useState<DropdownState>({
-    isVisible: false,
+    isVisible: defaultOpen,
     isPositioned: false,
     position: { top: 0, left: 0, placement: preferredPlacement },
   });

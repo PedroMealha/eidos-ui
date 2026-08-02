@@ -13,6 +13,8 @@ export interface DropdownState {
 export interface DropdownProps {
   trigger: React.ReactNode;
   content: React.ReactNode;
+  /** Open the dropdown immediately on first mount. Useful for programmatic contexts. */
+  defaultOpen?: boolean;
   placement?: "top" | "bottom" | "left" | "right";
   align?: "start" | "end" | "center";
   delay?: number;

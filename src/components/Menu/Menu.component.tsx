@@ -37,7 +37,11 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
 				return (
 					<li
 						key={item.id}
-						className={`eidos-menu-item ${item.disabled ? 'eidos-menu-item--disabled' : ''}`}
+						className={[
+							'eidos-menu-item',
+							item.disabled ? 'eidos-menu-item--disabled' : '',
+							item.color ? `eidos-menu-item--${item.color}` : '',
+						].filter(Boolean).join(' ')}
 						onClick={() => handleItemClick(item)}
 					>
 						{item.icon && renderIcon(item.icon, 'eidos-menu-icon')}
