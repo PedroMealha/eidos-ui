@@ -20,9 +20,9 @@ const meta = {
     },
     variant: {
       control: 'select',
-      options: ['filled', 'outlined', 'soft'],
+      options: ['filled', 'outlined', 'text'],
       description: 'Visual style variant',
-      table: { type: { summary: '"filled" | "outlined" | "soft"' }, defaultValue: { summary: 'filled' } },
+      table: { type: { summary: '"filled" | "outlined" | "text"' }, defaultValue: { summary: 'filled' } },
     },
     color: {
       control: 'select',
@@ -108,7 +108,7 @@ export const Examples = {
           <div style={row}>
             <Chip variant="filled">Filled</Chip>
             <Chip variant="outlined">Outlined</Chip>
-            <Chip variant="soft">Soft</Chip>
+            <Chip variant="text">Text</Chip>
           </div>
         </div>
 
@@ -164,7 +164,7 @@ export const Examples = {
           <p style={label}>Combined</p>
           <div style={row}>
             <Chip variant="outlined" color="success" preIcon={Check} size="small">Verified</Chip>
-            <Chip variant="soft" color="warning" posIcon={Star}>Premium</Chip>
+            <Chip variant="text" color="warning" posIcon={Star}>Premium</Chip>
             <Chip variant="filled" color="danger" onRemove={() => {}}>Error</Chip>
           </div>
         </div>

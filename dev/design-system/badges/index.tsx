@@ -11,7 +11,7 @@ export const BadgeShowcase = () => (
         <Row>
           <Badge variant="filled" color="primary">Filled</Badge>
           <Badge variant="outlined" color="primary">Outlined</Badge>
-          <Badge variant="soft" color="primary">Soft</Badge>
+          <Badge variant="text" color="primary">Text</Badge>
         </Row>
       </Section>
 
@@ -23,7 +23,7 @@ export const BadgeShowcase = () => (
 
       <Section label="Colors — Soft">
         <Row>
-          {COLORS.map((c) => <Badge key={c} color={c} variant="soft">{c}</Badge>)}
+          {COLORS.map((c) => <Badge key={c} color={c} variant="text">{c}</Badge>)}
         </Row>
       </Section>
     </Grid>
@@ -55,7 +55,7 @@ export const BadgeShowcase = () => (
     <Section label="Inline with other components">
       <Row>
         <Chip color="primary">Messages <Badge color="danger" size="small">3</Badge></Chip>
-        <Chip color="secondary">Alerts <Badge color="warning" size="small" variant="soft">12</Badge></Chip>
+        <Chip color="secondary">Alerts <Badge color="warning" size="small" variant="text">12</Badge></Chip>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.875rem' }}>
           Notifications <Badge color="primary" dot />
         </span>

@@ -3,7 +3,7 @@ import React from "react";
 export interface BadgeProps {
   children?: React.ReactNode;
   color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
-  variant?: "filled" | "outlined" | "soft";
+  variant?: "filled" | "outlined" | "text";
   size?: "small" | "medium";
   /** Renders a coloured dot with no text content */
   dot?: boolean;

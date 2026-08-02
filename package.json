@@ -23,7 +23,8 @@
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "init": "npm run dev & npm run storybook"
   },
   "keywords": [
     "react",

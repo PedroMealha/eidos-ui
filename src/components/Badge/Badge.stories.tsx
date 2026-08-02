@@ -27,10 +27,10 @@ const meta = {
     },
     variant: {
       control: "select",
-      options: ["filled", "outlined", "soft"],
+      options: ["filled", "outlined", "text"],
       description: "Visual style variant",
       table: {
-        type: { summary: '"filled" | "outlined" | "soft"' },
+        type: { summary: '"filled" | "outlined" | "text"' },
         defaultValue: { summary: "filled" },
       },
     },
@@ -111,11 +111,11 @@ export const Variants = {
           </div>
         </div>
         <div>
-          <p style={label}>Soft</p>
+          <p style={label}>Text</p>
           <div style={row}>
-            <Badge variant="soft" color="primary">Soft</Badge>
-            <Badge variant="soft" color="success">Soft</Badge>
-            <Badge variant="soft" color="danger">Soft</Badge>
+            <Badge variant="text" color="primary">Text</Badge>
+            <Badge variant="text" color="success">Text</Badge>
+            <Badge variant="text" color="danger">Text</Badge>
           </div>
         </div>
       </div>
@@ -192,7 +192,7 @@ export const Sizes = {
           <div style={row}>
             <Badge size="small">Small</Badge>
             <Badge size="small" variant="outlined">Small</Badge>
-            <Badge size="small" variant="soft">Small</Badge>
+            <Badge size="small" variant="text">Small</Badge>
             <Badge size="small" dot color="success" />
           </div>
         </div>
@@ -201,7 +201,7 @@ export const Sizes = {
           <div style={row}>
             <Badge size="medium">Medium</Badge>
             <Badge size="medium" variant="outlined">Medium</Badge>
-            <Badge size="medium" variant="soft">Medium</Badge>
+            <Badge size="medium" variant="text">Medium</Badge>
             <Badge size="medium" dot color="success" />
           </div>
         </div>
@@ -260,21 +260,21 @@ export const WithChip = {
         <div>
           <p style={label}>Status label + badge count</p>
           <div style={row}>
-            <Chip color="primary" variant="soft">In Progress</Chip>
+            <Chip color="primary" variant="text">In Progress</Chip>
             <Badge color="primary">4</Badge>
           </div>
         </div>
         <div>
-          <p style={label}>Category chip + soft badge</p>
+          <p style={label}>Category chip + text badge</p>
           <div style={row}>
-            <Chip color="success" variant="soft">Completed</Chip>
-            <Badge color="success" variant="soft">12</Badge>
+            <Chip color="success" variant="text">Completed</Chip>
+            <Badge color="success" variant="text">12</Badge>
           </div>
         </div>
         <div>
           <p style={label}>Alert chip + danger badge</p>
           <div style={row}>
-            <Chip color="danger" variant="soft">Errors</Chip>
+            <Chip color="danger" variant="text">Errors</Chip>
             <Badge color="danger" max={9}>{15}</Badge>
           </div>
         </div>

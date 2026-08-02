@@ -124,10 +124,10 @@
 	}
 
 	// ========================================================================
-	// Soft variant — tinted background at low opacity, full-saturation text
+	// Text variant — tinted background at low opacity, full-saturation text
 	// ========================================================================
 
-	&--soft {
+	&--text {
 		&.eidos-badge--primary {
 			@include bg-color-opacity(primary, 0.12);
 			color: var(--primary-color);

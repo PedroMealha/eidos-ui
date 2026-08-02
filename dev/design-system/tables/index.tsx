@@ -52,7 +52,7 @@ const statusChip = (v: unknown) => {
     inactive: 'secondary',
   };
   return (
-    <Chip color={colorMap[status]} size="small" variant="soft">
+    <Chip color={colorMap[status]} size="small" variant="text">
       {status}
     </Chip>
   );

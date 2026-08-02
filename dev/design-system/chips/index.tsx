@@ -8,7 +8,7 @@ export const ChipShowcase = () => (
       <Row>
         <Chip variant="filled">Filled</Chip>
         <Chip variant="outlined">Outlined</Chip>
-        <Chip variant="soft">Soft</Chip>
+        <Chip variant="text">Text</Chip>
       </Row>
     </Section>
 
