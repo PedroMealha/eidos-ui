@@ -81,7 +81,7 @@ export type { ModalProps, ModalAction } from './components/Modal';
 export type { SelectProps, SelectOption } from './components/Select';
 export type { SnackbarProps, SnackbarVariant, SnackbarAction, SnackbarState, SnackbarItem, SnackbarContextValue, UseSnackbarReturn } from './components/Snackbar';
 export type { DatePickerProps, DateSelectionMode, TimeConfig, DateTimeValue, TimeValue, RangeTimeValue, CalendarConfig, DateFormatConfig, CalendarProps } from './components/DatePicker';
-export type { TableProps, TableColumn, TableFilters, FilterValue } from './components/Table';
+export type { TableProps, TableColumn, TableFilters, FilterValue, BulkAction } from './components/Table';
 
 // Shared type (all IconTypes are the same)
 export type { IconType } from './utils';

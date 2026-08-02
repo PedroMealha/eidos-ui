@@ -3,7 +3,7 @@ import type { IconType } from "../../utils";
 
 interface BaseInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
-  variant?: "filled" | "outlined" | "text";
+  variant?: "filled" | "outlined" | "text" | "bare";
   color?: "primary" | "secondary" | "success" | "danger";
   size?: "small" | "medium" | "large";
   disabled?: boolean;

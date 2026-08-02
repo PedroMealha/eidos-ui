@@ -40,9 +40,9 @@
   }
 
   // Size variants
-  .eidos-number-input--small & { height: 32px; }
-  .eidos-number-input--medium & { height: 40px; }
-  .eidos-number-input--large & { height: 48px; }
+  .eidos-number-input--small & { height: var(--component-size-sm); }
+  .eidos-number-input--medium & { height: var(--component-size-md); }
+  .eidos-number-input--large & { height: var(--component-size-lg); }
 }
 
 .eidos-number-input-btn {

@@ -18,17 +18,17 @@
 	// Sizes
 	&--small {
 		font-size: var(--font-size-xs);
-		min-height: 24px;
+		min-height: var(--component-size-sm);
 	}
 
 	&--medium {
 		font-size: var(--font-size-sm);
-		min-height: 32px;
+		min-height: var(--component-size-md);
 	}
 
 	&--large {
 		font-size: var(--font-size-base);
-		min-height: 40px;
+		min-height: var(--component-size-lg);
 	}
 
 	&--full-width {

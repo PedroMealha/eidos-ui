@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Table } from "./Table.component";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../Button";
 import { Chip } from "../Chip";
 import { Menu } from "../Menu";
@@ -254,10 +254,20 @@ export const WithSorting: Story = {
       { key: "joinDate", label: "Join Date", sortable: true },
     ];
 
+    // Simulate what a server would return after receiving the sort params.
+    const sortedData = useMemo(() => {
+      return [...sampleUsers].sort((a, b) => {
+        const aVal = String(a[sortKey as keyof User] ?? "");
+        const bVal = String(b[sortKey as keyof User] ?? "");
+        const cmp = aVal.localeCompare(bVal);
+        return sortDirection === "asc" ? cmp : -cmp;
+      });
+    }, [sortKey, sortDirection]);
+
     return (
       <div style={{ width: "100%" }}>
         <Table
-          data={sampleUsers}
+          data={sortedData}
           columns={columns}
           currentSort={{ key: sortKey, direction: sortDirection }}
           onSortChange={(key, direction) => {

@@ -1,16 +1,82 @@
 @use '../../styles/mixins.scss' as *;
 
 // ─── Container ────────────────────────────────────────────────────────────────
+// overflow: hidden removed — sticky columns require no overflow on ancestors.
+// Horizontal scroll is handled by the inner <div style="overflow-x:auto">.
 
 .eidos-data-grid-container {
 	background: var(--white);
 	border-radius: var(--border-radius-md);
 	border: 1px solid var(--gray-200);
 	box-shadow: var(--box-shadow);
-	overflow: hidden;
 
 	&--sticky-header {
 		overflow-y: auto;
+	}
+}
+
+// ─── Toolbar ──────────────────────────────────────────────────────────────────
+
+.eidos-datagrid-toolbar {
+	position: relative;
+	padding: var(--spacing-sm) var(--spacing-md);
+	background: var(--gray-50);
+	border-bottom: 1px solid var(--gray-200);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: var(--spacing-sm);
+	min-height: 44px;
+}
+
+.eidos-datagrid-toolbar-left {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	flex: 1;
+	min-width: 0;
+}
+
+.eidos-datagrid-toolbar-right {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	flex-shrink: 0;
+}
+
+.eidos-datagrid-selection-count {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	color: var(--primary-700);
+	white-space: nowrap;
+}
+
+.eidos-datagrid-bulk-actions {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+}
+
+.eidos-datagrid-clear-selection {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: none;
+	background: var(--gray-200);
+	color: var(--gray-600);
+	cursor: pointer;
+	padding: 0;
+	flex-shrink: 0;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
+
+	&:hover {
+		background: var(--gray-300);
+		color: var(--gray-800);
 	}
 }
 
@@ -38,6 +104,55 @@
 	color: var(--gray-700);
 }
 
+// Sortable header cell styles
+
+.eidos-datagrid-header-cell--sortable {
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background: var(--gray-200);
+	}
+}
+
+.eidos-datagrid-header-cell--sorted {
+	background: var(--primary-50);
+	color: var(--primary-700);
+}
+
+// Header cell inner layout (label + sort icon)
+
+.eidos-datagrid-header-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--spacing-xs);
+}
+
+.eidos-datagrid-header-label {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.eidos-datagrid-sort-icon {
+	display: flex;
+	color: var(--gray-400);
+	flex-shrink: 0;
+	transition: color 0.2s ease;
+
+	.eidos-datagrid-header-cell--sortable:hover & {
+		color: var(--gray-600);
+	}
+
+	.eidos-datagrid-header-cell--sorted & {
+		color: var(--primary-600);
+	}
+}
+
 // ─── Row ──────────────────────────────────────────────────────────────────────
 
 .eidos-data-grid-row {
@@ -53,15 +168,25 @@
 	}
 }
 
+.eidos-datagrid-row--selected {
+	background: var(--primary-50);
+
+	&:hover {
+		background: var(--primary-100);
+	}
+}
+
 // ─── Cell ─────────────────────────────────────────────────────────────────────
 
 .eidos-data-grid-cell {
-	padding: var(--spacing-sm) var(--spacing-md);
+	padding: var(--spacing-md);
 	vertical-align: middle;
 	position: relative;
 	color: var(--gray-700);
 
-	// Active edit mode: inset ring using primary colour
+	// Active edit mode: inset ring using primary colour.
+	// Input/Select editors use variant="bare" so no inner border/shadow overrides
+	// are needed here — the cell's own ring is the only visual indicator.
 	&--editing {
 		padding: var(--spacing-xs);
 		background: var(--white);
@@ -86,6 +211,23 @@
 	&--readonly {
 		color: var(--gray-500);
 		cursor: default;
+	}
+}
+
+// ─── Checkbox column (selection) ──────────────────────────────────────────────
+
+.eidos-datagrid-checkbox-cell {
+	width: 40px;
+	min-width: 40px;
+	padding: 0 var(--spacing-sm);
+	text-align: center;
+	vertical-align: middle;
+
+	// Flex-center the Checkbox component (text-align alone doesn't work on flex children)
+	.eidos-checkbox-container {
+		display: flex;
+		justify-content: center;
+		margin: 0 auto;
 	}
 }
 
@@ -162,29 +304,6 @@
 	}
 }
 
-// ─── Add-row button ───────────────────────────────────────────────────────────
-
-.eidos-data-grid-add-row {
-	@include button-reset;
-
-	width: 100%;
-	padding: var(--spacing-sm) var(--spacing-md);
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-xs);
-	color: var(--primary-color);
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-medium);
-	cursor: pointer;
-	border-top: 1px solid var(--gray-200);
-	background: var(--gray-50);
-	transition: background-color 0.1s ease;
-
-	&:hover {
-		background: var(--gray-100);
-	}
-}
-
 // ─── Loading state ────────────────────────────────────────────────────────────
 
 .eidos-data-grid-loading {
@@ -217,7 +336,148 @@
 	padding: var(--spacing-xl) var(--spacing-md);
 }
 
-.eidos-data-grid-empty-message {
-	font-size: var(--font-size-sm);
-	color: var(--gray-500);
+// ─── Drag-to-reorder ──────────────────────────────────────────────────────────
+
+.eidos-datagrid-drag-handle-cell {
+	width: 32px;
+	min-width: 32px;
+	padding: 0 4px;
+	text-align: center;
+	vertical-align: middle;
+	cursor: default;
+}
+
+.eidos-datagrid-drag-handle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--gray-300);
+	padding: 2px;
+	border-radius: var(--border-radius-sm);
+	transition:
+		color 0.15s ease,
+		background-color 0.15s ease;
+
+	&:hover {
+		color: var(--gray-600);
+		background: var(--gray-100);
+	}
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.eidos-datagrid-row--dragging {
+	background: var(--primary-50) !important;
+	box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+}
+
+// ─── Row density ──────────────────────────────────────────────────────────────
+// comfortable = existing default (no modifier class needed)
+
+.eidos-datagrid--compact {
+	.eidos-data-grid-header-cell {
+		padding: 4px 12px;
+	}
+
+	.eidos-data-grid-cell {
+		padding: 4px 12px;
+	}
+}
+
+.eidos-datagrid--spacious {
+	.eidos-data-grid-header-cell {
+		padding: 16px 12px;
+	}
+
+	.eidos-data-grid-cell {
+		padding: 16px 12px;
+	}
+}
+
+// ─── Pinned / sticky columns ──────────────────────────────────────────────────
+// Left-pinned: solid background + right-side shadow
+
+.eidos-datagrid-cell--pinned-left,
+.eidos-datagrid-header-cell--pinned-left {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: -4px;
+		bottom: 0;
+		width: 4px;
+		background: linear-gradient(to right, rgb(0 0 0 / 6%), transparent);
+		pointer-events: none;
+		z-index: 1;
+	}
+}
+
+// Right-pinned cells: solid background + left-side shadow
+
+.eidos-datagrid-cell--pinned-right,
+.eidos-datagrid-header-cell--pinned-right {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -4px;
+		bottom: 0;
+		width: 4px;
+		background: linear-gradient(to left, rgb(0 0 0 / 6%), transparent);
+		pointer-events: none;
+		z-index: 1;
+	}
+}
+
+// Body cell backgrounds — concrete values so scrolled content doesn't bleed through
+
+.eidos-datagrid-cell--pinned-left,
+.eidos-datagrid-cell--pinned-right {
+	background: var(--white);
+}
+
+.eidos-data-grid-row:hover .eidos-datagrid-cell--pinned-left,
+.eidos-data-grid-row:hover .eidos-datagrid-cell--pinned-right {
+	background: var(--gray-50);
+}
+
+.eidos-datagrid-row--selected .eidos-datagrid-cell--pinned-left,
+.eidos-datagrid-row--selected .eidos-datagrid-cell--pinned-right {
+	background: var(--primary-50);
+}
+
+.eidos-datagrid-row--selected:hover .eidos-datagrid-cell--pinned-left,
+.eidos-datagrid-row--selected:hover .eidos-datagrid-cell--pinned-right {
+	background: var(--primary-100);
+}
+
+// Header cell backgrounds
+
+.eidos-datagrid-header-cell--pinned-left,
+.eidos-datagrid-header-cell--pinned-right {
+	background: var(--gray-100);
+}
+
+.eidos-datagrid-header-cell--pinned-left.eidos-datagrid-header-cell--sorted,
+.eidos-datagrid-header-cell--pinned-right.eidos-datagrid-header-cell--sorted {
+	background: var(--primary-50);
+}
+
+.eidos-datagrid-header-cell--pinned-left.eidos-datagrid-header-cell--sortable:hover,
+.eidos-datagrid-header-cell--pinned-right.eidos-datagrid-header-cell--sortable:hover {
+	background: var(--gray-200);
+}
+
+// ─── Pagination footer ────────────────────────────────────────────────────────
+
+.eidos-datagrid-footer {
+	background: var(--gray-50);
+	border-top: 1px solid var(--gray-200);
+	padding: var(--spacing-md);
 }

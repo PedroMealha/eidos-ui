@@ -5,16 +5,69 @@
 	border-radius: var(--border-radius-md);
 	border: 1px solid var(--gray-200);
 	box-shadow: var(--box-shadow);
-	overflow: hidden;
+	// overflow: hidden removed — sticky columns require no overflow:hidden on ancestors.
+	// Horizontal scroll is handled by the inner wrapper <div style="overflow-x:auto">.
 }
 
 .eidos-table-toolbar {
 	position: relative;
-	padding: var(--spacing-sm);
+	padding: var(--spacing-sm) var(--spacing-md);
 	background: var(--gray-50);
+	border-bottom: 1px solid var(--gray-200);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	gap: var(--spacing-sm);
+	min-height: 44px;
+}
+
+.eidos-table-toolbar-left {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	flex: 1;
+	min-width: 0;
+}
+
+.eidos-table-toolbar-right {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	flex-shrink: 0;
+}
+
+.eidos-table-selection-count {
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-semibold);
+	color: var(--primary-700);
+	white-space: nowrap;
+}
+
+.eidos-table-bulk-actions {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+}
+
+.eidos-table-clear-selection {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: none;
+	background: var(--gray-200);
+	color: var(--gray-600);
+	cursor: pointer;
+	padding: 0;
+	flex-shrink: 0;
+	transition: background-color 0.15s ease, color 0.15s ease;
+
+	&:hover {
+		background: var(--gray-300);
+		color: var(--gray-800);
+	}
 }
 
 .eidos-table {
@@ -97,6 +150,37 @@
 
 	&:hover {
 		background: var(--primary-50);
+	}
+}
+
+.eidos-table-row--selected {
+	background: var(--primary-50);
+
+	&:hover {
+		background: var(--primary-100);
+	}
+}
+
+// Checkbox column — shared by <th> and <td>
+.eidos-table-checkbox-cell {
+	width: 40px;
+	min-width: 40px;
+	padding: 0;
+	text-align: center;
+	vertical-align: middle;
+
+	// text-align:center doesn't affect flex containers (the Checkbox component).
+	// Use margin:auto on the container and flex on span wrappers to ensure
+	// consistent centering in both <th> and <td> contexts.
+	.eidos-checkbox-container {
+		margin: 0 auto;
+	}
+
+	// The <span> wrapper added in row cells to stop click-event bubbling
+	> span {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 }
 
@@ -188,6 +272,214 @@
 .eidos-table-align-right {
 	text-align: right;
 	justify-items: flex-end;
+}
+
+// ── Feature 1: Row density ────────────────────────────────────────────────────
+
+.eidos-table--compact .eidos-table-header-cell,
+.eidos-table--compact .eidos-table-cell {
+	padding: 4px 12px;
+}
+
+// comfortable = existing default padding, no modifier class needed
+
+.eidos-table--spacious .eidos-table-header-cell,
+.eidos-table--spacious .eidos-table-cell {
+	padding: 16px 12px;
+}
+
+// ── Feature 4: Pinned / sticky columns ────────────────────────────────────────
+
+// Left-pinned cells: solid background + right-side shadow
+.eidos-table-cell--pinned-left,
+.eidos-table-header-cell--pinned-left {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: -4px;
+		bottom: 0;
+		width: 4px;
+		background: linear-gradient(to right, rgba(0, 0, 0, 0.06), transparent);
+		pointer-events: none;
+		z-index: 1;
+	}
+}
+
+// Right-pinned cells: solid background + left-side shadow
+.eidos-table-cell--pinned-right,
+.eidos-table-header-cell--pinned-right {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -4px;
+		bottom: 0;
+		width: 4px;
+		background: linear-gradient(to left, rgba(0, 0, 0, 0.06), transparent);
+		pointer-events: none;
+		z-index: 1;
+	}
+}
+
+// Body cell backgrounds — need concrete values so scrolled content doesn't bleed through
+.eidos-table-cell--pinned-left,
+.eidos-table-cell--pinned-right {
+	background: var(--white);
+}
+
+.eidos-table-row:hover .eidos-table-cell--pinned-left,
+.eidos-table-row:hover .eidos-table-cell--pinned-right {
+	background: var(--gray-50);
+}
+
+.eidos-table-clickable:hover .eidos-table-cell--pinned-left,
+.eidos-table-clickable:hover .eidos-table-cell--pinned-right {
+	background: var(--primary-50);
+}
+
+.eidos-table-row--selected .eidos-table-cell--pinned-left,
+.eidos-table-row--selected .eidos-table-cell--pinned-right {
+	background: var(--primary-50);
+}
+
+.eidos-table-row--selected:hover .eidos-table-cell--pinned-left,
+.eidos-table-row--selected:hover .eidos-table-cell--pinned-right {
+	background: var(--primary-100);
+}
+
+// Header cell backgrounds
+.eidos-table-header-cell--pinned-left,
+.eidos-table-header-cell--pinned-right {
+	background: var(--gray-100);
+}
+
+.eidos-table-header-cell--pinned-left.eidos-table-sorted,
+.eidos-table-header-cell--pinned-right.eidos-table-sorted {
+	background: var(--primary-50);
+}
+
+.eidos-table-header-cell--pinned-left.eidos-table-sortable:hover,
+.eidos-table-header-cell--pinned-right.eidos-table-sortable:hover {
+	background: var(--gray-200);
+}
+
+// ── Feature 5: Drag handle ────────────────────────────────────────────────────
+
+// The grip handle is absolutely positioned in the left padding zone of <th>.
+// This way it never participates in the flex layout of .eidos-table-header-content
+// and therefore never pushes the column label out of alignment with body cells.
+.eidos-table-drag-handle {
+	position: absolute;
+	left: 4px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-flex;
+	align-items: center;
+	cursor: grab;
+	color: var(--gray-400);
+	line-height: 0;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+	pointer-events: none;
+
+	.eidos-table-header-cell:hover & {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	&:hover {
+		color: var(--gray-700);
+	}
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+// When draggable columns are enabled, reserve left padding space for the grip
+// so that header labels and body cell content are always aligned.
+// :not(.eidos-table-checkbox-cell) has higher specificity (3 classes) than the
+// density overrides (2 classes), so it wins correctly.
+.eidos-table--draggable-columns {
+	.eidos-table-header-cell:not(.eidos-table-checkbox-cell),
+	.eidos-table-cell:not(.eidos-table-checkbox-cell) {
+		padding-left: calc(var(--spacing-md) + 16px);
+	}
+}
+
+// The label in draggable header cells grows to fill remaining flex space so
+// the drag-handle (left) and sort-indicator (right) stay at the edges.
+.eidos-table-header-label {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// ── Toolbar menu panel (density picker, column visibility) ────────────────────
+// Mirrors .eidos-select-option styles so all in-table menus look the same.
+
+.eidos-table-menu-panel {
+	padding: var(--spacing-xs) 0;
+	min-width: 180px;
+}
+
+.eidos-table-menu-item {
+	@include button-reset;
+
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-sm);
+	width: 100%;
+	padding: var(--spacing-sm) var(--spacing-md);
+	cursor: pointer;
+	font-size: var(--font-size-sm);
+	color: var(--dark-color);
+	transition: background-color 0.15s ease, color 0.15s ease;
+	user-select: none;
+	text-align: left;
+
+	&:hover {
+		background-color: var(--gray-50);
+	}
+
+	&:active {
+		background-color: var(--gray-100);
+	}
+
+	&--active {
+		background-color: var(--primary-50);
+		color: var(--primary-700);
+
+		&:hover {
+			background-color: var(--primary-100);
+		}
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+
+		&:hover {
+			background-color: transparent;
+		}
+	}
+}
+
+// Fixed-width check-mark slot so label text doesn't shift when item is active
+.eidos-table-menu-item-check {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	color: var(--primary-600);
 }
 
 // Responsive design

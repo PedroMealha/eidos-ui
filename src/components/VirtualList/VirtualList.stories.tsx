@@ -112,7 +112,7 @@ function renderItem(item: Item): React.ReactNode {
 // ============================================================================
 
 const meta = {
-  title: 'Data/VirtualList',
+  title: 'Data Display/VirtualList',
   component: VirtualList,
   parameters: {
     layout: 'padded',
@@ -123,12 +123,15 @@ const meta = {
 visible in the scroll viewport (plus a configurable overscan buffer), keeping
 DOM node count constant regardless of dataset size.
 
+Powered by [\`@tanstack/react-virtual\`](https://tanstack.com/virtual) — scroll
+tracking, size measurement, and item windowing are all handled by the
+virtualizer so the component stays lean.
+
 ### Highlights
-- Fixed **or** variable per-row heights
+- Fixed **or** variable per-row heights via the \`rowHeight\` prop
 - Generic — TypeScript infers the item type from the \`data\` prop
 - Built-in loading skeletons and empty-state slot
 - \`onEndReached\` callback for infinite scroll (fires once per crossing, resets on scroll-up)
-- No external dependencies beyond React
         `.trim(),
       },
     },
@@ -259,7 +262,7 @@ export const VariableHeight: Story = {
     docs: {
       description: {
         story:
-          'Even rows are 48 px tall; odd rows expand to 80 px. The component pre-computes a cumulative offset array and uses binary search to locate the first visible row on each scroll event.',
+          'Even rows are 48 px tall; odd rows expand to 80 px. The `rowHeight` function tells the virtualizer the exact size for each index upfront, so no post-render measurement is needed.',
       },
     },
   },
