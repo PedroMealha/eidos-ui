@@ -5,7 +5,12 @@ import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 import { renderIcon } from '../../utils';
 
-const MenuElement: React.FC<MenuProps> = ({ items, className = '', onItemClick }) => {
+/**
+ * MenuPanel — the bare menu list, without any trigger or dropdown wrapper.
+ * Exported for use in SplitButton, ContextMenu, and other consumers that need
+ * to render the menu content inside their own Dropdown / portal.
+ */
+export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemClick }) => {
 	// Handle menu item click
 	const handleItemClick = useCallback(
 		(item: MenuItem) => {
@@ -63,7 +68,7 @@ const MenuElement: React.FC<MenuProps> = ({ items, className = '', onItemClick }
 					<li key={item.id} className={`eidos-menu-nested-item`}>
 						<Dropdown
 							trigger={triggerElement}
-							content={<MenuElement items={item.items} onItemClick={onItemClick} />}
+							content={<MenuPanel items={item.items} onItemClick={onItemClick} />}
 							placement="right"
 							isNested={true}
 						/>
@@ -94,7 +99,7 @@ export const Menu: React.FC<MenuWrapperProps> = ({
 	const handleItemClick = useCallback(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		(_item: MenuItem) => {
-			// Note: item.onClick is already called in MenuElement's handleItemClick
+			// Note: item.onClick is already called in MenuPanel's handleItemClick
 			// Here we only handle closing the dropdown if needed
 
 			if (closeOnItemClick) {
@@ -116,7 +121,7 @@ export const Menu: React.FC<MenuWrapperProps> = ({
 	const MenuContent = () => (
 		<Dropdown
 			trigger={trigger}
-			content={<MenuElement items={items} onItemClick={handleItemClick} />}
+			content={<MenuPanel items={items} onItemClick={handleItemClick} />}
 			minWidth={minWidth}
 			maxWidth={maxWidth}
 			minHeight={minHeight}

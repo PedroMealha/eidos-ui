@@ -1,0 +1,65 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SegmentedControlStories from './SegmentedControl.stories';
+
+<Meta of={SegmentedControlStories} />
+
+# SegmentedControl
+
+A compact, single-select toggle group rendered as a pill. The active segment gets a white "chip" that lifts with a subtle shadow. Supports both controlled and uncontrolled usage.
+
+Use it for mutually exclusive choices that benefit from being immediately visible in a toolbar or settings panel — for example view switching, time range selection, or text alignment.
+
+> **SegmentedControl vs Tabs**: Tabs change the visible content of a page section. SegmentedControl is a form-level control — it changes a value.
+
+## Usage
+
+```tsx
+import { SegmentedControl } from '@pmealha/eidos-ui';
+
+// Controlled
+const [view, setView] = useState('list');
+
+<SegmentedControl
+  options={[
+    { value: 'list',  icon: List,       tooltip: 'List view' },
+    { value: 'grid',  icon: LayoutGrid, tooltip: 'Grid view' },
+    { value: 'table', icon: Table2,     tooltip: 'Table view' },
+  ]}
+  value={view}
+  onChange={setView}
+/>
+```
+
+## Text labels
+
+<Canvas of={SegmentedControlStories.Labels} />
+
+<Controls of={SegmentedControlStories.Labels} />
+
+## Icon-only with tooltips
+
+<Canvas of={SegmentedControlStories.Icons} />
+
+## Icons + labels
+
+<Canvas of={SegmentedControlStories.IconsAndLabels} />
+
+## Sizes
+
+<Canvas of={SegmentedControlStories.Sizes} />
+
+## Colors
+
+<Canvas of={SegmentedControlStories.Colors} />
+
+## Disabled states
+
+The whole control can be disabled via `disabled`, or individual segments via `options[n].disabled`.
+
+<Canvas of={SegmentedControlStories.Disabled} />
+
+## Full width
+
+Stretch to fill the parent container with `fullWidth`. Each segment takes an equal share.
+
+<Canvas of={SegmentedControlStories.FullWidth} />

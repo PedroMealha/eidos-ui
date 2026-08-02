@@ -1,0 +1,65 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SplitButtonStories from './SplitButton.stories';
+
+<Meta of={SplitButtonStories} />
+
+# SplitButton
+
+A two-part button with a primary action on the left and a chevron on the right that opens a dropdown of secondary actions. The two halves share a single continuous visual boundary.
+
+Use it for "Save / Save as draft / Save as template", "Send / Schedule / Send test", or any action that has one obvious primary path and a small set of less-common alternatives.
+
+> **SplitButton vs ButtonGroup**: ButtonGroup is for equally-weighted related actions. SplitButton is for one dominant action with secondary variants.
+
+## Usage
+
+```tsx
+import { SplitButton } from '@pmealha/eidos-ui';
+
+<SplitButton
+  label="Save"
+  preIcon={Save}
+  onClick={() => save()}
+  options={[
+    { id: 'draft',    label: 'Save as draft',    icon: FileText, onClick: saveDraft },
+    { id: 'template', label: 'Save as template', icon: Save,     onClick: saveTemplate },
+    { id: 'schedule', label: 'Schedule publish', icon: Clock,    onClick: schedule },
+  ]}
+/>
+```
+
+## Default
+
+Click the left part to trigger the primary action immediately. Click the chevron to reveal secondary options.
+
+<Canvas of={SplitButtonStories.Default} />
+
+<Controls of={SplitButtonStories.Default} />
+
+## Outlined variant
+
+<Canvas of={SplitButtonStories.Outlined} />
+
+## Colors
+
+<Canvas of={SplitButtonStories.Colors} />
+
+## Sizes
+
+<Canvas of={SplitButtonStories.Sizes} />
+
+## Loading state
+
+When `loading` is true, both halves are disabled and a spinner replaces the label.
+
+<Canvas of={SplitButtonStories.Loading} />
+
+## Disabled
+
+<Canvas of={SplitButtonStories.Disabled} />
+
+## Disabled option in dropdown
+
+Individual options can be disabled via `options[n].disabled`.
+
+<Canvas of={SplitButtonStories.WithDisabledOption} />

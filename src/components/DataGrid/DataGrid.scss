@@ -185,12 +185,31 @@
 	color: var(--gray-700);
 
 	// Active edit mode: inset ring using primary colour.
-	// Input/Select editors use variant="bare" so no inner border/shadow overrides
-	// are needed here — the cell's own ring is the only visual indicator.
+	// The editor (Input/Select) is absolutely positioned so it fills the cell
+	// without contributing to the row's height — this keeps the row height
+	// identical in all density modes whether or not a cell is being edited.
 	&--editing {
-		padding: var(--spacing-xs);
+		position: relative;
+		padding: 0;
 		background: var(--white);
 		box-shadow: inset 0 0 0 2px var(--primary-color);
+
+		// Fill the cell with the editor, stretching horizontally & vertically.
+		.eidos-input-container {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			flex-direction: row;
+			align-items: stretch;
+			overflow: hidden;
+		}
+
+		.eidos-input-wrapper {
+			flex: 1;
+			height: auto;
+			min-height: 0;
+			border-radius: 0;
+		}
 	}
 
 	// Validation error overrides the primary ring with danger colour

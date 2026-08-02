@@ -22,13 +22,17 @@ export { Radio, RadioGroup } from './components/Radio';
 export { Switch } from './components/Switch';
 export { Textarea } from './components/Textarea';
 export { Button, IconButton } from './components/Button';
+export { ButtonGroup } from './components/ButtonGroup';
+export { SegmentedControl } from './components/SegmentedControl';
+export { SplitButton } from './components/SplitButton';
+export { ContextMenu } from './components/ContextMenu';
 export { Tooltip } from './components/Tooltip';
 export { Chip } from './components/Chip';
 export { Divider } from './components/Divider';
 export { Spinner } from './components/Spinner';
 export { Dropdown, DropdownProvider } from './components/Dropdown';
 export { Input } from './components/Input';
-export { Menu } from './components/Menu';
+export { Menu, MenuPanel } from './components/Menu';
 export { Modal } from './components/Modal';
 export { Select } from './components/Select';
 export { SnackbarProvider, SnackbarContainer } from './components/Snackbar';
@@ -85,6 +89,11 @@ export type { TableProps, TableColumn, TableFilters, FilterValue, BulkAction } f
 
 // Shared type (all IconTypes are the same)
 export type { IconType } from './utils';
+export type { ButtonGroupProps } from './components/ButtonGroup';
+export type { SegmentedControlProps, SegmentedOption } from './components/SegmentedControl';
+export type { SplitButtonProps, SplitButtonOption } from './components/SplitButton';
+export type { ContextMenuProps } from './components/ContextMenu';
+export type { MenuPanelProps } from './components/Menu';
 
 // Utilities
 export { renderIcon } from './utils';

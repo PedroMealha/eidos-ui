@@ -833,7 +833,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 					<Select
 						options={selectOptions}
 						value={String(value ?? '')}
-						inputProps={{ variant: 'bare' }}
+						inputProps={{ variant: 'bare', size: 'small' }}
 						onChange={v => {
 							const selected = Array.isArray(v) ? (v[0] ?? '') : v;
 							const newData = localDataRef.current.map<T>((r, i) =>

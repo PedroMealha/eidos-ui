@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonGroupStories from './ButtonGroup.stories';
+
+<Meta of={ButtonGroupStories} />
+
+# ButtonGroup
+
+Groups adjacent `Button` components into a single visual unit. Inner border-radii are collapsed so only the two outer ends stay rounded, and the shared 1.5 px border between adjacent outlined buttons is collapsed to a single line.
+
+Group-level `size`, `variant`, and `color` are applied as fallbacks — each child can still override them individually.
+
+## Usage
+
+```tsx
+import { ButtonGroup, Button } from '@pmealha/eidos-ui';
+
+<ButtonGroup variant="outlined" color="primary">
+  <Button>Left</Button>
+  <Button>Center</Button>
+  <Button>Right</Button>
+</ButtonGroup>
+```
+
+## Outlined
+
+The classic segmented action bar. This is the most common use case.
+
+<Canvas of={ButtonGroupStories.Outlined} />
+
+<Controls of={ButtonGroupStories.Outlined} />
+
+## Filled
+
+<Canvas of={ButtonGroupStories.Filled} />
+
+## Icon-only
+
+Works with `IconButton`. Ideal for view-switcher or text-formatting toolbars.
+
+<Canvas of={ButtonGroupStories.IconOnly} />
+
+## Vertical
+
+Stack buttons top-to-bottom with `orientation="vertical"`.
+
+<Canvas of={ButtonGroupStories.Vertical} />
+
+## Sizes
+
+<Canvas of={ButtonGroupStories.Sizes} />
+
+## Per-child overrides
+
+Each child can override the group's `variant`, `color`, or `size`. Here the delete button switches to `color="danger"` and `variant="filled"` independently while the rest inherit the group's `outlined` style.
+
+<Canvas of={ButtonGroupStories.PerChildOverride} />

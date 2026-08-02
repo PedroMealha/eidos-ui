@@ -1,0 +1,19 @@
+// ─── ContextMenu ──────────────────────────────────────────────────────────────
+// The target wrapper is invisible — it only captures the contextmenu event.
+// The floating panel reuses the existing .eidos-menu styles from Menu.scss;
+// we only add the drop-shadow that the Dropdown applies when menus are open.
+
+.eidos-context-menu-target {
+	// Don't change the layout of the wrapped children.
+	display: contents;
+}
+
+.eidos-context-menu-panel {
+	// Drop-shadow matches the Dropdown content's panel appearance.
+	border-radius: var(--border-radius-md);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.08);
+	background: var(--white);
+	overflow: hidden;
+	// Smooth opacity transition from hidden → visible after positioning.
+	transition: opacity 0.08s ease;
+}

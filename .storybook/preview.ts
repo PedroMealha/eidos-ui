@@ -9,6 +9,25 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    options: {
+      storySort: {
+        // Sort stories alphabetically within each group.
+        // The `order` array defines the top-level group sequence;
+        // '*' catches anything not explicitly listed.
+        method: 'alphabetical',
+        order: [
+          'Elements',
+          'Forms',
+          'Layout',
+          'Navigation',
+          'Overlays',
+          'Data Display',
+          'Data',
+          'Components',
+          '*',
+        ],
+      },
+    },
   },
 };
 

@@ -1,6 +1,7 @@
-export { Menu } from './Menu.component';
+export { Menu, MenuPanel } from './Menu.component';
 export type {
 	MenuProps,
+	MenuProps as MenuPanelProps,
 	MenuWrapperProps,
 	MenuItemType,
 	MenuItem,

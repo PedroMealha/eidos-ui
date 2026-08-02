@@ -1,0 +1,122 @@
+@use '../../styles/mixins.scss' as *;
+
+// ─── SegmentedControl ─────────────────────────────────────────────────────────
+// Pill-shaped container with a light-gray track. The active segment gets a
+// white "chip" that lifts with a subtle shadow, giving the impression of a
+// physical selected state.
+
+.eidos-segmented {
+	display: inline-flex;
+	align-items: center;
+	background: var(--gray-100);
+	border-radius: var(--border-radius-xl);
+	padding: 3px;
+	gap: 2px;
+
+	&--full-width {
+		display: flex;
+		width: 100%;
+
+		> .eidos-segmented-item {
+			flex: 1;
+		}
+	}
+
+	&--disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+// ─── Individual segment ───────────────────────────────────────────────────────
+
+.eidos-segmented-item {
+	@include flex-center;
+	gap: var(--spacing-xs);
+	border: none;
+	background: transparent;
+	border-radius: var(--border-radius-lg);
+	cursor: pointer;
+	font-weight: var(--font-weight-medium);
+	color: var(--gray-500);
+	transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+	white-space: nowrap;
+	line-height: 1;
+
+	// ── Sizes ──────────────────────────────────────────────────────────────────
+
+	.eidos-segmented--small & {
+		padding: 3px 8px;
+		@include font-size(xs);
+		min-height: 24px;
+	}
+
+	.eidos-segmented--medium & {
+		padding: 5px 12px;
+		@include font-size(sm);
+		min-height: 30px;
+	}
+
+	.eidos-segmented--large & {
+		padding: 7px 16px;
+		@include font-size(base);
+		min-height: 38px;
+	}
+
+	// ── Icon sizing ────────────────────────────────────────────────────────────
+
+	.eidos-segmented-icon {
+		.eidos-segmented--small & {
+			width: 12px;
+			height: 12px;
+		}
+
+		.eidos-segmented--medium & {
+			width: 14px;
+			height: 14px;
+		}
+
+		.eidos-segmented--large & {
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	// ── Hover — only on inactive, enabled segments ─────────────────────────────
+
+	&:hover:not(:disabled):not(.eidos-segmented-item--active) {
+		background: var(--gray-200);
+		color: var(--gray-700);
+	}
+
+	// ── Disabled ───────────────────────────────────────────────────────────────
+
+	&:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+
+	// ── Active (selected) chip ─────────────────────────────────────────────────
+
+	&--active {
+		background: var(--white);
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+		// Color variants: active segment text matches the chosen color token.
+		.eidos-segmented--primary & {
+			color: var(--primary-color);
+		}
+
+		.eidos-segmented--secondary & {
+			color: var(--secondary-color);
+		}
+
+		.eidos-segmented--success & {
+			color: var(--success-color);
+		}
+
+		.eidos-segmented--danger & {
+			color: var(--danger-color);
+		}
+	}
+}

@@ -1,0 +1,65 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ContextMenuStories from './ContextMenu.stories';
+
+<Meta of={ContextMenuStories} />
+
+# ContextMenu
+
+Wraps any content and attaches a right-click triggered floating menu positioned at the cursor. The browser's native context menu is suppressed.
+
+The menu closes on item selection, click outside, `Escape`, or scroll. The floating panel is portalled to `document.body` so it is never clipped by `overflow: hidden` ancestors.
+
+## Usage
+
+```tsx
+import { ContextMenu } from '@pmealha/eidos-ui';
+import type { MenuItemType } from '@pmealha/eidos-ui';
+
+const items: MenuItemType[] = [
+  { type: 'item', id: 'copy',   label: 'Copy',   icon: Copy,   onClick: () => copy() },
+  { type: 'item', id: 'cut',    label: 'Cut',    icon: Scissors, onClick: () => cut() },
+  { type: 'separator', id: 'sep1' },
+  { type: 'item', id: 'delete', label: 'Delete', icon: Trash2, onClick: () => remove() },
+];
+
+<ContextMenu items={items}>
+  <div className="canvas-area">Right-click anywhere here</div>
+</ContextMenu>
+```
+
+## Default
+
+Right-click inside the dashed region to open the menu.
+
+<Canvas of={ContextMenuStories.Default} />
+
+<Controls of={ContextMenuStories.Default} />
+
+## On a list
+
+Attach to individual rows. Each row gets its own context menu — right-click any row to open it.
+
+<Canvas of={ContextMenuStories.OnAList} />
+
+## With nested submenu
+
+Items of type `"nested"` render a hover-triggered submenu on the right. This uses the same `Dropdown` infrastructure as the regular Menu component.
+
+<Canvas of={ContextMenuStories.WithNested} />
+
+## Disabled
+
+When `disabled` is true, the component passes through to the browser's native context menu.
+
+<Canvas of={ContextMenuStories.Disabled} />
+
+## Accepted item types
+
+ContextMenu accepts the same `MenuItemType` union as `Menu`:
+
+| Type | Description |
+|------|-------------|
+| `item` | Standard clickable row with optional icon and keyboard shortcut |
+| `separator` | A horizontal dividing line |
+| `nested` | A row that opens a submenu on hover |
+| `component` | Any custom React node rendered inside a list item |
