@@ -6,7 +6,6 @@ const meta = {
 	title: 'Forms/NumberInput',
 	component: NumberInput,
 	parameters: { layout: 'centered' },
-	tags: ['autodocs'],
 	argTypes: {
 		value: {
 			control: 'number',

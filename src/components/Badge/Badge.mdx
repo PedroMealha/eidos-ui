@@ -1,0 +1,61 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as BadgeStories from './Badge.stories';
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+A compact label for surfacing status, category, or count information. Comes in three variants — `filled`, `outlined`, and `text` — and supports a dot mode for minimal status indicators.
+
+## Usage
+
+```tsx
+import { Badge } from '@pmealha/eidos-ui';
+
+// Status label
+<Badge color="success" variant="outlined">Active</Badge>
+
+// Numeric count clamped at 99
+<Badge color="danger" max={99}>{120}</Badge>
+
+// Dot indicator
+<Badge dot color="warning" />
+```
+
+## Default
+
+<Canvas of={BadgeStories.Default} />
+
+<Controls of={BadgeStories.Default} />
+
+## Variants
+
+The three visual variants — `filled`, `outlined`, and `text` — work across all color options.
+
+<Canvas of={BadgeStories.Variants} />
+
+## Colors
+
+<Canvas of={BadgeStories.Colors} />
+
+## Dot
+
+Use `dot` to render a small colored circle with no text — ideal for compact status indicators.
+
+<Canvas of={BadgeStories.Dot} />
+
+## Sizes
+
+<Canvas of={BadgeStories.Sizes} />
+
+## Numbers with max
+
+When `children` is a number, set `max` to cap the displayed value at `max+`.
+
+<Canvas of={BadgeStories.Numbers} />
+
+## With chip
+
+Common composition pattern pairing Badge with the Chip component for status labels and count indicators.
+
+<Canvas of={BadgeStories.WithChip} />

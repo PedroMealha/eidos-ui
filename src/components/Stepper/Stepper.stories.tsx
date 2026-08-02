@@ -22,7 +22,6 @@ const meta = {
   title: 'Navigation/Stepper',
   component: Stepper,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   argTypes: {
     activeStep: {
       control: 'number',

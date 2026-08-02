@@ -6,7 +6,6 @@ const meta = {
   title: 'Forms/ColorPicker',
   component: ColorPicker,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     value: {
       control: 'color',

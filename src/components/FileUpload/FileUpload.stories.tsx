@@ -6,7 +6,6 @@ const meta = {
 	title: 'Forms/FileUpload',
 	component: FileUpload,
 	parameters: { layout: 'padded' },
-	tags: ['autodocs'],
 	argTypes: {
 		accept: {
 			control: 'text',

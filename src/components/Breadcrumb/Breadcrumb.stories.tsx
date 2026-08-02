@@ -6,7 +6,6 @@ const meta = {
 	title: 'Navigation/Breadcrumb',
 	component: Breadcrumb,
 	parameters: { layout: 'padded' },
-	tags: ['autodocs'],
 	argTypes: {
 		separator: {
 			control: 'text',

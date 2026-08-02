@@ -1,0 +1,53 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as FileUploadStories from './FileUpload.stories';
+
+<Meta of={FileUploadStories} />
+
+# FileUpload
+
+Drag-and-drop file upload zone with a click-to-browse fallback. Supports file type restrictions, size limits, and multiple file selection.
+
+## Usage
+
+```tsx
+import { FileUpload } from '@pmealha/eidos-ui';
+
+<FileUpload
+  onFilesAccepted={(files) => console.log(files)}
+  onFilesRejected={(files, reason) => console.warn(reason, files)}
+/>
+```
+
+## Default
+
+<Canvas of={FileUploadStories.Default} />
+
+<Controls of={FileUploadStories.Default} />
+
+## Multiple files
+
+Set `multiple` and optionally `maxFiles` to cap how many files can be selected in one drop.
+
+<Canvas of={FileUploadStories.Multiple} />
+
+## With max size
+
+Files exceeding `maxSize` (in bytes) are rejected and passed to `onFilesRejected` with `reason: 'size'`.
+
+<Canvas of={FileUploadStories.WithMaxSize} />
+
+## Images only
+
+Use the `accept` prop (forwarded directly to the underlying `<input accept>`) to restrict accepted file types.
+
+<Canvas of={FileUploadStories.ImagesOnly} />
+
+## Disabled
+
+<Canvas of={FileUploadStories.Disabled} />
+
+## With callbacks
+
+Open the browser console to see accepted and rejected file events as you drop or select files.
+
+<Canvas of={FileUploadStories.WithCallbacks} />

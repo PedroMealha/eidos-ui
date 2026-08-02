@@ -1,0 +1,54 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as EmptyStateStories from './EmptyState.stories';
+
+<Meta of={EmptyStateStories} />
+
+# EmptyState
+
+Placeholder shown when a list, table, or content area has no items to display. Accepts an optional icon, a required title, supporting description text, and an optional action button.
+
+## Usage
+
+```tsx
+import { EmptyState, Button } from '@pmealha/eidos-ui';
+import { Inbox } from 'lucide-react';
+
+<EmptyState
+  icon={<Inbox />}
+  title="Your inbox is empty"
+  description="New messages will appear here."
+  action={<Button color="primary">Compose message</Button>}
+/>
+```
+
+## Default
+
+<Canvas of={EmptyStateStories.Default} />
+
+<Controls of={EmptyStateStories.Default} />
+
+## No data
+
+Use when a search or filter returns zero results — pair with a clear-filters action.
+
+<Canvas of={EmptyStateStories.NoData} />
+
+## No content
+
+Use for first-time or onboarding states where the user hasn't created any items yet.
+
+<Canvas of={EmptyStateStories.NoContent} />
+
+## Error state
+
+<Canvas of={EmptyStateStories.Error} />
+
+## Without icon
+
+<Canvas of={EmptyStateStories.WithoutIcon} />
+
+## Sizes
+
+`size` controls padding, icon size, and text size across `small`, `medium` (default), and `large`.
+
+<Canvas of={EmptyStateStories.Sizes} />

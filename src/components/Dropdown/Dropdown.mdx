@@ -1,0 +1,41 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as DropdownStories from './Dropdown.stories';
+
+<Meta of={DropdownStories} />
+
+# Dropdown
+
+A low-level floating panel anchored to any trigger element. It handles positioning, focus, keyboard dismissal, and z-index layering — making it the foundation for Menu, Select, Combobox, and other compound components. Use it directly when you need a custom floating panel not covered by those higher-level components.
+
+> **Note**: For mutual exclusion between multiple dropdowns (only one open at a time), wrap them with `DropdownProvider` and pass a shared `dropdownGroup` string to each.
+
+## Usage
+
+```tsx
+import { Dropdown } from '@pmealha/eidos-ui';
+import { Button } from '@pmealha/eidos-ui';
+
+<Dropdown
+  placement="bottom"
+  trigger={<Button variant="outlined">Open</Button>}
+  content={
+    <div style={{ padding: '1rem', minWidth: '200px' }}>
+      <p>Any content goes here.</p>
+    </div>
+  }
+/>
+```
+
+## Default
+
+The primary interactive story — use the Controls panel to explore `placement`, `delay`, `disabled`, `closeOnClickOutside`, `closeOnEscape`, `autoWidth`, `minWidth`, `maxWidth`, `minHeight`, and `maxHeight`.
+
+<Canvas of={DropdownStories.Default} />
+
+<Controls of={DropdownStories.Default} />
+
+## Examples
+
+A comprehensive overview showing a practical menu, all four placement options, and sizing constraints in action.
+
+<Canvas of={DropdownStories.Examples} />

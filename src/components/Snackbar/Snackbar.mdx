@@ -1,0 +1,77 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SnackbarStories from './Snackbar.stories';
+
+<Meta of={SnackbarStories} />
+
+# Snackbar
+
+Toast notification system that displays temporary messages to users. Wrap your app with `SnackbarProvider` once, then trigger notifications from anywhere in the tree via the `useSnackbar` hook.
+
+> **Note**: `SnackbarContainer` must be rendered inside `SnackbarProvider` — it is the portal mount point where toasts are injected into the DOM.
+
+## Usage
+
+```tsx
+import { SnackbarProvider, SnackbarContainer, useSnackbar } from '@pmealha/eidos-ui';
+
+function App() {
+  return (
+    <SnackbarProvider>
+      <YourApp />
+      <SnackbarContainer />
+    </SnackbarProvider>
+  );
+}
+
+function YourApp() {
+  const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
+
+  return (
+    <button onClick={() => showSuccess('Changes saved!')}>
+      Save
+    </button>
+  );
+}
+```
+
+## Success variant
+
+<Canvas of={SnackbarStories.SuccessVariant} />
+
+<Controls of={SnackbarStories.SuccessVariant} />
+
+## Error variant
+
+<Canvas of={SnackbarStories.ErrorVariant} />
+
+## Warning variant
+
+<Canvas of={SnackbarStories.WarningVariant} />
+
+## Info variant
+
+<Canvas of={SnackbarStories.InfoVariant} />
+
+## With action button
+
+An optional `action` object adds a labelled button inside the toast — useful for "Undo", "View", or "Retry" flows.
+
+<Canvas of={SnackbarStories.WithAction} />
+
+## Persistent notification
+
+Pass `duration: 0` to disable auto-dismiss; the user must close the toast manually.
+
+<Canvas of={SnackbarStories.PersistentNotification} />
+
+## Multiple notifications
+
+Each hook call enqueues an independent toast — they stack automatically and dismiss individually.
+
+<Canvas of={SnackbarStories.MultipleNotifications} />
+
+## Custom component
+
+Pass a `component` instead of `message` to render fully custom content inside the toast shell.
+
+<Canvas of={SnackbarStories.CustomComponent} />

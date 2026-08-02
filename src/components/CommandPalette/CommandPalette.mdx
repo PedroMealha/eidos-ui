@@ -1,0 +1,84 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CommandPaletteStories from './CommandPalette.stories';
+
+<Meta of={CommandPaletteStories} />
+
+# CommandPalette
+
+A keyboard-driven command launcher presented as a floating modal — type to fuzzy-search commands and execute them instantly, à la VS Code's `⌘K` palette.
+
+> **Note**: The palette renders via `createPortal` and manages its own focus trap; always control visibility with the `open` / `onClose` pair.
+
+## Usage
+
+```tsx
+import { CommandPalette } from '@pmealha/eidos-ui';
+import type { CommandItem } from '@pmealha/eidos-ui';
+
+const items: CommandItem[] = [
+  { id: '1', label: 'Go to Dashboard', group: 'Navigation', shortcut: ['⌘', 'D'] },
+  { id: '2', label: 'New Document', group: 'Actions', action: () => console.log('new doc') },
+  { id: '3', label: 'Open Settings', group: 'Settings', shortcut: ['⌘', ','] },
+];
+
+function App() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  return (
+    <CommandPalette
+      open={open}
+      onClose={() => setOpen(false)}
+      items={items}
+    />
+  );
+}
+```
+
+## Default
+
+The palette opens immediately in Storybook so you can interact with it right away. Use the Controls panel to customise `placeholder`, `emptyText`, and `maxHeight`.
+
+<Canvas of={CommandPaletteStories.Default} />
+
+<Controls of={CommandPaletteStories.Default} />
+
+## With groups
+
+Items that share a `group` string are visually clustered under a labelled section heading. Groups appear in the order their first member does in the `items` array.
+
+<Canvas of={CommandPaletteStories.WithGroups} />
+
+## With shortcuts
+
+Keyboard shortcuts are supplied as a `shortcut: string[]` array and rendered as `<kbd>` badges alongside each item.
+
+<Canvas of={CommandPaletteStories.WithShortcuts} />
+
+## Empty state
+
+When no items match the current query — or `items` is an empty array — the `emptyText` message is displayed. Customise it to fit your context.
+
+<Canvas of={CommandPaletteStories.EmptyState} />
+
+## With footer
+
+The `footer` prop accepts any `ReactNode` and is rendered on the right side of the footer bar, next to the built-in keyboard-hint strip.
+
+<Canvas of={CommandPaletteStories.WithFooter} />
+
+## With disabled items
+
+Items with `disabled: true` are rendered at reduced opacity and are skipped during keyboard navigation with `↑` / `↓`.
+
+<Canvas of={CommandPaletteStories.WithDisabledItems} />

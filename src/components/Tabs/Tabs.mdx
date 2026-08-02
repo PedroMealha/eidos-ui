@@ -1,0 +1,61 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TabsStories from './Tabs.stories';
+
+<Meta of={TabsStories} />
+
+# Tabs
+
+Content switcher with a horizontal row of labelled tab triggers. Supports underline (default), enclosed, and pills visual styles.
+
+## Usage
+
+```tsx
+import { Tabs, Tab, TabPanel } from '@pmealha/eidos-ui';
+
+<Tabs defaultValue="overview">
+  <Tab value="overview">Overview</Tab>
+  <Tab value="analytics">Analytics</Tab>
+  <TabPanel value="overview">Overview content</TabPanel>
+  <TabPanel value="analytics">Analytics content</TabPanel>
+</Tabs>
+```
+
+## Playground
+
+<Canvas of={TabsStories.Default} />
+
+<Controls of={TabsStories.Default} />
+
+## Enclosed variant
+
+<Canvas of={TabsStories.Enclosed} />
+
+## Pills variant
+
+<Canvas of={TabsStories.Pills} />
+
+## With icons
+
+<Canvas of={TabsStories.WithIcons} />
+
+## Colors
+
+<Canvas of={TabsStories.Colors} />
+
+## Sizes
+
+<Canvas of={TabsStories.Sizes} />
+
+## Full width
+
+<Canvas of={TabsStories.FullWidth} />
+
+## With disabled tab
+
+<Canvas of={TabsStories.WithDisabledTab} />
+
+## Controlled
+
+Pass `value` and `onChange` together to drive the active tab from external state.
+
+<Canvas of={TabsStories.Controlled} />

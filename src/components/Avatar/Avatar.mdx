@@ -1,0 +1,87 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './Avatar.stories';
+
+<Meta of={AvatarStories} />
+
+# Avatar
+
+Displays a user's profile picture, initials, or a fallback icon. When no `src` is provided, the component auto-derives initials and a background color from the `name` prop. Use `AvatarGroup` to stack multiple avatars with an overflow counter.
+
+## Usage
+
+```tsx
+import { Avatar, AvatarGroup } from '@pmealha/eidos-ui';
+
+// Image avatar
+<Avatar src="https://example.com/photo.jpg" alt="Jane Smith" size="md" />
+
+// Initials fallback — color is auto-derived from the name
+<Avatar name="Jane Smith" size="md" />
+
+// Group with overflow counter
+<AvatarGroup max={4}>
+  <Avatar name="Alice Johnson" />
+  <Avatar name="Bob Smith" />
+  <Avatar name="Carol White" />
+  <Avatar name="David Brown" />
+  <Avatar name="Eve Davis" />
+</AvatarGroup>
+```
+
+## Default
+
+<Canvas of={AvatarStories.Default} />
+
+<Controls of={AvatarStories.Default} />
+
+## With initials
+
+When `name` is provided and `src` is absent, the component renders initials with an auto-derived background color.
+
+<Canvas of={AvatarStories.WithInitials} />
+
+## With custom color
+
+Override the auto-derived background color using the `color` prop.
+
+<Canvas of={AvatarStories.WithCustomColor} />
+
+## Fallback
+
+When neither `src` nor `name` is provided, a generic person icon is rendered.
+
+<Canvas of={AvatarStories.Fallback} />
+
+## Shapes
+
+<Canvas of={AvatarStories.Shapes} />
+
+## Sizes
+
+<Canvas of={AvatarStories.Sizes} />
+
+## Colors
+
+<Canvas of={AvatarStories.Colors} />
+
+## Clickable
+
+Passing `onClick` gives the avatar button semantics and a visible focus ring for keyboard users.
+
+<Canvas of={AvatarStories.Clickable} />
+
+## Image error
+
+If `src` fails to load, the component falls back to initials (when `name` is set) or the generic icon.
+
+<Canvas of={AvatarStories.WithError} />
+
+## Group
+
+`AvatarGroup` stacks avatars with a configurable `max` — avatars beyond the limit are collapsed into a count badge.
+
+<Canvas of={AvatarStories.Group} />
+
+## Group sizes
+
+<Canvas of={AvatarStories.GroupSizes} />

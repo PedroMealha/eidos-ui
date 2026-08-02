@@ -1,0 +1,78 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ComboboxStories from './Combobox.stories';
+
+<Meta of={ComboboxStories} />
+
+# Combobox
+
+Searchable dropdown that combines a text input with a filtered option list. Prefer it over a plain `<Select>` for long lists, async data sources, or when free-text entry alongside suggestions is needed.
+
+> **Note**: Every option requires a unique `id` field. For server-side filtering, pass `onSearch` together with `loading` — built-in client filtering is bypassed automatically.
+
+## Usage
+
+```tsx
+import { Combobox } from '@pmealha/eidos-ui';
+import type { ComboboxOption } from '@pmealha/eidos-ui';
+
+const options: ComboboxOption[] = [
+  { id: '1', value: 'react', label: 'React' },
+  { id: '2', value: 'vue', label: 'Vue' },
+  { id: '3', value: 'svelte', label: 'Svelte' },
+];
+
+<Combobox
+  options={options}
+  label="Framework"
+  placeholder="Search or select…"
+  onChange={(value) => console.log(value)}
+/>
+```
+
+## Default
+
+<Canvas of={ComboboxStories.Default} />
+
+<Controls of={ComboboxStories.Default} />
+
+## With groups
+
+Assign a `group` string to options to render automatic group headers inside the dropdown list.
+
+<Canvas of={ComboboxStories.WithGroups} />
+
+## Async search
+
+Provide `onSearch` to handle filtering externally (e.g. an API call). Set `loading` while results are in flight to show a spinner.
+
+<Canvas of={ComboboxStories.AsyncSearch} />
+
+## Free-text entry
+
+Set `allowFreeText` to let users commit any typed value, not only options from the list. Useful for tag-style inputs or open-ended fields.
+
+<Canvas of={ComboboxStories.AllowFreeText} />
+
+## With label and hint
+
+<Canvas of={ComboboxStories.WithLabel} />
+
+## With error
+
+<Canvas of={ComboboxStories.WithError} />
+
+## Custom option rendering
+
+Pass a `renderOption` function to replace the default option layout with a fully custom component — useful for avatars, status indicators, or multi-line descriptions.
+
+<Canvas of={ComboboxStories.CustomRenderOption} />
+
+## Sizes
+
+<Canvas of={ComboboxStories.AllSizes} />
+
+## Controlled
+
+Manage the selected value in external state with `value` and `onChange`, and drive it programmatically from other parts of the UI.
+
+<Canvas of={ComboboxStories.Controlled} />

@@ -1,0 +1,39 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as MenuStories from './Menu.stories';
+
+<Meta of={MenuStories} />
+
+# Menu
+
+Dropdown action list anchored to a trigger element. Items support icons, keyboard shortcuts, dividers, nested submenus, and arbitrary React content via `component` items.
+
+> **Note**: The exported `Menu` component is the wrapper (`MenuWrapperProps`) that accepts a `trigger` and `items` — not the internal `MenuProps` type.
+
+## Usage
+
+```tsx
+import { Menu, Button } from '@pmealha/eidos-ui';
+import { User, Settings, LogOut } from 'lucide-react';
+
+<Menu
+  trigger={<Button variant="outlined">Open Menu</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => {} },
+    { type: 'item', id: '2', label: 'Settings', icon: Settings, onClick: () => {} },
+    { type: 'separator', id: 'sep' },
+    { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: () => {} },
+  ]}
+/>
+```
+
+## Default
+
+<Canvas of={MenuStories.Default} />
+
+<Controls of={MenuStories.Default} />
+
+## Examples
+
+A comprehensive set covering basic menus, keyboard shortcuts, nested submenus, disabled items, custom component items, sizing constraints, and trigger tooltips.
+
+<Canvas of={MenuStories.Examples} />

@@ -1,0 +1,41 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CardStories from './Card.stories';
+
+<Meta of={CardStories} />
+
+# Card
+
+Surface container for grouping related content. Use it to establish visual hierarchy and visually separate distinct sections within a page or layout.
+
+> **Note**: Prefer semantic elements via `as="article"` or `as="section"` when the card represents a meaningful document section rather than a generic grouping div.
+
+## Usage
+
+```tsx
+import { Card } from '@pmealha/eidos-ui';
+
+<Card variant="outlined" padding="md">
+  <h3>Card title</h3>
+  <p>Body content goes here.</p>
+</Card>
+```
+
+## Default
+
+<Canvas of={CardStories.Default} />
+
+<Controls of={CardStories.Default} />
+
+## Clickable
+
+Adds hover and focus-ring styles with `cursor: pointer`. Pair with an `onClick` handler to make the entire card interactive.
+
+<Canvas of={CardStories.Clickable} />
+
+## Padding sizes
+
+<Canvas of={CardStories.Padding} />
+
+## With content
+
+<Canvas of={CardStories.WithContent} />

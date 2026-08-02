@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SwitchStories from './Switch.stories';
+
+<Meta of={SwitchStories} />
+
+# Switch
+
+Toggle control for binary on/off settings. Prefer Switch over Checkbox when the action takes immediate effect without a submit step.
+
+## Usage
+
+```tsx
+import { Switch } from '@pmealha/eidos-ui';
+
+<Switch
+  label="Notifications"
+  defaultChecked
+  onChange={(e) => console.log(e.target.checked)}
+/>
+```
+
+## Default
+
+<Canvas of={SwitchStories.Default} />
+
+<Controls of={SwitchStories.Default} />
+
+## Checked
+
+Uncontrolled switch that starts in the on state via `defaultChecked`.
+
+<Canvas of={SwitchStories.Checked} />
+
+## Disabled
+
+<Canvas of={SwitchStories.Disabled} />
+
+## Disabled and checked
+
+<Canvas of={SwitchStories.DisabledChecked} />
+
+## Label on the left
+
+Set `labelPosition="left"` to place the label before the track.
+
+<Canvas of={SwitchStories.LabelLeft} />
+
+## Sizes
+
+<Canvas of={SwitchStories.Sizes} />
+
+## Colors
+
+Color applies to the track when the switch is in the checked state.
+
+<Canvas of={SwitchStories.Colors} />

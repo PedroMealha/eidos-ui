@@ -15,7 +15,6 @@ const meta: Meta<typeof DatePicker> = {
       },
     },
   },
-  tags: ["autodocs"],
   argTypes: {
     mode: {
       control: "select",

@@ -43,28 +43,33 @@ import { TreeViewShowcase } from './design-system/tree-view';
 import { CommandPaletteShowcase } from './design-system/command-palette';
 import { VirtualListShowcase } from './design-system/virtual-list';
 import { DataGridShowcase } from './design-system/data-grid';
+import { ButtonGroupShowcase } from './design-system/button-group';
+import { SegmentedControlShowcase } from './design-system/segmented-control';
+import { SplitButtonShowcase } from './design-system/split-button';
+import { ContextMenuShowcase } from './design-system/context-menu';
+import { KbdShowcase } from './design-system/kbd';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Navigation structure
 // ─────────────────────────────────────────────────────────────────────────────
 
 type ComponentId =
-  | 'Button' | 'Chip' | 'Input' | 'Textarea' | 'Select' | 'Card' | 'Badge' | 'Alert'
-  | 'Checkbox' | 'Radio' | 'Switch' | 'Slider'
-  | 'Tabs' | 'Accordion' | 'Breadcrumb' | 'Stepper' | 'Pagination' | 'Dropdown' | 'Menu'
-  | 'Modal' | 'Drawer' | 'Snackbar' | 'Tooltip' | 'Popover'
-  | 'Date Picker' | 'Table' | 'Timeline'
-  | 'Progress' | 'Skeleton' | 'Avatar' | 'Empty State'
-  | 'Number Input' | 'File Upload'
-  | 'Divider & Spinner'
-  | 'Tag Input' | 'OTP Input' | 'Combobox' | 'Color Picker'
-  | 'Tree View' | 'Command Palette' | 'Virtual List' | 'Data Grid';
+  | 'Button' | 'Button Group' | 'Split Button' | 'Chip' | 'Badge' | 'Alert' | 'Card' | 'Avatar'
+  | 'Empty State' | 'Kbd'
+  | 'Input' | 'Textarea' | 'Select' | 'Checkbox' | 'Radio' | 'Switch' | 'Slider'
+  | 'Number Input' | 'File Upload' | 'Tag Input' | 'OTP Input' | 'Combobox' | 'Color Picker'
+  | 'Tabs' | 'Accordion' | 'Breadcrumb' | 'Stepper' | 'Pagination'
+  | 'Dropdown' | 'Menu' | 'Tree View' | 'Segmented Control'
+  | 'Modal' | 'Drawer' | 'Snackbar' | 'Tooltip' | 'Popover' | 'Context Menu' | 'Command Palette'
+  | 'Date Picker' | 'Table' | 'Timeline' | 'Virtual List' | 'Data Grid'
+  | 'Progress' | 'Skeleton'
+  | 'Divider & Spinner';
 
 const NAV: Array<{ group: string; items: ComponentId[] }> = [
-  { group: 'ELEMENTS',    items: ['Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State'] },
+  { group: 'ELEMENTS',    items: ['Button', 'Button Group', 'Split Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State', 'Kbd'] },
   { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch', 'Slider', 'Number Input', 'File Upload', 'Tag Input', 'OTP Input', 'Combobox', 'Color Picker'] },
-  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu', 'Tree View'] },
-  { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover', 'Command Palette'] },
+  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu', 'Tree View', 'Segmented Control'] },
+  { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover', 'Context Menu', 'Command Palette'] },
   { group: 'DATA',        items: ['Date Picker', 'Table', 'Timeline', 'Virtual List', 'Data Grid'] },
   { group: 'FEEDBACK',    items: ['Progress', 'Skeleton'] },
   { group: 'LAYOUT',      items: ['Divider & Spinner'] },
@@ -72,6 +77,8 @@ const NAV: Array<{ group: string; items: ComponentId[] }> = [
 
 const SHOWCASES: Record<ComponentId, React.ReactNode> = {
   'Button':          <ButtonShowcase />,
+  'Button Group':    <ButtonGroupShowcase />,
+  'Split Button':    <SplitButtonShowcase />,
   'Chip':            <ChipShowcase />,
   'Input':           <InputShowcase />,
   'Select':          <SelectShowcase />,
@@ -105,6 +112,9 @@ const SHOWCASES: Record<ComponentId, React.ReactNode> = {
   'Progress':          <ProgressShowcase />,
   'Skeleton':          <SkeletonShowcase />,
   'Avatar':            <AvatarShowcase />,
+  'Kbd':               <KbdShowcase />,
+  'Segmented Control': <SegmentedControlShowcase />,
+  'Context Menu':      <ContextMenuShowcase />,
   'Tag Input':         <TagInputShowcase />,
   'OTP Input':         <OTPInputShowcase />,
   'Combobox':          <ComboboxShowcase />,

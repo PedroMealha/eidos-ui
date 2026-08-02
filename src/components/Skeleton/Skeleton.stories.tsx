@@ -30,7 +30,6 @@ const meta = {
   parameters: {
     layout: "padded",
   },
-  tags: ["autodocs"],
   argTypes: {
     variant: {
       control: "select",

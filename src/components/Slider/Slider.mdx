@@ -1,0 +1,58 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SliderStories from './Slider.stories';
+
+<Meta of={SliderStories} />
+
+# Slider
+
+Range input for selecting a numeric value within a min/max bound. Supports labels, unit strings, min/max display, and a blocked range that prevents the thumb from entering a restricted zone.
+
+## Usage
+
+```tsx
+import { Slider } from '@pmealha/eidos-ui';
+
+<Slider defaultValue={50} label="Volume" showValue />
+```
+
+## Default
+
+<Canvas of={SliderStories.Default} />
+
+<Controls of={SliderStories.Default} />
+
+## Sizes
+
+<Canvas of={SliderStories.Sizes} />
+
+## Colors
+
+<Canvas of={SliderStories.Colors} />
+
+## With label
+
+Providing `label` renders a text label above the track; combine with `showValue` to display the live numeric value alongside it.
+
+<Canvas of={SliderStories.WithLabel} />
+
+## With min/max
+
+Set `showMinMax` to render the `min` and `max` values below the track ends, giving the user explicit range context.
+
+<Canvas of={SliderStories.WithMinMax} />
+
+## Disabled
+
+<Canvas of={SliderStories.Disabled} />
+
+## With unit
+
+Pass a `unit` string (e.g. `"%"`, `"px"`, `" kg"`) to append it to the value label and min/max indicators.
+
+<Canvas of={SliderStories.WithUnit} />
+
+## Blocked range
+
+`blockedRange` marks a zone on the track in danger-red and clamps the thumb to `blockedRange.min` — useful for quota or hard limit enforcement.
+
+<Canvas of={SliderStories.BlockedRange} />

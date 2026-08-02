@@ -6,7 +6,6 @@ const meta = {
 	title: 'Forms/Switch',
 	component: Switch,
 	parameters: { layout: 'padded' },
-	tags: ['autodocs'],
 	args: {
 		label: 'Toggle me',
 		labelPosition: 'right',

@@ -29,7 +29,6 @@ const meta = {
   title: 'Forms/Combobox',
   component: Combobox,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   argTypes: {
     size: {
       control: 'select',

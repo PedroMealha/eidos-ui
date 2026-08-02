@@ -5,7 +5,6 @@ const meta = {
   title: 'Forms/TagInput',
   component: TagInput,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     size: {
       control: 'select',

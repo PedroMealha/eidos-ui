@@ -6,7 +6,6 @@ const meta = {
 	title: 'Forms/Slider',
 	component: Slider,
 	parameters: { layout: 'padded' },
-	tags: ['autodocs'],
 	argTypes: {
 		value: {
 			control: { type: 'number', min: 0, max: 100 },

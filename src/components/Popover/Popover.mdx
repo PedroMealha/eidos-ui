@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as PopoverStories from './Popover.stories';
+
+<Meta of={PopoverStories} />
+
+# Popover
+
+Click-triggered floating panel with a configurable placement. Unlike Tooltip (hover-only, plain text), Popover is click-toggled and accepts rich content including forms and actions.
+
+## Usage
+
+```tsx
+import { Popover, Button } from '@pmealha/eidos-ui';
+
+<Popover
+  trigger={<Button>Open</Button>}
+  title="Details"
+  placement="bottom"
+>
+  <p>Any content goes here.</p>
+</Popover>
+```
+
+## Default
+
+<Canvas of={PopoverStories.Default} />
+
+<Controls of={PopoverStories.Default} />
+
+## With title
+
+Adds a heading and an optional × close button in the panel header via `showCloseButton`.
+
+<Canvas of={PopoverStories.WithTitle} />
+
+## Placements
+
+The popover flips automatically when there is not enough viewport space for the preferred side.
+
+<Canvas of={PopoverStories.Placements} />
+
+## Rich content
+
+`children` accepts any React node — forms, buttons, and structured layouts all work without extra configuration.
+
+<Canvas of={PopoverStories.RichContent} />
+
+## Controlled
+
+Pass `isOpen` and `onOpenChange` to drive the open state externally, bypassing the built-in click-toggle behaviour entirely.
+
+<Canvas of={PopoverStories.Controlled} />
+
+## Disabled
+
+<Canvas of={PopoverStories.Disabled} />

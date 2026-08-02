@@ -1,0 +1,35 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as InputStories from './Input.stories';
+
+<Meta of={InputStories} />
+
+# Input
+
+Single-line text input supporting labels, error messages, leading/trailing icons, loading state, and four visual variants: `filled`, `outlined`, `text`, and `bare`.
+
+## Usage
+
+```tsx
+import { Input } from '@pmealha/eidos-ui';
+import { Mail } from 'lucide-react';
+
+<Input
+  label="Email"
+  type="email"
+  placeholder="Enter your email"
+  preIcon={Mail}
+  required
+/>
+```
+
+## Default
+
+<Canvas of={InputStories.Default} />
+
+<Controls of={InputStories.Default} />
+
+## Examples
+
+A comprehensive grid covering variants, colors, sizes, states, icons, disclaimer tooltips, select style, and custom widths.
+
+<Canvas of={InputStories.Examples} />

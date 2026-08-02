@@ -120,7 +120,6 @@ const meta = {
       },
     },
   },
-  tags: ['autodocs'],
   argTypes: {
     open: { control: false },
     onClose: { control: false },
@@ -144,11 +143,11 @@ export default meta;
 
 /**
  * The default story renders a full palette with a mixed set of items.
- * It opens immediately so you can see it right away in Storybook.
+ * Click the trigger button to open it.
  */
 export const Default = {
   render: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     return (
       <>
         <TriggerButton onClick={() => setOpen(true)} />
@@ -164,7 +163,7 @@ export const Default = {
  */
 export const WithGroups = {
   render: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     return (
       <>
         <TriggerButton onClick={() => setOpen(true)} />
@@ -180,7 +179,7 @@ export const WithGroups = {
  */
 export const WithShortcuts = {
   render: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const shortcutItems: CommandItem[] = ITEMS.filter((item) => item.shortcut);
     return (
       <>
@@ -198,7 +197,7 @@ export const WithShortcuts = {
  */
 export const EmptyState = {
   render: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     return (
       <>
         <TriggerButton onClick={() => setOpen(true)} />
@@ -219,7 +218,7 @@ export const EmptyState = {
  */
 export const WithFooter = {
   render: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     return (
       <>
         <TriggerButton onClick={() => setOpen(true)} />
@@ -250,7 +249,7 @@ export const WithFooter = {
  */
 export const WithDisabledItems = {
   render: () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const mixed: CommandItem[] = [
       { id: 'a', label: 'Active Command', icon: Settings, group: 'General' },
       { id: 'b', label: 'Disabled Command', icon: Bug, group: 'General', disabled: true },

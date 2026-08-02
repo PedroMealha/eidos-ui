@@ -1,0 +1,32 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './Tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+# Tooltip
+
+Hover-triggered floating label for non-critical supplementary information. Accepts plain text or rich React content.
+
+> **Note**: Tooltip is hover-triggered and for supplementary hints. Popover is click-triggered and supports interactive content (forms, buttons).
+
+## Usage
+
+```tsx
+import { Tooltip } from '@pmealha/eidos-ui';
+
+<Tooltip message="More information" placement="top">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+## Message tooltip
+
+<Canvas of={TooltipStories.MessageTooltip} />
+
+<Controls of={TooltipStories.MessageTooltip} />
+
+## Component tooltip
+
+Pass a `component` prop instead of `message` to render rich React content inside the tooltip.
+
+<Canvas of={TooltipStories.ComponentTooltip} />

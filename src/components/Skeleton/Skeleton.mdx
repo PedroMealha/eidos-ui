@@ -1,0 +1,60 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SkeletonStories from './Skeleton.stories';
+
+<Meta of={SkeletonStories} />
+
+# Skeleton
+
+Loading placeholder that mimics the shape of content before it arrives. Prefer it over a spinner when the layout of the incoming content is known.
+
+## Usage
+
+```tsx
+import { Skeleton } from '@pmealha/eidos-ui';
+
+// Single text line
+<Skeleton variant="text" />
+
+// Avatar placeholder
+<Skeleton variant="circular" width={40} height={40} />
+```
+
+## Default
+
+<Canvas of={SkeletonStories.Default} />
+
+<Controls of={SkeletonStories.Default} />
+
+## Multi-line
+
+Set `lines` to render a stacked block of text placeholders; the last line is automatically narrowed to 60 % width to look more natural.
+
+<Canvas of={SkeletonStories.MultiLine} />
+
+## Circular
+
+<Canvas of={SkeletonStories.Circular} />
+
+## Rectangular
+
+<Canvas of={SkeletonStories.Rectangular} />
+
+## Rounded
+
+<Canvas of={SkeletonStories.Rounded} />
+
+## Pulse animation
+
+Set `animation="pulse"` for a fade in/out effect instead of the default left-to-right wave sweep.
+
+<Canvas of={SkeletonStories.Pulse} />
+
+## Card placeholder
+
+Compose multiple `Skeleton` elements to mirror the exact layout of a loading card.
+
+<Canvas of={SkeletonStories.CardPlaceholder} />
+
+## Table placeholder
+
+<Canvas of={SkeletonStories.TablePlaceholder} />

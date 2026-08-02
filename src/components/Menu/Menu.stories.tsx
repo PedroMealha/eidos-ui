@@ -8,7 +8,6 @@ const meta = {
 	title: 'Navigation/Menu',
 	component: Menu,
 	parameters: { layout: 'centered' },
-	tags: ['autodocs'],
 	argTypes: {
 		trigger: {
 			control: false,

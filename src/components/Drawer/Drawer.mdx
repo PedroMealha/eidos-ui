@@ -1,0 +1,63 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as DrawerStories from './Drawer.stories';
+
+<Meta of={DrawerStories} />
+
+# Drawer
+
+Slide-in panel anchored to a screen edge. Use it for settings panels, detail views, or any content that should overlay the page without a full navigation change.
+
+## Usage
+
+```tsx
+import { Drawer } from '@pmealha/eidos-ui';
+import { useState } from 'react';
+
+function Example() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>Open</button>
+      <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)} title="Settings">
+        <p>Drawer content goes here.</p>
+      </Drawer>
+    </>
+  );
+}
+```
+
+## Default
+
+Use the controls below to configure placement, size, title, and dismiss behaviour interactively.
+
+<Canvas of={DrawerStories.Default} />
+
+<Controls of={DrawerStories.Default} />
+
+## With title
+
+<Canvas of={DrawerStories.WithTitle} />
+
+## With actions
+
+Pass an `actions` array to render a sticky footer with one or more buttons.
+
+<Canvas of={DrawerStories.WithActions} />
+
+## Placements
+
+The drawer slides in from `left`, `right`, `top`, or `bottom` — set via the `placement` prop.
+
+<Canvas of={DrawerStories.Placements} />
+
+## Sizes
+
+`small` (280 px), `medium` (400 px, default), `large` (560 px), and `full` (100% of the viewport).
+
+<Canvas of={DrawerStories.Sizes} />
+
+## Bottom sheet
+
+`placement="bottom"` turns the drawer into a mobile-friendly sheet that slides up from the bottom of the screen.
+
+<Canvas of={DrawerStories.BottomSheet} />

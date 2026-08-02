@@ -1,0 +1,73 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as NumberInputStories from './NumberInput.stories';
+
+<Meta of={NumberInputStories} />
+
+# NumberInput
+
+Numeric text input with increment/decrement controls, min/max clamping, precision formatting, and optional keyboard-only typing restriction.
+
+## Usage
+
+```tsx
+import { NumberInput } from '@pmealha/eidos-ui';
+import { useState } from 'react';
+
+function MyComponent() {
+  const [value, setValue] = useState(0);
+
+  return (
+    <NumberInput
+      value={value}
+      onChange={setValue}
+      min={0}
+      max={100}
+      label="Quantity"
+    />
+  );
+}
+```
+
+## Default
+
+<Canvas of={NumberInputStories.Default} />
+
+<Controls of={NumberInputStories.Default} />
+
+## With min/max
+
+Controlled example demonstrating value clamping at defined boundaries — the stepper buttons and direct typing both respect `min` and `max`.
+
+<Canvas of={NumberInputStories.WithMinMax} />
+
+## Precision
+
+Use `step` and `precision` together for decimal values: `step` controls the increment amount, `precision` controls how many decimal places are displayed.
+
+<Canvas of={NumberInputStories.Precision} />
+
+## Sizes
+
+<Canvas of={NumberInputStories.Sizes} />
+
+## With label
+
+Shows a label above the control, helper text below, and the error state driven by the `error` and `errorMessage` props.
+
+<Canvas of={NumberInputStories.WithLabel} />
+
+## Read-only
+
+The control displays its value and remains focusable, but neither typing nor the stepper buttons can change it.
+
+<Canvas of={NumberInputStories.ReadOnly} />
+
+## No typing
+
+Setting `allowTyping={false}` restricts entry to the increment/decrement buttons only — useful for bounded integer inputs like ratings or quantities where free-text entry would bypass `min`/`max`.
+
+<Canvas of={NumberInputStories.NoTyping} />
+
+## Disabled
+
+<Canvas of={NumberInputStories.Disabled} />

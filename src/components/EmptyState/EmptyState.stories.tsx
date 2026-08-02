@@ -8,7 +8,6 @@ const meta = {
 	title: 'Elements/EmptyState',
 	component: EmptyState,
 	parameters: { layout: 'centered' },
-	tags: ['autodocs'],
 	argTypes: {
 		title: {
 			control: 'text',

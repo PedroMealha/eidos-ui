@@ -8,7 +8,6 @@ const meta = {
 	title: 'Overlays/Modal',
 	component: Modal,
 	parameters: { layout: 'centered' },
-	tags: ['autodocs'],
 	args: {
 		isOpen: false,
 		onClose: () => {},

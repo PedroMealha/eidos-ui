@@ -5,7 +5,6 @@ const meta = {
 	title: 'Forms/Radio',
 	component: Radio,
 	parameters: { layout: 'padded' },
-	tags: ['autodocs'],
 	argTypes: {
 		checked: {
 			control: 'boolean',

@@ -7,7 +7,6 @@ const meta = {
 	title: 'Forms/Textarea',
 	component: Textarea,
 	parameters: { layout: 'padded' },
-	tags: ['autodocs'],
 	args: {
 		variant: 'filled',
 		color: 'primary',

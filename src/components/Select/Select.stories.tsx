@@ -9,7 +9,6 @@ const meta: Meta<typeof Select> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     options: {
       control: "object",

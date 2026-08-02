@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as BreadcrumbStories from './Breadcrumb.stories';
+
+<Meta of={BreadcrumbStories} />
+
+# Breadcrumb
+
+A navigation trail showing the current page's location within the site hierarchy. The last item is always rendered as the current (non-linked) page.
+
+> **Note**: For SPA navigation, use the `onClick` handler on each item instead of `href` to avoid full page reloads.
+
+## Usage
+
+```tsx
+import { Breadcrumb } from '@pmealha/eidos-ui';
+
+<Breadcrumb
+  items={[
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Smartphones' },
+  ]}
+/>
+```
+
+## Default
+
+<Canvas of={BreadcrumbStories.Default} />
+
+<Controls of={BreadcrumbStories.Default} />
+
+## With hrefs
+
+Each item except the last receives an `href`, rendering it as an anchor link.
+
+<Canvas of={BreadcrumbStories.WithHrefs} />
+
+## With icons
+
+Items accept an optional `icon` node displayed to the left of the label.
+
+<Canvas of={BreadcrumbStories.WithIcons} />
+
+## Custom separator
+
+Pass any `ReactNode` as `separator` to replace the default `/` character.
+
+<Canvas of={BreadcrumbStories.CustomSeparator} />
+
+## Short
+
+<Canvas of={BreadcrumbStories.Short} />
+
+## Long
+
+<Canvas of={BreadcrumbStories.Long} />

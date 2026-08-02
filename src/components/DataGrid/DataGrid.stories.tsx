@@ -196,7 +196,6 @@ const meta: Meta<typeof DataGrid<Person>> = {
 			},
 		},
 	},
-	tags: ['autodocs'],
 	argTypes: {
 		// ── Controllable props ─────────────────────────────────────────────────────
 		editable: {

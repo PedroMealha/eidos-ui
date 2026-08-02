@@ -106,7 +106,6 @@ const meta: Meta<typeof Table<User>> = {
       },
     },
   },
-  tags: ["autodocs"],
   argTypes: {
     loading: {
       control: "boolean",

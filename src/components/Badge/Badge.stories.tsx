@@ -9,7 +9,6 @@ const meta = {
   parameters: {
     layout: "padded",
   },
-  tags: ["autodocs"],
   argTypes: {
     children: {
       control: "text",

@@ -1,0 +1,59 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as PaginationStories from './Pagination.stories';
+
+<Meta of={PaginationStories} />
+
+# Pagination
+
+Page navigation control for lists and tables. Shows first/last, previous/next, and a window of page number buttons.
+
+> **Note**: `Pagination` is always controlled — you must manage `page` state externally and pass `onChange`.
+
+## Usage
+
+```tsx
+import { Pagination } from '@pmealha/eidos-ui';
+import { useState } from 'react';
+
+function MyComponent() {
+  const [page, setPage] = useState(1);
+
+  return (
+    <Pagination
+      page={page}
+      totalPages={20}
+      onChange={setPage}
+    />
+  );
+}
+```
+
+## Default
+
+<Canvas of={PaginationStories.Default} />
+
+<Controls of={PaginationStories.Default} />
+
+## Many pages
+
+Ellipsis is inserted on either side of the page window when the total exceeds what can be shown — `siblingCount` controls how many page buttons appear around the current page.
+
+<Canvas of={PaginationStories.ManyPages} />
+
+## Colors
+
+<Canvas of={PaginationStories.Colors} />
+
+## Sizes
+
+<Canvas of={PaginationStories.Sizes} />
+
+## Without first/last
+
+Set `showFirstLast={false}` to remove the ⟨⟨ / ⟩⟩ jump buttons for a more compact layout.
+
+<Canvas of={PaginationStories.NoFirstLast} />
+
+## Disabled
+
+<Canvas of={PaginationStories.Disabled} />

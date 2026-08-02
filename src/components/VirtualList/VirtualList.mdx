@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as VirtualListStories from './VirtualList.stories';
+
+<Meta of={VirtualListStories} />
+
+# VirtualList
+
+Virtualized scrolling list for rendering large datasets efficiently. Only the visible rows are in the DOM at any time.
+
+> **Note**: Powered by `@tanstack/react-virtual` — DOM node count stays constant regardless of dataset size, making it safe to render tens of thousands of rows.
+
+## Usage
+
+```tsx
+import { VirtualList } from '@pmealha/eidos-ui';
+
+<VirtualList
+  data={items}
+  rowHeight={48}
+  height={400}
+  getRowKey={(item) => item.id}
+  renderRow={(item) => <div>{item.name}</div>}
+/>
+```
+
+## Fixed row height
+
+All rows share the same pixel height — the simplest and most performant configuration.
+
+<Canvas of={VirtualListStories.FixedHeight} />
+
+<Controls of={VirtualListStories.FixedHeight} />
+
+## Variable row height
+
+Pass a function to `rowHeight` to return a different height per row index.
+
+<Canvas of={VirtualListStories.VariableHeight} />
+
+## Loading state
+
+When `loading` is true, real rows are replaced by animated skeleton placeholders.
+
+<Canvas of={VirtualListStories.WithLoading} />
+
+## Empty state
+
+When `data` is empty (and not loading), the `emptyContent` slot is rendered centred inside the scroll container.
+
+<Canvas of={VirtualListStories.EmptyState} />
+
+## Infinite scroll
+
+Use `onEndReached` and `endReachedThreshold` to append data as the user approaches the bottom of the list.
+
+<Canvas of={VirtualListStories.InfiniteScroll} />

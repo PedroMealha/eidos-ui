@@ -1,0 +1,45 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TimelineStories from './Timeline.stories';
+
+<Meta of={TimelineStories} />
+
+# Timeline
+
+Vertical list of time-ordered events connected by a line. Each entry has a timestamp, title, optional description, and optional icon with color.
+
+## Usage
+
+```tsx
+import { Timeline } from '@pmealha/eidos-ui';
+
+<Timeline
+  items={[
+    { id: '1', title: 'Order placed', timestamp: 'Today 09:41', color: 'primary' },
+    { id: '2', title: 'Payment confirmed', timestamp: 'Today 09:42', color: 'success' },
+  ]}
+/>
+```
+
+## Default
+
+<Canvas of={TimelineStories.Default} />
+
+<Controls of={TimelineStories.Default} />
+
+## With icons
+
+<Canvas of={TimelineStories.WithIcons} />
+
+## Simple
+
+Entries without timestamps or icons — useful when chronological ordering is implied by position alone.
+
+<Canvas of={TimelineStories.Simple} />
+
+## All colors
+
+<Canvas of={TimelineStories.AllColors} />
+
+## Long content
+
+<Canvas of={TimelineStories.LongContent} />

@@ -1,0 +1,68 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ColorPickerStories from './ColorPicker.stories';
+
+<Meta of={ColorPickerStories} />
+
+# ColorPicker
+
+Full-featured color selector with a gradient canvas, hue and alpha sliders, hex/rgb/hsl text input, and optional preset swatches. Renders as a popover trigger by default; set `inline` for an always-visible panel.
+
+## Usage
+
+```tsx
+import { ColorPicker } from '@pmealha/eidos-ui';
+
+const [color, setColor] = useState('#6366f1');
+
+<ColorPicker
+  value={color}
+  onChange={setColor}
+  label="Brand color"
+/>
+```
+
+## Default
+
+The default mode renders a color swatch that opens a popover picker on click.
+
+<Canvas of={ColorPickerStories.Default} />
+
+<Controls of={ColorPickerStories.Default} />
+
+## Inline
+
+Set `inline` to render the picker panel directly on the page without a popover trigger.
+
+<Canvas of={ColorPickerStories.Inline} />
+
+## With alpha slider
+
+Enable `showAlpha` to reveal an opacity slider below the hue rail. The hex value gains an alpha channel (e.g. `#6366f1cc`).
+
+<Canvas of={ColorPickerStories.WithAlpha} />
+
+## HSL format
+
+Set `format="hsl"` to display HSL values in the text input. The user can also switch formats manually inside the picker.
+
+<Canvas of={ColorPickerStories.HslFormat} />
+
+## Custom swatches
+
+Pass a `swatches` array of hex strings to replace the default palette with a project-specific one.
+
+<Canvas of={ColorPickerStories.CustomSwatches} />
+
+## Controlled
+
+Wire `value` and `onChange` together to keep the selected color in external state and drive it from other UI elements.
+
+<Canvas of={ColorPickerStories.Controlled} />
+
+## Sizes
+
+<Canvas of={ColorPickerStories.Sizes} />
+
+## Disabled
+
+<Canvas of={ColorPickerStories.Disabled} />

@@ -7,7 +7,6 @@ const meta = {
   title: 'Navigation/Accordion',
   component: Accordion,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   // children is required by AccordionProps but every story supplies it
   // through its own render function — set to undefined here to avoid
   // Storybook trying to auto-generate a control for it.

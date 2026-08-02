@@ -136,7 +136,6 @@ virtualizer so the component stays lean.
       },
     },
   },
-  tags: ['autodocs'],
   // Baseline args satisfy TypeScript's required-prop constraint so that
   // individual stories using `render:()` don't need to repeat them.
   // The render functions in each story fully override these values.

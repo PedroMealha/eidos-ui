@@ -5,7 +5,6 @@ const meta = {
   title: 'Elements/Card',
   component: Card,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   args: {
     variant: 'outlined',
     padding: 'md',

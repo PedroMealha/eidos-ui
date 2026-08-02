@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './Checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+# Checkbox
+
+Boolean toggle control for forms. Supports controlled and uncontrolled usage, an indeterminate state for parent-of-children selection patterns, four color themes, and inline error messaging.
+
+## Usage
+
+```tsx
+import { Checkbox } from '@pmealha/eidos-ui';
+
+// Uncontrolled
+<Checkbox label="Accept terms and conditions" defaultChecked />
+
+// Controlled
+<Checkbox
+  label="Subscribe to newsletter"
+  checked={subscribed}
+  onChange={(e) => setSubscribed(e.target.checked)}
+/>
+```
+
+## Default
+
+<Canvas of={CheckboxStories.Default} />
+
+<Controls of={CheckboxStories.Default} />
+
+## With label
+
+<Canvas of={CheckboxStories.WithLabel} />
+
+## Indeterminate
+
+Use the indeterminate state when a parent checkbox represents a group where some — but not all — children are selected.
+
+<Canvas of={CheckboxStories.Indeterminate} />
+
+## Disabled
+
+<Canvas of={CheckboxStories.Disabled} />
+
+## With error
+
+<Canvas of={CheckboxStories.WithError} />
+
+## Sizes
+
+<Canvas of={CheckboxStories.Sizes} />
+
+## Colors
+
+<Canvas of={CheckboxStories.Colors} />

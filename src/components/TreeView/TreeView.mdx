@@ -1,0 +1,70 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TreeViewStories from './TreeView.stories';
+
+<Meta of={TreeViewStories} />
+
+# TreeView
+
+Hierarchical list with expand/collapse nodes. Supports single and multi-selection, custom label rendering, guide lines, and controlled expansion state.
+
+## Usage
+
+```tsx
+import { TreeView } from '@pmealha/eidos-ui';
+import type { TreeNode } from '@pmealha/eidos-ui';
+
+const data: TreeNode[] = [
+  {
+    id: 'src',
+    label: 'src',
+    children: [
+      { id: 'index', label: 'index.ts' },
+    ],
+  },
+  { id: 'readme', label: 'README.md' },
+];
+
+<TreeView data={data} defaultExpandedIds={['src']} />
+```
+
+## Default
+
+<Canvas of={TreeViewStories.Default} />
+
+<Controls of={TreeViewStories.Default} />
+
+## With lines
+
+Vertical indent guide lines make deep hierarchies easier to scan.
+
+<Canvas of={TreeViewStories.WithLines} />
+
+## Expand all
+
+All branch nodes are expanded on mount via `defaultExpandAll` — no need to enumerate ids.
+
+<Canvas of={TreeViewStories.DefaultExpandAll} />
+
+## Controlled selection
+
+Pass `selectedId` and `onSelect` together to drive the selected node from external state.
+
+<Canvas of={TreeViewStories.ControlledSelection} />
+
+## Disabled nodes
+
+Individual nodes can be marked `disabled` on the `TreeNode` object to prevent selection and interaction.
+
+<Canvas of={TreeViewStories.Disabled} />
+
+## Multi-select
+
+Set `multiSelect` and wire up `selectedIds` + `onSelectMulti` to allow building a selection set by clicking nodes.
+
+<Canvas of={TreeViewStories.MultiSelect} />
+
+## Custom label rendering
+
+Use `renderLabel` to replace the default label text with any React node — useful for badges, icons, or status indicators.
+
+<Canvas of={TreeViewStories.CustomRenderLabel} />

@@ -11,7 +11,6 @@ const meta = {
   title: 'Data/Timeline',
   component: Timeline,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   argTypes: {
     items: { table: { disable: true } },
     className: { table: { disable: true } },

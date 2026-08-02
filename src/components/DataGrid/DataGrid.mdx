@@ -1,0 +1,136 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as DataGridStories from './DataGrid.stories';
+
+<Meta of={DataGridStories} />
+
+# DataGrid
+
+A feature-rich, spreadsheet-like grid for editing structured data inline. Columns are typed (`text`, `number`, `select`, `checkbox`, `readonly`), and the grid supports sorting, filtering, pagination, row selection, drag-and-drop reordering, column pinning, and per-cell validation — all opt-in via props.
+
+> **Note**: `DataGrid` is generic over your row type (`T extends Record<string, unknown>`). Pass the type parameter explicitly — e.g. `<DataGrid<Person> … />` — to get full type safety on `columns`, `onChange`, and callbacks.
+
+## Usage
+
+```tsx
+import { DataGrid } from '@pmealha/eidos-ui';
+import type { DataGridColumn } from '@pmealha/eidos-ui';
+
+interface Person extends Record<string, unknown> {
+  id: number;
+  name: string;
+  role: string;
+}
+
+const columns: DataGridColumn<Person>[] = [
+  { key: 'id',   header: 'ID',   type: 'readonly', width: 60 },
+  { key: 'name', header: 'Name', type: 'text',     minWidth: 160, required: true },
+  {
+    key: 'role', header: 'Role', type: 'select', width: 130,
+    options: [
+      { value: 'lead',   label: 'Lead' },
+      { value: 'senior', label: 'Senior' },
+    ],
+  },
+];
+
+function TeamTable() {
+  const [data, setData] = useState<Person[]>([
+    { id: 1, name: 'Alice', role: 'lead' },
+  ]);
+
+  return (
+    <DataGrid<Person>
+      columns={columns}
+      data={data}
+      rowKey="id"
+      onChange={setData}
+    />
+  );
+}
+```
+
+## Default
+
+A fully editable grid with all common display props wired to Storybook controls. Toggle `editable`, `loading`, `density`, `showDensity`, `showRowNumbers`, `showPagination`, `selectable`, `draggableRows`, `showFilters`, and `emptyText` from the Controls panel.
+
+<Canvas of={DataGridStories.Default} />
+
+<Controls of={DataGridStories.Default} />
+
+## Read only
+
+Set `editable={false}` to produce a display-only view — click targets and hover states are suppressed across all cells.
+
+<Canvas of={DataGridStories.ReadOnly} />
+
+## With sorting
+
+Mark individual columns with `sortable: true` to enable click-to-sort on their headers. Without an `onSortChange` callback the grid sorts client-side automatically.
+
+<Canvas of={DataGridStories.WithSorting} />
+
+## With filtering
+
+Set `filterable: true`, `filterType`, and `filterOptions` on each column, then pass `showFilters={true}` to show the filter-panel toggle in the toolbar. Without `onFiltersChange` the grid filters client-side.
+
+<Canvas of={DataGridStories.WithFiltering} />
+
+## With pagination
+
+Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `pageSizeOptions` to let users switch between page sizes. For server-side pagination supply `totalRows` and `onPageChange`.
+
+<Canvas of={DataGridStories.WithPagination} />
+
+## With selection
+
+Enable `selectable={true}` to add row checkboxes. Pass a `bulkActions` array to expose actions — each action's `onClick` receives the full array of selected row objects.
+
+<Canvas of={DataGridStories.WithSelection} />
+
+## With draggable rows
+
+Enable `draggableRows={true}` to add a grip handle column. Commit reorders via `onRowReorder`. Note: drag-to-reorder and column sorting are mutually exclusive UX patterns.
+
+<Canvas of={DataGridStories.WithDraggableRows} />
+
+## With density
+
+Show a density picker in the toolbar with `showDensity={true}`. The initial density is set via the `density` prop (`compact` | `comfortable` | `spacious`); the grid manages further changes internally.
+
+<Canvas of={DataGridStories.WithDensity} />
+
+## With row numbers
+
+`showRowNumbers={true}` prepends a read-only column with the 1-based row index. Row numbers reflect position in the current view, not the full dataset.
+
+<Canvas of={DataGridStories.WithRowNumbers} />
+
+## With validation
+
+Validation fires when a cell is committed. Set `required: true` for a non-empty check, or provide a `validate` function on the column that returns an error string or `true` when valid.
+
+<Canvas of={DataGridStories.WithValidation} />
+
+## Empty state
+
+When `data` is an empty array the grid displays the `emptyText` message centred in the body.
+
+<Canvas of={DataGridStories.EmptyState} />
+
+## Loading
+
+Pass `loading={true}` while data is in flight to render a centred spinner overlay and suppress the empty-state message.
+
+<Canvas of={DataGridStories.Loading} />
+
+## Pinned columns
+
+Columns with `pin: 'left'` or `pin: 'right'` stay frozen during horizontal scroll. The grid reorders them to the correct edge regardless of where they appear in the `columns` array.
+
+<Canvas of={DataGridStories.PinnedFromMiddle} />
+
+## Full featured
+
+Kitchen-sink example combining sortable columns, column filters, client-side pagination, row selection with a bulk-delete action, row numbers, and a density picker — mirroring a real-world admin table.
+
+<Canvas of={DataGridStories.FullFeatured} />

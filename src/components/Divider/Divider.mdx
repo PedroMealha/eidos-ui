@@ -1,0 +1,48 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as DividerStories from './Divider.stories';
+
+<Meta of={DividerStories} />
+
+# Divider
+
+A thin visual separator line. Use it to divide sections of content horizontally, or to separate inline items in a flex layout vertically.
+
+## Usage
+
+```tsx
+import { Divider } from '@pmealha/eidos-ui';
+
+// Horizontal (default) — separates stacked content
+<div>
+  <p>Above</p>
+  <Divider />
+  <p>Below</p>
+</div>
+
+// Vertical — separates side-by-side items
+<div style={{ display: 'flex', alignItems: 'center', height: '40px', gap: '1rem' }}>
+  <span>Left</span>
+  <Divider direction="vertical" />
+  <span>Right</span>
+</div>
+```
+
+## Horizontal
+
+The default orientation — renders a full-width horizontal rule between stacked elements.
+
+<Canvas of={DividerStories.Horizontal} />
+
+<Controls of={DividerStories.Horizontal} />
+
+## Vertical
+
+Set `direction="vertical"` when the divider's parent is a flex row. The divider stretches to the container's full height automatically.
+
+<Canvas of={DividerStories.Vertical} />
+
+## Examples
+
+Common placement patterns: horizontal between stacked content, vertical between inline items, and as a list separator inside a bordered card.
+
+<Canvas of={DividerStories.Examples} />

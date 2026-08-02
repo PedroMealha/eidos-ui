@@ -116,7 +116,6 @@ const meta = {
   title: 'Navigation/TreeView',
   component: TreeView,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   args: {
     data: FILE_TREE,
   },

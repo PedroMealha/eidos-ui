@@ -7,7 +7,6 @@ const meta = {
   title: 'Navigation/Tabs',
   component: Tabs,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   // `children` is required by TabsProps; setting it here (at meta level) means
   // individual Story objects don't need to repeat it in their args — every story
   // supplies real children through its own `render` function instead.

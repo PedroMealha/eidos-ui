@@ -1,0 +1,46 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ModalStories from './Modal.stories';
+
+<Meta of={ModalStories} />
+
+# Modal
+
+Focused dialog that blocks the background with an overlay. Use for confirmations, forms, and detail views that require the user's full attention before continuing.
+
+## Usage
+
+```tsx
+import { Modal } from '@pmealha/eidos-ui';
+import { useState } from 'react';
+
+function MyComponent() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>Open</button>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Confirm Action"
+      >
+        <p>Are you sure you want to proceed?</p>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Default
+
+Click "Open Modal" to launch the dialog. Use the Controls panel below to adjust props live.
+
+<Canvas of={ModalStories.Default} />
+
+<Controls of={ModalStories.Default} />
+
+## Examples
+
+Covers all built-in types (`info`, `success`, `warning`, `danger`), icon variants, action buttons, and all four sizes in one interactive showcase.
+
+<Canvas of={ModalStories.Examples} />

@@ -8,7 +8,6 @@ const meta = {
   parameters: {
     layout: "padded",
   },
-  tags: ["autodocs"],
   argTypes: {
     value: {
       control: { type: "range", min: 0, max: 100, step: 1 },

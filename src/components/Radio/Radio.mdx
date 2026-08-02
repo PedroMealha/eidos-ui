@@ -1,0 +1,66 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as RadioStories from './Radio.stories';
+
+<Meta of={RadioStories} />
+
+# Radio
+
+Single-select control that should always be used inside a `RadioGroup`, which enforces mutual exclusivity across all options sharing the same `name`.
+
+> **Note**: For most use-cases, prefer `RadioGroup` over composing individual `Radio` elements manually — it handles `name`, state, and validation in one place.
+
+## Usage
+
+```tsx
+import { RadioGroup } from '@pmealha/eidos-ui';
+
+<RadioGroup
+  name="plan"
+  defaultValue="pro"
+  options={[
+    { value: 'free', label: 'Free' },
+    { value: 'pro', label: 'Pro' },
+    { value: 'enterprise', label: 'Enterprise' },
+  ]}
+/>
+```
+
+## Default
+
+<Canvas of={RadioStories.Default} />
+
+<Controls of={RadioStories.Default} />
+
+## Checked
+
+<Canvas of={RadioStories.Checked} />
+
+## Disabled
+
+<Canvas of={RadioStories.Disabled} />
+
+## Group
+
+Vertical `RadioGroup` with a pre-selected default value.
+
+<Canvas of={RadioStories.Group} />
+
+## Group horizontal
+
+<Canvas of={RadioStories.GroupHorizontal} />
+
+## Group with error
+
+Pass an `error` string to `RadioGroup` to render an inline validation message below the options.
+
+<Canvas of={RadioStories.GroupWithError} />
+
+## Sizes
+
+<Canvas of={RadioStories.Sizes} />
+
+## Colors
+
+Color applies to the filled indicator when the radio is in its checked state.
+
+<Canvas of={RadioStories.Colors} />

@@ -1,0 +1,56 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ProgressStories from './Progress.stories';
+
+<Meta of={ProgressStories} />
+
+# Progress
+
+Horizontal progress bar for communicating the completion percentage of a task. Use the indeterminate variant when the total work is unknown.
+
+## Usage
+
+```tsx
+import { Progress } from '@pmealha/eidos-ui';
+
+// Determinate
+<Progress value={65} />
+
+// Indeterminate — omit value
+<Progress />
+```
+
+## Default
+
+<Canvas of={ProgressStories.Default} />
+
+<Controls of={ProgressStories.Default} />
+
+## Indeterminate
+
+Omitting `value` switches the bar to a looping animation, useful when the total work cannot be measured.
+
+<Canvas of={ProgressStories.Indeterminate} />
+
+## Colors
+
+<Canvas of={ProgressStories.Colors} />
+
+## Sizes
+
+Track height scales across `small` (4 px), `medium` (8 px), and `large` (12 px).
+
+<Canvas of={ProgressStories.Sizes} />
+
+## With label
+
+Set `showLabel` to render the computed percentage to the right of the track; supply a `label` string to override the auto-generated value.
+
+<Canvas of={ProgressStories.WithLabel} />
+
+## Striped
+
+<Canvas of={ProgressStories.Striped} />
+
+## States
+
+<Canvas of={ProgressStories.States} />

@@ -1,0 +1,72 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TextareaStories from './Textarea.stories';
+
+<Meta of={TextareaStories} />
+
+# Textarea
+
+Multi-line text input. Supports labels, character count, helper/error text, loading state, and resize control.
+
+## Usage
+
+```tsx
+import { Textarea } from '@pmealha/eidos-ui';
+
+<Textarea
+  label="Description"
+  placeholder="Enter a description…"
+  rows={4}
+/>
+```
+
+## Default
+
+<Canvas of={TextareaStories.Default} />
+
+<Controls of={TextareaStories.Default} />
+
+## Outlined
+
+<Canvas of={TextareaStories.Outlined} />
+
+## With label
+
+<Canvas of={TextareaStories.WithLabel} />
+
+## With error
+
+<Canvas of={TextareaStories.WithError} />
+
+## Disabled
+
+<Canvas of={TextareaStories.Disabled} />
+
+## Loading
+
+The dashed border loading state disables user interaction while async work is in progress.
+
+<Canvas of={TextareaStories.Loading} />
+
+## With character count
+
+Set `showCount` and `maxLength` together to display a live character counter below the field.
+
+<Canvas of={TextareaStories.WithCount} />
+
+## Sizes
+
+<Canvas of={TextareaStories.Sizes} />
+
+## Full width
+
+<Canvas of={TextareaStories.FullWidth} />
+
+## Resize none
+
+<Canvas of={TextareaStories.ResizeNone} />
+
+## With disclaimer
+
+An icon button next to the label surfaces important contextual information in a tooltip.
+
+<Canvas of={TextareaStories.WithDisclaimer} />

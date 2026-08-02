@@ -1,0 +1,43 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TableFiltersDropdownStories from './TableFiltersDropdown.stories';
+
+<Meta of={TableFiltersDropdownStories} />
+
+# TableFiltersDropdown
+
+A standalone filter-picker dropdown used internally by `Table`. Each filter row lets the user select a filterable column and a matching value. Changes are staged locally and only committed when the user clicks **Apply filters**.
+
+> **Note**: In most cases you will not use this component directly — pass `filterable: true` on the relevant `TableColumn` definitions and `Table` will manage this dropdown for you. Use it standalone only when building a custom table shell.
+
+## Usage
+
+```tsx
+import { TableFiltersDropdown } from '@pmealha/eidos-ui';
+import type { TableColumn, TableFilters } from '@pmealha/eidos-ui';
+
+const [filters, setFilters] = useState<TableFilters>({});
+
+<TableFiltersDropdown
+  columns={columns}
+  filters={filters}
+  onChange={setFilters}
+/>
+```
+
+## Default
+
+<Canvas of={TableFiltersDropdownStories.Default} />
+
+<Controls of={TableFiltersDropdownStories.Default} />
+
+## Multiple filters
+
+Several filters staged simultaneously before applying.
+
+<Canvas of={TableFiltersDropdownStories.MultipleFilters} />
+
+## Pre-filled filters
+
+Opens with existing filter state already applied — useful for restored filter state from URL params or localStorage.
+
+<Canvas of={TableFiltersDropdownStories.PreFilledFilters} />

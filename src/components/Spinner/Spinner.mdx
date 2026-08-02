@@ -1,0 +1,28 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SpinnerStories from './Spinner.stories';
+
+<Meta of={SpinnerStories} />
+
+# Spinner
+
+Animated loading indicator for indeterminate wait states where progress cannot be measured. For determinate progress use `Progress` instead.
+
+## Usage
+
+```tsx
+import { Spinner } from '@pmealha/eidos-ui';
+
+<Spinner size="medium" color="primary" />
+```
+
+## Default
+
+<Canvas of={SpinnerStories.Default} />
+
+<Controls of={SpinnerStories.Default} />
+
+## Examples
+
+Shows all three sizes (`small`, `medium`, `large`), available colors, and the spinner centering itself inside a relatively-positioned container.
+
+<Canvas of={SpinnerStories.Examples} />

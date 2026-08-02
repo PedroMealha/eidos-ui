@@ -1,0 +1,50 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AlertStories from './Alert.stories';
+
+<Meta of={AlertStories} />
+
+# Alert
+
+Inline feedback messages for communicating status, warnings, errors, and success states. Use alerts for non-blocking system messages that don't interrupt the user's workflow.
+
+## Usage
+
+```tsx
+import { Alert } from '@pmealha/eidos-ui';
+
+<Alert variant="warning" title="Storage limit reached">
+  You have used 95% of your available storage. Upgrade your plan to continue uploading.
+</Alert>
+```
+
+## Default
+
+<Canvas of={AlertStories.Default} />
+
+<Controls of={AlertStories.Default} />
+
+## With title
+
+<Canvas of={AlertStories.WithTitle} />
+
+## With action
+
+Provide an `action` prop to render a call-to-action button inside the alert body.
+
+<Canvas of={AlertStories.WithAction} />
+
+## Dismissable
+
+Pass an `onDismiss` callback to render a × button and let users close the alert.
+
+<Canvas of={AlertStories.Dismissable} />
+
+## No icon
+
+Set `icon={false}` to suppress the variant icon — the `icon` prop also accepts a custom icon component.
+
+<Canvas of={AlertStories.NoIcon} />
+
+## All variants
+
+<Canvas of={AlertStories.AllVariants} />

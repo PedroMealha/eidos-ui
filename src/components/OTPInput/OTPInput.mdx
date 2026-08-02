@@ -1,0 +1,75 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as OTPInputStories from './OTPInput.stories';
+
+<Meta of={OTPInputStories} />
+
+# OTPInput
+
+One-time password / verification code input rendered as individual character boxes. Handles paste, auto-focus advancement, and masked display for sensitive codes.
+
+## Usage
+
+```tsx
+import { OTPInput } from '@pmealha/eidos-ui';
+
+<OTPInput
+  length={6}
+  label="Verification code"
+  hint="Enter the 6-digit code sent to your phone."
+  onComplete={(code) => console.log('Code:', code)}
+/>
+```
+
+## Default
+
+<Canvas of={OTPInputStories.Default} />
+
+<Controls of={OTPInputStories.Default} />
+
+## Short code
+
+A 4-slot variant for PIN-style or shorter confirmation codes.
+
+<Canvas of={OTPInputStories.ShortCode} />
+
+## With label
+
+<Canvas of={OTPInputStories.WithLabel} />
+
+## With error
+
+Pass a non-empty string to `error` to highlight all slots in red and display the message below the input.
+
+<Canvas of={OTPInputStories.WithError} />
+
+## Masked
+
+Setting `mask={true}` renders filled slots as password dots — suitable for PIN entry or any sensitive code that should not be visible on screen.
+
+<Canvas of={OTPInputStories.Masked} />
+
+## Alphanumeric
+
+Setting `type="alphanumeric"` lifts the numeric-only restriction and accepts any letter or digit.
+
+<Canvas of={OTPInputStories.Alphanumeric} />
+
+## Sizes
+
+<Canvas of={OTPInputStories.Sizes} />
+
+## Auto focus
+
+Setting `autoFocus={true}` focuses the first empty slot on mount — useful in verification flows where the input is the primary action.
+
+<Canvas of={OTPInputStories.AutoFocus} />
+
+## Disabled
+
+<Canvas of={OTPInputStories.Disabled} />
+
+## Controlled
+
+Uses `value`, `onChange`, and `onComplete` to drive the input externally. `onComplete` fires only once all slots are filled.
+
+<Canvas of={OTPInputStories.Controlled} />

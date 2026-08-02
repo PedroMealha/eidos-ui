@@ -15,7 +15,6 @@ const meta = {
       },
     },
   },
-  tags: ['autodocs'],
   args: {
     trigger: undefined,
     content: undefined,

@@ -1,0 +1,72 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SelectStories from './Select.stories';
+
+<Meta of={SelectStories} />
+
+# Select
+
+Dropdown selection control that supports single and multi-select, per-option icons, disabled options, and a clearable state. Use it wherever a native `<select>` element is too limited.
+
+## Usage
+
+```tsx
+import { Select } from '@pmealha/eidos-ui';
+
+const options = [
+  { id: '1', label: 'Apple', value: 'apple' },
+  { id: '2', label: 'Banana', value: 'banana' },
+  { id: '3', label: 'Cherry', value: 'cherry' },
+];
+
+<Select options={options} placeholder="Select a fruit..." />
+```
+
+## Single select
+
+<Canvas of={SelectStories.SingleSelect} />
+
+<Controls of={SelectStories.SingleSelect} />
+
+## With icons
+
+Each option accepts an `icon` property (a Lucide or compatible icon component) rendered before the label in both the trigger and the dropdown.
+
+<Canvas of={SelectStories.WithComponentIcons} />
+
+## Multiple select
+
+Set `multiple` to allow picking more than one option; selected values are shown as removable tags inside the trigger.
+
+<Canvas of={SelectStories.MultipleSelect} />
+
+## With disabled options
+
+Individual options can be disabled by setting `disabled: true` on the option object — they remain visible but are not interactive.
+
+<Canvas of={SelectStories.WithDisabledOptions} />
+
+## Disabled
+
+<Canvas of={SelectStories.Disabled} />
+
+## Not clearable
+
+Set `clearable={false}` to hide the × clear button once a value is selected.
+
+<Canvas of={SelectStories.NotClearable} />
+
+## Full width
+
+Set `fullWidth` to make the trigger stretch to fill its container.
+
+<Canvas of={SelectStories.FullWidth} />
+
+## Controlled usage
+
+Manage `value` and `onChange` yourself for full control over the selection state.
+
+<Canvas of={SelectStories.ControlledExample} />
+
+## Multiple controlled
+
+<Canvas of={SelectStories.MultipleControlled} />

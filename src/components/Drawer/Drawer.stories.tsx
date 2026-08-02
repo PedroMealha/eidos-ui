@@ -8,7 +8,6 @@ const meta = {
   title: 'Overlays/Drawer',
   component: Drawer,
   parameters: { layout: 'padded' },
-  tags: ['autodocs'],
   args: {
     isOpen: false,
     onClose: () => {},

@@ -1,0 +1,92 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TableStories from './Table.stories';
+
+<Meta of={TableStories} />
+
+# Table
+
+Read-only data table with sorting, pagination, column filters, custom cell rendering, and a per-row actions menu. For inline cell editing use `DataGrid` instead.
+
+> **Note**: Table is for displaying data; DataGrid is for editing it. Read-only display: Table. Inline cell editing: DataGrid.
+
+## Usage
+
+```tsx
+import { Table } from '@pmealha/eidos-ui';
+import type { TableColumn } from '@pmealha/eidos-ui';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+const columns: TableColumn<User>[] = [
+  { key: 'name',  label: 'Name' },
+  { key: 'email', label: 'Email' },
+];
+
+<Table data={users} columns={columns} />
+```
+
+## Default
+
+Use the Controls panel to toggle `loading`, `showPagination`, `showFilters`, `showFooter`, and `pageSize` in isolation.
+
+<Canvas of={TableStories.Default} />
+
+<Controls of={TableStories.Default} />
+
+## Basic table
+
+Minimal setup — `data` and `columns` are the only required props.
+
+<Canvas of={TableStories.Basic} />
+
+## With custom rendering
+
+Supply a `render` function on a column definition to replace the raw cell value with any React node.
+
+<Canvas of={TableStories.WithCustomRendering} />
+
+## With sorting
+
+Mark columns `sortable: true`, then pass `currentSort` and `onSortChange` to wire up server-side or client-side sorting.
+
+<Canvas of={TableStories.WithSorting} />
+
+## With pagination
+
+Enable `showPagination` and configure `pageSize` and `pageSizeOptions` to add a pagination bar below the table.
+
+<Canvas of={TableStories.WithPagination} />
+
+## With filters
+
+Set `filterable: true` and `filterType` (`'text'`, `'select'`, or `'date'`) on a column. Pass `filters` and `onFiltersChange` to control the active filter state externally.
+
+<Canvas of={TableStories.WithFilters} />
+
+## With actions menu
+
+Use a column with `type: 'icon'` and a custom `render` to mount a `Menu` component inside each row.
+
+<Canvas of={TableStories.WithActionsMenu} />
+
+## With clickable rows
+
+Pass `onRowClick` to make every row interactive — the callback receives the full row data object.
+
+<Canvas of={TableStories.WithClickableRows} />
+
+## Loading state
+
+Set `loading={true}` to overlay a spinner while data is being fetched.
+
+<Canvas of={TableStories.LoadingState} />
+
+## Empty state
+
+When `data` is an empty array the table renders the `emptyMessage` string (default: `"No data available"`).
+
+<Canvas of={TableStories.EmptyState} />

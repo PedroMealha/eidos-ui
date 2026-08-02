@@ -6,7 +6,6 @@ const meta = {
   title: 'Elements/Chip',
   component: Chip,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   args: {
     children: undefined,
     preIcon: undefined,

@@ -1,0 +1,61 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as StepperStories from './Stepper.stories';
+
+<Meta of={StepperStories} />
+
+# Stepper
+
+Visual progress indicator for multi-step processes. Shows completed, active, and upcoming steps in horizontal or vertical orientation.
+
+## Usage
+
+```tsx
+import { Stepper } from '@pmealha/eidos-ui';
+
+const steps = [
+  { label: 'Account', description: 'Enter your account details' },
+  { label: 'Profile', description: 'Set up your profile' },
+  { label: 'Review',  description: 'Review your information' },
+  { label: 'Confirm', description: 'Confirm and submit' },
+];
+
+<Stepper steps={steps} activeStep={1} />
+```
+
+## Default
+
+<Canvas of={StepperStories.Default} />
+
+<Controls of={StepperStories.Default} />
+
+## Vertical
+
+<Canvas of={StepperStories.Vertical} />
+
+## Completed
+
+Set `activeStep` to `steps.length` to mark every step as completed.
+
+<Canvas of={StepperStories.Completed} />
+
+## With error
+
+Set `status: 'error'` on a `StepItem` to flag a failed step independently of `activeStep`.
+
+<Canvas of={StepperStories.WithError} />
+
+## Colors
+
+<Canvas of={StepperStories.Colors} />
+
+## No numbers
+
+Set `showNumbers={false}` and provide an `icon` on each step to replace the numeric dot with a custom icon.
+
+<Canvas of={StepperStories.NoNumbers} />
+
+## Interactive
+
+Demonstrates wiring `activeStep` to local state with previous/next controls.
+
+<Canvas of={StepperStories.Interactive} />

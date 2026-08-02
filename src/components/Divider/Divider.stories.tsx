@@ -5,7 +5,6 @@ const meta = {
   title: 'Layout/Divider',
   component: Divider,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     direction: {
       control: 'select',

@@ -10,7 +10,6 @@ const meta = {
   title: 'Navigation/Pagination',
   component: Pagination,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     page: {
       control: 'number',

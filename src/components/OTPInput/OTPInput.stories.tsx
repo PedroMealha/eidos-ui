@@ -6,7 +6,6 @@ const meta = {
   title: 'Forms/OTPInput',
   component: OTPInput,
   parameters: { layout: 'centered' },
-  tags: ['autodocs'],
   argTypes: {
     length: {
       control: { type: 'number', min: 2, max: 12 },

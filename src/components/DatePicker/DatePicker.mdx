@@ -1,0 +1,77 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as DatePickerStories from './DatePicker.stories';
+
+<Meta of={DatePickerStories} />
+
+# DatePicker
+
+A calendar-based date/time input supporting single date, date range, and multiple-date selection. Built on dayjs — values are always ISO strings, making them safe to store and serialise without timezone surprises.
+
+> **Note**: `DatePicker` is generic over the selection `mode`. The `value` and `onChange` types are inferred from the `mode` prop, so always pass the mode explicitly to get accurate TypeScript types.
+
+## Usage
+
+```tsx
+import { DatePicker } from '@pmealha/eidos-ui';
+import type { DateTimeValue } from '@pmealha/eidos-ui';
+
+function BookingForm() {
+  const [value, setValue] = useState<DateTimeValue<'range'>>({
+    date: { start: null, end: null },
+  });
+
+  return (
+    <DatePicker
+      mode="range"
+      value={value}
+      onChange={setValue}
+      placeholder="Select check-in → check-out..."
+      minDate="2024-01-01"
+    />
+  );
+}
+```
+
+## Default
+
+Use the Controls panel to switch `mode` between `single`, `multiple`, and `range`, and to toggle `disabled`, `required`, `fullWidth`, and `autoWidth`.
+
+<Canvas of={DatePickerStories.Default} />
+
+<Controls of={DatePickerStories.Default} />
+
+## Single date
+
+The most common mode — the user picks one date and receives an ISO string value.
+
+<Canvas of={DatePickerStories.SingleDate} />
+
+## Date range
+
+`mode="range"` lets the user pick a start and end date. The value shape changes to `{ date: { start: string | null, end: string | null } }`.
+
+<Canvas of={DatePickerStories.DateRange} />
+
+## Multiple selection
+
+`mode="multiple"` lets the user pick any number of individual dates. The value is `{ date: string[] }`.
+
+<Canvas of={DatePickerStories.MultipleSelection} />
+
+## With time
+
+Pass `time={{ enabled: true }}` to show an hour/minute picker below the calendar. Add `includeSeconds: true` to expose a seconds field as well.
+
+<Canvas of={DatePickerStories.WithTime} />
+
+## Date range with time
+
+Time selection works with `mode="range"` too — the value gains `time: { start: TimeValue, end: TimeValue }`.
+
+<Canvas of={DatePickerStories.DateRangeWithTime} />
+
+## Date constraints
+
+Restrict the selectable range with `minDate` and `maxDate` (ISO strings). Days outside the range are visually disabled in the calendar and cannot be selected.
+
+<Canvas of={DatePickerStories.DateConstraints} />

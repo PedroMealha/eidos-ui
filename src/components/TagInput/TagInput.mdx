@@ -1,0 +1,52 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TagInputStories from './TagInput.stories';
+
+<Meta of={TagInputStories} />
+
+# TagInput
+
+Multi-value text input where each submitted entry is rendered as a removable Chip tag. Confirm a tag by pressing Enter or comma. Supports max tag limits and custom validation.
+
+## Usage
+
+```tsx
+import { TagInput } from '@pmealha/eidos-ui';
+
+<TagInput
+  label="Technologies"
+  placeholder="Add a technology…"
+  onChange={(tags) => console.log(tags)}
+/>
+```
+
+## Default
+
+<Canvas of={TagInputStories.Default} />
+
+<Controls of={TagInputStories.Default} />
+
+## With pre-filled values
+
+<Canvas of={TagInputStories.WithValues} />
+
+## With label
+
+<Canvas of={TagInputStories.WithLabel} />
+
+## With error
+
+<Canvas of={TagInputStories.WithError} />
+
+## With validation
+
+The `validate` prop receives the raw string and must return `true` to accept the tag or a string message to reject it.
+
+<Canvas of={TagInputStories.WithValidation} />
+
+## With max tags
+
+<Canvas of={TagInputStories.WithMaxTags} />
+
+## Disabled
+
+<Canvas of={TagInputStories.Disabled} />
