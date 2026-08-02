@@ -97,12 +97,12 @@
 	font-weight: var(--font-weight-medium);
 }
 
-// Menu shortcut
+// Menu shortcut — now rendered as a <Kbd>; only positioning is needed here.
+// Font, size, and border styles come from .eidos-kbd.
 .eidos-menu-shortcut {
-	font-size: var(--font-size-xs);
-	color: var(--gray-500);
-	font-family: var(--font-family-mono);
-	margin-left: var(--spacing-md);
+	margin-left: auto;
+	padding-left: var(--spacing-md);
+	flex-shrink: 0;
 }
 
 // Nested arrow

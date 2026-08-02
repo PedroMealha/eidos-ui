@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import type { MenuProps, MenuItemType, MenuItem, MenuWrapperProps } from './Menu.types';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Tooltip } from '../Tooltip/Tooltip.component';
+import { Kbd } from '../Kbd/Kbd.component';
 import { renderIcon } from '../../utils';
 
 /**
@@ -41,7 +42,7 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
 					>
 						{item.icon && renderIcon(item.icon, 'eidos-menu-icon')}
 						<span className={`eidos-menu-label`}>{item.label}</span>
-						{item.shortcut && <span className={`eidos-menu-shortcut`}>{item.shortcut}</span>}
+						{item.shortcut && <Kbd size="small" className="eidos-menu-shortcut">{item.shortcut}</Kbd>}
 					</li>
 				);
 
