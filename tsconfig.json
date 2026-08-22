@@ -20,12 +20,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Library */
-    "declaration": true,
-    "declarationMap": true,
+    /* Interop */
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "6.0"
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src", "dev"],
   "exclude": ["node_modules", "dist", "storybook-static"]
