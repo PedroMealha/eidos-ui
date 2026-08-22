@@ -10,15 +10,22 @@ export default defineConfig({
   external: ['react', 'react-dom'],
   esbuildPlugins: [
     {
-      name: 'css-module',
+      // Resolve all .scss/.css imports to a virtual empty module so they are
+      // completely removed from the JS output.  Styles are distributed as a
+      // single pre-compiled dist/index.css that consumers import separately.
+      name: 'ignore-scss',
       setup(build) {
-        build.onResolve(
-          { filter: /\.scss$|\.css$/ },
-          () => ({ path: '', external: true })
-        );
+        build.onResolve({ filter: /\.scss$|\.css$/ }, args => ({
+          path: args.path,
+          namespace: 'scss-ignore',
+        }));
+        build.onLoad({ filter: /.*/, namespace: 'scss-ignore' }, () => ({
+          contents: '',
+          loader: 'js',
+        }));
       },
     },
   ],
-  onSuccess: 'node scripts/build-styles.js',
+
 });
 
