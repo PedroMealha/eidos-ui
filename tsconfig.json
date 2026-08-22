@@ -22,7 +22,12 @@
 
     /* Interop */
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    /* tsup's DTS worker internally sets baseUrl, which TS6 deprecated.
+       This flag silences that toolchain warning — it is NOT suppressing
+       any issue in our own code. Remove when tsup fixes this internally. */
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src", "dev"],
   "exclude": ["node_modules", "dist", "storybook-static"]
