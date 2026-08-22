@@ -88,6 +88,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pmea/eidos-ui"
+    "url": "git+https://github.com/pmea/eidos-ui.git"
   }
 }
