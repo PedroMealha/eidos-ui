@@ -17,6 +17,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsup",
@@ -24,7 +27,10 @@
     "build-storybook": "storybook build",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "prepublishOnly": "npm run build",
-    "init": "npm run dev & npm run storybook"
+    "init": "npm run dev & npm run storybook",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
   },
   "keywords": [
     "react",
