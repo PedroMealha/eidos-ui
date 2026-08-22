@@ -103,3 +103,9 @@ When creating a new component, always wire it into:
 1. `src/styles/index.scss` (SCSS import)
 2. `src/index.ts` (value export + type export)
 3. Dev showcase (showcase file + App.tsx registration)
+
+## Git
+
+**Never run `git commit` or `git push`.** The user commits manually.
+`git add` and `git diff`/`git status` for inspection are fine.
+When work is complete, summarise the changes and stop.
