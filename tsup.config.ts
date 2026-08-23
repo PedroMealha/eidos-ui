@@ -7,7 +7,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'lucide-react'],
   esbuildPlugins: [
     {
       // Resolve all .scss/.css imports to a virtual empty module so they are
