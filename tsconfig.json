@@ -29,7 +29,7 @@
        any issue in our own code. Remove when tsup fixes this internally. */
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "dev"],
+  "include": ["src", "dev", "*.config.ts", "scripts"],
   "exclude": ["node_modules", "dist", "storybook-static"]
 }
 
