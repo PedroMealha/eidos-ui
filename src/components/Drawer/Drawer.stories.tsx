@@ -92,7 +92,7 @@ const labelStyle: React.CSSProperties = {
 const drawerBody = (
   <>
     <p>
-      This is the drawer body. It can contain any content — forms, navigation
+      This is the drawer body. It can contain any content - forms, navigation
       links, settings panels, or rich layouts.
     </p>
     <p>
@@ -103,7 +103,7 @@ const drawerBody = (
 );
 
 // ============================================================================
-// DEFAULT — interactive playground; all controls apply here
+// DEFAULT - interactive playground; all controls apply here
 // ============================================================================
 
 export const Default: Story = {
@@ -121,13 +121,13 @@ export const Default: Story = {
   args: {
     title: 'Default Drawer',
     // children is required by DrawerProps; the render function's JSX children
-    // take precedence at runtime — this satisfies the StoryObj type constraint.
+    // take precedence at runtime - this satisfies the StoryObj type constraint.
     children: drawerBody,
   },
 };
 
 // ============================================================================
-// WITH TITLE — explicit title prop
+// WITH TITLE - explicit title prop
 // ============================================================================
 
 export const WithTitle = {
@@ -149,7 +149,7 @@ export const WithTitle = {
 };
 
 // ============================================================================
-// WITH ACTIONS — footer action buttons
+// WITH ACTIONS - footer action buttons
 // ============================================================================
 
 export const WithActions = {
@@ -189,7 +189,7 @@ export const WithActions = {
 };
 
 // ============================================================================
-// PLACEMENTS — all four sides
+// PLACEMENTS - all four sides
 // ============================================================================
 
 export const Placements = {
@@ -226,7 +226,7 @@ export const Placements = {
 };
 
 // ============================================================================
-// SIZES — small / medium / large / full
+// SIZES - small / medium / large / full
 // ============================================================================
 
 export const Sizes = {
@@ -257,7 +257,7 @@ export const Sizes = {
         >
           {activeSize && (
             <p>
-              This is the <strong>{activeSize}</strong> variant —{' '}
+              This is the <strong>{activeSize}</strong> variant -{' '}
               {sizeDescriptions[activeSize]}.
             </p>
           )}
@@ -268,7 +268,7 @@ export const Sizes = {
 };
 
 // ============================================================================
-// BOTTOM SHEET — bottom placement simulating a mobile sheet
+// BOTTOM SHEET - bottom placement simulating a mobile sheet
 // ============================================================================
 
 export const BottomSheet = {

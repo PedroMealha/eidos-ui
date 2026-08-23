@@ -20,7 +20,7 @@ export interface AccordionProps {
 }
 
 export interface AccordionItemProps {
-  /** Unique value identifying this item — used in controlled/uncontrolled open state. */
+  /** Unique value identifying this item - used in controlled/uncontrolled open state. */
   value: string;
   /** Trigger label (always visible). */
   label: React.ReactNode;

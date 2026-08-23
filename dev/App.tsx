@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// Component showcases — populated as subfolders are added
+// Component showcases - populated as subfolders are added
 import { ButtonShowcase } from './design-system/buttons';
 import { ChipShowcase } from './design-system/chips';
 import { InputShowcase } from './design-system/inputs';

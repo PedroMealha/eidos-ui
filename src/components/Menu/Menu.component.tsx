@@ -7,7 +7,7 @@ import { Kbd } from '../Kbd/Kbd.component';
 import { renderIcon } from '../../utils';
 
 /**
- * MenuPanel — the bare menu list, without any trigger or dropdown wrapper.
+ * MenuPanel - the bare menu list, without any trigger or dropdown wrapper.
  * Exported for use in SplitButton, ContextMenu, and other consumers that need
  * to render the menu content inside their own Dropdown / portal.
  */

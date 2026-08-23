@@ -60,7 +60,7 @@ function VirtualListInner<T = unknown>({
   // ─── Scroll handler ───────────────────────────────────────────────────────
   // `useVirtualizer` already subscribes to scroll events on `scrollRef`
   // internally. We attach our own handler purely to forward `onScroll` and
-  // drive the `onEndReached` logic — both operate independently of the
+  // drive the `onEndReached` logic - both operate independently of the
   // virtualizer's own scroll bookkeeping.
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {

@@ -108,7 +108,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  // Derived lists — memoised to stabilise scroll-effect deps
+  // Derived lists - memoised to stabilise scroll-effect deps
   const filtered = useMemo(() => filterItems(items, query), [items, query]);
   const navigable = useMemo(() => filtered.filter((item) => !item.disabled), [filtered]);
   const groups = useMemo(() => buildGroups(filtered), [filtered]);
@@ -141,7 +141,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   }, [focusedIndex, navigable]);
 
   // Body scroll lock (tied to open, not to isMounted, so it releases promptly
-  // when the consumer decides to close — even before the exit animation ends)
+  // when the consumer decides to close - even before the exit animation ends)
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -251,7 +251,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             autoComplete="off"
           />
 
-          {/* ⌘K shortcut badge — reminds users of the keyboard shortcut */}
+          {/* ⌘K shortcut badge - reminds users of the keyboard shortcut */}
           <div className="eidos-cmd-search-badge" aria-hidden="true">
             <Command size={11} />
             <span>K</span>

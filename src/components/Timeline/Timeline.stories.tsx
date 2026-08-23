@@ -21,7 +21,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — mixed colors with timestamps
+// DEFAULT - mixed colors with timestamps
 // ============================================================================
 
 export const Default: Story = {
@@ -100,7 +100,7 @@ export const WithIcons: Story = {
 };
 
 // ============================================================================
-// SIMPLE — no timestamps, no icons
+// SIMPLE - no timestamps, no icons
 // ============================================================================
 
 export const Simple: Story = {
@@ -131,7 +131,7 @@ export const Simple: Story = {
 };
 
 // ============================================================================
-// ALL COLORS — one item per color variant
+// ALL COLORS - one item per color variant
 // ============================================================================
 
 export const AllColors = {
@@ -149,7 +149,7 @@ export const AllColors = {
 };
 
 // ============================================================================
-// LONG CONTENT — items with extended description text
+// LONG CONTENT - items with extended description text
 // ============================================================================
 
 export const LongContent: Story = {

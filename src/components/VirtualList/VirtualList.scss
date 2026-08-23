@@ -23,7 +23,7 @@
 
 	// ── Row ───────────────────────────────────────────────────────────────
 	// Absolutely positioned within the inner spacer. `top` and `height` are
-	// always set inline. The row itself is a transparent wrapper — visual
+	// always set inline. The row itself is a transparent wrapper - visual
 	// chrome belongs in the consumer's `renderRow` output.
 	&-row {
 		position: absolute;

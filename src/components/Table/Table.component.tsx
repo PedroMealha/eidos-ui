@@ -132,7 +132,7 @@ function SortableColumnHeader({
       onClick={() => isSortable && onSortClick()}
       {...attributes}
     >
-      {/* Grip — absolutely positioned in the left padding zone so it never
+      {/* Grip - absolutely positioned in the left padding zone so it never
           displaces the column label or causes layout shift on hover. */}
       <span
         className="eidos-table-drag-handle"
@@ -299,7 +299,7 @@ export const Table = <T extends Record<string, unknown>>({
     [isControlledSelection, controlledSelected, internalSelected]
   );
 
-  /** Stable string key for a row — uses `rowKey` prop, then "id", then index. */
+  /** Stable string key for a row - uses `rowKey` prop, then "id", then index. */
   const getRowKey = (item: T, index: number): string => {
     if (rowKey) return String(item[rowKey]);
     if ("id" in item) return String(item.id);
@@ -573,7 +573,7 @@ export const Table = <T extends Record<string, unknown>>({
       {/* ── Toolbar ───────────────────────────────────────────────────────── */}
       {showToolbar && (
         <div className="eidos-table-toolbar">
-          {/* Left — bulk actions / selection info */}
+          {/* Left - bulk actions / selection info */}
           <div className="eidos-table-toolbar-left">
             {selectable && hasSelection && (
               <>
@@ -616,7 +616,7 @@ export const Table = <T extends Record<string, unknown>>({
             )}
           </div>
 
-          {/* Right — density, column visibility, export, filter */}
+          {/* Right - density, column visibility, export, filter */}
           <div className="eidos-table-toolbar-right">
             {showDensity && (
               <Dropdown

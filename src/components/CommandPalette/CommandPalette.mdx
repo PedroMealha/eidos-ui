@@ -5,7 +5,7 @@ import * as CommandPaletteStories from './CommandPalette.stories';
 
 # CommandPalette
 
-A keyboard-driven command launcher presented as a floating modal — type to fuzzy-search commands and execute them instantly, à la VS Code's `⌘K` palette.
+A keyboard-driven command launcher presented as a floating modal - type to fuzzy-search commands and execute them instantly, à la VS Code's `⌘K` palette.
 
 > **Note**: The palette renders via `createPortal` and manages its own focus trap; always control visibility with the `open` / `onClose` pair.
 
@@ -67,7 +67,7 @@ Keyboard shortcuts are supplied as a `shortcut: string[]` array and rendered as 
 
 ## Empty state
 
-When no items match the current query — or `items` is an empty array — the `emptyText` message is displayed. Customise it to fit your context.
+When no items match the current query - or `items` is an empty array - the `emptyText` message is displayed. Customise it to fit your context.
 
 <Canvas of={CommandPaletteStories.EmptyState} />
 

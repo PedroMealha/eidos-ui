@@ -15,7 +15,7 @@ const useTabsContext = (): TabsContextValue => {
 };
 
 // ============================================================================
-// TAB — individual tab trigger button
+// TAB - individual tab trigger button
 // Defined before Tabs so Tabs can use `child.type === Tab` for child separation.
 // ============================================================================
 
@@ -88,7 +88,7 @@ export const Tab: React.FC<TabProps> = ({
 Tab.displayName = 'Tab';
 
 // ============================================================================
-// TAB PANEL — content region shown when its value matches the active tab
+// TAB PANEL - content region shown when its value matches the active tab
 // Defined before Tabs for the same `child.type === TabPanel` check.
 // ============================================================================
 
@@ -118,7 +118,7 @@ export const TabPanel: React.FC<TabPanelProps> = ({
 TabPanel.displayName = 'TabPanel';
 
 // ============================================================================
-// TABS — root container; provides context, separates tab/panel children
+// TABS - root container; provides context, separates tab/panel children
 // ============================================================================
 
 export const Tabs: React.FC<TabsProps> = ({

@@ -24,7 +24,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — four items, last one is current page
+// DEFAULT - four items, last one is current page
 // ============================================================================
 
 export const Default: Story = {
@@ -39,7 +39,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// WITH HREFS — anchor-based navigation links
+// WITH HREFS - anchor-based navigation links
 // ============================================================================
 
 export const WithHrefs: Story = {
@@ -69,7 +69,7 @@ export const WithIcons: Story = {
 };
 
 // ============================================================================
-// CUSTOM SEPARATOR — chevron icon
+// CUSTOM SEPARATOR - chevron icon
 // ============================================================================
 
 export const CustomSeparator: Story = {
@@ -85,7 +85,7 @@ export const CustomSeparator: Story = {
 };
 
 // ============================================================================
-// SHORT — two items (root + current page)
+// SHORT - two items (root + current page)
 // ============================================================================
 
 export const Short: Story = {
@@ -98,7 +98,7 @@ export const Short: Story = {
 };
 
 // ============================================================================
-// LONG — six items
+// LONG - six items
 // ============================================================================
 
 export const Long: Story = {

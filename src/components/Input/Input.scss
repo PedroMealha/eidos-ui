@@ -286,7 +286,7 @@
     }
   }
 
-  // Bare variant — strips all visual decoration (border, background, shadow,
+  // Bare variant - strips all visual decoration (border, background, shadow,
   // border-radius). Intended for embedded usage such as DataGrid cell editors,
   // where the parent container provides its own visual chrome.
   &--bare {

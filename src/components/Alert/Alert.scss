@@ -6,7 +6,7 @@
 
 .eidos-alert {
 	@include flex-center-y;
-	// Override align-items: center from the mixin — icon should pin to the top
+	// Override align-items: center from the mixin - icon should pin to the top
 	// of multi-line content, not vertically centre across the full height.
 	align-items: flex-start;
 	gap: var(--spacing-md);

@@ -7,7 +7,7 @@ export interface EmptyStateProps {
 	title: string;
 	/** Supporting text below the title. */
 	description?: string;
-	/** Optional CTA — typically a Button. Any ReactNode. */
+	/** Optional CTA - typically a Button. Any ReactNode. */
 	action?: React.ReactNode;
 	/** Controls overall size (icon size, text size, padding). Default: 'medium'. */
 	size?: 'small' | 'medium' | 'large';

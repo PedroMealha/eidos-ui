@@ -82,7 +82,7 @@ export const SegmentedControlShowcase = () => {
         </Section>
       </Grid>
 
-      <Section label="Full width — alignment picker">
+      <Section label="Full width - alignment picker">
         <SegmentedControl
           fullWidth
           value={align}

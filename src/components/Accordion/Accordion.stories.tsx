@@ -8,7 +8,7 @@ const meta = {
   component: Accordion,
   parameters: { layout: 'padded' },
   // children is required by AccordionProps but every story supplies it
-  // through its own render function — set to undefined here to avoid
+  // through its own render function - set to undefined here to avoid
   // Storybook trying to auto-generate a control for it.
   args: {
     children: undefined,
@@ -49,7 +49,7 @@ const meta = {
         defaultValue: { summary: 'false' },
       },
     },
-    // Controlled-only / internal props — hidden from the args panel
+    // Controlled-only / internal props - hidden from the args panel
     value: { table: { disable: true } },
     onChange: { table: { disable: true } },
     defaultValue: { table: { disable: true } },
@@ -76,13 +76,13 @@ const labelStyle: React.CSSProperties = {
 
 const itemContent = (topic: string) => (
   <p style={{ margin: 0 }}>
-    <strong style={{ color: 'var(--dark-color)' }}>{topic}</strong> — This panel contains
+    <strong style={{ color: 'var(--dark-color)' }}>{topic}</strong> - This panel contains
     detailed information about the selected topic. Toggle the trigger above to collapse it.
   </p>
 );
 
 // ============================================================================
-// DEFAULT — interactive playground; all controls apply here
+// DEFAULT - interactive playground; all controls apply here
 // ============================================================================
 
 export const Default: Story = {
@@ -109,7 +109,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// MULTIPLE — allow several items open at once
+// MULTIPLE - allow several items open at once
 // ============================================================================
 
 export const Multiple = {
@@ -155,13 +155,13 @@ export const Bordered = {
 export const Separated = {
   render: () => (
     <Accordion variant="separated" defaultValue="step1">
-      <AccordionItem value="step1" label="Step 1 — Create an account">
+      <AccordionItem value="step1" label="Step 1 - Create an account">
         {itemContent('Account creation')}
       </AccordionItem>
-      <AccordionItem value="step2" label="Step 2 — Set up your profile">
+      <AccordionItem value="step2" label="Step 2 - Set up your profile">
         {itemContent('Profile setup')}
       </AccordionItem>
-      <AccordionItem value="step3" label="Step 3 — Invite your team">
+      <AccordionItem value="step3" label="Step 3 - Invite your team">
         {itemContent('Team invitations')}
       </AccordionItem>
     </Accordion>
@@ -169,7 +169,7 @@ export const Separated = {
 };
 
 // ============================================================================
-// SIZES — small / medium / large stacked
+// SIZES - small / medium / large stacked
 // ============================================================================
 
 export const Sizes = {
@@ -215,7 +215,7 @@ export const Sizes = {
 };
 
 // ============================================================================
-// COLORS — all four color themes
+// COLORS - all four color themes
 // ============================================================================
 
 export const Colors = {
@@ -273,7 +273,7 @@ export const Colors = {
 };
 
 // ============================================================================
-// WITH ICONS — items with a leading icon node
+// WITH ICONS - items with a leading icon node
 // ============================================================================
 
 export const WithIcons = {
@@ -326,19 +326,19 @@ export const WithIcons = {
 };
 
 // ============================================================================
-// DISABLED — one item disabled, one open, one normal
+// DISABLED - one item disabled, one open, one normal
 // ============================================================================
 
 export const Disabled = {
   render: () => (
     <Accordion defaultValue="item1">
-      <AccordionItem value="item1" label="Active item — open">
+      <AccordionItem value="item1" label="Active item - open">
         {itemContent('Active item')}
       </AccordionItem>
-      <AccordionItem value="item2" label="Disabled item — cannot be toggled" disabled>
+      <AccordionItem value="item2" label="Disabled item - cannot be toggled" disabled>
         {itemContent('Disabled item')}
       </AccordionItem>
-      <AccordionItem value="item3" label="Normal item — click to expand">
+      <AccordionItem value="item3" label="Normal item - click to expand">
         {itemContent('Normal item')}
       </AccordionItem>
     </Accordion>
@@ -346,7 +346,7 @@ export const Disabled = {
 };
 
 // ============================================================================
-// CONTROLLED — external useState drives the open state
+// CONTROLLED - external useState drives the open state
 // ============================================================================
 
 export const Controlled = {

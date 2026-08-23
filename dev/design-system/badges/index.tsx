@@ -15,13 +15,13 @@ export const BadgeShowcase = () => (
         </Row>
       </Section>
 
-      <Section label="Colors — Filled">
+      <Section label="Colors - Filled">
         <Row>
           {COLORS.map((c) => <Badge key={c} color={c}>{c}</Badge>)}
         </Row>
       </Section>
 
-      <Section label="Colors — Soft">
+      <Section label="Colors - Soft">
         <Row>
           {COLORS.map((c) => <Badge key={c} color={c} variant="text">{c}</Badge>)}
         </Row>

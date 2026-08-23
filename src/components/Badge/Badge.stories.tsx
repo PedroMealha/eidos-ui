@@ -210,7 +210,7 @@ export const Sizes = {
 };
 
 // ============================================================================
-// NUMBERS — with max clamping
+// NUMBERS - with max clamping
 // ============================================================================
 
 export const Numbers = {
@@ -226,7 +226,7 @@ export const Numbers = {
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "1rem" }}>
-        <p style={label}>With max=99 — value 150 is clamped to &ldquo;99+&rdquo;</p>
+        <p style={label}>With max=99 - value 150 is clamped to &ldquo;99+&rdquo;</p>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
           <Badge color="primary" max={99}>{1}</Badge>
           <Badge color="primary" max={99}>{5}</Badge>
@@ -239,7 +239,7 @@ export const Numbers = {
 };
 
 // ============================================================================
-// WITH CHIP — common UI composition pattern
+// WITH CHIP - common UI composition pattern
 // ============================================================================
 
 export const WithChip = {

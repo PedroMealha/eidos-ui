@@ -119,7 +119,7 @@
   color: var(--danger-color);
 }
 
-// Visually hidden native input — present in the DOM for form submission,
+// Visually hidden native input - present in the DOM for form submission,
 // but invisible and non-interactive to both sighted users and pointer devices.
 .eidos-number-input-hidden {
   @include visually-hidden;

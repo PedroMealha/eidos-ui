@@ -13,7 +13,7 @@ export const PaginationShowcase = () => {
         <Pagination page={page} totalPages={10} onChange={setPage} />
       </Section>
 
-      <Section label="Many pages — ellipsis (50 pages)">
+      <Section label="Many pages - ellipsis (50 pages)">
         <Pagination page={page2} totalPages={50} onChange={setPage2} />
       </Section>
 

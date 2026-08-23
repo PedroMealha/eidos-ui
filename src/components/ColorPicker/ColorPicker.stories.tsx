@@ -37,7 +37,7 @@ const meta = {
     },
     inline: {
       control: 'boolean',
-      description: 'Render the picker panel directly — no popover trigger',
+      description: 'Render the picker panel directly - no popover trigger',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
     showAlpha: {
@@ -69,7 +69,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ── Default — trigger / popover mode ────────────────────────────────────────
+// ── Default - trigger / popover mode ────────────────────────────────────────
 
 export const Default: Story = {
   args: {

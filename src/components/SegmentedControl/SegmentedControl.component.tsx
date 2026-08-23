@@ -4,7 +4,7 @@ import { renderIcon } from '../../utils';
 import type { SegmentedControlProps } from './SegmentedControl.types';
 
 /**
- * SegmentedControl — a compact, single-select toggle group rendered as a pill.
+ * SegmentedControl - a compact, single-select toggle group rendered as a pill.
  *
  * Semantics: `role="radiogroup"` on the container, `role="radio"` on each
  * segment. Supports controlled and uncontrolled usage.

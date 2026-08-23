@@ -7,7 +7,7 @@ import * as TableFiltersDropdownStories from './TableFiltersDropdown.stories';
 
 A standalone filter-picker dropdown used internally by `Table`. Each filter row lets the user select a filterable column and a matching value. Changes are staged locally and only committed when the user clicks **Apply filters**.
 
-> **Note**: In most cases you will not use this component directly — pass `filterable: true` on the relevant `TableColumn` definitions and `Table` will manage this dropdown for you. Use it standalone only when building a custom table shell.
+> **Note**: In most cases you will not use this component directly - pass `filterable: true` on the relevant `TableColumn` definitions and `Table` will manage this dropdown for you. Use it standalone only when building a custom table shell.
 
 ## Usage
 
@@ -38,6 +38,6 @@ Several filters staged simultaneously before applying.
 
 ## Pre-filled filters
 
-Opens with existing filter state already applied — useful for restored filter state from URL params or localStorage.
+Opens with existing filter state already applied - useful for restored filter state from URL params or localStorage.
 
 <Canvas of={TableFiltersDropdownStories.PreFilledFilters} />

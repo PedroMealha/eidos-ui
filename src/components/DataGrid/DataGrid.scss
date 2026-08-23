@@ -1,7 +1,7 @@
 @use '../../styles/mixins.scss' as *;
 
 // ─── Container ────────────────────────────────────────────────────────────────
-// overflow: hidden removed — sticky columns require no overflow on ancestors.
+// overflow: hidden removed - sticky columns require no overflow on ancestors.
 // Horizontal scroll is handled by the inner <div style="overflow-x:auto">.
 
 .eidos-data-grid-container {
@@ -186,7 +186,7 @@
 
 	// Active edit mode: inset ring using primary colour.
 	// The editor (Input/Select) is absolutely positioned so it fills the cell
-	// without contributing to the row's height — this keeps the row height
+	// without contributing to the row's height - this keeps the row height
 	// identical in all density modes whether or not a cell is being edited.
 	&--editing {
 		position: relative;
@@ -465,7 +465,7 @@
 	}
 }
 
-// Body cell backgrounds — concrete values so scrolled content doesn't bleed through
+// Body cell backgrounds - concrete values so scrolled content doesn't bleed through
 
 .eidos-datagrid-cell--pinned-left,
 .eidos-datagrid-cell--pinned-right {

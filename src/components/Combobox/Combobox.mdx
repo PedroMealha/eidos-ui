@@ -7,7 +7,7 @@ import * as ComboboxStories from './Combobox.stories';
 
 Searchable dropdown that combines a text input with a filtered option list. Prefer it over a plain `<Select>` for long lists, async data sources, or when free-text entry alongside suggestions is needed.
 
-> **Note**: Every option requires a unique `id` field. For server-side filtering, pass `onSearch` together with `loading` — built-in client filtering is bypassed automatically.
+> **Note**: Every option requires a unique `id` field. For server-side filtering, pass `onSearch` together with `loading` - built-in client filtering is bypassed automatically.
 
 ## Usage
 
@@ -63,7 +63,7 @@ Set `allowFreeText` to let users commit any typed value, not only options from t
 
 ## Custom option rendering
 
-Pass a `renderOption` function to replace the default option layout with a fully custom component — useful for avatars, status indicators, or multi-line descriptions.
+Pass a `renderOption` function to replace the default option layout with a fully custom component - useful for avatars, status indicators, or multi-line descriptions.
 
 <Canvas of={ComboboxStories.CustomRenderOption} />
 

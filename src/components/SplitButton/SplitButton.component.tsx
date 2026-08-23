@@ -7,7 +7,7 @@ import { renderIcon } from '../../utils';
 import type { SplitButtonProps } from './SplitButton.types';
 
 /**
- * SplitButton — a two-part control with a primary action button on the left
+ * SplitButton - a two-part control with a primary action button on the left
  * and a chevron that opens a dropdown of secondary actions on the right.
  *
  * The primary button fires `onClick` directly; clicking the chevron opens the

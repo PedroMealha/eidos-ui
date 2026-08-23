@@ -57,7 +57,7 @@ const VAR_ITEMS: VarItem[] = Array.from({ length: 500 }, (_, i) => ({
   // every 3rd item is short; the rest carry a lorem sentence
   text: i % 3 === 0
     ? `Item ${i + 1}`
-    : `Item ${i + 1} — ${LOREM_SENTENCES[i % LOREM_SENTENCES.length] as string}`,
+    : `Item ${i + 1} - ${LOREM_SENTENCES[i % LOREM_SENTENCES.length] as string}`,
 }));
 
 const USER_CARDS: UserCard[] = Array.from({ length: 200 }, (_, i) => {

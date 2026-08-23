@@ -1,7 +1,7 @@
 export interface OTPInputProps {
   /** Number of individual slots. Default: 6 */
   length?: number;
-  /** Controlled value — the full concatenated string */
+  /** Controlled value - the full concatenated string */
   value?: string;
   /** Uncontrolled seed value */
   defaultValue?: string;
@@ -16,7 +16,7 @@ export interface OTPInputProps {
   /** Visual size of each slot. Default: 'medium' */
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
-  /** Error message — turns all slots red and renders the message below */
+  /** Error message - turns all slots red and renders the message below */
   error?: string;
   label?: string;
   hint?: string;

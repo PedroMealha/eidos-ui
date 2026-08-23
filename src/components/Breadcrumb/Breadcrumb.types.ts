@@ -5,7 +5,7 @@ export interface BreadcrumbItem {
 	label: string;
 	/** If provided, renders as an anchor tag. For SPAs, use onClick instead. */
 	href?: string;
-	/** Click handler — useful for SPA routing without full page navigations. */
+	/** Click handler - useful for SPA routing without full page navigations. */
 	onClick?: (e: React.MouseEvent) => void;
 	/** Icon to show before the label (optional). */
 	icon?: React.ReactNode;

@@ -60,7 +60,7 @@ export const Clickable: Story = {
   args: { clickable: true },
   render: (args) => (
     <Card {...args} onClick={() => alert('Card clicked')}>
-      Click me — hover to see the interactive styles.
+      Click me - hover to see the interactive styles.
     </Card>
   ),
 };

@@ -28,7 +28,7 @@ export const FileUploadShowcase = () => (
       <FileUpload
         maxSize={2 * 1024 * 1024}
         onFilesAccepted={(files) => console.log('Accepted:', files)}
-        onFilesRejected={(_, reason) => console.warn('Rejected — reason:', reason)}
+        onFilesRejected={(_, reason) => console.warn('Rejected - reason:', reason)}
       />
     </Section>
 

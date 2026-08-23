@@ -54,7 +54,7 @@
 		@include focus-ring(primary, 3px);
 	}
 
-	// Button variant — remove native button appearance
+	// Button variant - remove native button appearance
 	&--button {
 		@include button-reset;
 		@include flex-center-y;
@@ -80,7 +80,7 @@
 }
 
 // ============================================================================
-// Current page (last item — not a link)
+// Current page (last item - not a link)
 // ============================================================================
 
 .eidos-breadcrumb-current {

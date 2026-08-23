@@ -1,11 +1,11 @@
 @use '../../styles/mixins.scss' as *;
 
 // ============================================================================
-// ROOT TREE — ul[role="tree"]
+// ROOT TREE - ul[role="tree"]
 // ============================================================================
 
 .eidos-tree {
-  // CSS custom property for indent depth — overridden per size variant.
+  // CSS custom property for indent depth - overridden per size variant.
   --tree-indent: 24px; // medium default
 
   list-style: none;
@@ -46,7 +46,7 @@
 }
 
 // ============================================================================
-// NODE — li[role="treeitem"]
+// NODE - li[role="treeitem"]
 // ============================================================================
 
 .eidos-tree-node {
@@ -69,7 +69,7 @@
 }
 
 // ============================================================================
-// NODE ROW — the horizontally-laid-out, clickable part of a node
+// NODE ROW - the horizontally-laid-out, clickable part of a node
 // ============================================================================
 
 .eidos-tree-node-row {
@@ -110,7 +110,7 @@
 }
 
 // ============================================================================
-// TOGGLE BUTTON — chevron that expands / collapses branches
+// TOGGLE BUTTON - chevron that expands / collapses branches
 // ============================================================================
 
 .eidos-tree-toggle {
@@ -148,7 +148,7 @@
 }
 
 // ============================================================================
-// NODE ICON — folder / file icon left of the label
+// NODE ICON - folder / file icon left of the label
 // ============================================================================
 
 .eidos-tree-icon {
@@ -160,7 +160,7 @@
 }
 
 // ============================================================================
-// NODE LABEL — text content, truncated when overflowing
+// NODE LABEL - text content, truncated when overflowing
 // ============================================================================
 
 .eidos-tree-label {
@@ -170,7 +170,7 @@
 }
 
 // ============================================================================
-// CHILDREN — ul[role="group"] that wraps nested nodes
+// CHILDREN - ul[role="group"] that wraps nested nodes
 // ============================================================================
 
 .eidos-tree-children {

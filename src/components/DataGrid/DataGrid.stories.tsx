@@ -200,7 +200,7 @@ const meta: Meta<typeof DataGrid<Person>> = {
 		// ── Controllable props ─────────────────────────────────────────────────────
 		editable: {
 			control: 'boolean',
-			description: 'Master switch — enables inline cell editing for all columns.',
+			description: 'Master switch - enables inline cell editing for all columns.',
 			table: { defaultValue: { summary: 'true' } },
 		},
 		loading: {
@@ -254,7 +254,7 @@ const meta: Meta<typeof DataGrid<Person>> = {
 			description: 'Message shown when the `data` array is empty.',
 			table: { defaultValue: { summary: 'No data available' } },
 		},
-		// ── Non-controllable props — hide from the controls panel ──────────────────
+		// ── Non-controllable props - hide from the controls panel ──────────────────
 		columns:             { control: false },
 		data:                { control: false },
 		rowKey:              { control: false },
@@ -359,7 +359,7 @@ export const WithSorting: Story = {
 		docs: {
 			description: {
 				story:
-					'Client-side — click a header to sort. No `onSortChange` callback is ' +
+					'Client-side - click a header to sort. No `onSortChange` callback is ' +
 					'provided, so the grid handles sorting internally. Set `sortable: true` ' +
 					'on each `DataGridColumn` to opt that column in.',
 			},
@@ -447,7 +447,7 @@ export const WithSelection: Story = {
 				story:
 					'Row checkboxes enable multi-selection. The "Delete selected" bulk action ' +
 					'removes all selected rows from the dataset. Use `selectable={true}` and ' +
-					'pass a `bulkActions` array — each action receives the full selected row objects.',
+					'pass a `bulkActions` array - each action receives the full selected row objects.',
 			},
 		},
 	},
@@ -490,7 +490,7 @@ export const WithDraggableRows: Story = {
 				story:
 					'Grab the grip handle on the left of any row and drag it to a new position. ' +
 					'The reordered dataset is committed via `onRowReorder`. ' +
-					'Note: sorting is intentionally disabled here — sorting and manual ordering ' +
+					'Note: sorting is intentionally disabled here - sorting and manual ordering ' +
 					'are mutually exclusive UX patterns.',
 			},
 		},
@@ -548,7 +548,7 @@ export const WithRowNumbers: Story = {
 			description: {
 				story:
 					'A prepended read-only column displays the 1-based row index. ' +
-					'Pair with `showPagination` — row numbers always reflect the position ' +
+					'Pair with `showPagination` - row numbers always reflect the position ' +
 					'in the current view, not the full dataset.',
 			},
 		},
@@ -576,8 +576,8 @@ export const WithValidation: Story = {
 			description: {
 				story:
 					'Inline validation fires on cell commit. ' +
-					'Name is `required` — clear it and tab away to see the error. ' +
-					'Salary must be a positive number ≤ $1,000,000 — try entering 0 or a ' +
+					'Name is `required` - clear it and tab away to see the error. ' +
+					'Salary must be a positive number ≤ $1,000,000 - try entering 0 or a ' +
 					'letter to trigger the custom `validate` function.',
 			},
 		},
@@ -706,7 +706,7 @@ export const PinnedFromMiddle: Story = {
 					'Demonstrates that `pin` works correctly even when the column is **not** at the ' +
 					'edge of the columns array. ' +
 					'`department` (array index 2) has `pin: "left"` and `salary` (array index 4) ' +
-					'has `pin: "right"` — the DataGrid reorders them to the edges automatically. ' +
+					'has `pin: "right"` - the DataGrid reorders them to the edges automatically. ' +
 					'The wrapper is capped at 500 px to force horizontal scroll so the frozen ' +
 					'columns are clearly visible.',
 			},

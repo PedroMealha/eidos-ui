@@ -5,7 +5,7 @@ import * as DatePickerStories from './DatePicker.stories';
 
 # DatePicker
 
-A calendar-based date/time input supporting single date, date range, and multiple-date selection. Built on dayjs — values are always ISO strings, making them safe to store and serialise without timezone surprises.
+A calendar-based date/time input supporting single date, date range, and multiple-date selection. Built on dayjs - values are always ISO strings, making them safe to store and serialise without timezone surprises.
 
 > **Note**: `DatePicker` is generic over the selection `mode`. The `value` and `onChange` types are inferred from the `mode` prop, so always pass the mode explicitly to get accurate TypeScript types.
 
@@ -42,7 +42,7 @@ Use the Controls panel to switch `mode` between `single`, `multiple`, and `range
 
 ## Single date
 
-The most common mode — the user picks one date and receives an ISO string value.
+The most common mode - the user picks one date and receives an ISO string value.
 
 <Canvas of={DatePickerStories.SingleDate} />
 
@@ -66,7 +66,7 @@ Pass `time={{ enabled: true }}` to show an hour/minute picker below the calendar
 
 ## Date range with time
 
-Time selection works with `mode="range"` too — the value gains `time: { start: TimeValue, end: TimeValue }`.
+Time selection works with `mode="range"` too - the value gains `time: { start: TimeValue, end: TimeValue }`.
 
 <Canvas of={DatePickerStories.DateRangeWithTime} />
 

@@ -8,7 +8,7 @@ const meta = {
 	component: SegmentedControl,
 	parameters: { layout: 'centered' },
 	args: {
-		// Required — overridden by every story's render function.
+		// Required - overridden by every story's render function.
 		options: [],
 	},
 } satisfies Meta<typeof SegmentedControl>;

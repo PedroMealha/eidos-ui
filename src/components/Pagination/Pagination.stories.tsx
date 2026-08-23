@@ -72,7 +72,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — controlled with useState
+// DEFAULT - controlled with useState
 // ============================================================================
 
 export const Default: Story = {
@@ -93,7 +93,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// MANY PAGES — ellipsis on both sides
+// MANY PAGES - ellipsis on both sides
 // ============================================================================
 
 export const ManyPages: Story = {

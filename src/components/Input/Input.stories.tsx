@@ -241,7 +241,7 @@ export const Examples = {
           </div>
         </div>
 
-        {/* ── Full Width — spans all columns ── */}
+        {/* ── Full Width - spans all columns ── */}
         <div style={{ gridColumn: '1 / -1' }}>
           <p style={label}>Full Width</p>
           <Input label="Full Width Input" placeholder="This input spans the full container width" fullWidth />

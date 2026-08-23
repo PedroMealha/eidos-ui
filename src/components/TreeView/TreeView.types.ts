@@ -11,11 +11,11 @@ export interface TreeNode {
 
 export interface TreeViewProps {
   data: TreeNode[];
-  // Selection — single
+  // Selection - single
   selectedId?: string; // controlled
   defaultSelectedId?: string; // uncontrolled
   onSelect?: (node: TreeNode) => void;
-  // Selection — multi
+  // Selection - multi
   multiSelect?: boolean; // default: false
   selectedIds?: string[]; // controlled multi
   defaultSelectedIds?: string[];

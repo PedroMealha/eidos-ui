@@ -11,7 +11,7 @@ const meta: Meta<typeof DatePicker> = {
     docs: {
       description: {
         component:
-          "A comprehensive date picker supporting single date, multiple dates, and date range selection. Built with dayjs — supports time selection, custom formatting, week numbers, and more.",
+          "A comprehensive date picker supporting single date, multiple dates, and date range selection. Built with dayjs - supports time selection, custom formatting, week numbers, and more.",
       },
     },
   },
@@ -57,7 +57,7 @@ const meta: Meta<typeof DatePicker> = {
     },
     name: { control: "text", description: "Hidden input name for form submission" },
     id:   { control: "text", description: "ID attribute for the underlying input" },
-    // Complex / callback props — hide controls, keep in docs table
+    // Complex / callback props - hide controls, keep in docs table
     value:              { control: false },
     onChange:           { control: false },
     time:               { control: false, description: "Time selection config `{ enabled, includeSeconds }`" },
@@ -78,7 +78,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — interactive controls; handles all three modes so you can switch
+// DEFAULT - interactive controls; handles all three modes so you can switch
 // between them in the Controls panel without leaving this story.
 // The docs source override shows a clean real-world usage snippet.
 // ============================================================================
@@ -140,7 +140,7 @@ const [value, setValue] = useState({ date: null });
 };
 
 // ============================================================================
-// MODE EXAMPLES — one story per selection mode showing a realistic setup
+// MODE EXAMPLES - one story per selection mode showing a realistic setup
 // ============================================================================
 
 export const SingleDate: Story = {

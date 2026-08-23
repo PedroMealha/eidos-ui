@@ -18,7 +18,7 @@ const meta = {
 		},
 		indeterminate: {
 			control: 'boolean',
-			description: 'Show the indeterminate (mixed) state — overrides checked visually',
+			description: 'Show the indeterminate (mixed) state - overrides checked visually',
 			table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
 		},
 		disabled: {

@@ -32,7 +32,7 @@ function PageHeader() {
 <Canvas of={InlineEditStories.Default} />
 <Controls of={InlineEditStories.Default} />
 
-> **Note — Uncontrolled vs controlled editing mode.** By default, `InlineEdit` manages its own open/close toggle internally (uncontrolled). To take external ownership of when editing is active, pass the `editing` boolean prop and respond to changes via `onEditingChange`. This is useful when a parent button, cell-click handler, or keyboard shortcut should drive the edit state independently of the component's built-in trigger. See the [Controlled](#controlled) story below for a working example.
+> **Note - Uncontrolled vs controlled editing mode.** By default, `InlineEdit` manages its own open/close toggle internally (uncontrolled). To take external ownership of when editing is active, pass the `editing` boolean prop and respond to changes via `onEditingChange`. This is useful when a parent button, cell-click handler, or keyboard shortcut should drive the edit state independently of the component's built-in trigger. See the [Controlled](#controlled) story below for a working example.
 
 ## Sizes
 
@@ -66,7 +66,7 @@ Use `renderDisplay` to replace the default text rendering with any React node. C
 
 Pass `editing` and `onEditingChange` to take ownership of the open/close lifecycle. The "Edit" button below demonstrates toggling the editing state programmatically from outside the component.
 
-> **Note — `confirmOnBlur={false}`.** Set this to `false` when the parent already owns the commit/cancel lifecycle. The canonical example is a DataGrid: the grid intercepts Tab and click-outside at the container level to commit or discard the active cell editor. With `confirmOnBlur={true}` (the default), blurring the input when the user tabs to the next cell would fire a double-commit — once from the blur handler and once from the grid's Tab interceptor. Setting `confirmOnBlur={false}` hands all commit decisions back to the parent and prevents this.
+> **Note - `confirmOnBlur={false}`.** Set this to `false` when the parent already owns the commit/cancel lifecycle. The canonical example is a DataGrid: the grid intercepts Tab and click-outside at the container level to commit or discard the active cell editor. With `confirmOnBlur={true}` (the default), blurring the input when the user tabs to the next cell would fire a double-commit - once from the blur handler and once from the grid's Tab interceptor. Setting `confirmOnBlur={false}` hands all commit decisions back to the parent and prevents this.
 
 <Canvas of={InlineEditStories.Controlled} />
 

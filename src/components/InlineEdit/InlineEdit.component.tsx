@@ -30,7 +30,7 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
   // Track the value at the moment editing begins so Esc can revert to it.
   const valueAtEditStart = useRef(value);
 
-  // Local draft while editing — keeps Input value in sync without forcing the
+  // Local draft while editing - keeps Input value in sync without forcing the
   // parent to wire `onChange` just to see live keystrokes.
   const [draft, setDraft] = useState(value);
 
@@ -85,7 +85,7 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
       e.stopPropagation();
       cancel();
     }
-    // Tab and Arrow keys intentionally bubble — consumers like DataGrid own
+    // Tab and Arrow keys intentionally bubble - consumers like DataGrid own
     // Tab-to-next-cell and arrow-key navigation at the container level.
   };
 

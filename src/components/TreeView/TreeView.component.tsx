@@ -49,7 +49,7 @@ function buildParentMap(nodes: TreeNode[]): Map<string, string | null> {
 }
 
 /**
- * Return an ordered list of all node IDs that are currently visible —
+ * Return an ordered list of all node IDs that are currently visible -
  * i.e. not hidden because an ancestor is collapsed.
  */
 function computeVisibleIds(nodes: TreeNode[], expandedIds: Set<string>): string[] {
@@ -96,7 +96,7 @@ function useTreeContext(): TreeContextValue {
 }
 
 // ============================================================================
-// INTERNAL TREE NODE ITEM — renders itself and its children recursively
+// INTERNAL TREE NODE ITEM - renders itself and its children recursively
 // ============================================================================
 
 interface TreeNodeItemProps {
@@ -373,7 +373,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
             // Expand; per ARIA APG focus stays on current node after opening.
             handleToggleExpand(node.id);
           } else {
-            // Already expanded — move into first child.
+            // Already expanded - move into first child.
             const firstChildId = visibleIds[currentIndex + 1];
             if (firstChildId !== undefined) focusNode(firstChildId);
           }

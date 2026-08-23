@@ -66,7 +66,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — Basic popover with text content, bottom placement
+// DEFAULT - Basic popover with text content, bottom placement
 // ============================================================================
 
 export const Default: Story = {
@@ -88,7 +88,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// WITH TITLE — Has title prop and showCloseButton
+// WITH TITLE - Has title prop and showCloseButton
 // ============================================================================
 
 export const WithTitle: Story = {
@@ -112,7 +112,7 @@ export const WithTitle: Story = {
 };
 
 // ============================================================================
-// PLACEMENTS — All four placement options
+// PLACEMENTS - All four placement options
 // ============================================================================
 
 export const Placements = {
@@ -147,7 +147,7 @@ export const Placements = {
 };
 
 // ============================================================================
-// RICH CONTENT — Children contain a small form
+// RICH CONTENT - Children contain a small form
 // ============================================================================
 
 export const RichContent: Story = {
@@ -193,7 +193,7 @@ export const RichContent: Story = {
 };
 
 // ============================================================================
-// CONTROLLED — Externally controlled open state
+// CONTROLLED - Externally controlled open state
 // ============================================================================
 
 export const Controlled = {
@@ -232,7 +232,7 @@ export const Controlled = {
 };
 
 // ============================================================================
-// DISABLED — Trigger cannot open the popover
+// DISABLED - Trigger cannot open the popover
 // ============================================================================
 
 export const Disabled: Story = {

@@ -280,7 +280,7 @@ const EmptyStateSection = () => (
     <Table<UserRow>
       data={[]}
       columns={fullColumns}
-      emptyMessage="No users found — try adjusting your filters"
+      emptyMessage="No users found - try adjusting your filters"
     />
   </Section>
 );

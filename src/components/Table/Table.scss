@@ -5,7 +5,7 @@
 	border-radius: var(--border-radius-md);
 	border: 1px solid var(--gray-200);
 	box-shadow: var(--box-shadow);
-	// overflow: hidden removed — sticky columns require no overflow:hidden on ancestors.
+	// overflow: hidden removed - sticky columns require no overflow:hidden on ancestors.
 	// Horizontal scroll is handled by the inner wrapper <div style="overflow-x:auto">.
 }
 
@@ -161,7 +161,7 @@
 	}
 }
 
-// Checkbox column — shared by <th> and <td>
+// Checkbox column - shared by <th> and <td>
 .eidos-table-checkbox-cell {
 	width: 40px;
 	min-width: 40px;
@@ -326,7 +326,7 @@
 	}
 }
 
-// Body cell backgrounds — need concrete values so scrolled content doesn't bleed through
+// Body cell backgrounds - need concrete values so scrolled content doesn't bleed through
 .eidos-table-cell--pinned-left,
 .eidos-table-cell--pinned-right {
 	background: var(--white);

@@ -109,7 +109,7 @@ export const InMenu: Story = {
 			description: {
 				story:
 					'The `shortcut` prop on a `MenuItem` is automatically rendered as a `<Kbd>`. ' +
-					'No extra work required — just pass the string.',
+					'No extra work required - just pass the string.',
 			},
 		},
 	},

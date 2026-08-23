@@ -10,7 +10,7 @@ interface MenuPosition {
 }
 
 /**
- * ContextMenu — wraps any content and attaches a right-click (or long-press)
+ * ContextMenu - wraps any content and attaches a right-click (or long-press)
  * triggered menu positioned at the cursor.
  *
  * The browser's native context menu is suppressed when `disabled` is false.

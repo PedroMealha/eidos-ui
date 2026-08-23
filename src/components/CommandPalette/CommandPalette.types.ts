@@ -5,7 +5,7 @@ export interface CommandItem {
   label: string;
   description?: string;
   icon?: React.ComponentType<{ className?: string; size?: number }>;
-  /** e.g. ['⌘', 'K'] — each key rendered as a <kbd> badge */
+  /** e.g. ['⌘', 'K'] - each key rendered as a <kbd> badge */
   shortcut?: string[];
   group?: string;
   disabled?: boolean;

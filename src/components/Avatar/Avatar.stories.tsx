@@ -71,7 +71,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — image avatar
+// DEFAULT - image avatar
 // ============================================================================
 
 export const Default: Story = {
@@ -108,7 +108,7 @@ export const WithCustomColor: Story = {
 };
 
 // ============================================================================
-// FALLBACK — no src, no name
+// FALLBACK - no src, no name
 // ============================================================================
 
 export const Fallback: Story = {
@@ -119,7 +119,7 @@ export const Fallback: Story = {
 };
 
 // ============================================================================
-// SHAPES — circle vs square
+// SHAPES - circle vs square
 // ============================================================================
 
 export const Shapes = {
@@ -138,7 +138,7 @@ export const Shapes = {
 };
 
 // ============================================================================
-// SIZES — all five sizes in a row
+// SIZES - all five sizes in a row
 // ============================================================================
 
 export const Sizes = {
@@ -155,7 +155,7 @@ export const Sizes = {
 };
 
 // ============================================================================
-// COLORS — all seven color variants
+// COLORS - all seven color variants
 // ============================================================================
 
 const avatarColors: AvatarColor[] = [
@@ -194,7 +194,7 @@ export const Clickable: Story = {
 };
 
 // ============================================================================
-// WITH ERROR — invalid src falls back to initials
+// WITH ERROR - invalid src falls back to initials
 // ============================================================================
 
 export const WithError: Story = {
@@ -206,7 +206,7 @@ export const WithError: Story = {
 };
 
 // ============================================================================
-// GROUP — 6 avatars, max 4 visible
+// GROUP - 6 avatars, max 4 visible
 // ============================================================================
 
 export const Group = {

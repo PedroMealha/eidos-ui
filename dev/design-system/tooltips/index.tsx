@@ -27,10 +27,10 @@ export const TooltipShowcase = () => (
         <Tooltip message="Triggered on hover" triggerType="hover">
           <Button variant="outlined" size="small">Hover</Button>
         </Tooltip>
-        <Tooltip message="Triggered on click — click again to dismiss" triggerType="click">
+        <Tooltip message="Triggered on click - click again to dismiss" triggerType="click">
           <Button variant="outlined" size="small">Click</Button>
         </Tooltip>
-        <Tooltip message="Triggered on focus — tab to this button" triggerType="focus">
+        <Tooltip message="Triggered on focus - tab to this button" triggerType="focus">
           <Button variant="outlined" size="small">Focus</Button>
         </Tooltip>
       </Row>

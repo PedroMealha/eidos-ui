@@ -94,7 +94,7 @@ export const Vertical: Story = {
 };
 
 // ============================================================================
-// COMPLETED — all steps done
+// COMPLETED - all steps done
 // ============================================================================
 
 export const Completed: Story = {
@@ -108,7 +108,7 @@ export const Completed: Story = {
 };
 
 // ============================================================================
-// WITH ERROR — step 2 carries an explicit error status
+// WITH ERROR - step 2 carries an explicit error status
 // ============================================================================
 
 export const WithError: Story = {
@@ -127,7 +127,7 @@ export const WithError: Story = {
 };
 
 // ============================================================================
-// COLORS — all four color variants stacked
+// COLORS - all four color variants stacked
 // ============================================================================
 
 export const Colors = {
@@ -156,7 +156,7 @@ export const Colors = {
 };
 
 // ============================================================================
-// NO NUMBERS — custom icons replace step numbers
+// NO NUMBERS - custom icons replace step numbers
 // ============================================================================
 
 export const NoNumbers: Story = {
@@ -175,7 +175,7 @@ export const NoNumbers: Story = {
 };
 
 // ============================================================================
-// INTERACTIVE — prev / next controls
+// INTERACTIVE - prev / next controls
 // ============================================================================
 
 export const Interactive: Story = {

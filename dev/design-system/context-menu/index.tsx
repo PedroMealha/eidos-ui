@@ -45,13 +45,13 @@ const files = [
 
 export const ContextMenuShowcase = () => (
   <Col>
-    <Section label="Canvas — right-click inside the area">
+    <Section label="Canvas - right-click inside the area">
       <ContextMenu items={CANVAS_ITEMS}>
         <div style={canvasStyle}>Right-click anywhere in this area</div>
       </ContextMenu>
     </Section>
 
-    <Section label="Per-row context menu — right-click any row">
+    <Section label="Per-row context menu - right-click any row">
       <Col gap="0.375rem">
         {files.map((file) => {
           const items: MenuItemType[] = [

@@ -191,7 +191,7 @@ export const WithShortcuts = {
 };
 
 /**
- * Empty items list — shows the `emptyText` placeholder immediately.
+ * Empty items list - shows the `emptyText` placeholder immediately.
  * You can also trigger the empty state in any other story by typing a
  * query that matches nothing.
  */
@@ -245,7 +245,7 @@ export const WithFooter = {
 
 /**
  * Items with `disabled: true` are rendered at reduced opacity and skip
- * keyboard navigation — you cannot land on them with ArrowUp / ArrowDown.
+ * keyboard navigation - you cannot land on them with ArrowUp / ArrowDown.
  */
 export const WithDisabledItems = {
   render: () => {

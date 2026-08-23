@@ -102,7 +102,7 @@
   .eidos-color-picker--large  & { height: 200px; }
 }
 
-// Circular thumb — tracks the selected sat/val position
+// Circular thumb - tracks the selected sat/val position
 .eidos-color-picker-thumb {
   position: absolute;
   width: 14px;
@@ -273,7 +273,7 @@
     background: transparent;
   }
 
-  // Firefox fills the "progress" segment before the thumb — hide it
+  // Firefox fills the "progress" segment before the thumb - hide it
   &::-moz-range-progress {
     background: transparent;
   }

@@ -68,7 +68,7 @@
 }
 
 // ============================================================================
-// WRAPPER  (no fixed height — textarea grows naturally)
+// WRAPPER  (no fixed height - textarea grows naturally)
 // ============================================================================
 
 .eidos-textarea-wrapper {
@@ -322,7 +322,7 @@
 		opacity: 1;
 	}
 
-	// Sizes (font only — height is driven by `rows` and natural growth)
+	// Sizes (font only - height is driven by `rows` and natural growth)
 	&--small {
 		@include font-size(sm);
 	}
@@ -352,7 +352,7 @@
 		color: var(--danger-color);
 	}
 
-	// Suppress the native focus outline — the wrapper provides the ring
+	// Suppress the native focus outline - the wrapper provides the ring
 	&:focus-visible {
 		outline: none;
 	}

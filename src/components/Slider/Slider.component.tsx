@@ -57,7 +57,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 			onChange?.(newValue);
 		};
 
-		// Effective max for ARIA — the blocked zone is not a valid value.
+		// Effective max for ARIA - the blocked zone is not a valid value.
 		const effectiveMax = blockedRange ? blockedRange.min : maxVal;
 
 		const fmt = (v: number) => `${v}${unit ?? ''}`;

@@ -5,9 +5,9 @@ import * as DataGridStories from './DataGrid.stories';
 
 # DataGrid
 
-A feature-rich, spreadsheet-like grid for editing structured data inline. Columns are typed (`text`, `number`, `select`, `checkbox`, `readonly`), and the grid supports sorting, filtering, pagination, row selection, drag-and-drop reordering, column pinning, and per-cell validation — all opt-in via props.
+A feature-rich, spreadsheet-like grid for editing structured data inline. Columns are typed (`text`, `number`, `select`, `checkbox`, `readonly`), and the grid supports sorting, filtering, pagination, row selection, drag-and-drop reordering, column pinning, and per-cell validation - all opt-in via props.
 
-> **Note**: `DataGrid` is generic over your row type (`T extends Record<string, unknown>`). Pass the type parameter explicitly — e.g. `<DataGrid<Person> … />` — to get full type safety on `columns`, `onChange`, and callbacks.
+> **Note**: `DataGrid` is generic over your row type (`T extends Record<string, unknown>`). Pass the type parameter explicitly - e.g. `<DataGrid<Person> … />` - to get full type safety on `columns`, `onChange`, and callbacks.
 
 ## Usage
 
@@ -59,7 +59,7 @@ A fully editable grid with all common display props wired to Storybook controls.
 
 ## Read only
 
-Set `editable={false}` to produce a display-only view — click targets and hover states are suppressed across all cells.
+Set `editable={false}` to produce a display-only view - click targets and hover states are suppressed across all cells.
 
 <Canvas of={DataGridStories.ReadOnly} />
 
@@ -83,7 +83,7 @@ Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `
 
 ## With selection
 
-Enable `selectable={true}` to add row checkboxes. Pass a `bulkActions` array to expose actions — each action's `onClick` receives the full array of selected row objects.
+Enable `selectable={true}` to add row checkboxes. Pass a `bulkActions` array to expose actions - each action's `onClick` receives the full array of selected row objects.
 
 <Canvas of={DataGridStories.WithSelection} />
 
@@ -131,6 +131,6 @@ Columns with `pin: 'left'` or `pin: 'right'` stay frozen during horizontal scrol
 
 ## Full featured
 
-Kitchen-sink example combining sortable columns, column filters, client-side pagination, row selection with a bulk-delete action, row numbers, and a density picker — mirroring a real-world admin table.
+Kitchen-sink example combining sortable columns, column filters, client-side pagination, row selection with a bulk-delete action, row numbers, and a density picker - mirroring a real-world admin table.
 
 <Canvas of={DataGridStories.FullFeatured} />

@@ -52,7 +52,7 @@ const meta = {
     },
     error: {
       control: 'text',
-      description: 'Error message — turns slots red when set',
+      description: 'Error message - turns slots red when set',
       table: { type: { summary: 'string' } },
     },
     autoFocus: {

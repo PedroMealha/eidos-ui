@@ -42,7 +42,7 @@ export const InlineEditShowcase = () => {
       </Grid>
 
       <Grid cols={2}>
-        <Section label="Controlled — title editor">
+        <Section label="Controlled - title editor">
           <Col>
             <InlineEdit
               value={title}
@@ -77,7 +77,7 @@ export const InlineEditShowcase = () => {
         </Section>
       </Grid>
 
-      <Section label="Custom display — renderDisplay">
+      <Section label="Custom display - renderDisplay">
         <InlineEdit
           value="Click to rename"
           renderDisplay={(v) => (

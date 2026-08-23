@@ -129,7 +129,7 @@ export const WithAction: Story = {
 };
 
 // ============================================================================
-// DISMISSABLE — uses useState so needs a render function
+// DISMISSABLE - uses useState so needs a render function
 // ============================================================================
 
 export const Dismissable: Story = {
@@ -163,13 +163,13 @@ export const NoIcon: Story = {
   args: {
     variant: "success",
     title: "No icon",
-    children: "This alert renders without an icon — useful when screen real estate is tight.",
+    children: "This alert renders without an icon - useful when screen real estate is tight.",
     icon: false,
   },
 };
 
 // ============================================================================
-// ALL VARIANTS — visual reference of all four variants at once
+// ALL VARIANTS - visual reference of all four variants at once
 // ============================================================================
 
 export const AllVariants = {

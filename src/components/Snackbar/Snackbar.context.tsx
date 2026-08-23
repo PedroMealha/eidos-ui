@@ -38,7 +38,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
   }, []);
 
   const removeSnackbar = useCallback((id: string): void => {
-    // Read from ref — safe to call outside a setState updater.
+    // Read from ref - safe to call outside a setState updater.
     // Calling side-effects inside a setState updater is wrong: React StrictMode
     // deliberately invokes updaters twice, which would fire onClose 2× from here
     // plus 1× from SnackbarComponent.handleClose = 3× total.

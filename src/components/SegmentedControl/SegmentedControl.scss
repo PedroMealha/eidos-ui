@@ -82,7 +82,7 @@
 		}
 	}
 
-	// ── Hover — only on inactive, enabled segments ─────────────────────────────
+	// ── Hover - only on inactive, enabled segments ─────────────────────────────
 
 	&:hover:not(:disabled):not(.eidos-segmented-item--active) {
 		background: var(--gray-200);

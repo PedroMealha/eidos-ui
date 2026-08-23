@@ -102,7 +102,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — uncontrolled, interactive controls active
+// DEFAULT - uncontrolled, interactive controls active
 // ============================================================================
 
 export const Default: Story = {
@@ -115,7 +115,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// WITH MIN / MAX — controlled, value managed via useState
+// WITH MIN / MAX - controlled, value managed via useState
 // ============================================================================
 
 export const WithMinMax: Story = {
@@ -140,7 +140,7 @@ export const WithMinMax: Story = {
 };
 
 // ============================================================================
-// PRECISION — decimal step and display
+// PRECISION - decimal step and display
 // ============================================================================
 
 export const Precision: Story = {
@@ -240,7 +240,7 @@ export const ReadOnly: Story = {
 };
 
 // ============================================================================
-// NO TYPING — stepper buttons only
+// NO TYPING - stepper buttons only
 // ============================================================================
 
 export const NoTyping: Story = {

@@ -40,7 +40,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
 
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
-  // Array of refs — one per slot input
+  // Array of refs - one per slot input
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   // Sync internal slots when the controlled `value` prop changes
@@ -68,7 +68,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
 
   /**
    * Apply a new slots array, propagate onChange, and fire onComplete if every
-   * slot is filled. In controlled mode we do NOT call setSlots — the parent
+   * slot is filled. In controlled mode we do NOT call setSlots - the parent
    * drives state via the `value` prop.
    */
   const commitChange = (newSlots: string[]) => {
@@ -92,7 +92,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     const rawValue = e.target.value;
     // When maxLength=1 is enforced, rawValue is 0–1 chars.
     // When the browser transiently allows 2 chars (typed over existing), we
-    // take the last character — that's always the newly entered one.
+    // take the last character - that's always the newly entered one.
     const char = rawValue.slice(-1);
 
     if (!char) return; // Deletes are handled by onKeyDown

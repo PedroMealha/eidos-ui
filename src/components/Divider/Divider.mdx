@@ -12,14 +12,14 @@ A thin visual separator line. Use it to divide sections of content horizontally,
 ```tsx
 import { Divider } from '@pmealha/eidos-ui';
 
-// Horizontal (default) — separates stacked content
+// Horizontal (default) - separates stacked content
 <div>
   <p>Above</p>
   <Divider />
   <p>Below</p>
 </div>
 
-// Vertical — separates side-by-side items
+// Vertical - separates side-by-side items
 <div style={{ display: 'flex', alignItems: 'center', height: '40px', gap: '1rem' }}>
   <span>Left</span>
   <Divider direction="vertical" />
@@ -29,7 +29,7 @@ import { Divider } from '@pmealha/eidos-ui';
 
 ## Horizontal
 
-The default orientation — renders a full-width horizontal rule between stacked elements.
+The default orientation - renders a full-width horizontal rule between stacked elements.
 
 <Canvas of={DividerStories.Horizontal} />
 

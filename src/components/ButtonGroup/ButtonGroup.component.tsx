@@ -2,7 +2,7 @@ import React from 'react';
 import type { ButtonGroupProps } from './ButtonGroup.types';
 
 /**
- * ButtonGroup — wraps adjacent Button components into a single visual unit.
+ * ButtonGroup - wraps adjacent Button components into a single visual unit.
  *
  * - Collapses inner border-radii so only the two outer ends are rounded.
  * - Collapses the shared border between adjacent outlined buttons into one line.

@@ -111,7 +111,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — fully interactive, all controls active
+// DEFAULT - fully interactive, all controls active
 // ============================================================================
 
 export const Default: Story = {

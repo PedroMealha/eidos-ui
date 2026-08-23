@@ -35,7 +35,7 @@ export interface ColorPickerProps {
   swatches?: string[];
   disabled?: boolean;
   size?: 'small' | 'medium' | 'large';
-  /** Render the picker panel inline — no popover trigger. Default: false */
+  /** Render the picker panel inline - no popover trigger. Default: false */
   inline?: boolean;
   label?: string;
   className?: string;

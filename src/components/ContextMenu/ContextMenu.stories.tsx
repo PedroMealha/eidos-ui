@@ -11,7 +11,7 @@ const meta = {
 	component: ContextMenu,
 	parameters: { layout: 'centered' },
 	args: {
-		// Required — overridden by every story's render function.
+		// Required - overridden by every story's render function.
 		items: [],
 		children: null,
 	},
@@ -85,7 +85,7 @@ export const OnAList: Story = {
 	parameters: {
 		docs: {
 			description: {
-				story: 'Context menu on a data list — each row opens the same menu.',
+				story: 'Context menu on a data list - each row opens the same menu.',
 			},
 		},
 	},
@@ -160,7 +160,7 @@ export const Disabled: Story = {
 	render: () => (
 		<ContextMenu items={EDIT_ITEMS} disabled>
 			<div style={{ ...targetStyle, border: '2px dashed var(--gray-200)', background: 'var(--gray-50)' }}>
-				Right-click — native menu only (disabled)
+				Right-click - native menu only (disabled)
 			</div>
 		</ContextMenu>
 	),

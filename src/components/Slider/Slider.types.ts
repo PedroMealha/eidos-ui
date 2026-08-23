@@ -19,7 +19,7 @@ export interface SliderProps {
 	/**
 	 * Range within [min, max] where the thumb is blocked from entering.
 	 * The blocked zone is rendered in danger-red on the track. The value is
-	 * clamped to blockedRange.min — the user cannot slide past it.
+	 * clamped to blockedRange.min - the user cannot slide past it.
 	 */
 	blockedRange?: { min: number; max: number };
 	className?: string;

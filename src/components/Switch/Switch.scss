@@ -149,7 +149,7 @@
 	transition: background 0.2s ease;
 	flex-shrink: 0;
 
-	// Default checked colour — overridden by colour-variant rules above
+	// Default checked colour - overridden by colour-variant rules above
 	&--checked {
 		background: var(--primary-color);
 	}

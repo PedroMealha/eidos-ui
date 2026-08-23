@@ -75,7 +75,7 @@ const ControlledSelectionDemo: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--gray-500)' }}>
         Selected node:{' '}
-        <strong style={{ color: 'var(--primary-700)' }}>{selectedId || '—'}</strong>
+        <strong style={{ color: 'var(--primary-700)' }}>{selectedId || '-'}</strong>
       </p>
       <TreeView
         data={FILE_TREE}
@@ -95,7 +95,7 @@ const MultiSelectDemo: React.FC = () => {
       <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--gray-500)' }}>
         Selected:{' '}
         <strong style={{ color: 'var(--primary-700)' }}>
-          {selectedIds.length > 0 ? selectedIds.join(', ') : '—'}
+          {selectedIds.length > 0 ? selectedIds.join(', ') : '-'}
         </strong>
       </p>
       <TreeView
@@ -123,7 +123,7 @@ const meta = {
   argTypes: {
     data: {
       control: false,
-      description: 'Tree data — array of `TreeNode` objects (recursive)',
+      description: 'Tree data - array of `TreeNode` objects (recursive)',
       table: { type: { summary: 'TreeNode[]' } },
     },
     size: {
@@ -246,7 +246,7 @@ export const ControlledSelection: Story = {
   render: () => <ControlledSelectionDemo />,
 };
 
-/** Some nodes are marked disabled — they cannot be clicked or selected. */
+/** Some nodes are marked disabled - they cannot be clicked or selected. */
 export const Disabled: Story = {
   args: {
     data: DISABLED_TREE,

@@ -13,7 +13,7 @@ const meta = {
     value: {
       control: 'text',
       description:
-        'The current displayed value. Always required — pass a state variable and wire `onChange` / `onConfirm` to keep it in sync.',
+        'The current displayed value. Always required - pass a state variable and wire `onChange` / `onConfirm` to keep it in sync.',
       table: { type: { summary: 'string' } },
     },
     size: {
@@ -37,7 +37,7 @@ const meta = {
     placeholder: {
       control: 'text',
       description:
-        'Placeholder shown when `value` is empty — both in display mode and inside the input in edit mode.',
+        'Placeholder shown when `value` is empty - both in display mode and inside the input in edit mode.',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
     fullWidth: {
@@ -108,7 +108,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — primary story; all controls apply here
+// DEFAULT - primary story; all controls apply here
 // ============================================================================
 
 export const Default: Story = {
@@ -240,7 +240,7 @@ export const CustomDisplay = {
 };
 
 // ============================================================================
-// CONTROLLED — editing state driven externally
+// CONTROLLED - editing state driven externally
 // ============================================================================
 
 export const Controlled = {

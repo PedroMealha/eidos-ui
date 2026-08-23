@@ -74,8 +74,8 @@ export const TabsShowcase = () => (
       <Col gap="1.5rem">
         {(['small', 'medium', 'large'] as const).map((size) => (
           <Tabs key={size} defaultValue="s1" variant="enclosed" size={size}>
-            <Tab value="s1">{size} — Tab 1</Tab>
-            <Tab value="s2">{size} — Tab 2</Tab>
+            <Tab value="s1">{size} - Tab 1</Tab>
+            <Tab value="s2">{size} - Tab 2</Tab>
             <TabPanel value="s1" />
             <TabPanel value="s2" />
           </Tabs>

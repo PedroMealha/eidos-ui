@@ -84,7 +84,7 @@ export const KbdShowcase = () => (
     </Grid>
 
     <Grid cols={2}>
-      <Section label="Live key watcher — press any key">
+      <Section label="Live key watcher - press any key">
         <KeyWatcher />
       </Section>
 

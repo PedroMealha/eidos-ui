@@ -36,7 +36,7 @@ const meta = {
     size: {
       control: "select",
       options: ["small", "medium", "large"],
-      description: "Track height — small (4 px), medium (8 px), large (12 px).",
+      description: "Track height - small (4 px), medium (8 px), large (12 px).",
       table: {
         type: { summary: '"small" | "medium" | "large"' },
         defaultValue: { summary: "medium" },
@@ -96,7 +96,7 @@ export const Indeterminate: Story = {
 };
 
 // ============================================================================
-// COLORS — all six colours at 60 %
+// COLORS - all six colours at 60 %
 // ============================================================================
 
 const labelStyle: React.CSSProperties = {
@@ -167,7 +167,7 @@ export const Striped: Story = {
 };
 
 // ============================================================================
-// STATES — 0 / 25 / 50 / 75 / 100 %
+// STATES - 0 / 25 / 50 / 75 / 100 %
 // ============================================================================
 
 export const States = {

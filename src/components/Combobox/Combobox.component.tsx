@@ -46,13 +46,13 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
   // ─── Refs ─────────────────────────────────────────────────────────────────
 
-  /** Entire combobox wrapper — used for click-outside detection */
+  /** Entire combobox wrapper - used for click-outside detection */
   const containerRef = useRef<HTMLDivElement>(null);
 
-  /** The trigger wrapper div — passed to Dropdown as externalTriggerRef for width */
+  /** The trigger wrapper div - passed to Dropdown as externalTriggerRef for width */
   const comboboxTriggerRef = useRef<HTMLDivElement>(null);
 
-  /** The 0-height span that IS the Dropdown trigger element — programmatically clicked to open */
+  /** The 0-height span that IS the Dropdown trigger element - programmatically clicked to open */
   const dropdownSpanRef = useRef<HTMLSpanElement>(null);
 
   /** Native input element */
@@ -301,7 +301,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
             setInputValue(match.label);
           }
         } else {
-          // No match — revert to last committed value
+          // No match - revert to last committed value
           const revertMatch = options.find((o) => o.value === committed);
           setInputValue(revertMatch ? revertMatch.label : '');
         }

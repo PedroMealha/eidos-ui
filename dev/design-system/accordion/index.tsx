@@ -12,7 +12,7 @@ const ITEMS = [
     value: 'why',
     label: 'Why build a custom component library?',
     content:
-      'Custom libraries let you encode your design decisions once and reuse them everywhere — consistent spacing, colour, motion, and ARIA patterns without fighting a third-party API.',
+      'Custom libraries let you encode your design decisions once and reuse them everywhere - consistent spacing, colour, motion, and ARIA patterns without fighting a third-party API.',
   },
   {
     value: 'how',
@@ -110,7 +110,7 @@ export const AccordionShowcase = () => (
           <AccordionItem value="nested" label="Rich content">
             <ul style={{ margin: 0, paddingLeft: '1.25rem', lineHeight: 1.8 }}>
               <li>Support for any React node as children</li>
-              <li>Lists, images, forms — anything goes</li>
+              <li>Lists, images, forms - anything goes</li>
               <li>Height animates based on real scrollHeight</li>
             </ul>
           </AccordionItem>

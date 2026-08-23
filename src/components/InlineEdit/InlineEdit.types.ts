@@ -1,5 +1,5 @@
 export interface InlineEditProps {
-  /** The current value. Always required — this component is always controlled. */
+  /** The current value. Always required - this component is always controlled. */
   value: string;
 
   /** Fires on every keystroke while in edit mode. */

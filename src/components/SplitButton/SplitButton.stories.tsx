@@ -7,7 +7,7 @@ const meta = {
 	component: SplitButton,
 	parameters: { layout: 'centered' },
 	args: {
-		// Required — overridden by every story's render function.
+		// Required - overridden by every story's render function.
 		label: 'Save',
 		onClick: () => {},
 		options: [],

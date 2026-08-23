@@ -30,12 +30,12 @@ import type { DataGridProps, DataGridColumn, EditingCell } from './DataGrid.type
 import './DataGrid.scss';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SortableTableRow — wraps a <tr> with dnd-kit sortable behaviour.
+// SortableTableRow - wraps a <tr> with dnd-kit sortable behaviour.
 //
 // Render-prop pattern: passes `dragHandleProps` down to whichever child element
 // should be the drag handle (typically the grip icon's <span>), so the <tr>
 // itself owns the DOM ref + layout-transform while the handle owns the listeners.
-// Pass `disabled={true}` when draggableRows is off — useSortable is always
+// Pass `disabled={true}` when draggableRows is off - useSortable is always
 // called unconditionally to satisfy the Rules of Hooks.
 // ─────────────────────────────────────────────────────────────────────────────
 function SortableTableRow({
@@ -114,7 +114,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 	showDensity = false,
 }: DataGridProps<T>): React.ReactElement {
 
-	// ── State + paired refs (editing — preserved exactly) ─────────────────────
+	// ── State + paired refs (editing - preserved exactly) ─────────────────────
 	// We keep a ref alongside each piece of mutable state so that event
 	// handlers registered in effects can always read the *latest* value without
 	// stale-closure bugs, while the state variables drive re-renders normally.
@@ -482,17 +482,17 @@ function DataGridInner<T extends Record<string, unknown>>({
 	// editor doesn't accidentally commit when the user opens its dropdown.
 	//
 	// Crucially: if commit fails validation we DISCARD instead of trapping the
-	// user — clicking away signals intent to leave, not to save.
+	// user - clicking away signals intent to leave, not to save.
 	useEffect(() => {
 		if (!editingCell) return;
 
 		const handleMouseDown = (e: MouseEvent) => {
 			const target = e.target as Element;
 
-			// Still inside the grid container — let per-cell handlers take over
+			// Still inside the grid container - let per-cell handlers take over
 			if (containerRef.current?.contains(target)) return;
 
-			// Inside a portaled dropdown — don't commit yet
+			// Inside a portaled dropdown - don't commit yet
 			if (target.closest?.('.eidos-dropdown-content')) return;
 
 			const committed = commitEditRef.current();
@@ -520,7 +520,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 		(rowIndex: number, col: DataGridColumn<T>) => {
 			const value = localDataRef.current[rowIndex]?.[col.key];
 
-			// Checkbox cells: toggle immediately — no "edit mode" UI needed
+			// Checkbox cells: toggle immediately - no "edit mode" UI needed
 			if (col.type === 'checkbox') {
 				if (!editable || col.editable === false) return;
 				const newData = localDataRef.current.map<T>((row, idx) =>
@@ -533,12 +533,12 @@ function DataGridInner<T extends Record<string, unknown>>({
 
 			if (!isCellEditable(col)) return;
 
-			// Already editing this exact cell — do nothing
+			// Already editing this exact cell - do nothing
 			const cell = editingCellRef.current;
 			if (cell?.rowIndex === rowIndex && cell?.colKey === col.key) return;
 
 			// Commit any in-flight edit first.  If validation fails, DISCARD rather
-			// than blocking navigation — clicking another cell signals intent to move on.
+			// than blocking navigation - clicking another cell signals intent to move on.
 			if (cell) {
 				const committed = commitEdit();
 				if (!committed) discardEdit();
@@ -712,7 +712,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 	);
 
 	// ── dnd-kit: sensors + drag-end handler (preserved) ───────────────────────
-	// Sensors are always initialised (hook rules) — PointerSensor's distance
+	// Sensors are always initialised (hook rules) - PointerSensor's distance
 	// constraint prevents accidental drags on normal cell clicks.
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -824,7 +824,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 				// Auto-commit as soon as the user picks an option; the Dropdown's portal
 				// means we can't rely on a simple onBlur for this cell type.
 				// autoOpen=true so the dropdown opens on the same click that entered
-				// edit mode — no second click needed.
+				// edit mode - no second click needed.
 				const selectOptions = (col.options ?? []).map(o => ({
 					id: o.value,
 					value: o.value,
@@ -891,7 +891,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 		(draggableRows ? 1 : 0) +
 		(selectable ? 1 : 0);
 
-	// Row IDs for SortableContext — must be the displayed rows (not full dataset)
+	// Row IDs for SortableContext - must be the displayed rows (not full dataset)
 	// so dnd-kit knows which items are currently rendered.
 	const rowIds = displayData.map((row, i) => String(row[rowKey as keyof T] ?? i));
 
@@ -1075,7 +1075,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 									</th>
 								)}
 
-								{/* Drag-handle column — must come before row numbers */}
+								{/* Drag-handle column - must come before row numbers */}
 								{draggableRows && (
 									<th
 										className={['eidos-data-grid-header-cell', 'eidos-datagrid-drag-handle-cell', dragHeaderPin.className].filter(Boolean).join(' ')}
@@ -1161,7 +1161,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 										// Find this row's position in the full localData array.
 										// displayData rows are the same object references as in localData
 										// (filter/sort/slice never clone row objects), so indexOf is O(n)
-										// but always accurate — even after edits that produce new row objects.
+										// but always accurate - even after edits that produce new row objects.
 										const localIndex = localData.indexOf(row);
 										const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
 										const isRowSelected = selectable && selectedSet.has(rowKeyValue);

@@ -17,11 +17,11 @@ export interface PaginationProps {
   className?: string;
 
   // ── Table-footer mode ───────────────────────────────────────────────────────
-  /** Total number of items — enables "Showing X–Y of Z results" text. */
+  /** Total number of items - enables "Showing X–Y of Z results" text. */
   totalItems?: number;
   /** Current page size (items per page). Required for results-info text. */
   pageSize?: number;
-  /** Callback when page size changes — enables the "Show: [N]" selector. */
+  /** Callback when page size changes - enables the "Show: [N]" selector. */
   onPageSizeChange?: (size: number) => void;
   /** Options for the page-size selector. Default: [10, 25, 50, 100]. */
   pageSizeOptions?: number[];

@@ -2,7 +2,7 @@ import React from 'react';
 import type { KbdProps } from './Kbd.types';
 
 /**
- * Kbd — renders a keyboard key or shortcut with a physical key appearance.
+ * Kbd - renders a keyboard key or shortcut with a physical key appearance.
  *
  * Use it anywhere a keyboard shortcut needs to be communicated: tooltips,
  * menu item shortcuts, inline documentation, command palettes.
@@ -15,7 +15,7 @@ import type { KbdProps } from './Kbd.types';
  * // Single key
  * <Kbd>⌘</Kbd>
  *
- * // Compound shortcut — wrap in a fragment or span
+ * // Compound shortcut - wrap in a fragment or span
  * <span><Kbd>⌘</Kbd><Kbd>K</Kbd></span>
  *
  * // Inline in prose

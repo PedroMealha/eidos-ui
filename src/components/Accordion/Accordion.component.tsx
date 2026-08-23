@@ -23,7 +23,7 @@ const useAccordion = (): AccordionContextValue => {
 };
 
 // ============================================================================
-// ACCORDION — root container; owns open state; provides context
+// ACCORDION - root container; owns open state; provides context
 // ============================================================================
 
 export const Accordion: React.FC<AccordionProps> = ({
@@ -81,7 +81,7 @@ export const Accordion: React.FC<AccordionProps> = ({
 Accordion.displayName = 'Accordion';
 
 // ============================================================================
-// ACCORDION ITEM — individual item; reads context; renders trigger + animated panel
+// ACCORDION ITEM - individual item; reads context; renders trigger + animated panel
 // ============================================================================
 
 export const AccordionItem: React.FC<AccordionItemProps> = ({

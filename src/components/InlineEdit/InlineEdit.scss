@@ -36,7 +36,7 @@
     width: 100%;
   }
 
-  // Pencil icon — hidden at rest, revealed on hover/focus
+  // Pencil icon - hidden at rest, revealed on hover/focus
   .eidos-inline-edit__icon {
     display: inline-flex;
     align-items: center;
@@ -87,10 +87,10 @@
     color: var(--gray-400);
   }
 
-  // ── Edit mode — the Input fills the same slot ─────────────────────────────
+  // ── Edit mode - the Input fills the same slot ─────────────────────────────
   &--editing {
     // In edit mode this becomes the Input wrapper itself (className is on Input).
-    // No extra visual treatment needed — Input handles its own styling.
+    // No extra visual treatment needed - Input handles its own styling.
     display: block;
     border: none;
     background: transparent;

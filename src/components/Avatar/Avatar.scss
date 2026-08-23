@@ -32,14 +32,14 @@
 	&--xl { width: 64px; height: 64px; font-size: 1.25rem; }
 
 	// ========================================================================
-	// Colors — used for initials backgrounds
+	// Colors - used for initials backgrounds
 	// ========================================================================
 
 	&--primary   { background-color: var(--primary-color); }
 	&--secondary { background-color: var(--secondary-color); }
 	&--success   { background-color: var(--success-color); }
 	&--danger    { background-color: var(--danger-color); }
-	// Warning is a light yellow — use dark text for contrast
+	// Warning is a light yellow - use dark text for contrast
 	&--warning   { background-color: var(--warning-color); color: var(--dark-color); }
 	&--info      { background-color: var(--info-color); }
 	&--gray      { background-color: var(--gray-400); }

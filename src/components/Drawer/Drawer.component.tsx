@@ -144,7 +144,7 @@ export const Drawer: React.FC<DrawerProps> = ({
           {children}
         </div>
 
-        {/* Footer — only rendered when actions are provided */}
+        {/* Footer - only rendered when actions are provided */}
         {actions && actions.length > 0 && (
           <div className="eidos-drawer-footer">
             {actions.map((action) => (

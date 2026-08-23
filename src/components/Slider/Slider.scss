@@ -35,7 +35,7 @@
 }
 
 // ============================================================================
-// Native range input — appearance reset + track fill via inline style
+// Native range input - appearance reset + track fill via inline style
 // ============================================================================
 
 .eidos-slider-input {
@@ -47,7 +47,7 @@
 	border: none;
 	padding: 0;
 	margin: 0;
-	// Keep the input's own background transparent — the track pseudo-element
+	// Keep the input's own background transparent - the track pseudo-element
 	// owns all the visual fill.  Setting the input height to the THUMB height
 	// (not the track height) is the correct WebKit technique: it gives the
 	// browser the right bounding box so the thumb centers itself on the track
@@ -98,12 +98,12 @@
 		.eidos-slider--large & { width: 24px; height: 24px; }
 	}
 
-	// ── WebKit track — gradient driven by CSS custom props set inline ─────
+	// ── WebKit track - gradient driven by CSS custom props set inline ─────
 	// Chrome/Safari render the track via this pseudo-element, not the
 	// element's own background.  We always include the danger segment but
 	// default --s-block to 100% so it collapses to zero width when there
 	// is no blocked range.
-	// Height is NOT set here — per-size rules below mirror the thumb rules.
+	// Height is NOT set here - per-size rules below mirror the thumb rules.
 	&::-webkit-slider-runnable-track {
 		border-radius: 9999px;
 		background: linear-gradient(
@@ -152,7 +152,7 @@
 }
 
 // ============================================================================
-// Track height by size — flat rules mirror the thumb-size rules so the
+// Track height by size - flat rules mirror the thumb-size rules so the
 // pseudo-element gets the correct height without relying on `height: inherit`
 // (which picks up the input's natural full-height in WebKit, not the 4/6/8px).
 // ============================================================================
@@ -166,7 +166,7 @@
 .eidos-slider--large  .eidos-slider-input::-moz-range-track { height: 8px; }
 
 // ============================================================================
-// Color variants — thumb background (track fill handled via inline style)
+// Color variants - thumb background (track fill handled via inline style)
 // ============================================================================
 
 .eidos-slider--primary   .eidos-slider-input::-webkit-slider-thumb { background: var(--primary-color); }

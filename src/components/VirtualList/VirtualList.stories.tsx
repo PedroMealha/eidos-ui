@@ -123,13 +123,13 @@ const meta = {
 visible in the scroll viewport (plus a configurable overscan buffer), keeping
 DOM node count constant regardless of dataset size.
 
-Powered by [\`@tanstack/react-virtual\`](https://tanstack.com/virtual) — scroll
+Powered by [\`@tanstack/react-virtual\`](https://tanstack.com/virtual) - scroll
 tracking, size measurement, and item windowing are all handled by the
 virtualizer so the component stays lean.
 
 ### Highlights
 - Fixed **or** variable per-row heights via the \`rowHeight\` prop
-- Generic — TypeScript infers the item type from the \`data\` prop
+- Generic - TypeScript infers the item type from the \`data\` prop
 - Built-in loading skeletons and empty-state slot
 - \`onEndReached\` callback for infinite scroll (fires once per crossing, resets on scroll-up)
         `.trim(),
@@ -148,7 +148,7 @@ virtualizer so the component stays lean.
   argTypes: {
     height: {
       control: 'text',
-      description: 'Viewport height — pixel number or any CSS string (e.g. `"60vh"`)',
+      description: 'Viewport height - pixel number or any CSS string (e.g. `"60vh"`)',
       table: { type: { summary: 'number | string' } },
     },
     width: {
@@ -191,7 +191,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// Story: Fixed Height (stress test — 10 000 rows)
+// Story: Fixed Height (stress test - 10 000 rows)
 // ============================================================================
 
 export const FixedHeight: Story = {
@@ -368,7 +368,7 @@ export const InfiniteScroll: Story = {
 Starts with the first 100 items. When the user scrolls within 150 px of the
 bottom, \`onEndReached\` fires and the next batch is appended (max 10 000 items).
 The guard ref prevents the callback from firing repeatedly while the user stays
-at the bottom — it resets automatically once the new content pushes the
+at the bottom - it resets automatically once the new content pushes the
 threshold above their scroll position.
         `.trim(),
       },

@@ -47,7 +47,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — basic drop zone, shows accepted file count via render state
+// DEFAULT - basic drop zone, shows accepted file count via render state
 // ============================================================================
 
 export const Default: Story = {
@@ -73,7 +73,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// MULTIPLE — multiple files, capped at 5
+// MULTIPLE - multiple files, capped at 5
 // ============================================================================
 
 export const Multiple: Story = {
@@ -89,7 +89,7 @@ export const Multiple: Story = {
 };
 
 // ============================================================================
-// WITH MAX SIZE — reject files above 5 MB
+// WITH MAX SIZE - reject files above 5 MB
 // ============================================================================
 
 export const WithMaxSize: Story = {
@@ -129,7 +129,7 @@ export const Disabled: Story = {
 };
 
 // ============================================================================
-// WITH CALLBACKS — logs accepted / rejected files to the console
+// WITH CALLBACKS - logs accepted / rejected files to the console
 // ============================================================================
 
 export const WithCallbacks: Story = {

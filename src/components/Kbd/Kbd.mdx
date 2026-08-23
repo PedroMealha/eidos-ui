@@ -7,7 +7,7 @@ import * as KbdStories from './Kbd.stories';
 
 Renders a keyboard key or shortcut with a physical key appearance. Built on the native `<kbd>` HTML element for semantic correctness.
 
-Use it in tooltips, menu item shortcuts, inline documentation, or command palettes — anywhere a keyboard shortcut needs to be communicated visually.
+Use it in tooltips, menu item shortcuts, inline documentation, or command palettes - anywhere a keyboard shortcut needs to be communicated visually.
 
 ## Usage
 
@@ -17,7 +17,7 @@ import { Kbd } from '@pmealha/eidos-ui';
 // Single key
 <Kbd>Enter</Kbd>
 
-// Compound shortcut — place keys side-by-side with a separator
+// Compound shortcut - place keys side-by-side with a separator
 <span>
   <Kbd>⌘</Kbd> + <Kbd>K</Kbd>
 </span>
@@ -46,12 +46,12 @@ For multi-key combos, compose individual `<Kbd>` elements. Adding a `+` separato
 
 ## Inline in prose
 
-`<Kbd>` is an inline element — it flows naturally inside paragraphs, labels, or helper text.
+`<Kbd>` is an inline element - it flows naturally inside paragraphs, labels, or helper text.
 
 <Canvas of={KbdStories.InlineProse} />
 
 ## In a Menu
 
-When a `MenuItem` has a `shortcut` prop, it is automatically rendered as a `<Kbd>` — no extra work needed.
+When a `MenuItem` has a `shortcut` prop, it is automatically rendered as a `<Kbd>` - no extra work needed.
 
 <Canvas of={KbdStories.InMenu} />

@@ -8,7 +8,7 @@ const meta = {
   component: Tabs,
   parameters: { layout: 'padded' },
   // `children` is required by TabsProps; setting it here (at meta level) means
-  // individual Story objects don't need to repeat it in their args — every story
+  // individual Story objects don't need to repeat it in their args - every story
   // supplies real children through its own `render` function instead.
   args: {
     children: undefined,
@@ -56,7 +56,7 @@ const meta = {
         type: { summary: 'string' },
       },
     },
-    // Controlled-only props — excluded from the args panel
+    // Controlled-only props - excluded from the args panel
     value: { table: { disable: true } },
     onChange: { table: { disable: true } },
     children: { table: { disable: true } },
@@ -82,13 +82,13 @@ const labelStyle: React.CSSProperties = {
 
 const panelContent = (tab: string) => (
   <div style={{ padding: '0.25rem 0', color: 'var(--gray-600)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-    <strong style={{ color: 'var(--dark-color)' }}>{tab}</strong> — content for this tab panel.
+    <strong style={{ color: 'var(--dark-color)' }}>{tab}</strong> - content for this tab panel.
     Change the active tab above to navigate between panels.
   </div>
 );
 
 // ============================================================================
-// DEFAULT — interactive playground; all controls apply here
+// DEFAULT - interactive playground; all controls apply here
 // ============================================================================
 
 export const Default: Story = {
@@ -114,7 +114,7 @@ export const Default: Story = {
 // ============================================================================
 // ENCLOSED
 // Showcase stories below are plain objects (no `: Story` annotation) so they
-// are not required to supply args — identical to the `Examples` pattern used
+// are not required to supply args - identical to the `Examples` pattern used
 // throughout the rest of the design system (e.g. Button.stories.tsx).
 // ============================================================================
 
@@ -166,7 +166,7 @@ export const WithIcons = {
 };
 
 // ============================================================================
-// COLORS — all four color themes
+// COLORS - all four color themes
 // ============================================================================
 
 export const Colors = {
@@ -305,7 +305,7 @@ export const WithDisabledTab = {
 };
 
 // ============================================================================
-// CONTROLLED — external state drives the active tab
+// CONTROLLED - external state drives the active tab
 // ============================================================================
 
 export const Controlled = {

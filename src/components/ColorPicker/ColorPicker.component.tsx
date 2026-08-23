@@ -235,7 +235,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   );
   const [copied, setCopied] = useState(false);
 
-  // ── Refs — give event handlers always-fresh values without stale closures ──
+  // ── Refs - give event handlers always-fresh values without stale closures ──
   const hsvRef = useRef<HSVColor>(hsv);
   hsvRef.current = hsv;
 
@@ -252,7 +252,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   const inputFocusedRef = useRef(false);
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  // Refs for in-flight drag listeners — cleaned up on mouseup and on unmount
+  // Refs for in-flight drag listeners - cleaned up on mouseup and on unmount
   const dragHandlersRef = useRef<{
     move: (e: MouseEvent) => void;
     up: () => void;
@@ -276,7 +276,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     const newNormalised = rgbToHex(
       ...Object.values(hsvToRgb(newHsv.h, newHsv.s, newHsv.v)) as [number, number, number],
     );
-    // currentHex is captured from this render — guards against echo loops
+    // currentHex is captured from this render - guards against echo loops
     // when the parent echoes back our own onChange emission
     if (newNormalised === currentHex) return;
     setHsv(newHsv);
@@ -297,7 +297,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   }, []);
 
   // ── Core: apply a new HSV + alpha, emit onChange ───────────────────────────
-  // Stable (empty dep array) — reads live values exclusively via refs.
+  // Stable (empty dep array) - reads live values exclusively via refs.
   const applyColor = useCallback((newHsv: HSVColor, newAlpha: number) => {
     setHsv(newHsv);
     setAlpha(newAlpha);
@@ -368,7 +368,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   const handleInputCommit = useCallback(() => {
     const rgb = parseColorText(inputText);
     if (!rgb) {
-      // Invalid — reset to the current valid colour
+      // Invalid - reset to the current valid colour
       setInputText(colorToText(hsvRef.current, alphaRef.current, activeFormatRef.current));
       return;
     }
@@ -396,7 +396,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
       copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
     }).catch(() => {
-      // Clipboard access denied — silently ignore
+      // Clipboard access denied - silently ignore
     });
   }, []);
 

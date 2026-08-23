@@ -59,12 +59,12 @@ const meta = {
     },
     width: {
       control: "text",
-      description: "Explicit width — number (px) or any CSS string (e.g. \"200px\", \"50%\").",
+      description: "Explicit width - number (px) or any CSS string (e.g. \"200px\", \"50%\").",
       table: { type: { summary: "number | string" } },
     },
     height: {
       control: "text",
-      description: "Explicit height — number (px) or any CSS string.",
+      description: "Explicit height - number (px) or any CSS string.",
       table: { type: { summary: "number | string" } },
     },
     className: { table: { disable: true } },
@@ -75,7 +75,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
-// DEFAULT — single text line
+// DEFAULT - single text line
 // ============================================================================
 
 export const Default: Story = {
@@ -86,7 +86,7 @@ export const Default: Story = {
 };
 
 // ============================================================================
-// MULTI-LINE — stacked text lines
+// MULTI-LINE - stacked text lines
 // ============================================================================
 
 export const MultiLine: Story = {
@@ -142,7 +142,7 @@ export const Pulse: Story = {
 };
 
 // ============================================================================
-// CARD PLACEHOLDER — composite skeleton mimicking a content card
+// CARD PLACEHOLDER - composite skeleton mimicking a content card
 // ============================================================================
 
 export const CardPlaceholder = {
@@ -166,7 +166,7 @@ export const CardPlaceholder = {
 };
 
 // ============================================================================
-// TABLE PLACEHOLDER — composite skeleton mimicking a data table
+// TABLE PLACEHOLDER - composite skeleton mimicking a data table
 // ============================================================================
 
 export const TablePlaceholder = {

@@ -8,7 +8,7 @@ const meta = {
 	component: ButtonGroup,
 	parameters: { layout: 'centered' },
 	args: {
-		// Required — overridden by every story's render function.
+		// Required - overridden by every story's render function.
 		children: null,
 		orientation: 'horizontal',
 	},

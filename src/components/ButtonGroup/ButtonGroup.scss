@@ -43,7 +43,7 @@
 			border-bottom-right-radius: var(--border-radius-md);
 		}
 
-		// Edge-case: single button — full radius.
+		// Edge-case: single button - full radius.
 		> .eidos-button:only-child {
 			border-radius: var(--border-radius-md);
 		}

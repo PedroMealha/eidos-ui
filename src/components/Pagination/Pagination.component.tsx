@@ -131,7 +131,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           </span>
 
         ) : item === page ? (
-          // Active page — styled as filled chip, editable via keyboard/click
+          // Active page - styled as filled chip, editable via keyboard/click
           <input
             key="active-page"
             type="text"

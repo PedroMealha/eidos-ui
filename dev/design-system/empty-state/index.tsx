@@ -51,7 +51,7 @@ export const EmptyStateShowcase = () => (
           <EmptyState
             key={size}
             icon={<Inbox />}
-            title={`${size} — Empty state`}
+            title={`${size} - Empty state`}
             description="Supporting text goes here."
             size={size}
           />

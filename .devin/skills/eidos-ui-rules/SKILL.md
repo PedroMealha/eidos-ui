@@ -9,7 +9,7 @@ triggers:
 
 ## Non-negotiable principles
 
-**Normalization and consistency are the primary goals for this project.** Every decision — naming, API shape, documentation structure, showcase layout — must be consistent across all components. If something is inconsistent, fix it immediately and completely, not just for the component currently being worked on.
+**Normalization and consistency are the primary goals for this project.** Every decision - naming, API shape, documentation structure, showcase layout - must be consistent across all components. If something is inconsistent, fix it immediately and completely, not just for the component currently being worked on.
 
 ---
 
@@ -20,7 +20,7 @@ All components that have a "subtle/low-prominence" third variant must use `text`
 The standard variant set is: `filled | outlined | text` (plus `bare` on inputs for special editor cases).
 
 ### Size naming
-Always: `small | medium | large` — never `sm`, `md`, `lg`, or abbreviated forms.
+Always: `small | medium | large` - never `sm`, `md`, `lg`, or abbreviated forms.
 
 ### Color naming
 Always: `primary | secondary | success | danger | warning | info`
@@ -42,7 +42,7 @@ import * as XxxStories from './Xxx.stories';
 
 One or two sentences describing what the component is and when to use it.
 
-[OPTIONAL: > **Note**: one-line callout — only if genuinely useful]
+[OPTIONAL: > **Note**: one-line callout - only if genuinely useful]
 
 ## Usage
 
@@ -67,10 +67,10 @@ import { ComponentName } from '@pmealha/eidos-ui';
 - Skip "Examples" grid stories if the component already has individual variant sections
 - Length is proportional to complexity: Spinner ~20 lines, DataGrid ~90 lines
 - Usage block must be minimal but copy-paste runnable
-- When a component has a custom `.mdx`, remove `tags: ['autodocs']` from the `.stories.tsx` — Storybook does not allow both
+- When a component has a custom `.mdx`, remove `tags: ['autodocs']` from the `.stories.tsx` - Storybook does not allow both
 
 ### Interactive overlay stories
-CommandPalette, Modal, Drawer, and similar overlay components must start CLOSED in stories (`useState(false)`), with a visible trigger button. Never auto-open overlays on story mount — it breaks the Docs page by popping multiple overlays simultaneously.
+CommandPalette, Modal, Drawer, and similar overlay components must start CLOSED in stories (`useState(false)`), with a visible trigger button. Never auto-open overlays on story mount - it breaks the Docs page by popping multiple overlays simultaneously.
 
 ---
 
@@ -81,9 +81,9 @@ Each component gets `dev/design-system/<kebab-case-name>/index.tsx`.
 
 ### Structure
 - Import from `../../../src/components/X` (never from the barrel `src/index.ts` in dev)
-- Use `Section`, `Row`, `Col`, `Grid` from `../shared/Section` — never raw `div` grids
+- Use `Section`, `Row`, `Col`, `Grid` from `../shared/Section` - never raw `div` grids
 - Export named as `XxxShowcase`
-- Group related variants inside a single `<Section>` — don't create one Section per variant
+- Group related variants inside a single `<Section>` - don't create one Section per variant
 - Maximum ~4 sections unless the component has genuinely distinct interaction patterns
 
 ### App.tsx registration

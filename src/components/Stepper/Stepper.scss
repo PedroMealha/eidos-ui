@@ -113,7 +113,7 @@
   &.eidos-stepper-step--danger    .eidos-stepper-dot { background: var(--danger-color);    border-color: var(--danger-color);    color: var(--white); }
 }
 
-// Completed — lighter tint background, colored border and icon
+// Completed - lighter tint background, colored border and icon
 .eidos-stepper-step--completed {
   &.eidos-stepper-step--primary   .eidos-stepper-dot { background: var(--primary-color);   border-color: var(--primary-color);   color: var(--white); }
   &.eidos-stepper-step--secondary .eidos-stepper-dot { background: var(--secondary-color); border-color: var(--secondary-color); color: var(--white); }

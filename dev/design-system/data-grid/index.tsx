@@ -199,12 +199,12 @@ function FullFeaturedGrid() {
 export const DataGridShowcase = () => (
 	<Col gap="1.5rem">
 		{/* ── 1: Full Featured ──────────────────────────────────────────────── */}
-		<Section label="Full Featured DataGrid — sort columns, filter rows, paginate, select + delete">
+		<Section label="Full Featured DataGrid - sort columns, filter rows, paginate, select + delete">
 			<FullFeaturedGrid />
 		</Section>
 
 		{/* ── 2: Pinned from Middle ───────────────────────────────────────── */}
-		<Section label="Pinned columns — neither at the array edge">
+		<Section label="Pinned columns - neither at the array edge">
 			<p
 				style={{
 					margin: '0 0 0.75rem',

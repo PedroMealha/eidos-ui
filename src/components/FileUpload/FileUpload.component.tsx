@@ -178,7 +178,7 @@ export function FileUpload({
 				onKeyDown={handleKeyDown}
 				role="button"
 				tabIndex={disabled ? -1 : 0}
-				aria-label="Upload files — click or drag and drop"
+				aria-label="Upload files - click or drag and drop"
 				aria-disabled={disabled || undefined}
 			>
 				<div className="eidos-file-upload-icon" aria-hidden="true">
@@ -194,7 +194,7 @@ export function FileUpload({
 					)}
 				</div>
 
-				{/* Hidden native input — triggered programmatically via click() */}
+				{/* Hidden native input - triggered programmatically via click() */}
 				<input
 					ref={inputRef}
 					type="file"

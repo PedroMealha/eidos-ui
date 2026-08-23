@@ -36,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 	) => {
 		// Extract defaultValue so it never reaches the native <input> alongside `value`.
 		// Passing both causes React's "controlled/uncontrolled" warning because we always
-		// set value={currentValue} below — defaultValue is only needed to seed local state.
+		// set value={currentValue} below - defaultValue is only needed to seed local state.
 		const { defaultValue, ...restInputProps } = inputProps;
 
 		const [showPassword, setShowPassword] = useState(false);

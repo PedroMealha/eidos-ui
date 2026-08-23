@@ -1,7 +1,7 @@
 @use '../../styles/mixins.scss' as *;
 
 // ============================================================================
-// OTPInput — outer container
+// OTPInput - outer container
 // ============================================================================
 
 .eidos-otp {
@@ -137,7 +137,7 @@
 		}
 	}
 
-	// medium is the default — declared on the slot itself above
+	// medium is the default - declared on the slot itself above
 
 	&--large {
 		.eidos-otp-slot {

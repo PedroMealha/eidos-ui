@@ -65,7 +65,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 				 * focusable and keyboard-operable. We always render it as controlled
 				 * (checked={isChecked}) so the transition from uncontrolled → controlled
 				 * never fires, avoiding the React mixed-mode warning.
-				 * Note: `defaultChecked` is intentionally NOT spread — we consumed it
+				 * Note: `defaultChecked` is intentionally NOT spread - we consumed it
 				 * to seed localChecked, and we never want React to see it alongside
 				 * our explicit `checked` prop.
 				 */}
