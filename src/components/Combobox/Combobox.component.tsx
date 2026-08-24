@@ -212,6 +212,9 @@ export const Combobox: React.FC<ComboboxProps> = ({
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (!isOpenRef.current) return;
+      // defaultPrevented is set by the listbox's onMouseDown — means the user
+      // clicked an option in the portal, not truly outside the combobox.
+      if (e.defaultPrevented) return;
       if (containerRef.current?.contains(e.target as Node)) return;
 
       // Focus leaving to a non-focusable target: validate and close
@@ -600,6 +603,9 @@ export const Combobox: React.FC<ComboboxProps> = ({
               className="eidos-combobox-options"
               role="listbox"
               aria-label={label ?? 'Options'}
+              // Prevent the input from blurring when the user clicks an option,
+              // and mark this event so the click-outside handler ignores it.
+              onMouseDown={(e) => e.preventDefault()}
             >
               {dropdownContent}
             </div>
