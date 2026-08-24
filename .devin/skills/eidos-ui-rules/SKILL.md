@@ -104,6 +104,52 @@ When creating a new component, always wire it into:
 2. `src/index.ts` (value export + type export)
 3. Dev showcase (showcase file + App.tsx registration)
 
+---
+
+## Build & packaging
+
+### Published package
+- Package name: `@pmealha/eidos-ui`
+- Current stable version: `2.0.3` (as of 2026-08-24)
+- Registry: npmjs.com (public)
+
+### Build system
+- Bundler: **tsup** with esbuild under the hood
+- `npm run build` = `tsup && node scripts/build-styles.js`
+  - tsup produces ESM + CJS + DTS for all 49 component entry points
+  - `build-styles.js` compiles `src/styles/index.scss` → `dist/index.css` and generates `dist/index.css.d.ts`
+
+### Entry points & code splitting
+- tsup discovers component dirs from `src/components/*/` dynamically and produces one entry per component (PascalCase → kebab-case naming: `ButtonGroup` → `dist/button-group/`)
+- `splitting: true` extracts shared code into chunk files (ESM only; CJS is per-entry standalone)
+- `sideEffects: ["dist/index.css", "dist/index.css.d.ts"]` is set for bundler tree-shaking
+
+### Consumer import patterns
+```ts
+import { Button } from '@pmealha/eidos-ui';           // root barrel - tree-shaken
+import { Button } from '@pmealha/eidos-ui/button';    // deep import - only Button chunk loaded
+import '@pmealha/eidos-ui/styles';                    // styles (once, in app entry)
+```
+
+### Externalized dependencies
+The following are NOT bundled - consumers must have them:
+- `react` / `react-dom` (peer deps)
+- `lucide-react` (regular dep - auto-installed with the package)
+
+Everything else (dayjs, @dnd-kit, @tanstack/react-virtual) is bundled into the component chunks.
+
+### Release workflow
+```bash
+npm run release:patch   # bug fixes
+npm run release:minor   # new features / new components (backward-compatible)
+npm run release:major   # breaking API changes
+```
+Each script runs `npm version <bump>` then `npm publish` (which triggers `prepublishOnly: npm run build`).
+
+### Dependency constraints
+- **TypeScript is held at `^6.0.x`** - `@typescript-eslint` peer dep requires `<6.1.0`, blocking TS 7.x. Check each time `@typescript-eslint` is updated.
+- tsup has a low-severity esbuild CVE (Windows dev server only) - does not apply to this project (macOS + Vite for dev). Safe to ignore until tsup publishes a fix.
+
 ## Git
 
 **Never run `git commit` or `git push`.** The user commits manually.
