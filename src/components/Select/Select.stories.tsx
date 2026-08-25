@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Select } from "./Select.component";
 import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useState } from "react";

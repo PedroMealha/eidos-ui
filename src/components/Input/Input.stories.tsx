@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Mail, Search, User, HelpCircle, DollarSign, Calendar } from 'lucide-react';
 import { Input } from './Input.component';
 

@@ -119,7 +119,6 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
         placeholder={placeholder}
         fullWidth={fullWidth}
         clearable={false}
-        // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus
         className={`eidos-inline-edit eidos-inline-edit--editing ${className}`}
       />

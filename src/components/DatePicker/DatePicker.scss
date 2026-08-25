@@ -22,12 +22,12 @@
 	}
 
 	// Style the calendar icon
-	:global(.eidos-input-pre-icon) {
+	.eidos-input-pre-icon {
 		color: var(--gray-500);
 	}
 
 	// Style the clear (X) icon button
-	:global(.eidos-input-pos-icon-button) {
+	.eidos-input-pos-icon-button {
 		color: var(--gray-500) !important;
 		background: none !important;
 		border: none !important;

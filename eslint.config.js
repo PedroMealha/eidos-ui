@@ -12,11 +12,30 @@ export default [
   // Base JS recommended rules
   js.configs.recommended,
 
+  // Node scripts/configs need Node globals
+  {
+    files: ['.eslintrc.cjs', 'scripts/**/*.js', '*.config.js', '*.config.cjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
   // TypeScript-ESLint recommended rules (flat config array)
   ...tsPlugin.configs['flat/recommended'],
 
-  // React Hooks rules (flat config object)
-  reactHooks.configs.flat,
+  // React Hooks rules (define explicitly to stay independent of config shape changes)
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
 
   // Project-specific rules for TS/TSX files
   {
@@ -35,10 +54,23 @@ export default [
       },
     },
     rules: {
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+      'jsx-a11y/no-autofocus': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   },
 
   // Storybook files
   ...storybook.configs['flat/recommended'],
+
+  // Override noisy storybook rules that create churn without improving safety
+  {
+    files: ['**/*.stories.tsx'],
+    rules: {
+      'storybook/no-redundant-story-name': 'off',
+    },
+  },
 ];

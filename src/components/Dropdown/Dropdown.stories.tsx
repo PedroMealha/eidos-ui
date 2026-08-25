@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronDown, Settings, User, LogOut, HelpCircle } from 'lucide-react';
 import { Dropdown } from './Dropdown.component';
 import { Button } from '../Button';

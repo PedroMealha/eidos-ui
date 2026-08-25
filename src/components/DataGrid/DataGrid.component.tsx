@@ -546,7 +546,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
 			startEdit(rowIndex, col.key, value);
 		},
-		[editable, isCellEditable, commitEdit, startEdit, setLocalData, onChange],
+		[editable, isCellEditable, commitEdit, discardEdit, startEdit, setLocalData, onChange],
 	);
 
 	// ── Keyboard navigation inside an editing cell (preserved) ─────────────────
@@ -798,7 +798,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 						size="small"
 						value={String(value ?? '')}
 						onChange={e => setEditValue(e.target.value)}
-						// eslint-disable-next-line jsx-a11y/no-autofocus
+
 						autoFocus
 						fullWidth
 						clearable={false}
@@ -813,7 +813,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 						size="small"
 						value={String(value ?? '')}
 						onChange={e => setEditValue(e.target.value)}
-						// eslint-disable-next-line jsx-a11y/no-autofocus
+
 						autoFocus
 						fullWidth
 						clearable={false}
@@ -859,7 +859,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 						size="small"
 						value={String(value ?? '')}
 						onChange={e => setEditValue(e.target.value)}
-						// eslint-disable-next-line jsx-a11y/no-autofocus
+
 						autoFocus
 						fullWidth
 						clearable={false}

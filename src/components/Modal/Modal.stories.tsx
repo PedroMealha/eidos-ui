@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState, type ComponentProps } from 'react';
 import { CircleAlert, CircleCheck, Info, CircleX, Trash2 } from 'lucide-react';
 import { Modal } from './Modal.component';
 import { Button } from '../Button';
@@ -73,7 +73,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Interactive wrapper for controlling modal state
-const ModalWrapper = (args: any) => {
+const ModalWrapper = (args: ComponentProps<typeof Modal>) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (

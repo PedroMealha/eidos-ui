@@ -104,7 +104,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 			switch (mode) {
 				case 'single': {
 					// Apply default time if time is enabled
-					let dateWithTime = selectedDate;
+					let dateWithTime: Dayjs;
 					if (time.enabled) {
 						dateWithTime = selectedDate
 							.hour(defaultStartTime.hours)
@@ -143,7 +143,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 						newDates = currentDayjs.filter((_, index) => index !== existingIndex);
 					} else {
 						// Add new date
-						let dateWithTime = selectedDate;
+						let dateWithTime: Dayjs;
 						if (time.enabled) {
 							dateWithTime = selectedDate
 								.hour(defaultStartTime.hours)
@@ -174,7 +174,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
 					if (!currentRange.start || (currentRange.start && currentRange.end)) {
 						// Start new range
-						let startWithTime = selectedDate;
+						let startWithTime: Dayjs;
 						if (time.enabled) {
 							startWithTime = selectedDate
 								.hour(defaultStartTime.hours)
@@ -204,18 +204,17 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
 						// Ensure end is after start
 						if (end.isBefore(start, 'day')) {
-							[end] = [start];
-							end = selectedDate;
+							end = start;
 						}
 
 						if (time.enabled) {
-							end = selectedDate
+							end = end
 								.hour(defaultEndTime.hours)
 								.minute(defaultEndTime.minutes)
 								.second(defaultEndTime.seconds || 0);
 						} else {
 							// Set to end of day for consistent ISO string
-							end = selectedDate.endOf('day');
+							end = end.endOf('day');
 						}
 
 						// Always return ISO strings
@@ -357,6 +356,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 				posIconButton={!!displayValue}
 				onPosIconClick={displayValue ? handleClear : undefined}
 				{...inputProps}
+				clearable={false}
 			/>
 		</div>
 	);

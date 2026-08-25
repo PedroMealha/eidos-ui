@@ -248,12 +248,14 @@ export const Popover: React.FC<PopoverProps> = ({
 
   // ── Cleanup on unmount ────────────────────────────────────────────────────
   useEffect(() => {
+    const timeoutId = timeoutRef.current;
+    const animationFrameId = animationFrameRef.current;
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
     };
   }, []);

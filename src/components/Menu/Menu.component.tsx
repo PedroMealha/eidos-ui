@@ -102,7 +102,7 @@ export const Menu: React.FC<MenuWrapperProps> = ({
 	tooltip,
 }) => {
 	const handleItemClick = useCallback(
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		 
 		(_item: MenuItem) => {
 			// Note: item.onClick is already called in MenuPanel's handleItemClick
 			// Here we only handle closing the dropdown if needed

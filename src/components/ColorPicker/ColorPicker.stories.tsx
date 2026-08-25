@@ -147,7 +147,7 @@ export const Disabled: Story = {
 
 export const Controlled: Story = {
   render: () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+     
     const [colour, setColour] = useState('#6366f1');
 
     return (

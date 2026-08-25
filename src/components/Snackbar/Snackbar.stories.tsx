@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SnackbarProvider, SnackbarContainer } from "./index";
 import { useSnackbar } from "./Snackbar.hooks";
 import { Button } from "../Button";

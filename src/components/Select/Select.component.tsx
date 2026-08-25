@@ -119,7 +119,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           setMenuKey((prev) => prev + 1);
         }
       },
-      [multiple, onChange, selectedValues]
+      [multiple, onChange, selectedValues, isControlled]
     );
 
     const handleClear = useCallback(
@@ -137,7 +137,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           onChange(multiple ? [] : "");
         }
       },
-      [multiple, onChange]
+      [multiple, onChange, isControlled]
     );
 
     const handleSearchChange = useCallback(

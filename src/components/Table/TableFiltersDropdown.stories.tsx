@@ -128,7 +128,7 @@ const AppliedBadge = ({ filters }: { filters: TableFilters }) => {
 
 export const Default: Story = {
   render: () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+     
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
@@ -152,7 +152,7 @@ export const Default: Story = {
 
 export const MultipleFilters: Story = {
   render: () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+     
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
@@ -177,7 +177,7 @@ export const MultipleFilters: Story = {
 
 export const PreFilledFilters: Story = {
   render: () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+     
     const [filters, setFilters] = useState<TableFilters>({});
 
     const defaultFilters: TableFilters = {

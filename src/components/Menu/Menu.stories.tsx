@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { User, Settings, LogOut, FileText, Copy, Trash2, Share2, Mail } from 'lucide-react';
 import { Menu } from './Menu.component';
 import { Button } from '../Button';
