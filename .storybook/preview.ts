@@ -18,12 +18,10 @@ const preview: Preview = {
         order: [
           'Elements',
           'Forms',
-          'Feedback',
-          'Layout',
           'Navigation',
           'Overlays',
-          'Data Display',
           'Data',
+          'Feedback',
           '*',
         ],
       },

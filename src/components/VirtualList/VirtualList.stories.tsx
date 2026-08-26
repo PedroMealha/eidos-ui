@@ -112,7 +112,7 @@ function renderItem(item: Item): React.ReactNode {
 // ============================================================================
 
 const meta = {
-  title: 'Data Display/VirtualList',
+  title: 'Data/VirtualList',
   component: VirtualList,
   parameters: {
     layout: 'padded',

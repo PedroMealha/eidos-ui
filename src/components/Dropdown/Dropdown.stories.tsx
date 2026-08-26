@@ -4,7 +4,7 @@ import { Dropdown } from './Dropdown.component';
 import { Button } from '../Button';
 
 const meta = {
-  title: 'Navigation/Dropdown',
+  title: 'Overlays/Dropdown',
   component: Dropdown,
   parameters: {
     layout: 'centered',

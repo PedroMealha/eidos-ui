@@ -5,7 +5,7 @@ import { Button } from '../Button';
 import type { MenuItemType } from './Menu.types';
 
 const meta = {
-	title: 'Navigation/Menu',
+	title: 'Overlays/Menu',
 	component: Menu,
 	parameters: { layout: 'centered' },
 	argTypes: {

@@ -7,7 +7,7 @@ import { ContextMenu } from './ContextMenu.component';
 import type { MenuItemType } from '../Menu';
 
 const meta = {
-	title: 'Elements/ContextMenu',
+	title: 'Overlays/ContextMenu',
 	component: ContextMenu,
 	parameters: { layout: 'centered' },
 	args: {

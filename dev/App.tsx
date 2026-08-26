@@ -1,130 +1,143 @@
 import React, { useState } from 'react';
 
-// Component showcases - populated as subfolders are added
-import { ButtonShowcase } from './design-system/buttons';
-import { ChipShowcase } from './design-system/chips';
-import { InputShowcase } from './design-system/inputs';
-import { SelectShowcase } from './design-system/selects';
-import { DropdownShowcase } from './design-system/dropdowns';
-import { MenuShowcase } from './design-system/menus';
-import { TooltipShowcase } from './design-system/tooltips';
-import { SnackbarShowcase } from './design-system/snackbars';
-import { ModalShowcase } from './design-system/forms';
-import { DatePickerShowcase } from './design-system/date-pickers';
-import { TableShowcase } from './design-system/tables';
-import { LayoutShowcase } from './design-system/layout';
-import { CardShowcase } from './design-system/cards';
-import { CheckboxShowcase } from './design-system/checkboxes';
-import { RadioShowcase } from './design-system/radios';
-import { SwitchShowcase } from './design-system/switches';
-import { TextareaShowcase } from './design-system/textareas';
-import { BadgeShowcase } from './design-system/badges';
-import { AlertShowcase } from './design-system/alerts';
-import { TabsShowcase } from './design-system/tabs';
-import { AccordionShowcase } from './design-system/accordion';
-import { PopoverShowcase } from './design-system/popover';
-import { DrawerShowcase } from './design-system/drawer';
-import { SliderShowcase } from './design-system/slider';
-import { EmptyStateShowcase } from './design-system/empty-state';
-import { BreadcrumbShowcase } from './design-system/breadcrumb';
-import { StepperShowcase } from './design-system/stepper';
-import { PaginationShowcase } from './design-system/pagination';
-import { TimelineShowcase } from './design-system/timeline';
-import { NumberInputShowcase } from './design-system/number-input';
-import { FileUploadShowcase } from './design-system/file-upload';
-import { ProgressShowcase } from './design-system/progress';
-import { SkeletonShowcase } from './design-system/skeleton';
-import { AvatarShowcase } from './design-system/avatars';
-import { TagInputShowcase } from './design-system/tag-input';
-import { OTPInputShowcase } from './design-system/otp-input';
-import { ComboboxShowcase } from './design-system/combobox';
-import { ColorPickerShowcase } from './design-system/color-picker';
-import { TreeViewShowcase } from './design-system/tree-view';
+// Component showcases
+import { AccordionShowcase }      from './design-system/accordion';
+import { AlertShowcase }          from './design-system/alerts';
+import { AvatarShowcase }         from './design-system/avatars';
+import { BadgeShowcase }          from './design-system/badges';
+import { BreadcrumbShowcase }     from './design-system/breadcrumb';
+import { ButtonShowcase }         from './design-system/buttons';
+import { ButtonGroupShowcase }    from './design-system/button-group';
+import { CardShowcase }           from './design-system/cards';
+import { CheckboxShowcase }       from './design-system/checkboxes';
+import { ChipShowcase }           from './design-system/chips';
+import { ColorPickerShowcase }    from './design-system/color-picker';
+import { ComboboxShowcase }       from './design-system/combobox';
 import { CommandPaletteShowcase } from './design-system/command-palette';
-import { VirtualListShowcase } from './design-system/virtual-list';
-import { DataGridShowcase } from './design-system/data-grid';
-import { ButtonGroupShowcase } from './design-system/button-group';
+import { ContextMenuShowcase }    from './design-system/context-menu';
+import { DataGridShowcase }       from './design-system/data-grid';
+import { DatePickerShowcase }     from './design-system/date-pickers';
+import { DividerShowcase }        from './design-system/divider';
+import { DrawerShowcase }         from './design-system/drawer';
+import { DropdownShowcase }       from './design-system/dropdowns';
+import { EmptyStateShowcase }     from './design-system/empty-state';
+import { FileUploadShowcase }     from './design-system/file-upload';
+import { InlineEditShowcase }     from './design-system/inline-edit';
+import { InputShowcase }          from './design-system/inputs';
+import { KbdShowcase }            from './design-system/kbd';
+import { MenuShowcase }           from './design-system/menus';
+import { ModalShowcase }          from './design-system/forms';
+import { NumberInputShowcase }    from './design-system/number-input';
+import { OTPInputShowcase }       from './design-system/otp-input';
+import { PaginationShowcase }     from './design-system/pagination';
+import { PopoverShowcase }        from './design-system/popover';
+import { ProgressShowcase }       from './design-system/progress';
+import { RadioShowcase }          from './design-system/radios';
 import { SegmentedControlShowcase } from './design-system/segmented-control';
-import { SplitButtonShowcase } from './design-system/split-button';
-import { ContextMenuShowcase } from './design-system/context-menu';
-import { InlineEditShowcase } from './design-system/inline-edit';
-import { KbdShowcase } from './design-system/kbd';
+import { SelectShowcase }         from './design-system/selects';
+import { SkeletonShowcase }       from './design-system/skeleton';
+import { SliderShowcase }         from './design-system/slider';
+import { SnackbarShowcase }       from './design-system/snackbars';
+import { SpinnerShowcase }        from './design-system/spinner';
+import { SplitButtonShowcase }    from './design-system/split-button';
+import { StepperShowcase }        from './design-system/stepper';
+import { SwitchShowcase }         from './design-system/switches';
+import { TableShowcase }          from './design-system/tables';
+import { TabsShowcase }           from './design-system/tabs';
+import { TagInputShowcase }       from './design-system/tag-input';
+import { TextareaShowcase }       from './design-system/textareas';
+import { TimelineShowcase }       from './design-system/timeline';
+import { TooltipShowcase }        from './design-system/tooltips';
+import { TreeViewShowcase }       from './design-system/tree-view';
+import { VirtualListShowcase }    from './design-system/virtual-list';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Navigation structure
 // ─────────────────────────────────────────────────────────────────────────────
 
 type ComponentId =
-  | 'Button' | 'Button Group' | 'Split Button' | 'Chip' | 'Badge' | 'Alert' | 'Card' | 'Avatar'
-  | 'Empty State' | 'Kbd' | 'Inline Edit'
-  | 'Input' | 'Textarea' | 'Select' | 'Checkbox' | 'Radio' | 'Switch' | 'Slider'
-  | 'Number Input' | 'File Upload' | 'Tag Input' | 'OTP Input' | 'Combobox' | 'Color Picker'
-  | 'Tabs' | 'Accordion' | 'Breadcrumb' | 'Stepper' | 'Pagination'
-  | 'Dropdown' | 'Menu' | 'Tree View' | 'Segmented Control'
-  | 'Modal' | 'Drawer' | 'Snackbar' | 'Tooltip' | 'Popover' | 'Context Menu' | 'Command Palette'
-  | 'Date Picker' | 'Table' | 'Timeline' | 'Virtual List' | 'Data Grid'
-  | 'Progress' | 'Skeleton'
-  | 'Divider & Spinner';
+  // Elements
+  | 'Avatar' | 'Badge' | 'Button' | 'Button Group' | 'Card' | 'Chip'
+  | 'Divider' | 'Empty State' | 'Kbd' | 'Segmented Control' | 'Split Button'
+  // Forms
+  | 'Checkbox' | 'Color Picker' | 'Combobox' | 'File Upload' | 'Inline Edit'
+  | 'Input' | 'Number Input' | 'OTP Input' | 'Radio' | 'Select'
+  | 'Slider' | 'Switch' | 'Tag Input' | 'Textarea'
+  // Navigation
+  | 'Accordion' | 'Breadcrumb' | 'Pagination' | 'Stepper' | 'Tabs' | 'Tree View'
+  // Overlays
+  | 'Command Palette' | 'Context Menu' | 'Drawer' | 'Dropdown'
+  | 'Menu' | 'Modal' | 'Popover' | 'Snackbar' | 'Tooltip'
+  // Data
+  | 'Data Grid' | 'Date Picker' | 'Table' | 'Timeline' | 'Virtual List'
+  // Feedback
+  | 'Alert' | 'Progress' | 'Skeleton' | 'Spinner';
 
 const NAV: Array<{ group: string; items: ComponentId[] }> = [
-  { group: 'ELEMENTS',    items: ['Button', 'Button Group', 'Split Button', 'Chip', 'Badge', 'Alert', 'Card', 'Avatar', 'Empty State', 'Kbd', 'Inline Edit'] },
-  { group: 'FORMS',       items: ['Input', 'Textarea', 'Select', 'Checkbox', 'Radio', 'Switch', 'Slider', 'Number Input', 'File Upload', 'Tag Input', 'OTP Input', 'Combobox', 'Color Picker'] },
-  { group: 'NAVIGATION',  items: ['Tabs', 'Accordion', 'Breadcrumb', 'Stepper', 'Pagination', 'Dropdown', 'Menu', 'Tree View', 'Segmented Control'] },
-  { group: 'OVERLAYS',    items: ['Modal', 'Drawer', 'Snackbar', 'Tooltip', 'Popover', 'Context Menu', 'Command Palette'] },
-  { group: 'DATA',        items: ['Date Picker', 'Table', 'Timeline', 'Virtual List', 'Data Grid'] },
-  { group: 'FEEDBACK',    items: ['Progress', 'Skeleton'] },
-  { group: 'LAYOUT',      items: ['Divider & Spinner'] },
+  { group: 'ELEMENTS',   items: ['Avatar', 'Badge', 'Button', 'Button Group', 'Card', 'Chip', 'Divider', 'Empty State', 'Kbd', 'Segmented Control', 'Split Button'] },
+  { group: 'FORMS',      items: ['Checkbox', 'Color Picker', 'Combobox', 'File Upload', 'Inline Edit', 'Input', 'Number Input', 'OTP Input', 'Radio', 'Select', 'Slider', 'Switch', 'Tag Input', 'Textarea'] },
+  { group: 'NAVIGATION', items: ['Accordion', 'Breadcrumb', 'Pagination', 'Stepper', 'Tabs', 'Tree View'] },
+  { group: 'OVERLAYS',   items: ['Command Palette', 'Context Menu', 'Drawer', 'Dropdown', 'Menu', 'Modal', 'Popover', 'Snackbar', 'Tooltip'] },
+  { group: 'DATA',       items: ['Data Grid', 'Date Picker', 'Table', 'Timeline', 'Virtual List'] },
+  { group: 'FEEDBACK',   items: ['Alert', 'Progress', 'Skeleton', 'Spinner'] },
 ];
 
 const SHOWCASES: Record<ComponentId, React.ReactNode> = {
-  'Button':          <ButtonShowcase />,
-  'Button Group':    <ButtonGroupShowcase />,
-  'Split Button':    <SplitButtonShowcase />,
-  'Chip':            <ChipShowcase />,
-  'Input':           <InputShowcase />,
-  'Select':          <SelectShowcase />,
-  'Dropdown':        <DropdownShowcase />,
-  'Menu':            <MenuShowcase />,
-  'Modal':           <ModalShowcase />,
-  'Snackbar':        <SnackbarShowcase />,
-  'Tooltip':         <TooltipShowcase />,
-  'Date Picker':     <DatePickerShowcase />,
-  'Table':           <TableShowcase />,
-  'Divider & Spinner': <LayoutShowcase />,
-  'Card':              <CardShowcase />,
-  'Checkbox':          <CheckboxShowcase />,
-  'Radio':             <RadioShowcase />,
-  'Switch':            <SwitchShowcase />,
-  'Textarea':          <TextareaShowcase />,
+  // Elements
+  'Avatar':            <AvatarShowcase />,
   'Badge':             <BadgeShowcase />,
-  'Alert':             <AlertShowcase />,
-  'Tabs':              <TabsShowcase />,
-  'Accordion':         <AccordionShowcase />,
-  'Popover':           <PopoverShowcase />,
-  'Drawer':            <DrawerShowcase />,
-  'Slider':            <SliderShowcase />,
+  'Button':            <ButtonShowcase />,
+  'Button Group':      <ButtonGroupShowcase />,
+  'Card':              <CardShowcase />,
+  'Chip':              <ChipShowcase />,
+  'Divider':           <DividerShowcase />,
   'Empty State':       <EmptyStateShowcase />,
-  'Breadcrumb':        <BreadcrumbShowcase />,
-  'Stepper':           <StepperShowcase />,
-  'Pagination':        <PaginationShowcase />,
-  'Timeline':          <TimelineShowcase />,
-  'Number Input':      <NumberInputShowcase />,
+  'Kbd':               <KbdShowcase />,
+  'Segmented Control': <SegmentedControlShowcase />,
+  'Split Button':      <SplitButtonShowcase />,
+  // Forms
+  'Checkbox':          <CheckboxShowcase />,
+  'Color Picker':      <ColorPickerShowcase />,
+  'Combobox':          <ComboboxShowcase />,
   'File Upload':       <FileUploadShowcase />,
+  'Inline Edit':       <InlineEditShowcase />,
+  'Input':             <InputShowcase />,
+  'Number Input':      <NumberInputShowcase />,
+  'OTP Input':         <OTPInputShowcase />,
+  'Radio':             <RadioShowcase />,
+  'Select':            <SelectShowcase />,
+  'Slider':            <SliderShowcase />,
+  'Switch':            <SwitchShowcase />,
+  'Tag Input':         <TagInputShowcase />,
+  'Textarea':          <TextareaShowcase />,
+  // Navigation
+  'Accordion':         <AccordionShowcase />,
+  'Breadcrumb':        <BreadcrumbShowcase />,
+  'Pagination':        <PaginationShowcase />,
+  'Stepper':           <StepperShowcase />,
+  'Tabs':              <TabsShowcase />,
+  'Tree View':         <TreeViewShowcase />,
+  // Overlays
+  'Command Palette':   <CommandPaletteShowcase />,
+  'Context Menu':      <ContextMenuShowcase />,
+  'Drawer':            <DrawerShowcase />,
+  'Dropdown':          <DropdownShowcase />,
+  'Menu':              <MenuShowcase />,
+  'Modal':             <ModalShowcase />,
+  'Popover':           <PopoverShowcase />,
+  'Snackbar':          <SnackbarShowcase />,
+  'Tooltip':           <TooltipShowcase />,
+  // Data
+  'Data Grid':         <DataGridShowcase />,
+  'Date Picker':       <DatePickerShowcase />,
+  'Table':             <TableShowcase />,
+  'Timeline':          <TimelineShowcase />,
+  'Virtual List':      <VirtualListShowcase />,
+  // Feedback
+  'Alert':             <AlertShowcase />,
   'Progress':          <ProgressShowcase />,
   'Skeleton':          <SkeletonShowcase />,
-  'Avatar':            <AvatarShowcase />,
-  'Kbd':               <KbdShowcase />,
-  'Inline Edit':       <InlineEditShowcase />,
-  'Segmented Control': <SegmentedControlShowcase />,
-  'Context Menu':      <ContextMenuShowcase />,
-  'Tag Input':         <TagInputShowcase />,
-  'OTP Input':         <OTPInputShowcase />,
-  'Combobox':          <ComboboxShowcase />,
-  'Color Picker':      <ColorPickerShowcase />,
-  'Tree View':         <TreeViewShowcase />,
-  'Command Palette':   <CommandPaletteShowcase />,
-  'Virtual List':      <VirtualListShowcase />,
-  'Data Grid':         <DataGridShowcase />,
+  'Spinner':           <SpinnerShowcase />,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
