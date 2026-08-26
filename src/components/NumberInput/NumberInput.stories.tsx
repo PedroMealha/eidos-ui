@@ -39,11 +39,11 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Visual size of the control.',
 			table: {
-				type: { summary: '"small" | "medium" | "large"' },
-				defaultValue: { summary: 'medium' },
+				type: { summary: '"sm" | "md" | "lg"' },
+				defaultValue: { summary: 'md' },
 			},
 		},
 		disabled: {
@@ -110,7 +110,7 @@ export const Default: Story = {
 		defaultValue: 0,
 		min: 0,
 		max: 100,
-		size: 'medium',
+		size: 'md',
 	},
 };
 
@@ -177,15 +177,15 @@ export const Sizes: Story = {
 			<div style={col}>
 				<div>
 					<p style={label}>Small</p>
-					<NumberInput size="small" defaultValue={0} />
+					<NumberInput size="sm" defaultValue={0} />
 				</div>
 				<div>
 					<p style={label}>Medium</p>
-					<NumberInput size="medium" defaultValue={0} />
+					<NumberInput size="md" defaultValue={0} />
 				</div>
 				<div>
 					<p style={label}>Large</p>
-					<NumberInput size="large" defaultValue={0} />
+					<NumberInput size="lg" defaultValue={0} />
 				</div>
 			</div>
 		);

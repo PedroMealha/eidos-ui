@@ -17,6 +17,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// ─── Default ──────────────────────────────────────────────────────────────────
+
+export const Default: Story = {
+	render: () => (
+		<ButtonGroup variant="outlined" color="primary">
+			<Button preIcon={AlignLeft}>Left</Button>
+			<Button preIcon={AlignCenter}>Center</Button>
+			<Button preIcon={AlignRight}>Right</Button>
+		</ButtonGroup>
+	),
+};
+
 // ─── 1. Outlined (most common use-case) ──────────────────────────────────────
 
 export const Outlined: Story = {
@@ -58,17 +70,17 @@ export const Sizes: Story = {
 	name: 'Sizes',
 	render: () => (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
-			<ButtonGroup variant="outlined" size="small">
+			<ButtonGroup variant="outlined" size="sm">
 				<Button>Small</Button>
 				<Button>Group</Button>
 				<Button>Here</Button>
 			</ButtonGroup>
-			<ButtonGroup variant="outlined" size="medium">
+			<ButtonGroup variant="outlined" size="md">
 				<Button>Medium</Button>
 				<Button>Group</Button>
 				<Button>Here</Button>
 			</ButtonGroup>
-			<ButtonGroup variant="outlined" size="large">
+			<ButtonGroup variant="outlined" size="lg">
 				<Button>Large</Button>
 				<Button>Group</Button>
 				<Button>Here</Button>

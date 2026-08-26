@@ -68,14 +68,14 @@ export const StepperShowcase = () => {
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <Button
               variant="outlined"
-              size="small"
+              size="sm"
               disabled={activeStep === 0}
               onClick={() => setActiveStep((s) => Math.max(0, s - 1))}
             >
               Back
             </Button>
             <Button
-              size="small"
+              size="sm"
               disabled={activeStep === STEPS.length}
               onClick={() => setActiveStep((s) => Math.min(STEPS.length, s + 1))}
             >

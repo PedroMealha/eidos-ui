@@ -10,7 +10,7 @@ const meta = {
 		label: 'Toggle me',
 		labelPosition: 'right',
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 		disabled: false,
 	},
 	argTypes: {
@@ -58,11 +58,11 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Size of the switch track and thumb.',
 			table: {
-				type: { summary: '"small" | "medium" | "large"' },
-				defaultValue: { summary: 'medium' },
+				type: { summary: '"sm" | "md" | "lg"' },
+				defaultValue: { summary: 'md' },
 			},
 		},
 		className: { table: { disable: true } },
@@ -138,9 +138,9 @@ export const Sizes: Story = {
 		const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
 		return (
 			<div style={col}>
-				<Switch size="small" label="Small" />
-				<Switch size="medium" label="Medium" defaultChecked />
-				<Switch size="large" label="Large" />
+				<Switch size="sm" label="Small" />
+				<Switch size="md" label="Medium" defaultChecked />
+				<Switch size="lg" label="Large" />
 			</div>
 		);
 	},

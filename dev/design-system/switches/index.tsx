@@ -40,9 +40,9 @@ export const SwitchShowcase = () => {
 
       <Section label="Sizes">
         <Row>
-          <Switch label="Small" size="small" defaultChecked />
-          <Switch label="Medium" size="medium" defaultChecked />
-          <Switch label="Large" size="large" defaultChecked />
+          <Switch label="Small" size="sm" defaultChecked />
+          <Switch label="Medium" size="md" defaultChecked />
+          <Switch label="Large" size="lg" defaultChecked />
         </Row>
       </Section>
     </Col>

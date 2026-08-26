@@ -16,7 +16,7 @@
 
 	// ── Size variants ──────────────────────────────────────────────────────
 
-	&--small {
+	&--sm {
 		gap: var(--spacing-xs);
 		@include font-size(xs);
 
@@ -31,7 +31,7 @@
 		}
 	}
 
-	&--medium {
+	&--md {
 		gap: var(--spacing-sm);
 		@include font-size(sm);
 
@@ -46,7 +46,7 @@
 		}
 	}
 
-	&--large {
+	&--lg {
 		gap: var(--spacing-sm);
 		font-size: var(--font-size-base);
 

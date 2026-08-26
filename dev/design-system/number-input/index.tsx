@@ -33,9 +33,9 @@ export const NumberInputShowcase = () => {
 
       <Section label="Sizes">
         <Row>
-          <NumberInput size="small"  defaultValue={0} label="Small" />
-          <NumberInput size="medium" defaultValue={0} label="Medium" />
-          <NumberInput size="large"  defaultValue={0} label="Large" />
+          <NumberInput size="sm"  defaultValue={0} label="Small" />
+          <NumberInput size="md" defaultValue={0} label="Medium" />
+          <NumberInput size="lg"  defaultValue={0} label="Large" />
         </Row>
       </Section>
 

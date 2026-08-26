@@ -10,7 +10,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 		{
 			variant = 'filled',
 			color = 'primary',
-			size = 'medium',
+			size = 'md',
 			disabled = false,
 			loading = false,
 			className = '',

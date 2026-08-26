@@ -31,9 +31,9 @@ export const InputShowcase = () => (
 
     <Section label="Sizes">
       <Col>
-        <Input size="small" label="Small" placeholder="Small size" />
-        <Input size="medium" label="Medium" placeholder="Medium size" />
-        <Input size="large" label="Large" placeholder="Large size" />
+        <Input size="sm" label="Small" placeholder="Small size" />
+        <Input size="md" label="Medium" placeholder="Medium size" />
+        <Input size="lg" label="Large" placeholder="Large size" />
       </Col>
     </Section>
 

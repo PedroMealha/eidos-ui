@@ -23,7 +23,7 @@ export const SliderShowcase = () => (
 
     <Section label="Sizes">
       <Col gap="1.25rem">
-        {(['small', 'medium', 'large'] as const).map((size) => (
+        {(['sm', 'md', 'lg'] as const).map((size) => (
           <Slider key={size} defaultValue={50} size={size} label={size} />
         ))}
       </Col>

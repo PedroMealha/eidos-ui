@@ -38,9 +38,9 @@ export const CheckboxShowcase = () => {
       <Grid cols={2}>
         <Section label="Sizes">
           <Row>
-            <Checkbox label="Small" size="small" defaultChecked />
-            <Checkbox label="Medium" size="medium" defaultChecked />
-            <Checkbox label="Large" size="large" defaultChecked />
+            <Checkbox label="Small" size="sm" defaultChecked />
+            <Checkbox label="Medium" size="md" defaultChecked />
+            <Checkbox label="Large" size="lg" defaultChecked />
           </Row>
         </Section>
 

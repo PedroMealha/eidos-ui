@@ -16,17 +16,17 @@
 	max-width: 100%;
 
 	// Sizes
-	&--small {
+	&--sm {
 		font-size: var(--font-size-xs);
 		min-height: var(--component-size-sm);
 	}
 
-	&--medium {
+	&--md {
 		font-size: var(--font-size-sm);
 		min-height: var(--component-size-md);
 	}
 
-	&--large {
+	&--lg {
 		font-size: var(--font-size-base);
 		min-height: var(--component-size-lg);
 	}

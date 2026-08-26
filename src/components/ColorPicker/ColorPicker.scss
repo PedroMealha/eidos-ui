@@ -46,8 +46,8 @@
     box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.25);
   }
 
-  .eidos-color-picker--small  & { padding: 4px var(--spacing-xs); }
-  .eidos-color-picker--large  & { padding: 8px var(--spacing-md); }
+  .eidos-color-picker--sm  & { padding: 4px var(--spacing-xs); }
+  .eidos-color-picker--lg  & { padding: 8px var(--spacing-md); }
 }
 
 .eidos-color-picker-trigger-swatch {
@@ -55,9 +55,9 @@
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--gray-200);
 
-  .eidos-color-picker--small  & { width: 20px; height: 20px; }
-  .eidos-color-picker--medium & { width: 24px; height: 24px; }
-  .eidos-color-picker--large  & { width: 28px; height: 28px; }
+  .eidos-color-picker--sm  & { width: 20px; height: 20px; }
+  .eidos-color-picker--md & { width: 24px; height: 24px; }
+  .eidos-color-picker--lg  & { width: 28px; height: 28px; }
 }
 
 .eidos-color-picker-trigger-value {
@@ -97,9 +97,9 @@
   user-select: none;
   // Background is set via inline style (hue-dependent gradient)
 
-  .eidos-color-picker--small  & { height: 120px; }
-  .eidos-color-picker--medium & { height: 160px; }
-  .eidos-color-picker--large  & { height: 200px; }
+  .eidos-color-picker--sm  & { height: 120px; }
+  .eidos-color-picker--md & { height: 160px; }
+  .eidos-color-picker--lg  & { height: 200px; }
 }
 
 // Circular thumb - tracks the selected sat/val position

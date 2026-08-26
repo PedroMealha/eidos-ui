@@ -59,9 +59,9 @@ export const KbdShowcase = () => (
     <Grid cols={3}>
       <Section label="Sizes">
         <Row>
-          <Kbd size="small">⌘K</Kbd>
-          <Kbd size="medium">⌘K</Kbd>
-          <Kbd size="large">⌘K</Kbd>
+          <Kbd size="sm">⌘K</Kbd>
+          <Kbd size="md">⌘K</Kbd>
+          <Kbd size="lg">⌘K</Kbd>
         </Row>
       </Section>
 

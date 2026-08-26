@@ -31,9 +31,9 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Size of the chip',
-      table: { type: { summary: '"small" | "medium" | "large"' }, defaultValue: { summary: 'medium' } },
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
     },
     disabled: {
       control: 'boolean',
@@ -114,9 +114,9 @@ export const Examples = {
         <div>
           <p style={label}>Sizes</p>
           <div style={row}>
-            <Chip size="small">Small</Chip>
-            <Chip size="medium">Medium</Chip>
-            <Chip size="large">Large</Chip>
+            <Chip size="sm">Small</Chip>
+            <Chip size="md">Medium</Chip>
+            <Chip size="lg">Large</Chip>
           </div>
         </div>
 
@@ -162,7 +162,7 @@ export const Examples = {
         <div>
           <p style={label}>Combined</p>
           <div style={row}>
-            <Chip variant="outlined" color="success" preIcon={Check} size="small">Verified</Chip>
+            <Chip variant="outlined" color="success" preIcon={Check} size="sm">Verified</Chip>
             <Chip variant="text" color="warning" posIcon={Star}>Premium</Chip>
             <Chip variant="filled" color="danger" onRemove={() => {}}>Error</Chip>
           </div>

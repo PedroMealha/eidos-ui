@@ -32,11 +32,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Size of page buttons.',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     siblingCount: {
@@ -85,7 +85,7 @@ export const Default: Story = {
     totalPages: 10,
     onChange: () => {},
     color: 'primary',
-    size: 'medium',
+    size: 'md',
     siblingCount: 2,
     showFirstLast: true,
     disabled: false,
@@ -106,7 +106,7 @@ export const ManyPages: Story = {
     totalPages: 50,
     onChange: () => {},
     color: 'primary',
-    size: 'medium',
+    size: 'md',
     siblingCount: 2,
     showFirstLast: true,
   },
@@ -147,7 +147,7 @@ export const Colors = {
 
 export const Sizes = {
   render: () => {
-    const sizes = ['small', 'medium', 'large'] as const;
+    const sizes = ['sm', 'md', 'lg'] as const;
     const label: React.CSSProperties = {
       margin: '0 0 0.5rem',
       fontSize: '0.75rem',
@@ -185,7 +185,7 @@ export const NoFirstLast: Story = {
     onChange: () => {},
     showFirstLast: false,
     color: 'primary',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -199,7 +199,7 @@ export const Disabled: Story = {
     totalPages: 10,
     disabled: true,
     color: 'primary',
-    size: 'medium',
+    size: 'md',
     onChange: () => {},
   },
 };

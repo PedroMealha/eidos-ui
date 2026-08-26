@@ -29,9 +29,9 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Size of the radio control and label',
-			table: { type: { summary: '"small" | "medium" | "large"' }, defaultValue: { summary: 'medium' } },
+			table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
 		},
 		className: { table: { disable: true } },
 		id: { table: { disable: true } },
@@ -51,7 +51,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
 	args: {
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 		disabled: false,
 	},
 };
@@ -65,7 +65,7 @@ export const Checked: Story = {
 		label: 'Selected option',
 		checked: true,
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 		// onChange provided to satisfy React controlled-input requirement
 		onChange: () => {},
 	},
@@ -135,9 +135,9 @@ export const Sizes = {
 		const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
 		return (
 			<div style={col}>
-				<Radio size="small" label="Small radio" defaultChecked />
-				<Radio size="medium" label="Medium radio (default)" defaultChecked />
-				<Radio size="large" label="Large radio" defaultChecked />
+				<Radio size="sm" label="Small radio" defaultChecked />
+				<Radio size="md" label="Medium radio (default)" defaultChecked />
+				<Radio size="lg" label="Large radio" defaultChecked />
 			</div>
 		);
 	},

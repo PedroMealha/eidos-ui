@@ -16,6 +16,26 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// ─── Default ──────────────────────────────────────────────────────────────────
+
+export const Default: Story = {
+	render: function DefaultStory() {
+		const [view, setView] = useState('week');
+		return (
+			<SegmentedControl
+				options={[
+					{ value: 'day',   label: 'Day' },
+					{ value: 'week',  label: 'Week' },
+					{ value: 'month', label: 'Month' },
+					{ value: 'year',  label: 'Year' },
+				]}
+				value={view}
+				onChange={setView}
+			/>
+		);
+	},
+};
+
 // ─── 1. Labels ────────────────────────────────────────────────────────────────
 
 export const Labels: Story = {
@@ -100,7 +120,7 @@ export const Sizes: Story = {
 	name: 'Sizes',
 	render: () => (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
-			{(['small', 'medium', 'large'] as const).map(size => (
+			{(['sm', 'md', 'lg'] as const).map(size => (
 				<SegmentedControl
 					key={size}
 					size={size}

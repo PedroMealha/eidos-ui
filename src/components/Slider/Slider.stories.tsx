@@ -57,11 +57,11 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Track height and thumb diameter.',
 			table: {
-				type: { summary: '"small" | "medium" | "large"' },
-				defaultValue: { summary: 'medium' },
+				type: { summary: '"sm" | "md" | "lg"' },
+				defaultValue: { summary: 'md' },
 			},
 		},
 		disabled: {
@@ -118,7 +118,7 @@ export const Default: Story = {
 	args: {
 		defaultValue: 50,
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 		disabled: false,
 		showValue: false,
 		showMinMax: false,
@@ -137,15 +137,15 @@ export const Sizes: Story = {
 			<div style={col}>
 				<div>
 					<p style={label}>Small</p>
-					<Slider size="small" defaultValue={30} />
+					<Slider size="sm" defaultValue={30} />
 				</div>
 				<div>
 					<p style={label}>Medium</p>
-					<Slider size="medium" defaultValue={50} />
+					<Slider size="md" defaultValue={50} />
 				</div>
 				<div>
 					<p style={label}>Large</p>
-					<Slider size="large" defaultValue={70} />
+					<Slider size="lg" defaultValue={70} />
 				</div>
 			</div>
 		);
@@ -193,7 +193,7 @@ export const WithLabel: Story = {
 		showValue: true,
 		defaultValue: 60,
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 	},
 };
 

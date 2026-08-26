@@ -87,7 +87,7 @@ export const Alert: React.FC<AlertProps> = ({
           <div className="eidos-alert-action">
             <Button
               variant={action.variant === "filled" ? "filled" : "text"}
-              size="small"
+              size="sm"
               color={buttonColor}
               onClick={action.onClick}
             >

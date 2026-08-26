@@ -140,7 +140,7 @@ const TreeNodeItem: React.FC<TreeNodeItemProps> = ({ node, depth }) => {
   // Default icon: folder (open/closed) for branches, file for leaves.
   const DefaultIcon = isBranch ? (isExpanded ? FolderOpen : Folder) : File;
   const NodeIcon = (node.icon ?? DefaultIcon) as React.FC<{ className?: string; size?: number }>;
-  const iconSize = ctx.size === 'small' ? 14 : ctx.size === 'large' ? 18 : 16;
+  const iconSize = ctx.size === 'sm' ? 14 : ctx.size === 'lg' ? 18 : 16;
 
   const rowClasses = [
     'eidos-tree-node-row',
@@ -241,7 +241,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
   onExpand,
   defaultExpandAll = false,
   // Appearance
-  size = 'medium',
+  size = 'md',
   showLines = false,
   className,
   // Rendering

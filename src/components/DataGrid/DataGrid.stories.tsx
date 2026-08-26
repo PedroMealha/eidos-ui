@@ -182,7 +182,7 @@ const FULL_FEATURED_COLUMNS: DataGridColumn<Person>[] = [
 // ─── Meta ─────────────────────────────────────────────────────────────────────
 
 const meta: Meta<typeof DataGrid<Person>> = {
-	title: 'Components/DataGrid',
+	title: 'Data/DataGrid',
 	component: DataGrid,
 	parameters: {
 		layout: 'padded',

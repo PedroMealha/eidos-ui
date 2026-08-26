@@ -40,7 +40,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
 	value,
 	defaultValue,
 	onChange,
-	size = 'medium',
+	size = 'md',
 	color = 'primary',
 	disabled = false,
 	fullWidth = false,

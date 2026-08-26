@@ -79,9 +79,9 @@ export const OTPInputShowcase = () => (
     <div style={{ gridColumn: '1 / -1' }}>
       <Section label="Sizes">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <OTPInput size="small" label="Small" />
-          <OTPInput size="medium" label="Medium" />
-          <OTPInput size="large" label="Large" />
+          <OTPInput size="sm" label="Small" />
+          <OTPInput size="md" label="Medium" />
+          <OTPInput size="lg" label="Large" />
         </div>
       </Section>
     </div>

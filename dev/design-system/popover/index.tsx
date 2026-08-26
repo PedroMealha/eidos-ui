@@ -28,7 +28,7 @@ export const PopoverShowcase = () => (
       <Section label="Placements">
         <Row>
           {(['top', 'bottom', 'left', 'right'] as const).map((placement) => (
-            <Popover key={placement} placement={placement} trigger={<Button size="small" variant="outlined">{placement}</Button>} title={placement}>
+            <Popover key={placement} placement={placement} trigger={<Button size="sm" variant="outlined">{placement}</Button>} title={placement}>
               <p style={{ margin: 0 }}>Preferred placement: <strong>{placement}</strong>. Flips automatically when it doesn't fit.</p>
             </Popover>
           ))}

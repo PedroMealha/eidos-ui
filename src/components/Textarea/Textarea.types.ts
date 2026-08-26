@@ -4,7 +4,7 @@ import type { IconType } from '../../utils';
 export interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
 	variant?: 'filled' | 'outlined' | 'text';
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	disabled?: boolean;
 	loading?: boolean;
 	className?: string;

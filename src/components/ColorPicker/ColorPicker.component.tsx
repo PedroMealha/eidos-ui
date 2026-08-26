@@ -218,7 +218,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   showSwatches = true,
   swatches = DEFAULT_SWATCHES,
   disabled = false,
-  size = 'medium',
+  size = 'md',
   inline = false,
   label,
   className = '',

@@ -39,7 +39,7 @@ const meta = {
       description: "Badge size",
       table: {
         type: { summary: '"small" | "medium"' },
-        defaultValue: { summary: "medium" },
+        defaultValue: { summary: "md" },
       },
     },
     dot: {
@@ -71,7 +71,7 @@ export const Default: Story = {
     children: "New",
     color: "primary",
     variant: "filled",
-    size: "medium",
+    size: "md",
   },
 };
 
@@ -189,19 +189,19 @@ export const Sizes = {
         <div>
           <p style={label}>Small</p>
           <div style={row}>
-            <Badge size="small">Small</Badge>
-            <Badge size="small" variant="outlined">Small</Badge>
-            <Badge size="small" variant="text">Small</Badge>
-            <Badge size="small" dot color="success" />
+            <Badge size="sm">Small</Badge>
+            <Badge size="sm" variant="outlined">Small</Badge>
+            <Badge size="sm" variant="text">Small</Badge>
+            <Badge size="sm" dot color="success" />
           </div>
         </div>
         <div>
           <p style={label}>Medium</p>
           <div style={row}>
-            <Badge size="medium">Medium</Badge>
-            <Badge size="medium" variant="outlined">Medium</Badge>
-            <Badge size="medium" variant="text">Medium</Badge>
-            <Badge size="medium" dot color="success" />
+            <Badge size="md">Medium</Badge>
+            <Badge size="md" variant="outlined">Medium</Badge>
+            <Badge size="md" variant="text">Medium</Badge>
+            <Badge size="md" dot color="success" />
           </div>
         </div>
       </div>

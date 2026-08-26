@@ -50,9 +50,9 @@ export const SplitButtonShowcase = () => (
 
       <Section label="Sizes">
         <Col>
-          <SplitButton size="small"  label="Small"  onClick={noop} options={[{ id: 'a', label: 'Option', onClick: noop }]} />
-          <SplitButton size="medium" label="Medium" onClick={noop} options={[{ id: 'a', label: 'Option', onClick: noop }]} />
-          <SplitButton size="large"  label="Large"  onClick={noop} options={[{ id: 'a', label: 'Option', onClick: noop }]} />
+          <SplitButton size="sm"  label="Small"  onClick={noop} options={[{ id: 'a', label: 'Option', onClick: noop }]} />
+          <SplitButton size="md" label="Medium" onClick={noop} options={[{ id: 'a', label: 'Option', onClick: noop }]} />
+          <SplitButton size="lg"  label="Large"  onClick={noop} options={[{ id: 'a', label: 'Option', onClick: noop }]} />
         </Col>
       </Section>
     </Grid>

@@ -126,7 +126,7 @@ export const Tabs: React.FC<TabsProps> = ({
   defaultValue,
   onChange,
   variant = 'line',
-  size = 'medium',
+  size = 'md',
   color = 'primary',
   fullWidth = false,
   className = '',

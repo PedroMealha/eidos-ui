@@ -56,9 +56,9 @@
 	transition: opacity 0.2s ease;
 
 	// ── Input height = thumb size (per size) ───────────────────────────────
-	.eidos-slider--small  & { height: 16px; }
-	.eidos-slider--medium & { height: 20px; }
-	.eidos-slider--large  & { height: 24px; }
+	.eidos-slider--sm  & { height: 16px; }
+	.eidos-slider--md & { height: 20px; }
+	.eidos-slider--lg  & { height: 24px; }
 
 	// ── WebKit thumb ──────────────────────────────────────────────────────
 	&::-webkit-slider-thumb {
@@ -74,9 +74,9 @@
 		// margin-top = (track-height − thumb-height) / 2
 		// WebKit aligns thumb-top with track-top by default (not centred).
 		// The negative margin pulls the thumb up so its centre sits on the track centre.
-		.eidos-slider--small  & { width: 16px; height: 16px; margin-top: -6px; }
-		.eidos-slider--medium & { width: 20px; height: 20px; margin-top: -7px; }
-		.eidos-slider--large  & { width: 24px; height: 24px; margin-top: -8px; }
+		.eidos-slider--sm  & { width: 16px; height: 16px; margin-top: -6px; }
+		.eidos-slider--md & { width: 20px; height: 20px; margin-top: -7px; }
+		.eidos-slider--lg  & { width: 24px; height: 24px; margin-top: -8px; }
 
 		&:active {
 			cursor: grabbing;
@@ -93,9 +93,9 @@
 		cursor: grab;
 		transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-		.eidos-slider--small & { width: 16px; height: 16px; }
-		.eidos-slider--medium & { width: 20px; height: 20px; }
-		.eidos-slider--large & { width: 24px; height: 24px; }
+		.eidos-slider--sm & { width: 16px; height: 16px; }
+		.eidos-slider--md & { width: 20px; height: 20px; }
+		.eidos-slider--lg & { width: 24px; height: 24px; }
 	}
 
 	// ── WebKit track - gradient driven by CSS custom props set inline ─────
@@ -157,13 +157,13 @@
 // (which picks up the input's natural full-height in WebKit, not the 4/6/8px).
 // ============================================================================
 
-.eidos-slider--small  .eidos-slider-input::-webkit-slider-runnable-track { height: 4px; }
-.eidos-slider--medium .eidos-slider-input::-webkit-slider-runnable-track { height: 6px; }
-.eidos-slider--large  .eidos-slider-input::-webkit-slider-runnable-track { height: 8px; }
+.eidos-slider--sm  .eidos-slider-input::-webkit-slider-runnable-track { height: 4px; }
+.eidos-slider--md .eidos-slider-input::-webkit-slider-runnable-track { height: 6px; }
+.eidos-slider--lg  .eidos-slider-input::-webkit-slider-runnable-track { height: 8px; }
 
-.eidos-slider--small  .eidos-slider-input::-moz-range-track { height: 4px; }
-.eidos-slider--medium .eidos-slider-input::-moz-range-track { height: 6px; }
-.eidos-slider--large  .eidos-slider-input::-moz-range-track { height: 8px; }
+.eidos-slider--sm  .eidos-slider-input::-moz-range-track { height: 4px; }
+.eidos-slider--md .eidos-slider-input::-moz-range-track { height: 6px; }
+.eidos-slider--lg  .eidos-slider-input::-moz-range-track { height: 8px; }
 
 // ============================================================================
 // Color variants - thumb background (track fill handled via inline style)

@@ -40,9 +40,9 @@
   }
 
   // Size variants
-  .eidos-number-input--small & { height: var(--component-size-sm); }
-  .eidos-number-input--medium & { height: var(--component-size-md); }
-  .eidos-number-input--large & { height: var(--component-size-lg); }
+  .eidos-number-input--sm & { height: var(--component-size-sm); }
+  .eidos-number-input--md & { height: var(--component-size-md); }
+  .eidos-number-input--lg & { height: var(--component-size-lg); }
 }
 
 .eidos-number-input-btn {
@@ -55,9 +55,9 @@
   transition: background 0.15s ease, color 0.15s ease;
   border: none;
 
-  .eidos-number-input--small & { width: 28px; }
-  .eidos-number-input--medium & { width: 36px; }
-  .eidos-number-input--large & { width: 44px; }
+  .eidos-number-input--sm & { width: 28px; }
+  .eidos-number-input--md & { width: 36px; }
+  .eidos-number-input--lg & { width: 44px; }
 
   &:hover:not(:disabled) {
     background: var(--gray-100);
@@ -72,9 +72,9 @@
   &:focus-visible { outline: 2px solid var(--primary-color); outline-offset: -2px; }
 
   svg {
-    .eidos-number-input--small &  { width: 14px; height: 14px; }
-    .eidos-number-input--medium & { width: 16px; height: 16px; }
-    .eidos-number-input--large &  { width: 18px; height: 18px; }
+    .eidos-number-input--sm &  { width: 14px; height: 14px; }
+    .eidos-number-input--md & { width: 16px; height: 16px; }
+    .eidos-number-input--lg &  { width: 18px; height: 18px; }
   }
 }
 

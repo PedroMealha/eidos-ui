@@ -27,9 +27,9 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Size of the input',
-      table: { type: { summary: '"small" | "medium" | "large"' }, defaultValue: { summary: 'medium' } },
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
     },
     type: {
       control: 'select',
@@ -180,9 +180,9 @@ export const Examples = {
         <div>
           <p style={label}>Sizes</p>
           <div style={col}>
-            <Input size="small" label="Small" placeholder="Small" />
-            <Input size="medium" label="Medium" placeholder="Medium (default)" />
-            <Input size="large" label="Large" placeholder="Large" />
+            <Input size="sm" label="Small" placeholder="Small" />
+            <Input size="md" label="Medium" placeholder="Medium (default)" />
+            <Input size="lg" label="Large" placeholder="Large" />
           </div>
         </div>
 

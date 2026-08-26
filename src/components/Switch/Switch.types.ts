@@ -4,6 +4,6 @@ export interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
 	label?: React.ReactNode;
 	labelPosition?: 'left' | 'right';
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	className?: string;
 }

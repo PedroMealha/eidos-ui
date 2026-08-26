@@ -90,19 +90,19 @@
 
   // ── Size modifiers ────────────────────────────────────────────────────────
 
-  &--small {
+  &--sm {
     @include font-size(xs);
     padding: var(--spacing-xs) var(--spacing-sm);
     height: var(--component-size-sm);
   }
 
-  &--medium {
+  &--md {
     @include font-size(sm);
     padding: var(--spacing-xs) var(--spacing-md);
     height: var(--component-size-md);
   }
 
-  &--large {
+  &--lg {
     @include font-size(base);
     padding: var(--spacing-sm) var(--spacing-md);
     height: var(--component-size-lg);

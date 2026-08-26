@@ -6,7 +6,7 @@ export const Progress: React.FC<ProgressProps> = ({
   value,
   max = 100,
   color = "primary",
-  size = "medium",
+  size = "md",
   showLabel = false,
   label,
   striped = false,

@@ -43,7 +43,7 @@ const meta = {
 			control: 'select',
 			options: ['small', 'medium', 'large', 'full'],
 			description: 'Size of the modal',
-			table: { type: { summary: '"small" | "medium" | "large" | "full"' }, defaultValue: { summary: 'medium' } },
+			table: { type: { summary: '"sm" | "md" | "lg" | "full"' }, defaultValue: { summary: 'md' } },
 		},
 		closeOnBackdropClick: {
 			control: 'boolean',
@@ -100,7 +100,7 @@ export const Examples = {
 		const [warningOpen, setWarningOpen] = useState(false);
 		const [dangerOpen, setDangerOpen] = useState(false);
 		const [actionsOpen, setActionsOpen] = useState(false);
-		const [sizesOpen, setSizesOpen] = useState<'small' | 'medium' | 'large' | 'full' | null>(null);
+		const [sizesOpen, setSizesOpen] = useState<'sm' | 'md' | 'lg' | 'full' | null>(null);
 		const [stringIconOpen, setStringIconOpen] = useState(false);
 
 		const label: React.CSSProperties = {
@@ -234,35 +234,35 @@ export const Examples = {
 				<div>
 					<p style={label}>Sizes</p>
 					<div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-						<Button onClick={() => setSizesOpen('small')}>Small</Button>
-						<Button onClick={() => setSizesOpen('medium')}>Medium</Button>
-						<Button onClick={() => setSizesOpen('large')}>Large</Button>
+						<Button onClick={() => setSizesOpen('sm')}>Small</Button>
+						<Button onClick={() => setSizesOpen('md')}>Medium</Button>
+						<Button onClick={() => setSizesOpen('lg')}>Large</Button>
 						<Button onClick={() => setSizesOpen('full')}>Full Screen</Button>
 					</div>
 
 					<Modal
-						isOpen={sizesOpen === 'small'}
+						isOpen={sizesOpen === 'sm'}
 						onClose={() => setSizesOpen(null)}
 						title="Small Modal"
-						size="small"
+						size="sm"
 					>
 						<p>This is a small modal (max-width: 400px).</p>
 					</Modal>
 
 					<Modal
-						isOpen={sizesOpen === 'medium'}
+						isOpen={sizesOpen === 'md'}
 						onClose={() => setSizesOpen(null)}
 						title="Medium Modal"
-						size="medium"
+						size="md"
 					>
 						<p>This is a medium modal (max-width: 600px) - default size.</p>
 					</Modal>
 
 					<Modal
-						isOpen={sizesOpen === 'large'}
+						isOpen={sizesOpen === 'lg'}
 						onClose={() => setSizesOpen(null)}
 						title="Large Modal"
-						size="large"
+						size="lg"
 					>
 						<p>This is a large modal (max-width: 800px).</p>
 						<p>It can contain more content.</p>
@@ -288,7 +288,7 @@ export const Examples = {
 						title="Delete Account"
 						icon={Trash2}
 						type="danger"
-						size="medium"
+						size="md"
 						actions={[
 							{
 								id: 'cancel',

@@ -12,7 +12,7 @@ const meta = {
     isOpen: false,
     onClose: () => {},
     placement: 'right',
-    size: 'medium',
+    size: 'md',
     closeOnBackdropClick: true,
     closeOnEscape: true,
   },
@@ -28,11 +28,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large', 'full'],
+      options: ['sm', 'md', 'lg', 'full'],
       description: 'Width (left/right) or height (top/bottom) of the panel.',
       table: {
-        type: { summary: '"small" | "medium" | "large" | "full"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg" | "full"' },
+        defaultValue: { summary: 'md' },
       },
     },
     title: {
@@ -226,7 +226,7 @@ export const Placements = {
 };
 
 // ============================================================================
-// SIZES - small / medium / large / full
+// SIZES - sm / md / lg / full
 // ============================================================================
 
 export const Sizes = {
@@ -234,16 +234,16 @@ export const Sizes = {
     const [activeSize, setActiveSize] = useState<DrawerSize | null>(null);
 
     const sizeDescriptions: Record<DrawerSize, string> = {
-      small: '280px wide',
-      medium: '400px wide (default)',
-      large: '560px wide',
+      sm: '280px wide',
+      md: '400px wide (default)',
+      lg: '560px wide',
       full: '100% of the viewport',
     };
 
     return (
       <>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {(['small', 'medium', 'large', 'full'] as const).map((s) => (
+          {(['sm', 'md', 'lg', 'full'] as const).map((s) => (
             <Button key={s} onClick={() => setActiveSize(s)}>
               {s}
             </Button>
@@ -252,7 +252,7 @@ export const Sizes = {
         <Drawer
           isOpen={activeSize !== null}
           onClose={() => setActiveSize(null)}
-          size={activeSize ?? 'medium'}
+          size={activeSize ?? 'md'}
           title={`${activeSize ? activeSize.charAt(0).toUpperCase() + activeSize.slice(1) : ''} Drawer`}
         >
           {activeSize && (
@@ -284,7 +284,7 @@ export const BottomSheet = {
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           placement="bottom"
-          size="medium"
+          size="md"
           title="Quick Actions"
           actions={[
             {

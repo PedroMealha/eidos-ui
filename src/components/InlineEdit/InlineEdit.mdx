@@ -29,10 +29,10 @@ function PageHeader() {
 
 ## Default
 
+> **Note - Uncontrolled vs controlled editing mode.** By default, `InlineEdit` manages its own open/close toggle internally (uncontrolled). To take external ownership of when editing is active, pass the `editing` boolean prop and respond to changes via `onEditingChange`. This is useful when a parent button, cell-click handler, or keyboard shortcut should drive the edit state independently of the component's built-in trigger. See the [Controlled](#controlled) story below for a working example.
+
 <Canvas of={InlineEditStories.Default} />
 <Controls of={InlineEditStories.Default} />
-
-> **Note - Uncontrolled vs controlled editing mode.** By default, `InlineEdit` manages its own open/close toggle internally (uncontrolled). To take external ownership of when editing is active, pass the `editing` boolean prop and respond to changes via `onEditingChange`. This is useful when a parent button, cell-click handler, or keyboard shortcut should drive the edit state independently of the component's built-in trigger. See the [Controlled](#controlled) story below for a working example.
 
 ## Sizes
 

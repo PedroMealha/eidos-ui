@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Spinner } from './Spinner.component';
 
 const meta = {
-  title: 'Layout/Spinner',
+  title: 'Feedback/Spinner',
   component: Spinner,
   parameters: {
     layout: 'fullscreen',
@@ -35,9 +35,9 @@ export const Examples = {
         <div>
           <p style={label}>Sizes</p>
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <Spinner size="small" />
-            <Spinner size="medium" />
-            <Spinner size="large" />
+            <Spinner size="sm" />
+            <Spinner size="md" />
+            <Spinner size="lg" />
           </div>
         </div>
 

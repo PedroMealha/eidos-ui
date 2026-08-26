@@ -34,11 +34,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Size of the tab buttons.',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     fullWidth: {
@@ -95,7 +95,7 @@ export const Default: Story = {
   args: {
     variant: 'line',
     color: 'primary',
-    size: 'medium',
+    size: 'md',
     fullWidth: false,
     defaultValue: 'overview',
   },
@@ -234,7 +234,7 @@ export const Sizes = {
       <div style={col}>
         <div>
           <p style={labelStyle}>Small</p>
-          <Tabs size="small" defaultValue="tab1">
+          <Tabs size="sm" defaultValue="tab1">
             <Tab value="tab1">Overview</Tab>
             <Tab value="tab2">Analytics</Tab>
             <Tab value="tab3">Reports</Tab>
@@ -245,7 +245,7 @@ export const Sizes = {
         </div>
         <div>
           <p style={labelStyle}>Medium (default)</p>
-          <Tabs size="medium" defaultValue="tab1">
+          <Tabs size="md" defaultValue="tab1">
             <Tab value="tab1">Overview</Tab>
             <Tab value="tab2">Analytics</Tab>
             <Tab value="tab3">Reports</Tab>
@@ -256,7 +256,7 @@ export const Sizes = {
         </div>
         <div>
           <p style={labelStyle}>Large</p>
-          <Tabs size="large" defaultValue="tab1">
+          <Tabs size="lg" defaultValue="tab1">
             <Tab value="tab1">Overview</Tab>
             <Tab value="tab2">Analytics</Tab>
             <Tab value="tab3">Reports</Tab>

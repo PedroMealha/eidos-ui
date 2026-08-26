@@ -19,7 +19,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 			helperText,
 			error = false,
 			errorMessage,
-			size = 'medium',
+			size = 'md',
 			fullWidth = false,
 			allowTyping = true,
 			className = '',

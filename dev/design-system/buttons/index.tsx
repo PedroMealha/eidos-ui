@@ -23,9 +23,9 @@ export const ButtonShowcase = () => (
 
     <Section label="Sizes">
       <Row>
-        <Button size="small">Small</Button>
-        <Button size="medium">Medium</Button>
-        <Button size="large">Large</Button>
+        <Button size="sm">Small</Button>
+        <Button size="md">Medium</Button>
+        <Button size="lg">Large</Button>
       </Row>
     </Section>
 

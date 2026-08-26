@@ -46,7 +46,7 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
 					>
 						{item.icon && renderIcon(item.icon, 'eidos-menu-icon')}
 						<span className={`eidos-menu-label`}>{item.label}</span>
-						{item.shortcut && <Kbd size="small" className="eidos-menu-shortcut">{item.shortcut}</Kbd>}
+						{item.shortcut && <Kbd size="sm" className="eidos-menu-shortcut">{item.shortcut}</Kbd>}
 					</li>
 				);
 

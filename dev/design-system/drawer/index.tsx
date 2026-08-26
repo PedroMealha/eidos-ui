@@ -7,7 +7,7 @@ import { Section, Grid, Col } from '../shared/Section';
 export const DrawerShowcase = () => {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<DrawerPlacement>('right');
-  const [size, setSize] = useState<DrawerSize>('medium');
+  const [size, setSize] = useState<DrawerSize>('md');
 
   return (
     <Col>
@@ -17,9 +17,9 @@ export const DrawerShowcase = () => {
             {(['left', 'right', 'top', 'bottom'] as const).map((p) => (
               <Button
                 key={p}
-                size="small"
+                size="sm"
                 variant="outlined"
-                onClick={() => { setPlacement(p); setSize('medium'); setOpen(true); }}
+                onClick={() => { setPlacement(p); setSize('md'); setOpen(true); }}
               >
                 {p}
               </Button>
@@ -29,10 +29,10 @@ export const DrawerShowcase = () => {
 
         <Section label="Sizes (right)">
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            {(['small', 'medium', 'large', 'full'] as const).map((s) => (
+            {(['sm', 'md', 'lg', 'full'] as const).map((s) => (
               <Button
                 key={s}
-                size="small"
+                size="sm"
                 variant="outlined"
                 onClick={() => { setPlacement('right'); setSize(s); setOpen(true); }}
               >
@@ -46,7 +46,7 @@ export const DrawerShowcase = () => {
       <Grid cols={2}>
         <Section label="With actions">
           <Button
-            onClick={() => { setPlacement('right'); setSize('medium'); setOpen(true); }}
+            onClick={() => { setPlacement('right'); setSize('md'); setOpen(true); }}
           >
             Open with actions
           </Button>
@@ -55,7 +55,7 @@ export const DrawerShowcase = () => {
         <Section label="Bottom sheet">
           <Button
             variant="outlined"
-            onClick={() => { setPlacement('bottom'); setSize('small'); setOpen(true); }}
+            onClick={() => { setPlacement('bottom'); setSize('sm'); setOpen(true); }}
           >
             Open bottom sheet
           </Button>

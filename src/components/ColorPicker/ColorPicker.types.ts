@@ -34,7 +34,7 @@ export interface ColorPickerProps {
   /** Override the default swatch palette with custom hex strings */
   swatches?: string[];
   disabled?: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'sm' | 'md' | 'lg';
   /** Render the picker panel inline - no popover trigger. Default: false */
   inline?: boolean;
   label?: string;

@@ -28,15 +28,15 @@ export const ButtonGroupShowcase = () => (
 
       <Section label="Sizes">
         <Col>
-          <ButtonGroup variant="outlined" size="small">
+          <ButtonGroup variant="outlined" size="sm">
             <Button>Small</Button>
             <Button>Group</Button>
           </ButtonGroup>
-          <ButtonGroup variant="outlined" size="medium">
+          <ButtonGroup variant="outlined" size="md">
             <Button>Medium</Button>
             <Button>Group</Button>
           </ButtonGroup>
-          <ButtonGroup variant="outlined" size="large">
+          <ButtonGroup variant="outlined" size="lg">
             <Button>Large</Button>
             <Button>Group</Button>
           </ButtonGroup>

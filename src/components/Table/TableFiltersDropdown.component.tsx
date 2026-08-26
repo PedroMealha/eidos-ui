@@ -229,7 +229,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 						options={column.filterOptions || []}
 						placeholder="Select value"
 						clearable={true}
-						inputProps={{ size: 'small' }}
+						inputProps={{ size: 'sm' }}
 					/>
 				);
 			case 'boolean':
@@ -244,7 +244,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 						]}
 						placeholder="Select value"
 						clearable={false}
-						inputProps={{ size: 'small' }}
+						inputProps={{ size: 'sm' }}
 					/>
 				);
 			case 'date': {
@@ -309,7 +309,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 						value={prepareValue()}
 						onChange={handleDateChange}
 						placeholder={getPlaceholder()}
-						inputProps={{ size: 'small' }}
+						inputProps={{ size: 'sm' }}
 						format={{
 							displayFormat: 'MMM DD, YYYY',
 							inputFormat: 'YYYY-MM-DD',
@@ -324,7 +324,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 						value={(row.value as string) || ''}
 						onChange={e => updateFilter(row.id, row.columnKey, e.target.value)}
 						placeholder="Enter value"
-						size="small"
+						size="sm"
 					/>
 				);
 		}
@@ -333,7 +333,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 	const canAddMore = filterRows.length < filterableColumns.length;
 
 	const triggerButton = (
-		<Button variant="text" size="small" icon={Funnel} className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''} />
+		<Button variant="text" size="sm" icon={Funnel} className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''} />
 	);
 
 	const dropdownContent = (
@@ -363,7 +363,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 										options={allColumns}
 										placeholder="Select column"
 										clearable={false}
-										inputProps={{ size: 'small' }}
+										inputProps={{ size: 'sm' }}
 									/>
 								</div>
 
@@ -371,11 +371,11 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 									{column && !isTemporaryFilter ? (
 										renderFilterInput(row, column)
 									) : (
-										<Input value="" disabled placeholder="Select column first" size="small" />
+										<Input value="" disabled placeholder="Select column first" size="sm" />
 									)}
 								</div>
 
-								<Button variant="text" size="small" icon={X} color="secondary" onClick={() => removeFilter(row.id)} />
+								<Button variant="text" size="sm" icon={X} color="secondary" onClick={() => removeFilter(row.id)} />
 							</div>
 						);
 					})}
@@ -384,22 +384,22 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 
 			<div className="eidos-table-filters-footer">
 				<div className="eidos-table-filters-actions">
-					<Button variant="text" size="small" preIcon={Plus} disabled={!canAddMore} onClick={addFilter}>
+					<Button variant="text" size="sm" preIcon={Plus} disabled={!canAddMore} onClick={addFilter}>
 						Add Filter
 					</Button>
 
 					{hasActiveFilters && (
-						<Button variant="text" size="small" color="secondary" onClick={clearAllFilters}>
+						<Button variant="text" size="sm" color="secondary" onClick={clearAllFilters}>
 							Clear All
 						</Button>
 					)}
 
 					{hasChanges && (
 						<div className="eidos-table-filters-apply-actions">
-							<Button variant="filled" size="small" color="primary" preIcon={Check} onClick={applyFilters}>
+							<Button variant="filled" size="sm" color="primary" preIcon={Check} onClick={applyFilters}>
 								Apply Filters
 							</Button>
-							<Button variant="outlined" size="small" color="secondary" preIcon={RotateCcw} onClick={resetFilters}>
+							<Button variant="outlined" size="sm" color="secondary" preIcon={RotateCcw} onClick={resetFilters}>
 								Discard Changes
 							</Button>
 						</div>

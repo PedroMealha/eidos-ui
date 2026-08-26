@@ -18,7 +18,7 @@ interface StoryRow extends Record<string, unknown> {
 // ── Meta ─────────────────────────────────────────────────────────────────────
 
 const meta: Meta<typeof TableFiltersDropdown<StoryRow>> = {
-  title: 'Data Display/TableFiltersDropdown',
+  title: 'Data/TableFiltersDropdown',
   component: TableFiltersDropdown,
   parameters: {
     layout: 'centered',

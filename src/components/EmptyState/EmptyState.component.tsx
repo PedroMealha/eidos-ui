@@ -6,7 +6,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 	title,
 	description,
 	action,
-	size = 'medium',
+	size = 'md',
 	className = '',
 }) => (
 	<div

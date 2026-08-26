@@ -27,10 +27,10 @@ const meta = {
     },
     size: {
       control: "select",
-      options: ["xs", "sm", "md", "lg", "xl"],
+      options: ["sm", "md", "lg"],
       description: "Avatar dimensions.",
       table: {
-        type: { summary: '"xs" | "sm" | "md" | "lg" | "xl"' },
+        type: { summary: '"sm" | "md" | "lg"' },
         defaultValue: { summary: "md" },
       },
     },
@@ -138,13 +138,13 @@ export const Shapes = {
 };
 
 // ============================================================================
-// SIZES - all five sizes in a row
+// SIZES
 // ============================================================================
 
 export const Sizes = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
-      {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+      {(["sm", "md", "lg"] as const).map((size) => (
         <div key={size} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
           <Avatar name="Jane Smith" size={size} />
           <span style={labelStyle}>{size}</span>
@@ -229,7 +229,7 @@ export const Group = {
 export const GroupSizes = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+      {(["sm", "md", "lg"] as const).map((size) => (
         <div key={size} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span style={{ ...labelStyle, minWidth: "2rem" }}>{size}</span>
           <AvatarGroup size={size} max={4}>

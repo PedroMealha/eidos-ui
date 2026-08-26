@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
-export type DrawerSize = 'small' | 'medium' | 'large' | 'full';
+export type DrawerSize = 'sm' | 'md' | 'lg' | 'full';
 
 export interface DrawerAction {
   id: string;
@@ -25,7 +25,7 @@ export interface DrawerProps {
   /**
    * Width (left/right) or height (top/bottom) of the panel.
    * small = 280px / 40%, medium = 400px / 50%, large = 560px / 65%, full = 100%.
-   * Default: 'medium'.
+   * Default: 'md'.
    */
   size?: DrawerSize;
   closeOnBackdropClick?: boolean;

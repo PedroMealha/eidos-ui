@@ -37,8 +37,8 @@ export const BadgeShowcase = () => (
 
       <Section label="Sizes">
         <Row>
-          <Badge size="small">Small</Badge>
-          <Badge size="medium">Medium</Badge>
+          <Badge size="sm">Small</Badge>
+          <Badge size="md">Medium</Badge>
         </Row>
       </Section>
 
@@ -54,8 +54,8 @@ export const BadgeShowcase = () => (
 
     <Section label="Inline with other components">
       <Row>
-        <Chip color="primary">Messages <Badge color="danger" size="small">3</Badge></Chip>
-        <Chip color="secondary">Alerts <Badge color="warning" size="small" variant="text">12</Badge></Chip>
+        <Chip color="primary">Messages <Badge color="danger" size="sm">3</Badge></Chip>
+        <Chip color="secondary">Alerts <Badge color="warning" size="sm" variant="text">12</Badge></Chip>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.875rem' }}>
           Notifications <Badge color="primary" dot />
         </span>

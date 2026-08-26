@@ -144,7 +144,7 @@ export const ComboboxShowcase = () => {
             <div style={{ flex: 1, minWidth: '200px' }}>
               <Combobox
                 label="Small"
-                size="small"
+                size="sm"
                 options={frameworkOptions}
                 value={sized}
                 onChange={setSized}
@@ -154,7 +154,7 @@ export const ComboboxShowcase = () => {
             <div style={{ flex: 1, minWidth: '200px' }}>
               <Combobox
                 label="Medium"
-                size="medium"
+                size="md"
                 options={frameworkOptions}
                 value={sized}
                 onChange={setSized}
@@ -164,7 +164,7 @@ export const ComboboxShowcase = () => {
             <div style={{ flex: 1, minWidth: '200px' }}>
               <Combobox
                 label="Large"
-                size="large"
+                size="lg"
                 options={frameworkOptions}
                 value={sized}
                 onChange={setSized}

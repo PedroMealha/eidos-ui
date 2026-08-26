@@ -9,7 +9,7 @@ export const TagInput: React.FC<TagInputProps> = ({
   defaultValue = [],
   onChange,
   placeholder = 'Add tag…',
-  size = 'medium',
+  size = 'md',
   disabled = false,
   label,
   error,

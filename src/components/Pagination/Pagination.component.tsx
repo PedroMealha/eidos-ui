@@ -58,7 +58,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   siblingCount       = 1,
   showFirstLast      = false,
   color              = 'primary',
-  size               = 'small',
+  size               = 'sm',
   disabled           = false,
   className          = '',
   // Table-footer mode
@@ -221,7 +221,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               }))}
               clearable={false}
               disabled={disabled}
-              inputProps={{ size: 'small', width: '3ch' }}
+              inputProps={{ size: 'sm', width: '3ch' }}
             />
           </div>
         )}

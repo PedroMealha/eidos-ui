@@ -22,7 +22,7 @@ export interface ComboboxProps {
   allowFreeText?: boolean;
   clearable?: boolean;
   disabled?: boolean;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'sm' | 'md' | 'lg';
   label?: string;
   error?: string;
   hint?: string;

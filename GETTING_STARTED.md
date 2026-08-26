@@ -1,240 +1,203 @@
 # Getting Started with Eidos UI
 
-## ✅ What's Been Set Up
+A React component library with 49 components, a consistent design language, and full TypeScript support.
 
-Your design system package is ready with:
-
-- ✅ **Button Component** - With variants, sizes, colors, icons, loading, tooltips
-- ✅ **Tooltip Component** - Smart positioning, multiple triggers
-- ✅ **SCSS Setup** - CSS custom properties + mixins
-- ✅ **TypeScript** - Full type safety with `.types.ts` files
-- ✅ **Storybook** - Interactive documentation
-- ✅ **Build System** - tsup for library building
-- ✅ **Dev Preview** - Vite dev server for quick testing
-- ✅ **lucide-react** - Icon support installed
-
-## 🚀 Quick Commands
-
-### Development
+## Quick commands
 
 ```bash
-# Start Storybook (best for component development)
+# Interactive component docs (recommended)
 npm run storybook
 
-# Start Vite dev server (quick preview)
+# Dev preview (Vite)
 npm run dev
-```
 
-### Building
-
-```bash
 # Build the library for publishing
 npm run build
-```
 
-### Testing
-
-```bash
-# Lint your code
+# Lint
 npm run lint
 ```
 
-## 📁 File Structure Overview
+## Install
+
+```bash
+npm install @pmealha/eidos-ui
+```
+
+**Peer dependencies** — must be present in your project (not bundled):
+
+```json
+"peerDependencies": {
+  "react": "^18.0.0 || ^19.0.0",
+  "react-dom": "^18.0.0 || ^19.0.0"
+}
+```
+
+## Import the stylesheet
+
+Once at your app root (`main.tsx` or equivalent). Without it, components render unstyled.
+
+```ts
+import '@pmealha/eidos-ui/styles';
+```
+
+## Set up providers
+
+Most components work standalone. Two require a context provider at the app root.
+
+### Snackbar (required for toast notifications)
+
+```tsx
+import { SnackbarProvider, SnackbarContainer } from '@pmealha/eidos-ui';
+
+function Root() {
+  return (
+    <SnackbarProvider>
+      <App />
+      <SnackbarContainer />
+    </SnackbarProvider>
+  );
+}
+```
+
+Then call from anywhere inside the tree:
+
+```tsx
+import { useSnackbar } from '@pmealha/eidos-ui';
+
+const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
+showSuccess('Saved!');
+```
+
+### Dropdown (optional — grouped menus only)
+
+Only needed when using `dropdownGroup` to ensure only one menu is open at a time.
+
+```tsx
+import { DropdownProvider, Dropdown } from '@pmealha/eidos-ui';
+
+<DropdownProvider>
+  <Dropdown dropdownGroup="toolbar" trigger={<button>File</button>} content={...} />
+  <Dropdown dropdownGroup="toolbar" trigger={<button>Edit</button>} content={...} />
+</DropdownProvider>
+```
+
+## Icons
+
+Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lucide-react`, which is listed as a regular dependency and auto-installed with the package — no extra install step needed.
+
+```tsx
+import { Download, Plus } from 'lucide-react';
+import { Button } from '@pmealha/eidos-ui';
+
+<Button preIcon={Download}>Export</Button>
+```
+
+## TypeScript
+
+All components are fully typed. Import types from the main entry point:
+
+```ts
+import type { ButtonProps, InputProps, SelectOption } from '@pmealha/eidos-ui';
+```
+
+## Theming
+
+All design tokens are CSS custom properties defined on `:root`. Override them after the library stylesheet import to customise the look globally.
+
+```css
+:root {
+  /* Brand colour */
+  --primary-color: #0ea5e9;
+  --primary-dark:  #0284c7;
+  --primary-light: #7dd3fc;
+
+  /* Border radius */
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+
+  /* Component heights */
+  --component-size-sm: 28px;
+  --component-size-md: 36px;
+  --component-size-lg: 44px;
+}
+```
+
+## Import patterns
+
+```ts
+// Root barrel — works with any bundler that tree-shakes
+import { Button, Input, DataGrid } from '@pmealha/eidos-ui';
+
+// Deep import — explicit single-component chunk (useful in CJS / non-tree-shaking envs)
+import { Button } from '@pmealha/eidos-ui/button';
+import { DataGrid } from '@pmealha/eidos-ui/data-grid';
+```
+
+## File structure
 
 ```
 src/
 ├── components/
-│   ├── Button/
-│   │   ├── Button.tsx           # Component implementation
-│   │   ├── Button.types.ts      # TypeScript types
-│   │   ├── Button.scss          # Styles (uses CSS variables)
-│   │   ├── Button.stories.tsx   # Storybook documentation
-│   │   └── index.ts             # Exports
-│   │
-│   └── Tooltip/
-│       ├── Tooltip.tsx
-│       ├── Tooltip.types.ts
-│       ├── Tooltip.scss
-│       ├── Tooltip.stories.tsx
-│       └── index.ts
+│   └── ComponentName/
+│       ├── ComponentName.component.tsx   # Implementation
+│       ├── ComponentName.types.ts        # TypeScript types
+│       ├── ComponentName.scss            # Styles (CSS custom properties)
+│       ├── ComponentName.stories.tsx     # Storybook stories
+│       ├── ComponentName.mdx             # Storybook docs
+│       └── index.ts                      # Barrel export
 │
 ├── styles/
 │   ├── variables.scss    # CSS custom properties (:root)
 │   ├── mixins.scss       # Reusable SCSS mixins
-│   └── index.scss        # Main styles entry
+│   └── index.scss        # Main styles entry (imports all component SCSS)
 │
 └── index.ts              # Main library entry point
 ```
 
-## 🎯 Next Steps
+## Adding a new component
 
-### 1. Test Your Components
+1. Create the component directory and files (see structure above).
+2. Add the SCSS import to `src/styles/index.scss`:
+   ```scss
+   @use '../components/NewComponent/NewComponent.scss';
+   ```
+3. Export from `src/index.ts`:
+   ```ts
+   export { NewComponent } from './components/NewComponent';
+   export type { NewComponentProps } from './components/NewComponent';
+   ```
+4. Add a dev showcase at `dev/design-system/<kebab-case-name>/index.tsx` and register it in `dev/App.tsx`.
 
-```bash
-npm install
-npm run storybook
-```
+## Component naming conventions
 
-Visit `http://localhost:6006` to see your components!
+- TypeScript prop values: use full words for variants (`filled`, `outlined`, `text`), abbreviated for sizes (`sm`, `md`, `lg`), and full words for colours (`primary`, `secondary`, `success`, `danger`, `warning`, `info`).
+- CSS classes: `eidos-` prefix (e.g. `eidos-button`, `eidos-input`).
+- BEM size modifiers: `--sm`, `--md`, `--lg` (matches CSS variable convention: `--component-size-sm`).
 
-### 2. View in Dev Mode
-
-```bash
-npm run dev
-```
-
-Visit `http://localhost:5173` to see all components in action.
-
-### 3. Add More Components
-
-Follow this pattern:
-
-```
-src/components/NewComponent/
-├── NewComponent.tsx
-├── NewComponent.types.ts
-├── NewComponent.scss
-├── NewComponent.stories.tsx
-└── index.ts
-```
-
-Then export in `src/index.ts`:
-
-```tsx
-export { NewComponent } from './components/NewComponent';
-export type { NewComponentProps } from './components/NewComponent';
-```
-
-And import styles in `src/styles/index.scss`:
-
-```scss
-@use '../components/NewComponent/NewComponent.scss';
-```
-
-### 4. Publishing to npm
-
-When ready to publish:
+## Publishing
 
 ```bash
-# Update version
-npm version patch  # or minor, or major
-
-# Build
-npm run build
-
-# Publish
-npm publish --access public
+npm run release:patch   # bug fixes
+npm run release:minor   # new components / non-breaking changes
+npm run release:major   # breaking API changes
 ```
 
-## 💡 Key Features to Know
+Each script bumps the version and publishes (which triggers `prepublishOnly: npm run build` automatically).
 
-### CSS Variables (Not SCSS Variables!)
+## Component inventory
 
-Your components use CSS custom properties for theming:
+49 components across 9 categories:
 
-```scss
-// ❌ Don't use SCSS variables
-$primary: #6366f1;
+| Category | Components |
+|---|---|
+| Elements | Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, SegmentedControl, SplitButton |
+| Forms | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
+| Feedback | Alert, Progress, Skeleton, Spinner |
+| Layout | Stepper |
+| Navigation | Pagination, Tabs |
+| Overlays | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip |
+| Data Display | Avatar, Timeline, TreeView |
+| Data | DataGrid, DatePicker, Table, TableFiltersDropdown, VirtualList |
 
-// ✅ Use CSS custom properties
-.eidos-button {
-  background: var(--primary-color);
-  padding: var(--spacing-md);
-}
-```
-
-Benefits:
-- Users can override them
-- Runtime theming support
-- Dark mode support
-
-### Component Naming
-
-All component classes use the `eidos-` prefix:
-
-```scss
-.eidos-button { }
-.eidos-tooltip { }
-```
-
-This prevents conflicts with user's code.
-
-### Icon Support
-
-Icons use `lucide-react` (already installed):
-
-```tsx
-import { Download } from 'lucide-react';
-
-<Button preIcon={Download}>Download</Button>
-<Button icon={Download} />  // Icon-only
-```
-
-### Shared Components
-
-Components can use other components:
-
-```tsx
-// Button uses Tooltip internally
-<Button tooltip="Click me">
-  Submit
-</Button>
-```
-
-## 🎨 Customization
-
-Users can override your styles:
-
-```css
-/* In user's app */
-:root {
-  --primary-color: #ff0000;  /* Override your primary */
-}
-
-.eidos-button {
-  border-radius: 20px;  /* Override button radius */
-}
-```
-
-## 🐛 Troubleshooting
-
-### Linter Errors?
-
-```bash
-npm run lint
-```
-
-Fix any errors before building.
-
-### Build Fails?
-
-Make sure all imports are correct:
-- Component paths are case-sensitive
-- SCSS files use `@use` not `@import`
-- All exports are in `src/index.ts`
-
-### Storybook Not Loading?
-
-Check that:
-- `.storybook/main.ts` includes correct story paths
-- Component stories end with `.stories.tsx`
-- All imports are valid
-
-## 📚 Documentation
-
-- **README.md** - Complete usage guide
-- **This file** - Quick start guide
-- **Storybook** - Interactive component docs
-- **dev/** folder - Usage examples
-
-## 🎉 You're Ready!
-
-Your design system is fully set up and ready to use. Start by:
-
-1. Running `npm run storybook`
-2. Exploring the components
-3. Adding your own components
-4. Building and publishing when ready
-
-Happy coding! 🚀
-
+For full interactive documentation, run `npm run storybook`.

@@ -14,9 +14,9 @@
   font-family: var(--font-family-primary);
 
   // ── Size modifiers ──────────────────────────────────────────────────────────
-  // Applied as a second class on the root ul (e.g. class="eidos-tree eidos-tree--small").
+  // Applied as a second class on the root ul (e.g. class="eidos-tree eidos-tree--sm").
 
-  &--small {
+  &--sm {
     --tree-indent: 20px;
 
     @include font-size(sm);
@@ -26,7 +26,7 @@
     }
   }
 
-  &--medium {
+  &--md {
     @include font-size(base);
 
     .eidos-tree-node-row {
@@ -34,7 +34,7 @@
     }
   }
 
-  &--large {
+  &--lg {
     --tree-indent: 28px;
 
     @include font-size(lg);
@@ -76,7 +76,7 @@
   @include flex-center-y;
   cursor: pointer;
   @include border-radius(sm);
-  // Base padding (medium); overridden by .eidos-tree--small/large above.
+  // Base padding (medium); overridden by .eidos-tree--sm/large above.
   padding: 4px 8px;
   gap: 4px;
   user-select: none;

@@ -184,7 +184,7 @@ export const RichContent: Story = {
             }}
           />
         </label>
-        <Button type="submit" size="small">
+        <Button type="submit" size="sm">
           Subscribe
         </Button>
       </form>

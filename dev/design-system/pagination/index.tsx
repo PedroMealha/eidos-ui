@@ -32,9 +32,9 @@ export const PaginationShowcase = () => {
 
       <Section label="Sizes">
         <Col>
-          <Pagination page={3} totalPages={8} onChange={() => {}} size="small" />
-          <Pagination page={3} totalPages={8} onChange={() => {}} size="medium" />
-          <Pagination page={3} totalPages={8} onChange={() => {}} size="large" />
+          <Pagination page={3} totalPages={8} onChange={() => {}} size="sm" />
+          <Pagination page={3} totalPages={8} onChange={() => {}} size="md" />
+          <Pagination page={3} totalPages={8} onChange={() => {}} size="lg" />
         </Col>
       </Section>
 

@@ -5,7 +5,7 @@ export interface ModalAction {
   id: string;
   label: string;
   variant?: "filled" | "outlined" | "text";
-  size?: "small" | "medium" | "large";
+  size?: "sm" | "md" | "lg";
   color?: "primary" | "secondary" | "success" | "danger";
   disabled?: boolean;
   loading?: boolean;
@@ -22,6 +22,6 @@ export interface ModalProps {
   actions?: ModalAction[];
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
-  size?: "small" | "medium" | "large" | "full";
+  size?: "sm" | "md" | "lg" | "full";
   className?: string;
 }

@@ -9,7 +9,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 		{
 			variant = 'filled',
 			color = 'primary',
-			size = 'medium',
+			size = 'md',
 			disabled = false,
 			loading = false,
 			className = '',

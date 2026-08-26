@@ -13,19 +13,19 @@
   outline: none;
 
   // Sizes
-  &--small {
+  &--sm {
     height: var(--component-size-sm);
     padding: 0 var(--spacing-sm);
     @include font-size(sm);
   }
 
-  &--medium {
+  &--md {
     height: var(--component-size-md);
     padding: 0 var(--spacing-md);
     @include font-size(base);
   }
 
-  &--large {
+  &--lg {
     height: var(--component-size-lg);
     padding: 0 var(--spacing-lg);
     @include font-size(lg);

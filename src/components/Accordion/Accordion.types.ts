@@ -11,8 +11,8 @@ export interface AccordionProps {
   onChange?: (value: string | string[]) => void;
   /** Visual variant. Default: 'default'. */
   variant?: 'default' | 'bordered' | 'separated';
-  /** Size affecting padding and font size. Default: 'medium'. */
-  size?: 'small' | 'medium' | 'large';
+  /** Size affecting padding and font size. Default: 'md'. */
+  size?: 'sm' | 'md' | 'lg';
   /** Color applied to the active trigger label. Default: 'primary'. */
   color?: 'primary' | 'secondary' | 'success' | 'danger';
   className?: string;

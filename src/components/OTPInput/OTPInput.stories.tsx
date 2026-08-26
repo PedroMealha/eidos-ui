@@ -23,11 +23,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Visual size of each slot',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     mask: {
@@ -77,7 +77,7 @@ export const Default: Story = {
   args: {
     length: 6,
     type: 'numeric',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -86,7 +86,7 @@ export const ShortCode: Story = {
   args: {
     length: 4,
     type: 'numeric',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -95,7 +95,7 @@ export const WithLabel: Story = {
     length: 6,
     label: 'One-time password',
     hint: 'Enter the 6-digit code sent to your phone.',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -105,7 +105,7 @@ export const WithError: Story = {
     label: 'Verification code',
     defaultValue: '12345',
     error: 'Invalid code. Please try again.',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -116,7 +116,7 @@ export const Masked: Story = {
     mask: true,
     label: 'PIN',
     hint: 'Your 6-digit PIN is hidden as you type.',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -126,7 +126,7 @@ export const Alphanumeric: Story = {
     type: 'alphanumeric',
     label: 'Invite code',
     hint: 'Letters and digits are accepted.',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -137,7 +137,7 @@ export const Disabled: Story = {
     disabled: true,
     label: 'Verification code',
     hint: 'This field is currently disabled.',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -147,7 +147,7 @@ export const AutoFocus: Story = {
     autoFocus: true,
     label: 'Enter code',
     hint: 'The first slot is focused automatically.',
-    size: 'medium',
+    size: 'md',
   },
 };
 
@@ -174,15 +174,15 @@ export const Sizes = {
       <div style={row}>
         <div>
           <p style={label}>Small</p>
-          <OTPInput length={6} size="small" />
+          <OTPInput length={6} size="sm" />
         </div>
         <div>
           <p style={label}>Medium (default)</p>
-          <OTPInput length={6} size="medium" />
+          <OTPInput length={6} size="md" />
         </div>
         <div>
           <p style={label}>Large</p>
-          <OTPInput length={6} size="large" />
+          <OTPInput length={6} size="lg" />
         </div>
       </div>
     );

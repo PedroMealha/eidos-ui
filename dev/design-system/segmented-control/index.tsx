@@ -48,9 +48,9 @@ export const SegmentedControlShowcase = () => {
       <Grid cols={3}>
         <Section label="Sizes">
           <Col>
-            <SegmentedControl size="small"  options={[{ value: 'a', label: 'Small' }, { value: 'b', label: 'Group' }]} defaultValue="a" />
-            <SegmentedControl size="medium" options={[{ value: 'a', label: 'Medium' }, { value: 'b', label: 'Group' }]} defaultValue="a" />
-            <SegmentedControl size="large"  options={[{ value: 'a', label: 'Large' }, { value: 'b', label: 'Group' }]} defaultValue="a" />
+            <SegmentedControl size="sm"  options={[{ value: 'a', label: 'Small' }, { value: 'b', label: 'Group' }]} defaultValue="a" />
+            <SegmentedControl size="md" options={[{ value: 'a', label: 'Medium' }, { value: 'b', label: 'Group' }]} defaultValue="a" />
+            <SegmentedControl size="lg"  options={[{ value: 'a', label: 'Large' }, { value: 'b', label: 'Group' }]} defaultValue="a" />
           </Col>
         </Section>
 

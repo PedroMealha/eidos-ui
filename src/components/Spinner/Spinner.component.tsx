@@ -2,13 +2,13 @@ import React from "react";
 import { LoaderCircle } from "lucide-react";
 
 export interface SpinnerProps {
-  size?: "small" | "medium" | "large";
+  size?: "sm" | "md" | "lg";
   color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
   className?: string;
 }
 
 export const Spinner: React.FC<SpinnerProps> = ({
-  size = "medium",
+  size = "md",
   color = "primary",
   className = "",
 }) => (

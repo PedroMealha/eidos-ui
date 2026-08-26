@@ -13,8 +13,8 @@ export interface OTPInputProps {
   type?: 'numeric' | 'alphanumeric';
   /** Mask filled slots as password dots. Default: false */
   mask?: boolean;
-  /** Visual size of each slot. Default: 'medium' */
-  size?: 'small' | 'medium' | 'large';
+  /** Visual size of each slot. Default: 'md' */
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   /** Error message - turns all slots red and renders the message below */
   error?: string;

@@ -494,7 +494,7 @@ export const Table = <T extends Record<string, unknown>>({
     return (
       <div className={`eidos-table-container ${className || ""}`}>
         <div className="eidos-table-loading">
-          <Spinner size="medium" />
+          <Spinner size="md" />
           <p>Loading...</p>
         </div>
       </div>
@@ -554,7 +554,7 @@ export const Table = <T extends Record<string, unknown>>({
             <Checkbox
               checked={isVisible}
               disabled={isLastVisible}
-              size="small"
+              size="sm"
               onChange={() => {/* click handled by parent button */}}
             />
             <span>{col.label}</span>
@@ -591,7 +591,7 @@ export const Table = <T extends Record<string, unknown>>({
                       return (
                         <Button
                           key={action.id}
-                          size="small"
+                          size="sm"
                           variant={action.variant ?? "outlined"}
                           color={action.color ?? "secondary"}
                           preIcon={action.icon}
@@ -624,7 +624,7 @@ export const Table = <T extends Record<string, unknown>>({
                 align="end"
                 autoWidth={false}
                 trigger={
-                  <Button variant="text" size="small" preIcon={AlignJustify}>
+                  <Button variant="text" size="sm" preIcon={AlignJustify}>
                     Density
                   </Button>
                 }
@@ -638,7 +638,7 @@ export const Table = <T extends Record<string, unknown>>({
                 align="end"
                 autoWidth={false}
                 trigger={
-                  <Button variant="text" size="small" preIcon={Columns3}>
+                  <Button variant="text" size="sm" preIcon={Columns3}>
                     Columns
                   </Button>
                 }
@@ -649,7 +649,7 @@ export const Table = <T extends Record<string, unknown>>({
             {showExport && (
               <Button
                 variant="text"
-                size="small"
+                size="sm"
                 icon={Download}
                 onClick={handleExportCsv}
                 tooltip="Export CSV"
@@ -690,7 +690,7 @@ export const Table = <T extends Record<string, unknown>>({
                   data-col-key="__checkbox__"
                 >
                   <Checkbox
-                    size="small"
+                    size="sm"
                     checked={allSelected}
                     indeterminate={someSelected}
                     onChange={toggleAll}
@@ -833,7 +833,7 @@ export const Table = <T extends Record<string, unknown>>({
                             clicks the cell margin outside the checkbox. */}
                         <span onClick={(e) => e.stopPropagation()}>
                           <Checkbox
-                            size="small"
+                            size="sm"
                             checked={isSelected}
                             onChange={() => toggleRow(key)}
                             aria-label={`Select row ${globalIndex + 1}`}
@@ -905,7 +905,7 @@ export const Table = <T extends Record<string, unknown>>({
                       action={
                         onFiltersChange ? (
                           <Button
-                            size="small"
+                            size="sm"
                             variant="outlined"
                             color="primary"
                             onClick={() => onFiltersChange({})}
@@ -914,14 +914,14 @@ export const Table = <T extends Record<string, unknown>>({
                           </Button>
                         ) : undefined
                       }
-                      size="small"
+                      size="sm"
                     />
                   ) : (
                     <EmptyState
                       icon={<FolderOpen />}
                       title={emptyMessage}
                       description="There are no records to display."
-                      size="small"
+                      size="sm"
                     />
                   )}
                 </td>
@@ -944,7 +944,7 @@ export const Table = <T extends Record<string, unknown>>({
                 pageSize={currentPageSize}
                 onPageSizeChange={handlePageSizeChange}
                 pageSizeOptions={pageSizeOptions}
-                size="small"
+                size="sm"
               />
             ) : (
               <span className="eidos-table-results-info">

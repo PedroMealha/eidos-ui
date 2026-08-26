@@ -216,7 +216,7 @@ export const Examples = {
 				<p style={label}>Sizing</p>
 				<div style={{ display: 'flex', gap: '1rem' }}>
 					<Menu
-						trigger={<Button variant="outlined" size="small">Min Width</Button>}
+						trigger={<Button variant="outlined" size="sm">Min Width</Button>}
 						items={[
 							{ type: 'item', id: '1', label: 'Short', onClick: () => alert('Short') },
 							{ type: 'item', id: '2', label: 'Item', onClick: () => alert('Item') },
@@ -224,7 +224,7 @@ export const Examples = {
 						minWidth={200}
 					/>
 					<Menu
-						trigger={<Button variant="outlined" size="small">Max Height</Button>}
+						trigger={<Button variant="outlined" size="sm">Max Height</Button>}
 						items={[
 							{ type: 'item', id: '1', label: 'Item 1', icon: Mail, onClick: () => {} },
 							{ type: 'item', id: '2', label: 'Item 2', icon: Mail, onClick: () => {} },

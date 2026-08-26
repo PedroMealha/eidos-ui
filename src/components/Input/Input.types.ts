@@ -5,7 +5,7 @@ interface BaseInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   variant?: "filled" | "outlined" | "text" | "bare";
   color?: "primary" | "secondary" | "success" | "danger";
-  size?: "small" | "medium" | "large";
+  size?: "sm" | "md" | "lg";
   disabled?: boolean;
   loading?: boolean;
   className?: string;

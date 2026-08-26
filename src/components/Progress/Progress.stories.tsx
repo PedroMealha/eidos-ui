@@ -38,8 +38,8 @@ const meta = {
       options: ["small", "medium", "large"],
       description: "Track height - small (4 px), medium (8 px), large (12 px).",
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: "medium" },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: "md" },
       },
     },
     showLabel: {
@@ -79,7 +79,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     value: 65,
-    size: "medium",
+    size: "md",
     color: "primary",
   },
 };
@@ -90,7 +90,7 @@ export const Default: Story = {
 
 export const Indeterminate: Story = {
   args: {
-    size: "medium",
+    size: "md",
     color: "primary",
   },
 };
@@ -148,7 +148,7 @@ export const WithLabel: Story = {
   args: {
     value: 48,
     showLabel: true,
-    size: "medium",
+    size: "md",
     color: "primary",
   },
 };
@@ -161,7 +161,7 @@ export const Striped: Story = {
   args: {
     value: 55,
     striped: true,
-    size: "large",
+    size: "lg",
     color: "primary",
   },
 };

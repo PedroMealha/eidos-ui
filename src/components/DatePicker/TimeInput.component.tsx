@@ -79,7 +79,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
 						min={0}
 						max={23}
 						placeholder="HH"
-						size="small"
+						size="sm"
 						className={'eidos-time-input-time-field'}
 					/>
 					<span className={'eidos-time-input-separator'}>:</span>
@@ -93,7 +93,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
 						min={0}
 						max={59}
 						placeholder="MM"
-						size="small"
+						size="sm"
 						className={'eidos-time-input-time-field'}
 					/>
 					{includeSeconds && <span className={'eidos-time-input-separator'}>:</span>}
@@ -108,7 +108,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
 							min={0}
 							max={59}
 							placeholder="SS"
-							size="small"
+							size="sm"
 							className={'eidos-time-input-time-field'}
 						/>
 					</div>

@@ -11,7 +11,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   title,
   children,
   actions,
-  size = 'medium',
+  size = 'md',
   closeOnBackdropClick = true,
   closeOnEscape = true,
   className = '',

@@ -323,15 +323,15 @@
 	}
 
 	// Sizes (font only - height is driven by `rows` and natural growth)
-	&--small {
+	&--sm {
 		@include font-size(sm);
 	}
 
-	&--medium {
+	&--md {
 		@include font-size(base);
 	}
 
-	&--large {
+	&--lg {
 		@include font-size(lg);
 	}
 
@@ -394,7 +394,7 @@
 
 @include mobile-up {
 	.eidos-textarea {
-		&--large {
+		&--lg {
 			@include font-size(base);
 		}
 	}

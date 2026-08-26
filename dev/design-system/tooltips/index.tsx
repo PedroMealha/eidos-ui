@@ -8,16 +8,16 @@ export const TooltipShowcase = () => (
     <Section label="Placements">
       <Row>
         <Tooltip message="Appears above" placement="top">
-          <Button variant="outlined" size="small">Top</Button>
+          <Button variant="outlined" size="sm">Top</Button>
         </Tooltip>
         <Tooltip message="Appears below" placement="bottom">
-          <Button variant="outlined" size="small">Bottom</Button>
+          <Button variant="outlined" size="sm">Bottom</Button>
         </Tooltip>
         <Tooltip message="Appears to the left" placement="left">
-          <Button variant="outlined" size="small">Left</Button>
+          <Button variant="outlined" size="sm">Left</Button>
         </Tooltip>
         <Tooltip message="Appears to the right" placement="right">
-          <Button variant="outlined" size="small">Right</Button>
+          <Button variant="outlined" size="sm">Right</Button>
         </Tooltip>
       </Row>
     </Section>
@@ -25,13 +25,13 @@ export const TooltipShowcase = () => (
     <Section label="Triggers">
       <Row>
         <Tooltip message="Triggered on hover" triggerType="hover">
-          <Button variant="outlined" size="small">Hover</Button>
+          <Button variant="outlined" size="sm">Hover</Button>
         </Tooltip>
         <Tooltip message="Triggered on click - click again to dismiss" triggerType="click">
-          <Button variant="outlined" size="small">Click</Button>
+          <Button variant="outlined" size="sm">Click</Button>
         </Tooltip>
         <Tooltip message="Triggered on focus - tab to this button" triggerType="focus">
-          <Button variant="outlined" size="small">Focus</Button>
+          <Button variant="outlined" size="sm">Focus</Button>
         </Tooltip>
       </Row>
     </Section>
@@ -44,7 +44,7 @@ export const TooltipShowcase = () => (
         <Button
           color="danger"
           variant="outlined"
-          size="small"
+          size="sm"
           preIcon={Trash2}
           tooltip="This action is permanent and cannot be undone."
           onClick={() => alert('Delete clicked')}

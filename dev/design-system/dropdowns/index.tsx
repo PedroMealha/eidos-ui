@@ -54,22 +54,22 @@ export const DropdownShowcase = () => (
       <Row>
         <Dropdown
           placement="top"
-          trigger={<Button variant="filled" size="small">Top</Button>}
+          trigger={<Button variant="filled" size="sm">Top</Button>}
           content={<div style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>Opens above</div>}
         />
         <Dropdown
           placement="bottom"
-          trigger={<Button variant="filled" size="small">Bottom</Button>}
+          trigger={<Button variant="filled" size="sm">Bottom</Button>}
           content={<div style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>Opens below</div>}
         />
         <Dropdown
           placement="left"
-          trigger={<Button variant="filled" size="small">Left</Button>}
+          trigger={<Button variant="filled" size="sm">Left</Button>}
           content={<div style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>Opens to the left</div>}
         />
         <Dropdown
           placement="right"
-          trigger={<Button variant="filled" size="small">Right</Button>}
+          trigger={<Button variant="filled" size="sm">Right</Button>}
           content={<div style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>Opens to the right</div>}
         />
       </Row>

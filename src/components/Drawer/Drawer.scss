@@ -45,9 +45,9 @@
     top: 0;
     bottom: 0;
 
-    &.eidos-drawer-panel--small  { width: 280px; }
-    &.eidos-drawer-panel--medium { width: 400px; }
-    &.eidos-drawer-panel--large  { width: 560px; }
+    &.eidos-drawer-panel--sm  { width: 280px; }
+    &.eidos-drawer-panel--md { width: 400px; }
+    &.eidos-drawer-panel--lg  { width: 560px; }
     &.eidos-drawer-panel--full   { width: 100%; }
   }
 
@@ -69,9 +69,9 @@
     left: 0;
     right: 0;
 
-    &.eidos-drawer-panel--small  { height: 40%; }
-    &.eidos-drawer-panel--medium { height: 50%; }
-    &.eidos-drawer-panel--large  { height: 65%; }
+    &.eidos-drawer-panel--sm  { height: 40%; }
+    &.eidos-drawer-panel--md { height: 50%; }
+    &.eidos-drawer-panel--lg  { height: 65%; }
     &.eidos-drawer-panel--full   { height: 100%; }
   }
 

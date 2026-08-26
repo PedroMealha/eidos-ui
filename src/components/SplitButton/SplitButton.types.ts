@@ -18,7 +18,7 @@ export interface SplitButtonProps {
 	options: SplitButtonOption[];
 	variant?: 'filled' | 'outlined';
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	disabled?: boolean;
 	loading?: boolean;
 	/** Icon shown before the primary label. */

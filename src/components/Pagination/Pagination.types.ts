@@ -11,8 +11,8 @@ export interface PaginationProps {
   showFirstLast?: boolean;
   /** Color of the active page button. Default: 'primary'. */
   color?: 'primary' | 'secondary' | 'success' | 'danger';
-  /** Size of page buttons. Default: 'small'. */
-  size?: 'small' | 'medium' | 'large';
+  /** Size of page buttons. Default: 'sm'. */
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   className?: string;
 

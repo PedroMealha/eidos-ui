@@ -8,7 +8,7 @@ import type { TimelineItem } from './Timeline.types';
 // ============================================================================
 
 const meta = {
-  title: 'Data/Timeline',
+  title: 'Data Display/Timeline',
   component: Timeline,
   parameters: { layout: 'padded' },
   argTypes: {

@@ -27,15 +27,15 @@ export const ProgressShowcase = () => (
         <Col gap="1rem">
           <div>
             <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>Small</p>
-            <Progress value={60} size="small" />
+            <Progress value={60} size="sm" />
           </div>
           <div>
             <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>Medium</p>
-            <Progress value={60} size="medium" />
+            <Progress value={60} size="md" />
           </div>
           <div>
             <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.375rem' }}>Large</p>
-            <Progress value={60} size="large" />
+            <Progress value={60} size="lg" />
           </div>
         </Col>
       </Section>

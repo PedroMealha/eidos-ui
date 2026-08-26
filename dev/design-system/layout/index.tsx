@@ -43,9 +43,9 @@ export const LayoutShowcase = () => {
       <Section label="Spinner">
         <Col gap="1.5rem">
           <Row>
-            <Spinner size="small" />
-            <Spinner size="medium" />
-            <Spinner size="large" />
+            <Spinner size="sm" />
+            <Spinner size="md" />
+            <Spinner size="lg" />
           </Row>
           <Row>
             <Spinner color="primary" />

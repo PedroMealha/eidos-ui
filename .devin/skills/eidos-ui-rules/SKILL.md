@@ -20,7 +20,9 @@ All components that have a "subtle/low-prominence" third variant must use `text`
 The standard variant set is: `filled | outlined | text` (plus `bare` on inputs for special editor cases).
 
 ### Size naming
-Always: `small | medium | large` - never `sm`, `md`, `lg`, or abbreviated forms.
+Always: `sm | md | lg` - abbreviated forms that match the CSS variable convention (`--component-size-sm`, `--spacing-sm`, etc.).
+Never use full words (`small`, `medium`, `large`) or other abbreviations.
+Avatar is the only component with a defined `AvatarSize` type; it also uses `sm | md | lg` (3 sizes, no `xs` or `xl`).
 
 ### Color naming
 Always: `primary | secondary | success | danger | warning | info`

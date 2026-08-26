@@ -84,7 +84,7 @@ export const AccordionShowcase = () => (
 
     <Section label="Sizes">
       <Col gap="1.5rem">
-        {(['small', 'medium', 'large'] as const).map((size) => (
+        {(['sm', 'md', 'lg'] as const).map((size) => (
           <div key={size}>
             <p style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>{size}</p>
             <Accordion size={size} variant="bordered">

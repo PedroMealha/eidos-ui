@@ -28,11 +28,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Overall size (affects canvas height and trigger dimensions)',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     inline: {
@@ -192,9 +192,9 @@ export const Controlled: Story = {
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <ColorPicker defaultValue="#6366f1" size="small"  label="Small" />
-      <ColorPicker defaultValue="#6366f1" size="medium" label="Medium" />
-      <ColorPicker defaultValue="#6366f1" size="large"  label="Large" />
+      <ColorPicker defaultValue="#6366f1" size="sm"  label="Small" />
+      <ColorPicker defaultValue="#6366f1" size="md" label="Medium" />
+      <ColorPicker defaultValue="#6366f1" size="lg"  label="Large" />
     </div>
   ),
 };

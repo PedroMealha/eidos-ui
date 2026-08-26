@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
 	name: 'Default',
-	args: { children: '⌘K', size: 'medium' },
+	args: { children: '⌘K', size: 'md' },
 };
 
 // ─── 2. Sizes ─────────────────────────────────────────────────────────────────
@@ -27,9 +27,9 @@ export const Sizes: Story = {
 	name: 'Sizes',
 	render: () => (
 		<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-			<Kbd size="small">⌘K</Kbd>
-			<Kbd size="medium">⌘K</Kbd>
-			<Kbd size="large">⌘K</Kbd>
+			<Kbd size="sm">⌘K</Kbd>
+			<Kbd size="md">⌘K</Kbd>
+			<Kbd size="lg">⌘K</Kbd>
 		</div>
 	),
 };

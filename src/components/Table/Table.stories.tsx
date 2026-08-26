@@ -223,7 +223,7 @@ export const WithCustomRendering: Story = {
                   ? "danger"
                   : "warning"
               }
-              size="small"
+              size="sm"
             >
               {status}
             </Chip>
@@ -300,7 +300,7 @@ export const WithPagination: Story = {
                   ? "danger"
                   : "warning"
               }
-              size="small"
+              size="sm"
             >
               {status}
             </Chip>
@@ -376,7 +376,7 @@ export const WithFilters: Story = {
                   ? "danger"
                   : "warning"
               }
-              size="small"
+              size="sm"
             >
               {status}
             </Chip>
@@ -466,7 +466,7 @@ export const WithActionsMenu: Story = {
                   ? "danger"
                   : "warning"
               }
-              size="small"
+              size="sm"
             >
               {status}
             </Chip>
@@ -480,7 +480,7 @@ export const WithActionsMenu: Story = {
         align: "center",
         render: (_value, item) => (
           <Menu
-            trigger={<Button icon={MoreVertical} variant="text" size="small" />}
+            trigger={<Button icon={MoreVertical} variant="text" size="sm" />}
             items={[
               {
                 id: "view",
@@ -541,7 +541,7 @@ export const WithClickableRows: Story = {
                   ? "danger"
                   : "warning"
               }
-              size="small"
+              size="sm"
             >
               {status}
             </Chip>
@@ -675,7 +675,7 @@ export const Examples: Story = {
                   ? "danger"
                   : "warning"
               }
-              size="small"
+              size="sm"
             >
               {status}
             </Chip>
@@ -697,7 +697,7 @@ export const Examples: Story = {
         align: "center",
         render: (_value, item) => (
           <Menu
-            trigger={<Button icon={MoreVertical} variant="text" size="small" />}
+            trigger={<Button icon={MoreVertical} variant="text" size="sm" />}
             items={[
               {
                 id: "view",

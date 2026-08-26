@@ -13,19 +13,19 @@
   min-width: 3.5ch;
 
   // Sizes
-  &--small {
+  &--sm {
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: var(--font-size-sm);
     min-height: var(--component-size-sm);
   }
 
-  &--medium {
+  &--md {
     padding: var(--spacing-sm) var(--spacing-md);
     font-size: var(--font-size-base);
     min-height: var(--component-size-md);
   }
 
-  &--large {
+  &--lg {
     padding: var(--spacing-md) var(--spacing-lg);
     font-size: var(--font-size-lg);
     min-height: var(--component-size-lg);
@@ -38,13 +38,13 @@
     width: var(--component-size-md);
     height: var(--component-size-md);
 
-    &.eidos-button--small {
+    &.eidos-button--sm {
       width: var(--component-size-sm);
       height: var(--component-size-sm);
       padding: var(--spacing-xs);
     }
 
-    &.eidos-button--large {
+    &.eidos-button--lg {
       width: var(--component-size-lg);
       height: var(--component-size-lg);
       padding: var(--spacing-md);

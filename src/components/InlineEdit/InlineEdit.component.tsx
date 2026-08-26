@@ -14,7 +14,7 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
   type = 'text',
   placeholder,
   trigger = 'click',
-  size = 'medium',
+  size = 'md',
   fullWidth = false,
   disabled = false,
   confirmOnBlur = true,

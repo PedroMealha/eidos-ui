@@ -3,7 +3,7 @@ export interface TagInputProps {
   defaultValue?: string[];
   onChange?: (tags: string[]) => void;
   placeholder?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   label?: string;
   error?: string;

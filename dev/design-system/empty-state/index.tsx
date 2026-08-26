@@ -11,7 +11,7 @@ export const EmptyStateShowcase = () => (
           icon={<Inbox />}
           title="No messages yet"
           description="When you receive messages, they'll show up here."
-          action={<Button size="small">Compose message</Button>}
+          action={<Button size="sm">Compose message</Button>}
         />
       </Section>
 
@@ -20,7 +20,7 @@ export const EmptyStateShowcase = () => (
           icon={<SearchX />}
           title="No results found"
           description="Try adjusting your search or filters to find what you're looking for."
-          action={<Button size="small" variant="outlined">Clear filters</Button>}
+          action={<Button size="sm" variant="outlined">Clear filters</Button>}
         />
       </Section>
     </Grid>
@@ -31,7 +31,7 @@ export const EmptyStateShowcase = () => (
           icon={<AlertCircle />}
           title="Something went wrong"
           description="We couldn't load your data. Please try again."
-          action={<Button size="small" color="danger">Try again</Button>}
+          action={<Button size="sm" color="danger">Try again</Button>}
         />
       </Section>
 
@@ -40,14 +40,14 @@ export const EmptyStateShowcase = () => (
           icon={<FolderOpen />}
           title="This folder is empty"
           description="Create your first document to get started."
-          action={<Button size="small" preIcon={FileText}>New document</Button>}
+          action={<Button size="sm" preIcon={FileText}>New document</Button>}
         />
       </Section>
     </Grid>
 
     <Section label="Sizes">
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', justifyContent: 'center', flexWrap: 'wrap' }}>
-        {(['small', 'medium', 'large'] as const).map((size) => (
+        {(['sm', 'md', 'lg'] as const).map((size) => (
           <EmptyState
             key={size}
             icon={<Inbox />}

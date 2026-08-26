@@ -139,6 +139,10 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const Default: Story = {
+  render: () => <SnackbarDemo />,
+};
+
 export const Examples: Story = {
   render: () => <SnackbarDemo />,
 };

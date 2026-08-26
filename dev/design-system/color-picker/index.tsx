@@ -108,13 +108,13 @@ export const ColorPickerShowcase = () => {
         <Section label="Sizes">
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
             <div>
-              <ColorPicker size="small" label="Small" defaultValue="#ef4444" />
+              <ColorPicker size="sm" label="Small" defaultValue="#ef4444" />
             </div>
             <div>
-              <ColorPicker size="medium" label="Medium" defaultValue="#f59e0b" />
+              <ColorPicker size="md" label="Medium" defaultValue="#f59e0b" />
             </div>
             <div>
-              <ColorPicker size="large" label="Large" defaultValue="#10b981" />
+              <ColorPicker size="lg" label="Large" defaultValue="#10b981" />
             </div>
           </div>
         </Section>

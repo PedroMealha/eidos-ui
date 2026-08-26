@@ -14,7 +14,7 @@ export interface NumberInputProps {
   helperText?: string;
   error?: boolean;
   errorMessage?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   /** Allow the user to type directly in the input field. Default: true. */
   allowTyping?: boolean;

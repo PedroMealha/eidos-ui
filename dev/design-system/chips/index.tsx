@@ -25,9 +25,9 @@ export const ChipShowcase = () => (
 
     <Section label="Sizes">
       <Row>
-        <Chip size="small">Small</Chip>
-        <Chip size="medium">Medium</Chip>
-        <Chip size="large">Large</Chip>
+        <Chip size="sm">Small</Chip>
+        <Chip size="md">Medium</Chip>
+        <Chip size="lg">Large</Chip>
       </Row>
     </Section>
 

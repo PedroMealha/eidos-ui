@@ -22,7 +22,7 @@ export interface SegmentedControlProps {
 	defaultValue?: string;
 	/** Called with the newly selected value whenever the selection changes. */
 	onChange?: (value: string) => void;
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
 	/** Disable all segments. */
 	disabled?: boolean;

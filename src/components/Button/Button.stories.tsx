@@ -36,11 +36,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Button size',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     disabled: {
@@ -124,7 +124,7 @@ export const Default: Story = {
   args: {
     variant: 'filled',
     color: 'primary',
-    size: 'medium',
+    size: 'md',
     children: 'Click me',
     disabled: false,
     loading: false,
@@ -147,7 +147,7 @@ export const IconOnly: Story = {
     icon: 'arrow-big-down-dash',
     variant: 'filled',
     color: 'primary',
-    size: 'medium',
+    size: 'md',
     disabled: false,
     loading: false,
     tooltip: 'Add new item',
@@ -210,9 +210,9 @@ export const Examples = {
         <div>
           <p style={label}>Sizes</p>
           <div style={row}>
-            <Button size="small">Small</Button>
-            <Button size="medium">Medium</Button>
-            <Button size="large">Large</Button>
+            <Button size="sm">Small</Button>
+            <Button size="md">Medium</Button>
+            <Button size="lg">Large</Button>
           </div>
         </div>
 

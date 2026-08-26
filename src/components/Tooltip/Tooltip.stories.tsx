@@ -70,6 +70,21 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // ============================================================================
+// DEFAULT - Primary interactive example with all controls
+// ============================================================================
+
+export const Default: Story = {
+  args: {
+    message: 'This is a helpful tooltip',
+    placement: 'top',
+    triggerType: 'hover',
+    delay: 100,
+    disabled: false,
+    children: <Button>Hover me</Button>,
+  },
+};
+
+// ============================================================================
 // MESSAGE TOOLTIP - Main interactive example with all controls
 // ============================================================================
 
@@ -143,19 +158,19 @@ export const Examples = {
         <div>
           <p style={label}>Placements</p>
           <div style={row}>
-            <Tooltip message="Top" placement="top"><Button variant="outlined" size="small">Top</Button></Tooltip>
-            <Tooltip message="Bottom" placement="bottom"><Button variant="outlined" size="small">Bottom</Button></Tooltip>
-            <Tooltip message="Left" placement="left"><Button variant="outlined" size="small">Left</Button></Tooltip>
-            <Tooltip message="Right" placement="right"><Button variant="outlined" size="small">Right</Button></Tooltip>
+            <Tooltip message="Top" placement="top"><Button variant="outlined" size="sm">Top</Button></Tooltip>
+            <Tooltip message="Bottom" placement="bottom"><Button variant="outlined" size="sm">Bottom</Button></Tooltip>
+            <Tooltip message="Left" placement="left"><Button variant="outlined" size="sm">Left</Button></Tooltip>
+            <Tooltip message="Right" placement="right"><Button variant="outlined" size="sm">Right</Button></Tooltip>
           </div>
         </div>
 
         <div>
           <p style={label}>Triggers</p>
           <div style={row}>
-            <Tooltip message="Triggered on hover" triggerType="hover"><Button variant="outlined" size="small">Hover</Button></Tooltip>
-            <Tooltip message="Triggered on click" triggerType="click"><Button variant="outlined" size="small">Click</Button></Tooltip>
-            <Tooltip message="Triggered on focus" triggerType="focus"><Button variant="outlined" size="small">Focus</Button></Tooltip>
+            <Tooltip message="Triggered on hover" triggerType="hover"><Button variant="outlined" size="sm">Hover</Button></Tooltip>
+            <Tooltip message="Triggered on click" triggerType="click"><Button variant="outlined" size="sm">Click</Button></Tooltip>
+            <Tooltip message="Triggered on focus" triggerType="focus"><Button variant="outlined" size="sm">Focus</Button></Tooltip>
           </div>
         </div>
 

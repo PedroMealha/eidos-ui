@@ -11,7 +11,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 			step,
 			onChange,
 			color = 'primary',
-			size = 'medium',
+			size = 'md',
 			disabled = false,
 			showValue = false,
 			showMinMax = false,

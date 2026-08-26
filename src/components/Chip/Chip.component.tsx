@@ -7,7 +7,7 @@ import { renderIcon } from "../../utils";
 export const Chip: React.FC<ChipProps> = ({
   variant = "filled",
   color = "primary",
-  size = "medium",
+  size = "md",
   disabled = false,
   fullWidth = false,
   tooltip,

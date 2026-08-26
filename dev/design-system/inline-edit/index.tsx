@@ -12,16 +12,16 @@ export const InlineEditShowcase = () => {
       <Grid cols={2}>
         <Section label="Uncontrolled (click to edit)">
           <Col>
-            <InlineEdit value="Page title" size="medium" />
-            <InlineEdit value="Subtitle text" size="small" />
+            <InlineEdit value="Page title" size="md" />
+            <InlineEdit value="Subtitle text" size="sm" />
           </Col>
         </Section>
 
         <Section label="Sizes">
           <Col>
-            <InlineEdit value="Small" size="small" />
-            <InlineEdit value="Medium" size="medium" />
-            <InlineEdit value="Large" size="large" />
+            <InlineEdit value="Small" size="sm" />
+            <InlineEdit value="Medium" size="md" />
+            <InlineEdit value="Large" size="lg" />
           </Col>
         </Section>
 
@@ -29,14 +29,14 @@ export const InlineEditShowcase = () => {
           <InlineEdit
             value="Double-click me to edit"
             trigger="doubleClick"
-            size="medium"
+            size="md"
           />
         </Section>
 
         <Section label="With placeholder">
           <Col>
-            <InlineEdit value="" placeholder="Add a title…" size="medium" />
-            <InlineEdit value="" placeholder="Add a description…" size="small" />
+            <InlineEdit value="" placeholder="Add a title…" size="md" />
+            <InlineEdit value="" placeholder="Add a description…" size="sm" />
           </Col>
         </Section>
       </Grid>
@@ -48,7 +48,7 @@ export const InlineEditShowcase = () => {
               value={title}
               onChange={setTitle}
               onConfirm={setTitle}
-              size="large"
+              size="lg"
               fullWidth
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>
@@ -64,14 +64,14 @@ export const InlineEditShowcase = () => {
               value={price}
               onChange={setPrice}
               onConfirm={setPrice}
-              size="medium"
+              size="md"
             />
             <InlineEdit
               type="date"
               value={deadline}
               onChange={setDeadline}
               onConfirm={setDeadline}
-              size="medium"
+              size="md"
             />
           </Row>
         </Section>
@@ -85,14 +85,14 @@ export const InlineEditShowcase = () => {
               {v}
             </span>
           )}
-          size="medium"
+          size="md"
         />
       </Section>
 
       <Section label="Disabled">
         <Row>
-          <InlineEdit value="Read-only value" disabled size="small" />
-          <InlineEdit value="Also read-only" disabled size="medium" />
+          <InlineEdit value="Read-only value" disabled size="sm" />
+          <InlineEdit value="Also read-only" disabled size="md" />
         </Row>
       </Section>
     </Col>

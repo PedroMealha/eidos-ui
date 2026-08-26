@@ -194,7 +194,7 @@ type Story = StoryObj<typeof meta>;
 // Story: Fixed Height (stress test - 10 000 rows)
 // ============================================================================
 
-export const FixedHeight: Story = {
+export const Default: Story = {
   name: 'Fixed Row Height',
   parameters: {
     docs: {

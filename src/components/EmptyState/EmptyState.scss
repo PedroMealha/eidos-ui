@@ -12,21 +12,21 @@
 	width: 100%;
 
 	// ── Size variants ─────────────────────────────────────────────────────
-	&--small {
+	&--sm {
 		padding: var(--spacing-lg);
 		gap: var(--spacing-sm);
 		max-width: 320px;
 		margin: 0 auto;
 	}
 
-	&--medium {
+	&--md {
 		padding: calc(var(--spacing-lg) * 2) var(--spacing-lg);
 		gap: var(--spacing-md);
 		max-width: 480px;
 		margin: 0 auto;
 	}
 
-	&--large {
+	&--lg {
 		padding: calc(var(--spacing-lg) * 3) var(--spacing-lg);
 		gap: var(--spacing-lg);
 		max-width: 560px;
@@ -42,17 +42,17 @@
 	@include flex-center;
 	color: var(--gray-300);
 
-	.eidos-empty-state--small & svg {
+	.eidos-empty-state--sm & svg {
 		width: 40px;
 		height: 40px;
 	}
 
-	.eidos-empty-state--medium & svg {
+	.eidos-empty-state--md & svg {
 		width: 56px;
 		height: 56px;
 	}
 
-	.eidos-empty-state--large & svg {
+	.eidos-empty-state--lg & svg {
 		width: 72px;
 		height: 72px;
 	}
@@ -73,9 +73,9 @@
 	color: var(--dark-color);
 	@include font-weight(medium);
 
-	.eidos-empty-state--small & { @include font-size(sm); }
-	.eidos-empty-state--medium & { font-size: 1rem; }
-	.eidos-empty-state--large & { font-size: 1.125rem; }
+	.eidos-empty-state--sm & { @include font-size(sm); }
+	.eidos-empty-state--md & { font-size: 1rem; }
+	.eidos-empty-state--lg & { font-size: 1.125rem; }
 }
 
 .eidos-empty-state-description {

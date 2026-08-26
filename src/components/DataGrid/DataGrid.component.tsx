@@ -761,7 +761,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 						onChange={() => {
 							/* handled by td onClick */
 						}}
-						size="small"
+						size="sm"
 					/>
 				);
 
@@ -795,7 +795,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 					<Input
 						type="number"
 						variant="bare"
-						size="small"
+						size="sm"
 						value={String(value ?? '')}
 						onChange={e => setEditValue(e.target.value)}
 
@@ -810,7 +810,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 					<Input
 						type="date"
 						variant="bare"
-						size="small"
+						size="sm"
 						value={String(value ?? '')}
 						onChange={e => setEditValue(e.target.value)}
 
@@ -836,7 +836,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 						options={selectOptions}
 						value={String(value ?? '')}
 						autoOpen
-						inputProps={{ variant: 'bare', size: 'small' }}
+						inputProps={{ variant: 'bare', size: 'sm' }}
 						onChange={v => {
 							const selected = Array.isArray(v) ? (v[0] ?? '') : v;
 							const newData = localDataRef.current.map<T>((r, i) =>
@@ -856,7 +856,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 					<Input
 						type="text"
 						variant="bare"
-						size="small"
+						size="sm"
 						value={String(value ?? '')}
 						onChange={e => setEditValue(e.target.value)}
 
@@ -917,7 +917,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 		return (
 			<div className={['eidos-data-grid-container', className].filter(Boolean).join(' ')}>
 				<div className="eidos-data-grid-loading">
-					<Spinner size="medium" />
+					<Spinner size="md" />
 					<p>Loading…</p>
 				</div>
 			</div>
@@ -968,7 +968,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 											return (
 												<Button
 													key={action.id}
-													size="small"
+													size="sm"
 													variant={action.variant ?? 'outlined'}
 													color={action.color ?? 'secondary'}
 													preIcon={action.icon}
@@ -1002,7 +1002,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 								align="end"
 								autoWidth={false}
 								trigger={
-									<Button variant="text" size="small" preIcon={AlignJustify}>
+									<Button variant="text" size="sm" preIcon={AlignJustify}>
 										Density
 									</Button>
 								}
@@ -1041,7 +1041,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 						)}
 
 						{onRowAdd && (
-							<Button variant="outlined" size="small" preIcon={Plus} onClick={handleRowAdd}>
+							<Button variant="outlined" size="sm" preIcon={Plus} onClick={handleRowAdd}>
 								Add row
 							</Button>
 						)}
@@ -1070,7 +1070,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 											checked={allSelected}
 											indeterminate={someSelected}
 											onChange={toggleAll}
-											size="small"
+											size="sm"
 										/>
 									</th>
 								)}
@@ -1191,7 +1191,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 																<Checkbox
 																	checked={isRowSelected}
 																	onChange={() => toggleRow(rowKeyValue)}
-																	size="small"
+																	size="sm"
 																/>
 															</td>
 														)}
@@ -1298,7 +1298,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 													description="Try adjusting your filters or search terms."
 													action={
 														<Button
-															size="small"
+															size="sm"
 															variant="outlined"
 															color="primary"
 															onClick={() => handleFiltersChange({})}
@@ -1306,14 +1306,14 @@ function DataGridInner<T extends Record<string, unknown>>({
 															Clear filters
 														</Button>
 													}
-													size="small"
+													size="sm"
 												/>
 											) : (
 												<EmptyState
 													icon={<FolderOpen />}
 													title={emptyText}
 													description={onRowAdd ? 'Add a row to get started.' : 'There are no records to display.'}
-													size="small"
+													size="sm"
 												/>
 											)}
 										</td>

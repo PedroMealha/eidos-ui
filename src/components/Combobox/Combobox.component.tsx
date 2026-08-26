@@ -33,7 +33,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
   allowFreeText = false,
   clearable = true,
   disabled = false,
-  size = 'medium',
+  size = 'md',
   label,
   error,
   hint,

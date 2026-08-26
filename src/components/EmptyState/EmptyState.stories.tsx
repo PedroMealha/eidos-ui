@@ -21,11 +21,11 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Controls padding, icon size, and text size.',
 			table: {
-				type: { summary: '"small" | "medium" | "large"' },
-				defaultValue: { summary: 'medium' },
+				type: { summary: '"sm" | "md" | "lg"' },
+				defaultValue: { summary: 'md' },
 			},
 		},
 		icon: { table: { disable: true } },
@@ -113,17 +113,17 @@ export const Sizes = {
 				<div style={{ width: '100%' }}>
 					<p style={label}>Small</p>
 					<EmptyState
-						size="small"
+						size="sm"
 						icon={<Inbox />}
 						title="No messages"
 						description="Your inbox is empty."
-						action={<Button size="small" color="primary">Compose</Button>}
+						action={<Button size="sm" color="primary">Compose</Button>}
 					/>
 				</div>
 				<div style={{ width: '100%' }}>
 					<p style={label}>Medium</p>
 					<EmptyState
-						size="medium"
+						size="md"
 						icon={<FolderOpen />}
 						title="No items yet"
 						description="Create your first item to get started."
@@ -133,7 +133,7 @@ export const Sizes = {
 				<div style={{ width: '100%' }}>
 					<p style={label}>Large</p>
 					<EmptyState
-						size="large"
+						size="lg"
 						icon={<SearchX />}
 						title="No results found"
 						description="Try adjusting your filters or broadening your search to find what you're looking for."

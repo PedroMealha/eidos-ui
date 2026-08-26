@@ -26,7 +26,7 @@ export interface TreeViewProps {
   onExpand?: (id: string, expanded: boolean) => void;
   defaultExpandAll?: boolean;
   // Appearance
-  size?: 'small' | 'medium' | 'large'; // default: 'medium'
+  size?: 'sm' | 'md' | 'lg'; // default: 'md'
   showLines?: boolean; // indent guide lines, default: false
   className?: string;
   // Rendering

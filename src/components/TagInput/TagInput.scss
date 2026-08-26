@@ -50,7 +50,7 @@
 
 	// ── Size variants ──────────────────────────────────────────────────────
 
-	&--small {
+	&--sm {
 		padding: var(--spacing-xs) var(--spacing-sm);
 		min-height: var(--component-size-sm);
 
@@ -59,7 +59,7 @@
 		}
 	}
 
-	&--medium {
+	&--md {
 		padding: var(--spacing-sm) var(--spacing-md);
 		min-height: var(--component-size-md);
 
@@ -68,7 +68,7 @@
 		}
 	}
 
-	&--large {
+	&--lg {
 		padding: var(--spacing-md);
 		min-height: var(--component-size-lg);
 

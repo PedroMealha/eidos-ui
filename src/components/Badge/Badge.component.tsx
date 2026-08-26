@@ -6,7 +6,7 @@ export const Badge: React.FC<BadgeProps> = ({
   children,
   color = "primary",
   variant = "filled",
-  size = "medium",
+  size = "md",
   dot = false,
   max,
   className = "",

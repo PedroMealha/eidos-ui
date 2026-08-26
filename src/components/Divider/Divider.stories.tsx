@@ -19,6 +19,19 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const Default: Story = {
+  args: {
+    direction: 'horizontal',
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '300px' }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
 export const Horizontal: Story = {
   args: {
     direction: 'horizontal',

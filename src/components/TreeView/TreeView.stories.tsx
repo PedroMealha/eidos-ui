@@ -128,11 +128,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Controls font size and row padding',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     showLines: {
@@ -355,7 +355,7 @@ export const InlineRename = {
                 setEditingId(null);
               }}
               onCancel={() => setEditingId(null)}
-              size="small"
+              size="sm"
               inputVariant="outlined"
               showEditIcon={false}
               renderDisplay={(v) => (

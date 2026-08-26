@@ -6,7 +6,7 @@ export interface TabsProps {
   defaultValue?: string;
   onChange?: (value: string) => void;
   variant?: 'line' | 'enclosed' | 'pills';
-  size?: 'small' | 'medium' | 'large';
+  size?: 'sm' | 'md' | 'lg';
   color?: 'primary' | 'secondary' | 'success' | 'danger';
   fullWidth?: boolean;
   className?: string;
@@ -31,7 +31,7 @@ export interface TabsContextValue {
   activeValue: string;
   onSelect: (value: string) => void;
   variant: 'line' | 'enclosed' | 'pills';
-  size: 'small' | 'medium' | 'large';
+  size: 'sm' | 'md' | 'lg';
   color: 'primary' | 'secondary' | 'success' | 'danger';
   fullWidth: boolean;
   listRef: React.RefObject<HTMLDivElement | null>;

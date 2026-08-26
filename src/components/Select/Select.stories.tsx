@@ -177,6 +177,13 @@ const optionsWithDisabled = [
   { id: "4", label: "Also Disabled", value: "disabled2", disabled: true },
 ];
 
+export const Default: Story = {
+  args: {
+    options: basicOptions,
+    placeholder: "Select a fruit...",
+  },
+};
+
 export const SingleSelect: Story = {
   args: {
     options: basicOptions,

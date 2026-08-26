@@ -35,7 +35,7 @@ export const AvatarShowcase = () => (
     <Grid cols={2}>
       <Section label="Sizes">
         <Row>
-          {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((s) => (
+          {(['sm', 'md', 'lg'] as const).map((s) => (
             <Avatar key={s} name="John Doe" size={s} />
           ))}
         </Row>

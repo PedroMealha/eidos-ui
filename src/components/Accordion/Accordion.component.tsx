@@ -32,7 +32,7 @@ export const Accordion: React.FC<AccordionProps> = ({
   defaultValue,
   onChange,
   variant = 'default',
-  size = 'medium',
+  size = 'md',
   color = 'primary',
   className = '',
   children,

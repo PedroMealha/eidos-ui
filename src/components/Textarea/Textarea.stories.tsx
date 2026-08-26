@@ -10,7 +10,7 @@ const meta = {
 	args: {
 		variant: 'filled',
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 		disabled: false,
 		loading: false,
 		fullWidth: false,
@@ -39,11 +39,11 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Font size of the textarea content.',
 			table: {
-				type: { summary: '"small" | "medium" | "large"' },
-				defaultValue: { summary: 'medium' },
+				type: { summary: '"sm" | "md" | "lg"' },
+				defaultValue: { summary: 'md' },
 			},
 		},
 		disabled: {
@@ -239,9 +239,9 @@ export const Sizes: Story = {
 		const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1.5rem' };
 		return (
 			<div style={col}>
-				<Textarea size="small" label="Small" placeholder="Small textarea…" rows={3} />
-				<Textarea size="medium" label="Medium" placeholder="Medium textarea (default)…" rows={3} />
-				<Textarea size="large" label="Large" placeholder="Large textarea…" rows={3} />
+				<Textarea size="sm" label="Small" placeholder="Small textarea…" rows={3} />
+				<Textarea size="md" label="Medium" placeholder="Medium textarea (default)…" rows={3} />
+				<Textarea size="lg" label="Large" placeholder="Large textarea…" rows={3} />
 			</div>
 		);
 	},

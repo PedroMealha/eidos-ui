@@ -39,7 +39,7 @@
 		justify-content: center;
 
 		// Slightly narrower on small size
-		.eidos-split-button--small & {
+		.eidos-split-button--sm & {
 			padding-left: var(--spacing-xs);
 			padding-right: var(--spacing-xs);
 		}

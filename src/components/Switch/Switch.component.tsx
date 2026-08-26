@@ -7,7 +7,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
 			label,
 			labelPosition = 'right',
 			color = 'primary',
-			size = 'medium',
+			size = 'md',
 			disabled = false,
 			className = '',
 			checked,

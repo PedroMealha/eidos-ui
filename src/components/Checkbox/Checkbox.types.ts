@@ -5,6 +5,6 @@ export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
 	error?: string;
 	indeterminate?: boolean;
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	className?: string;
 }

@@ -6,7 +6,7 @@ export interface SliderProps {
 	step?: number;
 	onChange?: (value: number) => void;
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	disabled?: boolean;
 	/** Display current value label above the thumb. */
 	showValue?: boolean;

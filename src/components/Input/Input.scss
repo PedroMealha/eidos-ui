@@ -82,17 +82,17 @@
   }
 
   // Sizes
-  &--small {
+  &--sm {
     height: var(--component-size-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
   }
 
-  &--medium {
+  &--md {
     height: var(--component-size-md);
     padding: var(--spacing-sm) var(--spacing-md);
   }
 
-  &--large {
+  &--lg {
     height: var(--component-size-lg);
     padding: var(--spacing-md) var(--spacing-lg);
   }
@@ -358,15 +358,15 @@
   }
 
   // Sizes
-  &--small {
+  &--sm {
     @include font-size(sm);
   }
 
-  &--medium {
+  &--md {
     @include font-size(base);
   }
 
-  &--large {
+  &--lg {
     @include font-size(lg);
   }
 
@@ -534,14 +534,14 @@
 // Responsive adjustments
 @include mobile-up {
   .eidos-input-wrapper {
-    &--large {
+    &--lg {
       min-height: var(--component-size-md);
       padding: var(--spacing-sm) var(--spacing-md);
     }
   }
 
   .eidos-input {
-    &--large {
+    &--lg {
       @include font-size(base);
     }
   }

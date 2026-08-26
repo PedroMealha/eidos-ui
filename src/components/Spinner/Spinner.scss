@@ -5,9 +5,9 @@
 	line-height: 1;
 	color: var(--primary-color);
 
-	&--small  { font-size: 1.5rem; }
-	&--medium { font-size: 2.5rem; }
-	&--large  { font-size: 4rem; }
+	&--sm  { font-size: 1.5rem; }
+	&--md { font-size: 2.5rem; }
+	&--lg  { font-size: 4rem; }
 
 	&--primary   { color: var(--primary-color); }
 	&--secondary { color: var(--secondary-color); }

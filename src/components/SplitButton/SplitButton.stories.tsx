@@ -98,7 +98,7 @@ export const Sizes: Story = {
 	name: 'Sizes',
 	render: () => (
 		<div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-			{(['small', 'medium', 'large'] as const).map(size => (
+			{(['sm', 'md', 'lg'] as const).map(size => (
 				<SplitButton
 					key={size}
 					label="Publish"

@@ -191,6 +191,7 @@ function Toolbar() {
   background: '#f4f4f5',
   borderRadius: 12,
   padding: '1.25rem 1.5rem',
+  marginBottom: '1.25rem',
 }}>
   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
     <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#09090b' }}>TypeScript</span>
@@ -200,4 +201,99 @@ function Toolbar() {
     Import types directly from the main entry point:
   </p>
   <Source dark language="ts" code={`import type { ButtonProps, InputProps, SelectOption } from '@pmealha/eidos-ui';`} />
+</div>
+
+{/* ── Icons ─────────────────────────────────────────────────────────── */}
+
+<div style={{
+  background: '#f4f4f5',
+  borderRadius: 12,
+  padding: '1.25rem 1.5rem',
+  marginBottom: '1.25rem',
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#09090b' }}>Icons</span>
+    <span style={{ fontSize: '0.6875rem', color: '#71717a' }}>- bundled automatically</span>
+  </div>
+  <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+    Many components accept icon props (e.g. <code style={{ fontSize: '0.8125rem' }}>preIcon</code>, <code style={{ fontSize: '0.8125rem' }}>postIcon</code>). These use <code style={{ fontSize: '0.8125rem' }}>lucide-react</code>, which is listed as a regular dependency and auto-installed with the package — no extra install step needed.
+  </p>
+  <Source dark language="tsx" code={`import { Download, Plus, Search } from 'lucide-react';
+import { Button } from '@pmealha/eidos-ui';
+
+<Button preIcon={Download}>Export</Button>`} />
+</div>
+
+{/* ── Peer dependencies ────────────────────────────────────────────── */}
+
+<div style={{
+  background: '#f4f4f5',
+  borderRadius: 12,
+  padding: '1.25rem 1.5rem',
+  marginBottom: '1.25rem',
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#09090b' }}>Peer dependencies</span>
+  </div>
+  <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+    <code style={{ fontSize: '0.8125rem' }}>react</code> and <code style={{ fontSize: '0.8125rem' }}>react-dom</code> are peer dependencies — they are not bundled and must be present in your project. React 18 and 19 are both supported.
+  </p>
+  <Source dark language="json" code={`"peerDependencies": {
+  "react": "^18.0.0 || ^19.0.0",
+  "react-dom": "^18.0.0 || ^19.0.0"
+}`} />
+</div>
+
+{/* ── Theming ───────────────────────────────────────────────────────── */}
+
+<div style={{
+  background: '#f4f4f5',
+  borderRadius: 12,
+  padding: '1.25rem 1.5rem',
+  marginBottom: '1.25rem',
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#09090b' }}>Theming</span>
+    <span style={{ fontSize: '0.6875rem', color: '#71717a' }}>- CSS custom properties</span>
+  </div>
+  <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+    All design tokens are CSS custom properties defined on <code style={{ fontSize: '0.8125rem' }}>:root</code>. Override them in your own stylesheet after the library import to customise colours, spacing, border-radius, and more.
+  </p>
+  <Source dark language="css" code={`:root {
+  /* Brand colour */
+  --primary-color: #0ea5e9;
+  --primary-dark:  #0284c7;
+  --primary-light: #7dd3fc;
+
+  /* Border radius */
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+
+  /* Component heights */
+  --component-size-sm: 28px;
+  --component-size-md: 36px;
+  --component-size-lg: 44px;
+}`} />
+</div>
+
+{/* ── Deep imports ──────────────────────────────────────────────────── */}
+
+<div style={{
+  background: '#f4f4f5',
+  borderRadius: 12,
+  padding: '1.25rem 1.5rem',
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#09090b' }}>Deep imports</span>
+    <span style={{ fontSize: '0.6875rem', color: '#71717a' }}>- per-component entry points</span>
+  </div>
+  <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
+    The root barrel is tree-shaken by bundlers that support it. For environments that do not (e.g. Jest without transforms, some CJS setups), use the component-level deep import to load only that chunk.
+  </p>
+  <Source dark language="ts" code={`// Root barrel — works with any bundler that tree-shakes
+import { Button, Input } from '@pmealha/eidos-ui';
+
+// Deep import — explicit single-component chunk
+import { Button } from '@pmealha/eidos-ui/button';
+import { DataGrid } from '@pmealha/eidos-ui/data-grid';`} />
 </div>

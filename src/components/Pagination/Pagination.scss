@@ -87,9 +87,9 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   // Square dimensions driven by the root size modifier
-  .eidos-pagination--small  & { width: var(--component-size-sm); height: var(--component-size-sm); }
-  .eidos-pagination--medium & { width: var(--component-size-md); height: var(--component-size-md); }
-  .eidos-pagination--large  & { width: var(--component-size-lg); height: var(--component-size-lg); }
+  .eidos-pagination--sm  & { width: var(--component-size-sm); height: var(--component-size-sm); }
+  .eidos-pagination--md & { width: var(--component-size-md); height: var(--component-size-md); }
+  .eidos-pagination--lg  & { width: var(--component-size-lg); height: var(--component-size-lg); }
 
   &:hover:not(:disabled):not(.eidos-pagination-page--active) {
     background: var(--gray-50);

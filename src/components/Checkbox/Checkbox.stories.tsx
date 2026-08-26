@@ -39,9 +39,9 @@ const meta = {
 		},
 		size: {
 			control: 'select',
-			options: ['small', 'medium', 'large'],
+			options: ['sm', 'md', 'lg'],
 			description: 'Size of the checkbox control and label',
-			table: { type: { summary: '"small" | "medium" | "large"' }, defaultValue: { summary: 'medium' } },
+			table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
 		},
 		className: { table: { disable: true } },
 		id: { table: { disable: true } },
@@ -60,7 +60,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
 	args: {
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 		disabled: false,
 		indeterminate: false,
 	},
@@ -75,7 +75,7 @@ export const WithLabel: Story = {
 		label: 'Accept terms and conditions',
 		defaultChecked: true,
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 	},
 };
 
@@ -84,7 +84,7 @@ export const Indeterminate: Story = {
 		label: 'Select all items',
 		indeterminate: true,
 		color: 'primary',
-		size: 'medium',
+		size: 'md',
 	},
 };
 
@@ -119,9 +119,9 @@ export const Sizes = {
 		const row: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
 		return (
 			<div style={row}>
-				<Checkbox size="small" label="Small checkbox" defaultChecked />
-				<Checkbox size="medium" label="Medium checkbox (default)" defaultChecked />
-				<Checkbox size="large" label="Large checkbox" defaultChecked />
+				<Checkbox size="sm" label="Small checkbox" defaultChecked />
+				<Checkbox size="md" label="Medium checkbox (default)" defaultChecked />
+				<Checkbox size="lg" label="Large checkbox" defaultChecked />
 			</div>
 		);
 	},

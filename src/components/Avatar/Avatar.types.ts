@@ -1,6 +1,6 @@
 import React from "react";
 
-export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type AvatarSize = "sm" | "md" | "lg";
 export type AvatarColor =
   | "primary"
   | "secondary"

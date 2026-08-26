@@ -32,11 +32,11 @@ const meta = {
   argTypes: {
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Input size',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     placeholder: {
@@ -267,7 +267,7 @@ export const CustomRenderOption: Story = {
 export const AllSizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: 320 }}>
-      {(['small', 'medium', 'large'] as const).map((size) => (
+      {(['sm', 'md', 'lg'] as const).map((size) => (
         <Combobox
           key={size}
           options={FLAT_OPTIONS}

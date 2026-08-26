@@ -16,7 +16,7 @@
 
 	// ── Size variants ──────────────────────────────────────────────────────────
 
-	&--small {
+	&--sm {
 		.eidos-switch-track {
 			width: 28px;
 			height: 16px;
@@ -36,7 +36,7 @@
 		}
 	}
 
-	&--medium {
+	&--md {
 		.eidos-switch-track {
 			width: 36px;
 			height: 20px;
@@ -56,7 +56,7 @@
 		}
 	}
 
-	&--large {
+	&--lg {
 		.eidos-switch-track {
 			width: 44px;
 			height: 24px;

@@ -5,7 +5,7 @@ export interface ButtonGroupProps {
 	 * Fallback size applied to children that don't specify their own size.
 	 * Each child can still override this individually.
 	 */
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	/**
 	 * Fallback variant applied to children that don't specify their own variant.
 	 */

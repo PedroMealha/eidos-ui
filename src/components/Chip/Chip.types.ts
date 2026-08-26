@@ -3,7 +3,7 @@ import type { IconType } from "../../utils";
 interface BaseChipProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onClick'> {
   variant?: "filled" | "outlined" | "text";
   color?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
-  size?: "small" | "medium" | "large";
+  size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   disabled?: boolean;
   tooltip?: string;

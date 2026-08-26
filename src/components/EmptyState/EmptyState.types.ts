@@ -9,7 +9,7 @@ export interface EmptyStateProps {
 	description?: string;
 	/** Optional CTA - typically a Button. Any ReactNode. */
 	action?: React.ReactNode;
-	/** Controls overall size (icon size, text size, padding). Default: 'medium'. */
-	size?: 'small' | 'medium' | 'large';
+	/** Controls overall size (icon size, text size, padding). Default: 'md'. */
+	size?: 'sm' | 'md' | 'lg';
 	className?: string;
 }

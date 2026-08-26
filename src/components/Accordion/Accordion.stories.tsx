@@ -25,11 +25,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Size affecting trigger padding and font size.',
       table: {
-        type: { summary: '"small" | "medium" | "large"' },
-        defaultValue: { summary: 'medium' },
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: 'md' },
       },
     },
     color: {
@@ -88,7 +88,7 @@ const itemContent = (topic: string) => (
 export const Default: Story = {
   args: {
     variant: 'default',
-    size: 'medium',
+    size: 'md',
     color: 'primary',
     multiple: false,
     defaultValue: 'item1',
@@ -177,7 +177,7 @@ export const Sizes = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
         <p style={labelStyle}>Small</p>
-        <Accordion size="small" defaultValue="s1">
+        <Accordion size="sm" defaultValue="s1">
           <AccordionItem value="s1" label="Small trigger height">
             {itemContent('Small size')}
           </AccordionItem>
@@ -189,7 +189,7 @@ export const Sizes = {
 
       <div>
         <p style={labelStyle}>Medium (default)</p>
-        <Accordion size="medium" defaultValue="m1">
+        <Accordion size="md" defaultValue="m1">
           <AccordionItem value="m1" label="Medium trigger height">
             {itemContent('Medium size')}
           </AccordionItem>
@@ -201,7 +201,7 @@ export const Sizes = {
 
       <div>
         <p style={labelStyle}>Large</p>
-        <Accordion size="large" defaultValue="l1">
+        <Accordion size="lg" defaultValue="l1">
           <AccordionItem value="l1" label="Large trigger height">
             {itemContent('Large size')}
           </AccordionItem>

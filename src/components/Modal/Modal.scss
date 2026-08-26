@@ -39,17 +39,17 @@
 	}
 
 	// Size variants
-	&--small {
+	&--sm {
 		max-width: 400px;
 		width: 90%;
 	}
 
-	&--medium {
+	&--md {
 		max-width: 600px;
 		width: 90%;
 	}
 
-	&--large {
+	&--lg {
 		max-width: 800px;
 		width: 90%;
 	}
@@ -136,9 +136,9 @@
 		margin: var(--spacing-sm);
 		width: calc(100% - var(--spacing-sm) * 2);
 
-		&--small,
-		&--medium,
-		&--large {
+		&--sm,
+		&--md,
+		&--lg {
 			max-width: none;
 		}
 	}

@@ -3,7 +3,7 @@ import React from 'react';
 export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
 	label?: React.ReactNode;
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	className?: string;
 }
 
@@ -21,7 +21,7 @@ export interface RadioGroupProps {
 	options: RadioOption[];
 	direction?: 'horizontal' | 'vertical';
 	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'small' | 'medium' | 'large';
+	size?: 'sm' | 'md' | 'lg';
 	disabled?: boolean;
 	error?: string;
 	className?: string;

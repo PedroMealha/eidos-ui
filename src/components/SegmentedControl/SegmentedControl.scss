@@ -45,19 +45,19 @@
 
 	// ── Sizes ──────────────────────────────────────────────────────────────────
 
-	.eidos-segmented--small & {
+	.eidos-segmented--sm & {
 		padding: 3px 8px;
 		@include font-size(xs);
 		min-height: 24px;
 	}
 
-	.eidos-segmented--medium & {
+	.eidos-segmented--md & {
 		padding: 5px 12px;
 		@include font-size(sm);
 		min-height: 30px;
 	}
 
-	.eidos-segmented--large & {
+	.eidos-segmented--lg & {
 		padding: 7px 16px;
 		@include font-size(base);
 		min-height: 38px;
@@ -66,17 +66,17 @@
 	// ── Icon sizing ────────────────────────────────────────────────────────────
 
 	.eidos-segmented-icon {
-		.eidos-segmented--small & {
+		.eidos-segmented--sm & {
 			width: 12px;
 			height: 12px;
 		}
 
-		.eidos-segmented--medium & {
+		.eidos-segmented--md & {
 			width: 14px;
 			height: 14px;
 		}
 
-		.eidos-segmented--large & {
+		.eidos-segmented--lg & {
 			width: 16px;
 			height: 16px;
 		}

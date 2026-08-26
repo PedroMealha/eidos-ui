@@ -18,9 +18,9 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: ['sm', 'md', 'lg'],
       description: 'Visual size of the display element and the underlying input.',
-      table: { type: { summary: '"small" | "medium" | "large"' }, defaultValue: { summary: 'medium' } },
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
     },
     trigger: {
       control: 'select',
@@ -114,7 +114,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     value: 'Page title',
-    size: 'medium',
+    size: 'md',
     trigger: 'click',
     disabled: false,
     fullWidth: false,
@@ -142,15 +142,15 @@ export const Sizes = {
     return (
       <div style={row}>
         <div style={col}>
-          <InlineEdit size="small" value="Page title" />
+          <InlineEdit size="sm" value="Page title" />
           <span style={caption}>Small</span>
         </div>
         <div style={col}>
-          <InlineEdit size="medium" value="Page title" />
+          <InlineEdit size="md" value="Page title" />
           <span style={caption}>Medium</span>
         </div>
         <div style={col}>
-          <InlineEdit size="large" value="Page title" />
+          <InlineEdit size="lg" value="Page title" />
           <span style={caption}>Large</span>
         </div>
       </div>
@@ -268,7 +268,7 @@ export const Controlled = {
           onChange={setValue}
           onConfirm={setValue}
         />
-        <Button size="small" variant="outlined" onClick={() => setEditing((e) => !e)}>
+        <Button size="sm" variant="outlined" onClick={() => setEditing((e) => !e)}>
           Edit
         </Button>
         <span style={badge}>{editing ? 'editing' : 'display'}</span>

@@ -11,7 +11,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   onComplete,
   type = 'numeric',
   mask = false,
-  size = 'medium',
+  size = 'md',
   disabled = false,
   error,
   label,

@@ -53,9 +53,9 @@ export const TagInputShowcase = () => (
     <div style={{ gridColumn: '1 / -1' }}>
       <Section label="Sizes">
         <Row wrap={false}>
-          <TagInput size="small" placeholder="Small" />
-          <TagInput size="medium" placeholder="Medium" />
-          <TagInput size="large" placeholder="Large" />
+          <TagInput size="sm" placeholder="Small" />
+          <TagInput size="md" placeholder="Medium" />
+          <TagInput size="lg" placeholder="Large" />
         </Row>
       </Section>
     </div>

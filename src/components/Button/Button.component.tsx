@@ -7,7 +7,7 @@ import { renderIcon } from "../../utils";
 export const Button: React.FC<ButtonProps> = ({
   variant = "filled",
   color = "primary",
-  size = "medium",
+  size = "md",
   disabled = false,
   loading = false,
   loadingText = "Loading...",

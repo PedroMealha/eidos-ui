@@ -67,7 +67,7 @@ export const RadioShowcase = () => (
     <Grid cols={2}>
       <Section label="Sizes">
         <Col gap="1.25rem">
-          {(['small', 'medium', 'large'] as const).map((size) => (
+          {(['sm', 'md', 'lg'] as const).map((size) => (
             <RadioGroup
               key={size}
               name={`size-${size}`}

@@ -11,7 +11,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
 		{
 			label,
 			color = 'primary',
-			size = 'medium',
+			size = 'md',
 			className = '',
 			disabled = false,
 			id,
@@ -99,7 +99,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
 	options,
 	direction = 'vertical',
 	color = 'primary',
-	size = 'medium',
+	size = 'md',
 	disabled = false,
 	error,
 	className = '',

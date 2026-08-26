@@ -126,7 +126,7 @@
 
 	// ── Size variants ─────────────────────────────────────────────────────────
 
-	&--small {
+	&--sm {
 		.eidos-otp-slot {
 			width: var(--component-size-sm);
 			height: var(--component-size-sm);
@@ -139,7 +139,7 @@
 
 	// medium is the default - declared on the slot itself above
 
-	&--large {
+	&--lg {
 		.eidos-otp-slot {
 			width: var(--component-size-lg);
 			height: var(--component-size-lg);

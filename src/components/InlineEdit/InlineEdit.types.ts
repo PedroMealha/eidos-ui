@@ -32,7 +32,7 @@ export interface InlineEditProps {
   trigger?: 'click' | 'doubleClick';
 
   // ── Layout ────────────────────────────────────────────────────────────────
-  size?: 'small' | 'medium' | 'large';
+  size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   disabled?: boolean;
 

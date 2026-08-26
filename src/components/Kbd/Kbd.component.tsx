@@ -24,7 +24,7 @@ import type { KbdProps } from './Kbd.types';
  */
 export const Kbd: React.FC<KbdProps> = ({
 	children,
-	size = 'medium',
+	size = 'md',
 	className = '',
 }) => {
 	const classes = [

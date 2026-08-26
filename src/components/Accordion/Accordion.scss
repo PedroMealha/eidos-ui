@@ -83,19 +83,19 @@
     color 0.15s ease;
 
   // ── Size modifiers ─────────────────────────────────────────────────────────
-  &--small {
+  &--sm {
     @include font-size(sm);
     padding: var(--spacing-sm) var(--spacing-md);
     min-height: 40px;
   }
 
-  &--medium {
+  &--md {
     @include font-size(base);
     padding: var(--spacing-md);
     min-height: 48px;
   }
 
-  &--large {
+  &--lg {
     font-size: 1.0625rem;
     padding: var(--spacing-md) var(--spacing-lg);
     min-height: 56px;
