@@ -35,7 +35,7 @@ const meta = {
     },
     size: {
       control: "select",
-      options: ["small", "medium", "large"],
+      options: ["sm", "md", "lg"],
       description: "Track height - small (4 px), medium (8 px), large (12 px).",
       table: {
         type: { summary: '"sm" | "md" | "lg"' },
@@ -130,7 +130,7 @@ export const Colors = {
 export const Sizes = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", maxWidth: "520px" }}>
-      {(["small", "medium", "large"] as const).map((size) => (
+      {(["sm", "md", "lg"] as const).map((size) => (
         <div key={size}>
           <p style={labelStyle}>{size}</p>
           <Progress value={70} size={size} />

@@ -91,7 +91,7 @@ export const Modal: React.FC<ModalProps> = ({
               <Button
                 key={action.id}
                 variant={action.variant || "outlined"}
-                size={action.size || "medium"}
+                size={action.size || "md"}
                 color={action.color}
                 disabled={action.disabled}
                 loading={action.loading}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User, CreditCard, Package, CheckCircle } from 'lucide-react';
 import { Stepper } from '../../../src/components/Stepper';
 import { Button } from '../../../src/components/Button';
-import { Section, Col, Grid } from '../shared/Section';
+import { Section, Col, Grid, Row } from '../shared/Section';
 
 const STEPS = [
   { label: 'Account',  description: 'Create your account' },
@@ -65,7 +65,7 @@ export const StepperShowcase = () => {
       <Section label="Interactive">
         <Col>
           <Stepper steps={STEPS} activeStep={activeStep} />
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <Row wrap={false}>
             <Button
               variant="outlined"
               size="sm"
@@ -81,7 +81,7 @@ export const StepperShowcase = () => {
             >
               {activeStep === STEPS.length - 1 ? 'Finish' : 'Next'}
             </Button>
-          </div>
+          </Row>
         </Col>
       </Section>
     </Col>

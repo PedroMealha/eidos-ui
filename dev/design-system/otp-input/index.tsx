@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { OTPInput } from '../../../src/components/OTPInput';
-import { Section, Grid } from '../shared/Section';
+import { Section, Grid, Col } from '../shared/Section';
 
 const OTPCompleteDemo = () => {
   const [completedValue, setCompletedValue] = useState<string | null>(null);
@@ -78,11 +78,11 @@ export const OTPInputShowcase = () => (
 
     <div style={{ gridColumn: '1 / -1' }}>
       <Section label="Sizes">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Col>
           <OTPInput size="sm" label="Small" />
           <OTPInput size="md" label="Medium" />
           <OTPInput size="lg" label="Large" />
-        </div>
+        </Col>
       </Section>
     </div>
   </Grid>

@@ -16,16 +16,9 @@ import {
 import { CommandPalette } from '../../../src/components/CommandPalette';
 import type { CommandItem } from '../../../src/components/CommandPalette';
 import { Button } from '../../../src/components/Button';
-import { Section, Col } from '../shared/Section';
+import { Section, Col, Row } from '../shared/Section';
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
-
-const triggerRowStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1rem',
-  flexWrap: 'wrap',
-};
 
 const descStyle: React.CSSProperties = {
   fontSize: '0.8125rem',
@@ -187,11 +180,11 @@ export const CommandPaletteShowcase = () => {
           Press <kbd>⌘K</kbd> or click the button below to open it.
         </p>
 
-        <div style={triggerRowStyle}>
+        <Row>
           <Button variant="filled" onClick={() => setOpen(true)}>
             Open Command Palette &nbsp; ⌘K
           </Button>
-        </div>
+        </Row>
 
         <p style={lastCmdStyle}>
           {lastCommand ? `Last command: ${lastCommand}` : 'No command executed yet'}

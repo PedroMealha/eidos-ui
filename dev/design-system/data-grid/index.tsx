@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { DataGrid } from '../../../src/components/DataGrid';
 import type { DataGridColumn, BulkAction } from '../../../src/components/DataGrid';
-import { Section, Col } from '../shared/Section';
+import { Section, Col, Grid } from '../shared/Section';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -224,7 +224,7 @@ export const DataGridShowcase = () => (
 
 		{/* ── 3: Empty / Loading States ────────────────────────────────────── */}
 		<Section label="Empty / Loading States">
-			<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+			<Grid cols={2}>
 				<div>
 					<p
 						style={{
@@ -263,7 +263,7 @@ export const DataGridShowcase = () => (
 						onChange={() => {}}
 					/>
 				</div>
-			</div>
+			</Grid>
 		</Section>
 	</Col>
 );

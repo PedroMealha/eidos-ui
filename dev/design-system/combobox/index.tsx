@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Combobox } from '../../../src/components/Combobox';
 import type { ComboboxOption } from '../../../src/components/Combobox';
-import { Section, Grid } from '../shared/Section';
+import { Section, Grid, Row } from '../shared/Section';
 
 const frameworkOptions: ComboboxOption[] = [
   { id: '1', label: 'React', value: 'react' },
@@ -140,7 +140,7 @@ export const ComboboxShowcase = () => {
 
       <div style={{ gridColumn: '1 / -1' }}>
         <Section label="Sizes">
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <Row>
             <div style={{ flex: 1, minWidth: '200px' }}>
               <Combobox
                 label="Small"
@@ -171,7 +171,7 @@ export const ComboboxShowcase = () => {
                 placeholder="Large…"
               />
             </div>
-          </div>
+          </Row>
         </Section>
       </div>
     </Grid>

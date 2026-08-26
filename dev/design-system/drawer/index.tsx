@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Drawer } from '../../../src/components/Drawer';
 import { Button } from '../../../src/components/Button';
 import type { DrawerPlacement, DrawerSize } from '../../../src/components/Drawer';
-import { Section, Grid, Col } from '../shared/Section';
+import { Section, Grid, Col, Row } from '../shared/Section';
 
 export const DrawerShowcase = () => {
   const [open, setOpen] = useState(false);
@@ -13,7 +13,7 @@ export const DrawerShowcase = () => {
     <Col>
       <Grid cols={2}>
         <Section label="Placements">
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <Row>
             {(['left', 'right', 'top', 'bottom'] as const).map((p) => (
               <Button
                 key={p}
@@ -24,11 +24,11 @@ export const DrawerShowcase = () => {
                 {p}
               </Button>
             ))}
-          </div>
+          </Row>
         </Section>
 
         <Section label="Sizes (right)">
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <Row>
             {(['sm', 'md', 'lg', 'full'] as const).map((s) => (
               <Button
                 key={s}
@@ -39,7 +39,7 @@ export const DrawerShowcase = () => {
                 {s}
               </Button>
             ))}
-          </div>
+          </Row>
         </Section>
       </Grid>
 

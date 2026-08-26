@@ -626,9 +626,10 @@ function DataGridInner<T extends Record<string, unknown>>({
 	const handleRowAdd = useCallback(() => {
 		if (!onRowAdd) return;
 		const newRow = onRowAdd();
-		const newData = [...localDataRef.current, newRow];
+		const newData = [newRow, ...localDataRef.current];
 		setLocalData(newData);
 		onChange?.(newData);
+		setCurrentPage(1);
 	}, [onRowAdd, onChange, setLocalData]);
 
 	// ── Selection handlers ──────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ColorPicker } from '../../../src/components/ColorPicker';
-import { Section, Grid } from '../shared/Section';
+import { Section, Grid, Col, Row } from '../shared/Section';
 
 const TAILWIND_REDS: string[] = [
   '#fef2f2', '#fee2e2', '#fecaca', '#fca5a5',
@@ -18,7 +18,7 @@ export const ColorPickerShowcase = () => {
   return (
     <Grid cols={3}>
       <Section label="Trigger (Popover)">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <Col gap="0.5rem">
           <ColorPicker
             label="Brand Color"
             value={triggerColor}
@@ -40,11 +40,11 @@ export const ColorPickerShowcase = () => {
             />
             <code>{triggerColor}</code>
           </div>
-        </div>
+        </Col>
       </Section>
 
       <Section label="Inline">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <Col gap="0.5rem">
           <ColorPicker
             inline
             value={inlineColor}
@@ -66,7 +66,7 @@ export const ColorPickerShowcase = () => {
             />
             <code>{inlineColor}</code>
           </div>
-        </div>
+        </Col>
       </Section>
 
       <Section label="With Alpha">
@@ -106,17 +106,11 @@ export const ColorPickerShowcase = () => {
 
       <div style={{ gridColumn: '1 / -1' }}>
         <Section label="Sizes">
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            <div>
-              <ColorPicker size="sm" label="Small" defaultValue="#ef4444" />
-            </div>
-            <div>
-              <ColorPicker size="md" label="Medium" defaultValue="#f59e0b" />
-            </div>
-            <div>
-              <ColorPicker size="lg" label="Large" defaultValue="#10b981" />
-            </div>
-          </div>
+          <Row>
+            <ColorPicker size="sm" label="Small" defaultValue="#ef4444" />
+            <ColorPicker size="md" label="Medium" defaultValue="#f59e0b" />
+            <ColorPicker size="lg" label="Large" defaultValue="#10b981" />
+          </Row>
         </Section>
       </div>
     </Grid>
