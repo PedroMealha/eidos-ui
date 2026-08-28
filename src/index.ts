@@ -91,6 +91,21 @@ export type { SnackbarProps, SnackbarVariant, SnackbarAction, SnackbarState, Sna
 export type { DatePickerProps, DateSelectionMode, TimeConfig, DateTimeValue, TimeValue, RangeTimeValue, CalendarConfig, DateFormatConfig, CalendarProps } from './components/DatePicker';
 export type { TableProps, TableColumn, TableFilters, FilterValue, BulkAction } from './components/Table';
 
+export type { ColorPickerProps, ColorFormat, RGBColor, HSLColor } from './components/ColorPicker';
+export type { ComboboxProps, ComboboxOption } from './components/Combobox';
+export type { CommandPaletteProps, CommandItem } from './components/CommandPalette';
+export type {
+  DataGridProps,
+  DataGridColumn,
+  DataGridCellType,
+  DataGridSelectOption,
+} from './components/DataGrid';
+export type { OTPInputProps } from './components/OTPInput';
+export type { SpinnerProps } from './components/Spinner';
+export type { TagInputProps } from './components/TagInput';
+export type { TreeViewProps, TreeNode } from './components/TreeView';
+export type { VirtualListProps } from './components/VirtualList';
+
 // Shared type (all IconTypes are the same)
 export type { IconType } from './utils';
 export type { ButtonGroupProps } from './components/ButtonGroup';

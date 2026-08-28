@@ -8,7 +8,7 @@ A React component library with 49 components, a consistent design language, and 
 # Interactive component docs (recommended)
 npm run storybook
 
-# Dev preview (Vite)
+# Example application (Vite) — http://localhost:5173
 npm run dev
 
 # Build the library for publishing
@@ -155,6 +155,33 @@ src/
 └── index.ts              # Main library entry point
 ```
 
+## The example application
+
+`npm run dev` serves **Meridian**, a fictional B2B support desk that lives in
+`dev/`. It exists to exercise the library the way a real product does — a
+public marketing/sign-in area, an authenticated admin area, simulated API
+latency, and genuine loading, empty and error states.
+
+- **Sign in** with any email address; the one-time code is always `123456`.
+- Pick the **admin** or **member** role at sign-in to see how the app changes
+  (members cannot reach the Team page).
+- Flip **Force API errors** in the header to make every request fail, which is
+  the quickest way to review error states. Locked tickets (`MER-1214`,
+  `MER-1263`) also reject writes on purpose.
+
+> The authentication is entirely fake and runs in the browser. It is there to
+> give the app a realistic public/authenticated split — it is not an auth
+> pattern to copy.
+
+The example imports the library through its **public entry points**
+(`@pmealha/eidos-ui` and `@pmealha/eidos-ui/styles`), aliased to `src/` by
+`vite.dev.config.ts` and the tsconfig `paths` entry. That is deliberate: if a
+component or type is missing from the root barrel, the example app fails
+immediately instead of after publishing.
+
+Per-component documentation lives in Storybook, not here. `dev/` is one
+cohesive app, so adding a new component requires no changes to it.
+
 ## Adding a new component
 
 1. Create the component directory and files (see structure above).
@@ -167,7 +194,13 @@ src/
    export { NewComponent } from './components/NewComponent';
    export type { NewComponentProps } from './components/NewComponent';
    ```
-4. Add a dev showcase at `dev/design-system/<kebab-case-name>/index.tsx` and register it in `dev/App.tsx`.
+   Export **every** public type the component's own `index.ts` exposes, not just
+   the component. Consumers importing from `@pmealha/eidos-ui` cannot reach
+   types that only the deep entry point re-exports.
+4. Add `NewComponent.stories.tsx` and `NewComponent.mdx` so it appears in Storybook.
+
+No change is needed under `dev/` - that folder is a single example application
+(see below), not a per-component showcase.
 
 ## Component naming conventions
 

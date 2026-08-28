@@ -1,17 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { SnackbarProvider, SnackbarContainer } from '../src/components/Snackbar';
-import { DropdownProvider } from '../src/components/Dropdown';
+import { DropdownProvider, SnackbarContainer, SnackbarProvider } from '@pmealha/eidos-ui';
 import { App } from './App';
-import '../src/styles/index.scss';
-import './demo.scss';
+import { AuthProvider } from './auth/auth-context';
+import { RouterProvider } from './routes/router';
+import '@pmealha/eidos-ui/styles';
+import './app.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <SnackbarProvider>
       <DropdownProvider>
-        <App />
-        <SnackbarContainer />
+        <RouterProvider>
+          <AuthProvider>
+            <App />
+            <SnackbarContainer />
+          </AuthProvider>
+        </RouterProvider>
       </DropdownProvider>
     </SnackbarProvider>
   </React.StrictMode>,

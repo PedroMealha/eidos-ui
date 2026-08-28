@@ -33,7 +33,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.dev.config.ts",
     "build": "tsup && node scripts/build-styles.js",
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",

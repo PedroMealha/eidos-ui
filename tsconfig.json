@@ -9,6 +9,14 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+
+    /* The dev example app imports the library by its public name. This mirrors
+       the alias in vite.dev.config.ts so tsc resolves to src/ instead of
+       falling back to Node's package self-reference, which would typecheck the
+       example against a stale (and gitignored) dist/. */
+    "paths": {
+      "@pmealha/eidos-ui": ["./src/index.ts"]
+    },
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

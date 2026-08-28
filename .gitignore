@@ -30,3 +30,9 @@ storybook-static
 .env
 .env.local
 
+# Temporary backup files
+*.backup
+*.bak
+*.tmp
+*.temp
+

@@ -76,20 +76,51 @@ CommandPalette, Modal, Drawer, and similar overlay components must start CLOSED 
 
 ---
 
-## Dev showcase rules
+## Dev example app rules
 
-### File location
-Each component gets `dev/design-system/<kebab-case-name>/index.tsx`.
+`dev/` is NOT a per-component showcase. It is **Meridian**, a single realistic
+example app (a fictional B2B support desk). The per-component reference lives in
+Storybook and only in Storybook.
+
+> **Do not add a showcase page per component.** The old `dev/design-system/`
+> tree was one file per component and duplicated the stories almost exactly. It
+> was deleted deliberately. Adding a new component does NOT require any change
+> under `dev/`.
 
 ### Structure
-- Import from `../../../src/components/X` (never from the barrel `src/index.ts` in dev)
-- Use `Section`, `Row`, `Col`, `Grid` from `../shared/Section` - never raw `div` grids
-- Export named as `XxxShowcase`
-- Group related variants inside a single `<Section>` - don't create one Section per variant
-- Maximum ~4 sections unless the component has genuinely distinct interaction patterns
+```
+dev/
+  index.html        Vite entry (the Vite root is `dev`, see vite.dev.config.ts)
+  main.tsx          providers: Snackbar, Dropdown, Router, Auth
+  App.tsx           route table + the public/authenticated guard
+  app.scss          layout and chrome only, using the library's CSS variables
+  api/              simulated transport: latency, deterministic failures, seeded data
+  auth/             fake OTP sign-in (demo only - not an auth pattern to copy)
+  routes/           minimal hash router (no routing dependency)
+  layouts/          public-layout, admin-layout (sidebar/topbar/command palette)
+  lib/              small shared hooks (use-async)
+  pages/            one file per screen
+```
 
-### App.tsx registration
-When adding a new showcase: update `ComponentId` type, add to the correct `NAV` group, add entry to `SHOWCASES` record. All three must stay in sync.
+### Rules
+- Import from the public entry points (`@pmealha/eidos-ui`, `@pmealha/eidos-ui/styles`),
+  never via relative `../../src/...` paths. Both the Vite alias
+  (`vite.dev.config.ts`) and the tsconfig `paths` entry map these to `src/`, so
+  a type or value missing from the root barrel breaks the dev server
+  immediately. This is intentional dogfooding - keep it that way.
+- File names are kebab-case; components inside are named exports.
+- Styling in `app.scss` covers layout/chrome only and must use the library's CSS
+  custom properties (`--spacing-md`, `--gray-200`, …) rather than hardcoded values.
+- Use a component only where the domain genuinely calls for it. Do not add a
+  screen just to demonstrate a component.
+- Failures must stay deterministic: a domain rule (locked ticket, last active
+  admin) or the "Force API errors" switch. Never add random failure injection.
+- `Button` has no `fullWidth` prop - use the `.mrd-block` utility class.
+
+### Verifying dev changes
+`npm run lint` runs with `--max-warnings 0`, so `react-hooks/exhaustive-deps`
+warnings fail the build. Pass memoized callbacks to `useAsync` instead of
+dependency arrays.
 
 ---
 
@@ -103,8 +134,13 @@ When adding a new showcase: update `ComponentId` type, add to the correct `NAV` 
 
 When creating a new component, always wire it into:
 1. `src/styles/index.scss` (SCSS import)
-2. `src/index.ts` (value export + type export)
-3. Dev showcase (showcase file + App.tsx registration)
+2. `src/index.ts` (value export **and** type export - the root barrel must
+   re-export every public type from the component's own `index.ts`, not just the
+   component itself; consumers importing from `@pmealha/eidos-ui` cannot reach
+   types that only the deep entry point exports)
+3. Storybook (`Component.stories.tsx` + `Component.mdx`)
+
+There is deliberately no dev-showcase step - see "Dev example app rules" above.
 
 ---
 
@@ -112,7 +148,7 @@ When creating a new component, always wire it into:
 
 ### Published package
 - Package name: `@pmealha/eidos-ui`
-- Current stable version: `2.0.3` (as of 2026-08-24)
+- Current stable version: `3.0.0` (as of 2026-08-28)
 - Registry: npmjs.com (public)
 
 ### Build system

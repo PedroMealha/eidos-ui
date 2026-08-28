@@ -1,0 +1,540 @@
+/* ────────────────────────────────────────────────────────────────────────────
+   Meridian - example app shell styles.
+
+   Only layout and chrome live here; every interactive element comes from the
+   library. Values use the library's CSS custom properties so the example stays
+   in sync with the design tokens instead of drifting on hardcoded hex codes.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+body {
+  background: var(--gray-50);
+  margin-bottom: 0;
+}
+
+/* Utility: the library's Button has no `fullWidth` prop by design. */
+.mrd-block {
+  width: 100%;
+}
+
+.mrd-muted {
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Brand ──────────────────────────────────────────────────────────────── */
+
+.mrd-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.mrd-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--border-radius-sm);
+  background: var(--primary-color);
+  color: var(--white);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+}
+
+.mrd-brand__name {
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  color: var(--dark-color);
+}
+
+/* ── Public shell ───────────────────────────────────────────────────────── */
+
+.mrd-public {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.mrd-public__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--white);
+}
+
+.mrd-public__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: var(--spacing-3xl) var(--spacing-xl);
+}
+
+.mrd-public__footer {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-top: 1px solid var(--gray-200);
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* ── Landing ────────────────────────────────────────────────────────────── */
+
+.mrd-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  max-width: 660px;
+}
+
+.mrd-hero__title {
+  font-size: var(--font-size-3xl);
+  margin: 0;
+}
+
+.mrd-hero__body {
+  color: var(--gray-600);
+  font-size: var(--font-size-md);
+}
+
+.mrd-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.mrd-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-3xl);
+}
+
+.mrd-feature__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  border-radius: var(--border-radius-md);
+  background: var(--primary-50);
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.mrd-feature__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.mrd-feature__body {
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Sign in ────────────────────────────────────────────────────────────── */
+
+.mrd-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.mrd-auth__card {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.mrd-auth__head {
+  text-align: center;
+}
+
+.mrd-auth__title {
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.mrd-auth__subtitle {
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+}
+
+.mrd-auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.mrd-auth__role {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.mrd-auth__role-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-700);
+}
+
+.mrd-auth__hint {
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+.mrd-auth__legal {
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+  text-align: center;
+  max-width: 420px;
+}
+
+/* ── Admin shell ────────────────────────────────────────────────────────── */
+
+.mrd-shell {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mrd-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 232px;
+  flex-shrink: 0;
+  padding: var(--spacing-lg);
+  border-right: 1px solid var(--gray-200);
+  background: var(--white);
+}
+
+.mrd-sidenav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.mrd-sidenav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+
+  &:hover {
+    background: var(--gray-100);
+    color: var(--dark-color);
+  }
+}
+
+.mrd-sidenav__item--active {
+  background: var(--primary-50);
+  color: var(--primary-color);
+  font-weight: var(--font-weight-semibold);
+}
+
+.mrd-sidebar__foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.mrd-sidebar__role {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+.mrd-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.mrd-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  height: 60px;
+  flex-shrink: 0;
+  padding: 0 var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--white);
+}
+
+.mrd-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.mrd-topbar__switch {
+  display: flex;
+  align-items: center;
+}
+
+.mrd-cmdk {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background: var(--gray-50);
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--gray-300);
+    color: var(--gray-700);
+  }
+}
+
+.mrd-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl);
+}
+
+.mrd-usercard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.mrd-usercard__name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.mrd-usercard__email {
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+/* ── Page scaffold ──────────────────────────────────────────────────────── */
+
+.mrd-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  max-width: 1200px;
+}
+
+.mrd-page__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.mrd-page__title {
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.mrd-page__subtitle {
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+}
+
+.mrd-page__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* ── Dashboard ──────────────────────────────────────────────────────────── */
+
+.mrd-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.mrd-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.mrd-stat__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+}
+
+.mrd-stat__value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+.mrd-stat__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--success-color);
+}
+
+.mrd-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+  align-items: start;
+}
+
+.mrd-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.mrd-card__title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+/* ── Tickets table ──────────────────────────────────────────────────────── */
+
+.mrd-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  color: var(--gray-600);
+}
+
+.mrd-subject {
+  display: flex;
+  flex-direction: column;
+}
+
+.mrd-subject__text {
+  font-weight: var(--font-weight-medium);
+}
+
+.mrd-subject__meta {
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+/* ── Ticket detail drawer ───────────────────────────────────────────────── */
+
+.mrd-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.mrd-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.mrd-field__label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-700);
+}
+
+.mrd-field-row {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.mrd-detail__thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.mrd-message {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.mrd-message__body {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background: var(--gray-50);
+  font-size: var(--font-size-sm);
+}
+
+.mrd-message__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+/* ── Forms ──────────────────────────────────────────────────────────────── */
+
+.mrd-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  flex: 1;
+  min-width: 0;
+}
+
+.mrd-form__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mrd-switches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.mrd-profile {
+  display: flex;
+  gap: var(--spacing-2xl);
+  flex-wrap: wrap;
+}
+
+.mrd-profile__avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 240px;
+}
