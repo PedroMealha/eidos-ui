@@ -204,6 +204,21 @@ The following are NOT bundled - consumers must have them:
 
 Everything else (dayjs, @dnd-kit, @tanstack/react-virtual) is bundled into the component chunks.
 
+### Does a change need publishing?
+Only `dist/` ships (`files: ["dist"]`). Run `npm run release:needed` - it
+compares the last tag against HEAD and reports whether anything reaches the
+build output.
+
+Needs a release: `src/**`, `tsup.config.ts`, `scripts/build-styles.js`, and the
+consumer-facing `package.json` fields (`exports`, `main`, `types`, `files`,
+`sideEffects`, `dependencies`, `peerDependencies`).
+
+Push only: `dev/**`, `.storybook/**`, `.github/**`, docs, `.devin/**`, tsconfig,
+eslint config, and `package.json` `scripts`/`devDependencies`.
+
+`.mdx` and `.stories.tsx` sit under `src/` but are Storybook-only and never
+reach the tarball - do not treat them as releasable.
+
 ### Release workflow
 ```bash
 npm run release:patch   # bug fixes

@@ -240,6 +240,33 @@ No change is needed under `dev/` - that folder is a single example application
 
 ## Publishing
 
+### Does this change even need a release?
+
+`files: ["dist"]` means only `dist/` is published, so a release is warranted
+only when a change reaches the build output:
+
+```bash
+npm run release:needed              # compares the latest tag against HEAD
+npm run release:needed -- v3.0.0    # or against a specific ref
+```
+
+| Needs a release | Push only |
+| --- | --- |
+| `src/**` (components, styles, `index.ts`) | `dev/**`, `.storybook/**`, `.github/**` |
+| `tsup.config.ts`, `scripts/build-styles.js` | docs, `AGENTS.md`, `.devin/**` |
+| `package.json`: `exports`, `main`, `types`, `files`, `sideEffects`, `dependencies`, `peerDependencies` | `package.json`: `scripts`, `devDependencies` |
+
+Two deliberate subtleties: `.mdx` and `.stories.tsx` live under `src/` but are
+Storybook-only and never reach the tarball, so they do not count; and
+`package.json` is always in the tarball, but only the fields above change how
+the package resolves or installs.
+
+Publishing on doc-only changes inflates the version history until "what changed
+in 3.4.0?" stops being answerable. Let non-shipping work ride along with the
+next real change — but don't sit on a genuine `src/` fix.
+
+### Releasing
+
 ```bash
 npm run release:patch   # bug fixes
 npm run release:minor   # new components / non-breaking changes
