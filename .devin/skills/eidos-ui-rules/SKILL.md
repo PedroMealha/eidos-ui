@@ -173,8 +173,11 @@ There is deliberately no dev-showcase step - see "Dev example app rules" above.
 
 ### Published package
 - Package name: `@pmealha/eidos-ui`
-- Current stable version: `3.0.0` (as of 2026-08-28)
 - Registry: npmjs.com (public)
+- Current version: do not record it here - this line went stale twice. Read the
+  source of truth instead: `node -p "require('./package.json').version"` for
+  local, `npm view @pmealha/eidos-ui version` for what is actually published.
+  They differing means a release was bumped but never published.
 
 ### Build system
 - Bundler: **tsup** with esbuild under the hood
@@ -207,7 +210,19 @@ npm run release:patch   # bug fixes
 npm run release:minor   # new features / new components (backward-compatible)
 npm run release:major   # breaking API changes
 ```
-Each script runs `npm version <bump>` then `npm publish` (which triggers `prepublishOnly: npm run build`).
+Each script is `release:preflight && npm version <bump> && npm publish`
+(publish triggers `prepublishOnly: npm run build`).
+
+`release:preflight` (`scripts/preflight-release.js` + lint/typecheck/build)
+runs BEFORE the bump and checks npm auth, package ownership and a clean tree.
+It exists because `npm version` commits and tags immediately and is never rolled
+back - a failed publish otherwise strands a version that is tagged in git but
+absent from the registry (this happened to 3.1.0).
+
+**If publish fails after the bump, run `npm publish` alone to retry. Never
+re-run `release:*`** - that bumps again and strands another version.
+
+Then `git push --follow-tags`; `npm version` only tags locally.
 
 ### Dependency constraints
 - **TypeScript is held at `^6.0.x`** - `@typescript-eslint` peer dep requires `<6.1.0`, blocking TS 7.x. Check each time `@typescript-eslint` is updated.

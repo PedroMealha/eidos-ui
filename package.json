@@ -39,11 +39,13 @@
     "build-storybook": "storybook build",
     "chromatic": "chromatic --exit-zero-on-changes",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
     "init": "npm run dev & npm run storybook",
-    "release:patch": "npm version patch && npm publish",
-    "release:minor": "npm version minor && npm publish",
-    "release:major": "npm version major && npm publish"
+    "release:preflight": "node scripts/preflight-release.js && npm run lint && npm run typecheck && npm run build",
+    "release:patch": "npm run release:preflight && npm version patch && npm publish",
+    "release:minor": "npm run release:preflight && npm version minor && npm publish",
+    "release:major": "npm run release:preflight && npm version major && npm publish"
   },
   "keywords": [
     "react",

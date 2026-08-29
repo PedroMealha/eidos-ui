@@ -246,7 +246,34 @@ npm run release:minor   # new components / non-breaking changes
 npm run release:major   # breaking API changes
 ```
 
-Each script bumps the version and publishes (which triggers `prepublishOnly: npm run build` automatically).
+Each script runs `release:preflight` first, then bumps the version and
+publishes (which triggers `prepublishOnly: npm run build` automatically).
+
+`release:preflight` verifies, **before** anything is bumped:
+
+1. You are authenticated with npm (`npm whoami`).
+2. Your account owns the package.
+3. The working tree is clean.
+4. `lint`, `typecheck` and `build` all pass.
+
+This matters because `npm version` creates a commit **and a tag** immediately,
+and nothing rolls them back if `npm publish` then fails — leaving a version that
+exists in git but never reached the registry.
+
+> **If publish fails after the version was already bumped**, run `npm publish`
+> on its own to retry. Do **not** re-run `npm run release:*` — that would bump
+> the version a second time and strand another one.
+
+Afterwards, push the commit and the tag (`npm version` only tags locally):
+
+```bash
+git push --follow-tags
+npm view @pmealha/eidos-ui version   # confirm the registry agrees
+```
+
+A logged-out publish of a scoped package fails with a misleading
+`404 Not Found` rather than a permission error — the preflight catches that
+case up front.
 
 ## Component inventory
 
