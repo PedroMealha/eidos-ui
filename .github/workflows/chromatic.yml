@@ -23,6 +23,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # A missing secret resolves to an empty string rather than an error, so
+      # Chromatic fails deep in its own CLI with a large stack trace. Check it
+      # up front and report only the length - never the value.
+      - name: Verify the Chromatic token reached this run
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        run: |
+          if [ -z "$CHROMATIC_PROJECT_TOKEN" ]; then
+            echo "::error::CHROMATIC_PROJECT_TOKEN is empty for this run."
+            echo "Checklist:"
+            echo "  1. Settings > Secrets and variables > ACTIONS > 'Repository secrets'"
+            echo "     (the Codespaces and Dependabot tabs are separate stores that Actions cannot read)."
+            echo "  2. The name must be exactly CHROMATIC_PROJECT_TOKEN (case-sensitive, no trailing space)."
+            echo "  3. Secrets are never passed to pull_request runs from a forked repository."
+            echo "     event=${{ github.event_name }} head_repo=${{ github.event.pull_request.head.repo.full_name }} base_repo=${{ github.repository }}"
+            exit 1
+          fi
+          echo "Token is present (${#CHROMATIC_PROJECT_TOKEN} characters)."
+
       - name: Publish to Chromatic
         uses: chromaui/action@latest
         with:
