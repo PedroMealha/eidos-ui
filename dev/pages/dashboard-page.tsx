@@ -34,7 +34,7 @@ const StatCard: React.FC<{
     {loading ? (
       <Skeleton width={72} height={30} variant="rounded" />
     ) : (
-      <span className="mrd-stat__value">{unavailable ? '—' : value}</span>
+      <span className="mrd-stat__value">{unavailable ? '-' : value}</span>
     )}
     {trend && !loading && !unavailable && (
       <span className="mrd-stat__trend">

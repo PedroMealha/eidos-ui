@@ -13,7 +13,7 @@
   grid-template-columns: 32px 1fr;
   gap: var(--spacing-md);
   // Item spacing comes from .eidos-timeline-content padding-bottom only.
-  // The track column must NOT have padding-bottom — the connector's flex: 1
+  // The track column must NOT have padding-bottom - the connector's flex: 1
   // needs to fill all the way to the row bottom so there is no gap between
   // the connector tail and the next item's dot.
 }

@@ -8,7 +8,7 @@ A React component library with 49 components, a consistent design language, and 
 # Interactive component docs (recommended)
 npm run storybook
 
-# Example application (Vite) — http://localhost:5173
+# Example application (Vite) - http://localhost:5173
 npm run dev
 
 # Build the library for publishing
@@ -24,7 +24,7 @@ npm run lint
 npm install @pmealha/eidos-ui
 ```
 
-**Peer dependencies** — must be present in your project (not bundled):
+**Peer dependencies** - must be present in your project (not bundled):
 
 ```json
 "peerDependencies": {
@@ -69,7 +69,7 @@ const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
 showSuccess('Saved!');
 ```
 
-### Dropdown (optional — grouped menus only)
+### Dropdown (optional - grouped menus only)
 
 Only needed when using `dropdownGroup` to ensure only one menu is open at a time.
 
@@ -84,7 +84,7 @@ import { DropdownProvider, Dropdown } from '@pmealha/eidos-ui';
 
 ## Icons
 
-Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lucide-react`, which is listed as a regular dependency and auto-installed with the package — no extra install step needed.
+Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lucide-react`, which is listed as a regular dependency and auto-installed with the package - no extra install step needed.
 
 ```tsx
 import { Download, Plus } from 'lucide-react';
@@ -126,10 +126,10 @@ All design tokens are CSS custom properties defined on `:root`. Override them af
 ## Import patterns
 
 ```ts
-// Root barrel — works with any bundler that tree-shakes
+// Root barrel - works with any bundler that tree-shakes
 import { Button, Input, DataGrid } from '@pmealha/eidos-ui';
 
-// Deep import — explicit single-component chunk (useful in CJS / non-tree-shaking envs)
+// Deep import - explicit single-component chunk (useful in CJS / non-tree-shaking envs)
 import { Button } from '@pmealha/eidos-ui/button';
 import { DataGrid } from '@pmealha/eidos-ui/data-grid';
 ```
@@ -158,7 +158,7 @@ src/
 ## The example application
 
 `npm run dev` serves **Meridian**, a fictional B2B support desk that lives in
-`dev/`. It exists to exercise the library the way a real product does — a
+`dev/`. It exists to exercise the library the way a real product does - a
 public marketing/sign-in area, an authenticated admin area, simulated API
 latency, and genuine loading, empty and error states.
 
@@ -170,7 +170,7 @@ latency, and genuine loading, empty and error states.
   `MER-1263`) also reject writes on purpose.
 
 > The authentication is entirely fake and runs in the browser. It is there to
-> give the app a realistic public/authenticated split — it is not an auth
+> give the app a realistic public/authenticated split - it is not an auth
 > pattern to copy.
 
 The example imports the library through its **public entry points**

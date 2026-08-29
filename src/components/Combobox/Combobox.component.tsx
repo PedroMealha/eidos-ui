@@ -212,7 +212,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (!isOpenRef.current) return;
-      // defaultPrevented is set by the listbox's onMouseDown — means the user
+      // defaultPrevented is set by the listbox's onMouseDown - means the user
       // clicked an option in the portal, not truly outside the combobox.
       if (e.defaultPrevented) return;
       if (containerRef.current?.contains(e.target as Node)) return;

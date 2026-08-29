@@ -26,7 +26,7 @@ dist-ssr
 # Storybook
 storybook-static
 
-# Local secrets — never commit
+# Local secrets - never commit
 .env
 .env.local
 
