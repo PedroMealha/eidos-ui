@@ -451,7 +451,10 @@ const DropdownInternal: React.FC<DropdownProps> = ({
               left: dropdownState.position.left,
               opacity: dropdownState.isPositioned ? 1 : 0,
               visibility: dropdownState.isPositioned ? "visible" : "hidden",
-              zIndex: isNested ? 1001 : 1000,
+              // Nested submenus sit one level above their parent dropdown.
+              zIndex: isNested
+                ? "calc(var(--z-index-dropdown) + 1)"
+                : "var(--z-index-dropdown)",
               ...calculateDynamicSizing(
                 externalTriggerRef?.current?.getBoundingClientRect() ||
                   triggerRef.current?.getBoundingClientRect() ||

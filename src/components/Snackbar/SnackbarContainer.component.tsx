@@ -18,7 +18,9 @@ export const SnackbarContainer: React.FC = () => {
 					className={'eidos-snackbar-wrapper'}
 					style={{
 						top: `${index * 70}px`,
-						zIndex: 9999 - index,
+						// Stack newer snackbars above older ones, relative to the
+						// container's own layer rather than a hardcoded ceiling.
+						zIndex: `calc(var(--z-index-snackbar) - ${index})`,
 					}}
 				>
 					<SnackbarComponent snackbar={snackbar} onClose={removeSnackbar} />

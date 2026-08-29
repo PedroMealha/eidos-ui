@@ -4,7 +4,7 @@
 	position: fixed;
 	top: var(--spacing-lg);
 	right: var(--spacing-lg);
-	z-index: 9999;
+	z-index: var(--z-index-snackbar);
 	pointer-events: none;
 	max-width: 500px;
 	width: 100%;

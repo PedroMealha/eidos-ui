@@ -123,6 +123,36 @@ All design tokens are CSS custom properties defined on `:root`. Override them af
 }
 ```
 
+### Layering (z-index)
+
+Every overlay in the library renders through a portal on `document.body`, so
+they all compete on the same plane and DOM order must never be what decides the
+outcome. The layers are ordered in steps of 100 so you can slot your own
+elements in between:
+
+| Token | Value | Used by |
+| --- | --- | --- |
+| `--z-index-drawer` | `1200` | `Drawer` |
+| `--z-index-modal` | `1300` | `Modal` |
+| `--z-index-dropdown` | `1400` | `Dropdown`, `Select`, `Combobox`, `Menu`, `DatePicker`, `SplitButton`, `ColorPicker`, `ContextMenu`, `Popover`, table/grid filter menus |
+| `--z-index-command-palette` | `1500` | `CommandPalette` |
+| `--z-index-snackbar` | `1600` | `SnackbarContainer` |
+| `--z-index-tooltip` | `1700` | `Tooltip` |
+
+The ordering is deliberate: anchored popups sit **above** `Modal` and `Drawer`
+because they are opened *from* modal and drawer content — a `Select` inside a
+`Modal` must be able to render over it. Tooltips sit at the top because they are
+small, transient and never interactive.
+
+If your application has its own fixed chrome (a sticky header, for example),
+give it a value below `--z-index-drawer` so library overlays always cover it:
+
+```css
+:root {
+  --app-header: 1100; /* below 1200, so drawers and modals cover the header */
+}
+```
+
 ## Import patterns
 
 ```ts

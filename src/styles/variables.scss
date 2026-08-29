@@ -133,8 +133,20 @@
 	--component-size-lg: 48px;
 
 	// Z-index layers
-	--z-index-dropdown: 1000;
-	--z-index-modal: 1001;
-	--z-index-tooltip: 1002;
-	--z-index-snackbar: 9999;
+	//
+	// Ordered low -> high, in steps of 100 so consumers can slot their own
+	// layers in between. Every overlay in the library portals to <body>, so
+	// these values compete directly with each other - DOM order must never be
+	// what decides the outcome.
+	//
+	// The key rule: anchored popups (dropdown, select, combobox, menu, date
+	// picker, popover, context menu) are opened FROM modal/drawer content, so
+	// they must sit ABOVE the modal layer. Tooltips sit above everything
+	// because they are small, transient and never interactive.
+	--z-index-drawer: 1200;
+	--z-index-modal: 1300;
+	--z-index-dropdown: 1400;
+	--z-index-command-palette: 1500;
+	--z-index-snackbar: 1600;
+	--z-index-tooltip: 1700;
 }

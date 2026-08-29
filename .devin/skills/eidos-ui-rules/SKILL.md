@@ -27,6 +27,31 @@ Avatar is the only component with a defined `AvatarSize` type; it also uses `sm 
 ### Color naming
 Always: `primary | secondary | success | danger | warning | info`
 
+### Layering (z-index)
+**Never hardcode a z-index on an overlay** - in SCSS or in a JSX `style` prop.
+An inline `zIndex` silently overrides the SCSS token, which makes the documented
+theming variable dead code. This exact bug put every dropdown behind `Modal`.
+
+Every overlay portals to `document.body`, so they all compete on one plane.
+Use the tokens, which are ordered in steps of 100:
+
+```
+--z-index-drawer:          1200
+--z-index-modal:           1300
+--z-index-dropdown:        1400   // all anchored popups
+--z-index-command-palette: 1500
+--z-index-snackbar:        1600
+--z-index-tooltip:         1700
+```
+
+- Anchored popups (`Dropdown` and everything built on it, `Popover`,
+  `ContextMenu`) MUST stay above `--z-index-modal`: they are opened *from* modal
+  and drawer content.
+- Nested submenus use `calc(var(--z-index-dropdown) + 1)`.
+- Small local values (`z-index: 1`/`3`/`10`) are fine *inside* a component's own
+  stacking context - sticky table cells, input adornments, calendar nav buttons.
+  Only portalled overlays must use the tokens.
+
 ---
 
 ## Storybook documentation rules

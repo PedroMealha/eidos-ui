@@ -129,7 +129,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 						opacity: isPositioned ? 1 : 0,
 						// Invisible but sized so useEffect can measure it before revealing.
 						visibility: isPositioned ? 'visible' : 'hidden',
-						zIndex: 1000,
+						zIndex: 'var(--z-index-dropdown)',
 					}}
 				>
 					<MenuPanel items={items} onItemClick={handleItemClick} />

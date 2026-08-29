@@ -8,7 +8,7 @@
 	position: fixed;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.4);
-	z-index: 9000;
+	z-index: var(--z-index-command-palette);
 	@include flex-center;
 	opacity: 0;
 	transition: opacity 0.2s ease;

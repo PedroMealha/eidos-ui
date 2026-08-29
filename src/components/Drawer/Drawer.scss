@@ -7,7 +7,7 @@
 .eidos-drawer {
   position: fixed;
   inset: 0;
-  z-index: var(--z-index-modal);
+  z-index: var(--z-index-drawer);
 
   &--open .eidos-drawer-backdrop {
     opacity: 1;

@@ -295,7 +295,7 @@ export const Popover: React.FC<PopoverProps> = ({
               top: popoverState.position.top,
               left: popoverState.position.left,
               maxWidth: maxWidth,
-              zIndex: 9999,
+              zIndex: 'var(--z-index-dropdown)',
             }}
           >
             {(title || showCloseButton) && (
