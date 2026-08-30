@@ -174,67 +174,59 @@
 		}
 	}
 
-	// Text variant
+	// Text variant - no background; the colour is carried by the label alone.
+	// This matches Button's `text` variant, so `text` means the same thing
+	// everywhere in the library. A tint appears on hover only, as an
+	// interaction affordance for clickable chips.
 	&--text {
-		background-color: var(--primary-100);
-		color: var(--primary-700);
+		background-color: transparent;
 		border: 1px solid transparent;
 
-		&:hover:not(.eidos-chip--disabled) {
-			background-color: var(--primary-200);
-		}
-
 		&.eidos-chip--primary {
-			background-color: var(--primary-100);
-			color: var(--primary-700);
+			color: var(--primary-color);
 
 			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--primary-200);
+				@include bg-color-opacity(primary, 0.1);
 			}
 		}
 
 		&.eidos-chip--secondary {
-			@include bg-color-opacity(secondary, 0.1);
 			color: var(--secondary-color);
 
 			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(secondary, 0.15);
+				@include bg-color-opacity(secondary, 0.1);
 			}
 		}
 
 		&.eidos-chip--success {
-			@include bg-color-opacity(success, 0.1);
 			color: var(--success-color);
 
 			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(success, 0.15);
+				@include bg-color-opacity(success, 0.1);
 			}
 		}
 
 		&.eidos-chip--danger {
-			@include bg-color-opacity(danger, 0.1);
 			color: var(--danger-color);
 
 			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(danger, 0.15);
+				@include bg-color-opacity(danger, 0.1);
 			}
 		}
 
 		&.eidos-chip--warning {
-			@include bg-color-opacity(warning, 0.1);
 			color: var(--warning-color);
 
 			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(warning, 0.15);
+				@include bg-color-opacity(warning, 0.1);
 			}
 		}
 
 		&.eidos-chip--info {
-			@include bg-color-opacity(info, 0.1);
 			color: var(--info-color);
 
 			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(info, 0.15);
+				@include bg-color-opacity(info, 0.1);
 			}
 		}
 	}

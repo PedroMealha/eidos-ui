@@ -75,16 +75,16 @@
 
 		&--focused {
 			border-color: var(--primary-color);
-			box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.15);
+			box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
 			background-color: var(--white);
 		}
 
 		&--error {
 			border-color: var(--danger-color);
-			background-color: rgb(var(--danger-rgb) / 0.04);
+			background-color: rgba(var(--danger-rgb), 0.04);
 
 			&.eidos-otp-slot--focused {
-				box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.15);
+				box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.15);
 			}
 		}
 

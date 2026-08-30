@@ -84,7 +84,7 @@
 		}
 
 		.eidos-switch-input:focus-visible + .eidos-switch-track {
-			box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.3);
+			box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
 		}
 	}
 
@@ -94,7 +94,7 @@
 		}
 
 		.eidos-switch-input:focus-visible + .eidos-switch-track {
-			box-shadow: 0 0 0 3px rgb(var(--secondary-rgb) / 0.3);
+			box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
 		}
 	}
 
@@ -104,7 +104,7 @@
 		}
 
 		.eidos-switch-input:focus-visible + .eidos-switch-track {
-			box-shadow: 0 0 0 3px rgb(var(--success-rgb) / 0.3);
+			box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
 		}
 	}
 
@@ -114,7 +114,7 @@
 		}
 
 		.eidos-switch-input:focus-visible + .eidos-switch-track {
-			box-shadow: 0 0 0 3px rgb(var(--danger-rgb) / 0.3);
+			box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
 		}
 	}
 }

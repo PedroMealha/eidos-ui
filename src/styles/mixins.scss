@@ -12,19 +12,28 @@
 	filter: brightness(calc(1 + #{str-slice(#{$amount}, 1, -1)} / 100));
 }
 
+// Colour-with-opacity helpers.
+//
+// These MUST use the legacy comma form `rgba(R, G, B, A)`. The `--*-rgb` tokens
+// are comma-separated triples (e.g. `--primary-rgb: 99, 102, 241`), so the
+// modern slash form `rgb(var(--x-rgb) / 0.1)` expands to
+// `rgb(99, 102, 241 / 0.1)` - comma and slash syntax mixed, which is invalid
+// CSS. Browsers drop the whole declaration silently, so the colour simply never
+// renders. That bug removed every tint from Alert, Chip and Badge.
+
 // Adjust color opacity using RGB values
 @mixin color-opacity($color-var, $opacity: 0.8) {
-	color: rgb(var(--#{$color-var}-rgb) / #{$opacity});
+	color: rgba(var(--#{$color-var}-rgb), #{$opacity});
 }
 
 // Background color with opacity
 @mixin bg-color-opacity($color-var, $opacity: 0.8) {
-	background-color: rgb(var(--#{$color-var}-rgb) / #{$opacity});
+	background-color: rgba(var(--#{$color-var}-rgb), #{$opacity});
 }
 
 // Border color with opacity
 @mixin border-color-opacity($color-var, $opacity: 0.8) {
-	border-color: rgb(var(--#{$color-var}-rgb) / #{$opacity});
+	border-color: rgba(var(--#{$color-var}-rgb), #{$opacity});
 }
 
 // ============================================================================
@@ -139,7 +148,7 @@
 @mixin focus-ring($color: primary, $size: 3px) {
 	&:focus {
 		outline: none;
-		box-shadow: 0 0 0 #{$size} rgb(var(--#{$color}-rgb) / 0.3);
+		box-shadow: 0 0 0 #{$size} rgba(var(--#{$color}-rgb), 0.3);
 	}
 }
 
@@ -283,7 +292,7 @@
 
 // Border with color and opacity
 @mixin border($width: 1px, $style: solid, $color: gray, $opacity: 0.2) {
-	border: #{$width} #{$style} rgb(var(--#{$color}-rgb) / #{$opacity});
+	border: #{$width} #{$style} rgba(var(--#{$color}-rgb), #{$opacity});
 }
 
 // ============================================================================

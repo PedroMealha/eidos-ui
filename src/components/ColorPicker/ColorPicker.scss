@@ -43,7 +43,7 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / 0.25);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25);
   }
 
   .eidos-color-picker--sm  & { padding: 4px var(--spacing-xs); }
@@ -346,7 +346,7 @@
 
   &:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgb(var(--primary-rgb) / 0.15);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.15);
   }
 
   &:disabled {

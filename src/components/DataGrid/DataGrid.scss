@@ -330,7 +330,7 @@
 
 	&:hover {
 		color: var(--danger-color);
-		background: rgb(var(--danger-rgb) / 0.08);
+		background: rgba(var(--danger-rgb), 0.08);
 	}
 }
 

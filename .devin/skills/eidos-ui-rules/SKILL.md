@@ -19,6 +19,34 @@ triggers:
 All components that have a "subtle/low-prominence" third variant must use `text` (not `soft`, `ghost`, `subtle`, or any other term).
 The standard variant set is: `filled | outlined | text` (plus `bare` on inputs for special editor cases).
 
+These names describe a specific appearance, and it must be the same everywhere:
+
+| Variant | Resting appearance |
+| --- | --- |
+| `filled` | solid `--x-color` background, white label |
+| `outlined` | transparent background, 1px `--x-color` border, `--x-color` label |
+| `text` | **transparent background**, `--x-color` label, no border |
+
+`text` must never paint a resting background - that is what `filled` is for. On
+interactive components (Button, Chip) a tint may appear on hover/active only, as
+an affordance. This was previously violated: Chip's `text` variant painted
+`--primary-100`, so `text` meant one thing on Button and another on Chip.
+
+### Colour with opacity
+Use the `bg-color-opacity` / `border-color-opacity` / `color-opacity` mixins, or
+write `rgba(var(--x-rgb), 0.3)` directly.
+
+**Never write `rgb(var(--x-rgb) / 0.3)`.** The `--*-rgb` tokens are
+comma-separated triples, so the modern slash form expands to
+`rgb(99, 102, 241 / 0.3)` - comma and slash syntax mixed, which is invalid CSS.
+Browsers drop the declaration silently, so nothing renders and nothing warns.
+This bug removed every Alert/Chip/Badge tint and **every focus ring in the
+library** (an accessibility defect) until it was found in 2026-08.
+
+Every colour needs a matching `--x-rgb` token in `variables.scss` for these
+mixins to work - `--gray-rgb` was missing, which silently broke
+`focus-ring(gray)` in Snackbar.
+
 ### Size naming
 Always: `sm | md | lg` - abbreviated forms that match the CSS variable convention (`--component-size-sm`, `--spacing-sm`, etc.).
 Never use full words (`small`, `medium`, `large`) or other abbreviations.

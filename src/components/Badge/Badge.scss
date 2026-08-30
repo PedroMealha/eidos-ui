@@ -125,37 +125,34 @@
 	}
 
 	// ========================================================================
-	// Text variant - tinted background at low opacity, full-saturation text
+	// Text variant - no background; the colour is carried by the label alone,
+	// matching Button and Chip so `text` means the same thing library-wide.
 	// ========================================================================
 
 	&--text {
+		background-color: transparent;
+
 		&.eidos-badge--primary {
-			@include bg-color-opacity(primary, 0.12);
 			color: var(--primary-color);
 		}
 
 		&.eidos-badge--secondary {
-			@include bg-color-opacity(secondary, 0.12);
 			color: var(--secondary-color);
 		}
 
 		&.eidos-badge--success {
-			@include bg-color-opacity(success, 0.12);
 			color: var(--success-color);
 		}
 
 		&.eidos-badge--danger {
-			@include bg-color-opacity(danger, 0.12);
 			color: var(--danger-color);
 		}
 
 		&.eidos-badge--warning {
-			@include bg-color-opacity(warning, 0.12);
 			color: var(--warning-color);
 		}
 
 		&.eidos-badge--info {
-			@include bg-color-opacity(info, 0.12);
 			color: var(--info-color);
 		}
 	}

@@ -63,7 +63,7 @@
 
     > .eidos-tree-node-row {
       @include border-radius(sm);
-      box-shadow: 0 0 0 2px rgb(var(--primary-rgb) / 0.3);
+      box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3);
     }
   }
 }

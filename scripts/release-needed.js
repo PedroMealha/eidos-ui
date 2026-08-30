@@ -10,6 +10,7 @@
  * script failure for the perfectly normal "nothing to release" answer.
  */
 import { execFileSync, execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 const git = (command) => execSync(`git ${command}`, { encoding: 'utf8' }).trim();
 
@@ -67,27 +68,46 @@ if (!lastTag) {
   }
 }
 
-const changed = gitArgs(['diff', '--name-only', `${lastTag}..HEAD`, '--', ...BUILD_INPUTS])
+/**
+ * Compare the tag against the WORKING TREE, not `tag..HEAD`.
+ *
+ * The question being answered is "does what I have now differ from the last
+ * release?", and that has to include work which is edited or staged but not yet
+ * committed. Omitting `..HEAD` makes git diff the commit against the files on
+ * disk, so committed, staged and unstaged changes are all counted.
+ */
+const changed = gitArgs(['diff', '--name-only', lastTag, '--', ...BUILD_INPUTS])
   .split('\n')
   .filter(Boolean);
 
-// Compare only the consumer-facing package.json fields.
-const readManifest = (ref) => {
+// Compare only the consumer-facing package.json fields, again against disk.
+const manifestAt = (ref) => {
   try {
     return JSON.parse(git(`show ${ref}:package.json`));
   } catch {
     return {};
   }
 };
-const before = readManifest(lastTag);
-const after = readManifest('HEAD');
+const before = manifestAt(lastTag);
+const after = JSON.parse(readFileSync('./package.json', 'utf8'));
 const fieldChanges = CONSUMER_FIELDS.filter(
   (f) => JSON.stringify(before[f]) !== JSON.stringify(after[f]),
 );
 
 const commits = git(`log --oneline ${lastTag}..HEAD`).split('\n').filter(Boolean);
+const uncommitted = gitArgs(['status', '--porcelain', '--', ...BUILD_INPUTS])
+  .split('\n')
+  .filter(Boolean);
 
-console.log(`\nComparing ${lastTag}..HEAD  (${commits.length} commit(s))\n`);
+console.log(
+  `\nComparing ${lastTag} against the working tree ` +
+    `(${commits.length} commit(s)${uncommitted.length ? `, ${uncommitted.length} uncommitted` : ''})\n`,
+);
+
+if (uncommitted.length) {
+  console.log(`  Note: ${uncommitted.length} build-input change(s) are not committed yet -`);
+  console.log('  they ARE counted below, but must be committed before releasing.\n');
+}
 
 if (changed.length === 0 && fieldChanges.length === 0) {
   const touched = git(`diff --name-only ${lastTag}..HEAD`).split('\n').filter(Boolean);
