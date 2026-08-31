@@ -396,8 +396,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
             style={{
               top: tooltipState.position.top,
               left: tooltipState.position.left,
-              opacity: tooltipState.isPositioned ? 1 : 0,
-              visibility: tooltipState.isPositioned ? "visible" : "hidden",
             }}
             data-state={tooltipState.isPositioned ? "entered" : "entering"}
             role="tooltip"

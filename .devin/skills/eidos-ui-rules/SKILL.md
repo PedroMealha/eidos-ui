@@ -68,6 +68,25 @@ primary-axis flip (top↔bottom, left↔right when the preferred placement
 doesn't fit) is not a substitute for this - it only reacts to the *anchor*
 side, not to the *content* size once positioned.
 
+### Inline styles and CSP
+`style={{...}}` in component source must only carry values that are genuinely
+per-render/per-instance dynamic (position, size, colour computed from props or
+state). Static values and small fixed-value enums (an on/off toggle, a 3-value
+prop like `resize`) must be CSS classes instead - not because of a style-guide
+preference, but because of Content Security Policy: CSP's `style-src`/
+`style-src-attr` directives gate the inline `style` HTML attribute (relevant
+whenever a consumer server-renders a component), and every avoidable inline
+style widens that surface for no reason. See `src/ContentSecurityPolicy.mdx`
+for the full reasoning and the current, audited list of components that still
+need genuinely dynamic inline styles (their values can't be finite CSS
+classes - positions, arbitrary widths, computed colours) versus the ones that
+are portal-gated and therefore never reach server-rendered markup at all.
+Nonces/hashes do **not** apply to inline `style` attributes per the CSP spec -
+only to `<style>`/`<script>` elements, which this library never generates at
+runtime - so "add a nonce" is never the right instinct here; moving the value
+out of the attribute (a CSS class, or accepting `style-src-attr
+'unsafe-inline'` scoped narrowly) are the only two real options.
+
 ### Layering (z-index)
 **Never hardcode a z-index on an overlay** - in SCSS or in a JSX `style` prop.
 An inline `zIndex` silently overrides the SCSS token, which makes the documented
@@ -163,6 +182,30 @@ import { ComponentName } from '@pmealha/eidos-ui';
 
 ### Interactive overlay stories
 CommandPalette, Modal, Drawer, and similar overlay components must start CLOSED in stories (`useState(false)`), with a visible trigger button. Never auto-open overlays on story mount - it breaks the Docs page by popping multiple overlays simultaneously.
+
+### Top-level guide pages (not component docs)
+`Introduction.mdx` ("Getting Started") and `ContentSecurityPolicy.mdx`
+("Content Security Policy") live at `src/` root, not under a component
+folder, and don't follow the component `.mdx` template above - they're
+prose/reference pages, picked up by the same `../src/**/*.mdx` glob in
+`.storybook/main.ts`. Use a bare `<Meta title="..." />` (no component group
+prefix) so they land in the ungrouped bucket at the end of the sidebar per
+`storySort` in `.storybook/preview.ts`.
+
+### Storybook's own CSP posture is not this library's to fix
+Storybook's manager UI and `addon-docs` blocks (`<Canvas>`/`<Controls>`,
+used in every component `.mdx`) run on Emotion, which injects
+`<style data-emotion>` tags with no nonce support under the Vite-based
+Storybook builder this project uses - a long-standing, still-open upstream
+limitation (see Storybook's own GitHub discussions on `previewMainTemplate`
+nonce injection being removed when the Webpack builder was dropped). Don't
+attempt to chase a nonce-clean Storybook deployment; scope
+`style-src 'unsafe-inline'` to wherever Storybook/Chromatic is hosted
+specifically, and keep that separate from the actual CSP guidance given to
+consumers of the published package (`ContentSecurityPolicy.mdx`) - the
+*story preview content* (the rendered eidos-ui components themselves) is
+still held to the library's real CSP posture; only Storybook's own chrome
+needs the exception.
 
 ---
 

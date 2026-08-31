@@ -298,7 +298,7 @@ export const TagInput: React.FC<TagInputProps> = ({
             trigger={
               <span
                 ref={dropdownSpanRef}
-                style={{ display: 'block', height: 0 }}
+                className="eidos-tag-input-dropdown-anchor"
                 aria-hidden="true"
               />
             }

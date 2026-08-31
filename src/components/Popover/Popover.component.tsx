@@ -291,11 +291,9 @@ export const Popover: React.FC<PopoverProps> = ({
               .filter(Boolean)
               .join(' ')}
             style={{
-              position: 'fixed',
               top: popoverState.position.top,
               left: popoverState.position.left,
               maxWidth: maxWidth,
-              zIndex: 'var(--z-index-dropdown)',
             }}
           >
             {(title || showCloseButton) && (

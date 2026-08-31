@@ -63,6 +63,13 @@
   }
 }
 
+// ─── Dropdown anchor (0-height trigger span, programmatically clicked to open) ─
+
+.eidos-combobox-dropdown-anchor {
+  display: block;
+  height: 0;
+}
+
 // ─── Options list (portal-rendered inside eidos-dropdown-content) ─────────────
 
 .eidos-combobox-options {

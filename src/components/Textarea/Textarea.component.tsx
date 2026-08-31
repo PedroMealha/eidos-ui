@@ -85,6 +85,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 			`eidos-textarea--${variant}`,
 			`eidos-textarea--${color}`,
 			`eidos-textarea--${size}`,
+			`eidos-textarea--resize-${resize}`,
 			fullWidth && 'eidos-textarea--fullWidth',
 			loading && 'eidos-textarea--loading',
 			error && 'eidos-textarea--error',
@@ -131,10 +132,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 						maxLength={maxLength}
 						disabled={disabled || loading}
 						{...restTextareaProps}
-						// `style` must come AFTER the spread so our `resize` prop
-						// always wins, while still preserving any other inline styles
-						// the consumer may have passed.
-						style={{ ...restTextareaProps.style, resize }}
 						value={currentValue}
 						onFocus={e => {
 							setIsFocused(true);

@@ -6,6 +6,8 @@
 }
 
 .eidos-popover-content {
+	position: fixed;
+	z-index: var(--z-index-dropdown);
 	background: var(--white);
 	border: 1px solid var(--gray-200);
 	@include border-radius(md);

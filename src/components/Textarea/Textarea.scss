@@ -315,11 +315,23 @@
 	color: var(--dark-color);
 	line-height: 1.6;
 	min-height: 80px;
-	resize: vertical; // fallback; overridden by the inline style prop
 
 	&::placeholder {
 		color: var(--gray-400);
 		opacity: 1;
+	}
+
+	// Resize behaviour, driven by the `resize` prop
+	&--resize-none {
+		resize: none;
+	}
+
+	&--resize-vertical {
+		resize: vertical;
+	}
+
+	&--resize-both {
+		resize: both;
 	}
 
 	// Sizes (font only - height is driven by `rows` and natural growth)

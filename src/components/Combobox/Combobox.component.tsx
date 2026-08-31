@@ -593,7 +593,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
           trigger={
             <span
               ref={dropdownSpanRef}
-              style={{ display: 'block', height: 0 }}
+              className="eidos-combobox-dropdown-anchor"
               aria-hidden="true"
             />
           }

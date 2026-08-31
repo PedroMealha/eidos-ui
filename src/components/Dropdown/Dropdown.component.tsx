@@ -439,16 +439,10 @@ const DropdownInternal: React.FC<DropdownProps> = ({
             data-dropdown-content
             data-dropdown-level={actualLevel}
             data-dropdown-group={dropdownGroup || ""}
-            className={`eidos-dropdown-content eidos-dropdown-content--${dropdownState.position.placement} ${contentClassName || ""}`}
+            className={`eidos-dropdown-content eidos-dropdown-content--${dropdownState.position.placement} ${isNested ? "eidos-dropdown-content--nested" : ""} ${dropdownState.isPositioned ? "eidos-dropdown-content--positioned" : ""} ${contentClassName || ""}`}
             style={{
               top: dropdownState.position.top,
               left: dropdownState.position.left,
-              opacity: dropdownState.isPositioned ? 1 : 0,
-              visibility: dropdownState.isPositioned ? "visible" : "hidden",
-              // Nested submenus sit one level above their parent dropdown.
-              zIndex: isNested
-                ? "calc(var(--z-index-dropdown) + 1)"
-                : "var(--z-index-dropdown)",
               ...calculateDynamicSizing(
                 externalTriggerRef?.current?.getBoundingClientRect() ||
                   triggerRef.current?.getBoundingClientRect() ||

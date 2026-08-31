@@ -15,6 +15,9 @@
 	border-radius: var(--border-radius-md);
 	box-shadow: var(--box-shadow-lg);
 	pointer-events: auto;
+	// Hidden until the position calculation completes, to avoid a flash at (0, 0).
+	opacity: 0;
+	visibility: hidden;
 	transition:
 		opacity 0.2s ease-in-out,
 		transform 0.2s ease-in-out;
@@ -53,5 +56,16 @@
 
 	&.eidos-dropdown-content--right {
 		transform-origin: left center;
+	}
+
+	// Nested submenus sit one level above their parent dropdown.
+	&.eidos-dropdown-content--nested {
+		z-index: calc(var(--z-index-dropdown) + 1);
+	}
+
+	// Revealed once the position calculation completes.
+	&.eidos-dropdown-content--positioned {
+		opacity: 1;
+		visibility: visible;
 	}
 }

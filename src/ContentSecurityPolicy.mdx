@@ -1,0 +1,55 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Content Security Policy" />
+
+# Content Security Policy
+
+A precise reference for running `@pmealha/eidos-ui` under a strict CSP (`style-src` without `unsafe-inline`). Short version: the compiled stylesheet needs nothing special, most components need nothing special, and a small, explicitly-named group only needs an allowance if you server-render them.
+
+> **Note**: CSP nonces and hashes are only defined for `<style>` and `<script>` elements - never for inline `style="..."` HTML attributes on arbitrary elements. This library never generates a `<style>` or `<script>` element at runtime, so nonces are not a relevant mechanism here at all; the only lever that matters is whether `style-src-attr` allows `'unsafe-inline'`.
+
+## The stylesheet
+
+```css
+Content-Security-Policy: style-src 'self';
+```
+
+`@pmealha/eidos-ui/styles` is a single, pre-compiled, same-origin `dist/index.css` file - every colour, variant, layout rule, and keyframe animation in this library ships there. `style-src 'self'` covers all of it. No nonce, no hash, no `unsafe-inline` needed for the stylesheet under any circumstance.
+
+## Dynamic inline styles
+
+A handful of components set `style={{ ... }}` at runtime for values that are genuinely computed per render (a dropdown's screen position, a column's width, a picked colour) - these can't be expressed as a fixed set of CSS classes, because the value is different every time.
+
+**For any component tree that is rendered purely on the client** (a SPA, or a React "use client" component that is never rendered to HTML on a server), none of this matters: React updates these styles through the CSSOM's per-property setters (`element.style.top = ...`, `element.style.setProperty(...)`), which CSP's `style-src`/`style-src-attr` directives do not gate at all - only the HTML `style="..."` attribute string and `.cssText`/`setAttribute('style', ...)` are gated, and this library never uses those. This is true today, with no configuration needed, verified directly against React DOM's own implementation.
+
+**Server-side rendering** is the one case where this matters: `renderToString`/`renderToPipeableStream` serialises the `style` prop into a literal `style="..."` string in the HTML response, which *is* markup-parsed inline-attribute usage and *is* blocked by strict `style-src-attr`.
+
+### Components that are always safe, including under SSR
+
+These portal-based, interaction-only components never render their dynamic-position styles into a server-rendered payload at all - they mount into `document.body` only after a client-side interaction opens them, and start closed by default:
+
+`Combobox` · `Select` · `TagInput` (suggestions) · `Menu` · `Dropdown` · `Popover` · `ContextMenu` · `Tooltip` · `Snackbar` · `CommandPalette`
+
+Nothing to configure for these - `style-src-attr 'self'` (i.e. no `unsafe-inline`) is sufficient.
+
+### Components that need an allowance only if you server-render them
+
+These render inline in the normal DOM tree, so a server-rendered page containing them will include their computed `style` attribute in the initial HTML:
+
+`DataGrid` (column widths, drag-row transforms) · `Table` (column widths, sticky offsets) · `VirtualList` (per-item positioning - inherent to virtualization) · `Skeleton` (custom width/height) · `Accordion` (expand/collapse height) · `ColorPicker` (computed gradient/swatch colours)
+
+If you never server-render these specific components, they need nothing extra either. If you do, scope the allowance narrowly:
+
+```css
+Content-Security-Policy: style-src 'self'; style-src-attr 'unsafe-inline';
+```
+
+Note this only relaxes the attribute directive, not `style-src` as a whole - external stylesheets and any future `<style>`/`<script>` elements stay fully locked down.
+
+## Consumer-supplied `style` props
+
+`Input`, `Textarea`, and a few other form components accept and forward a `style` prop from your own code. If *you* pass `style={{...}}` into one of them, that's your app's markup choice, subject to the same SSR/CSR reasoning above - it's outside this library's control either way.
+
+## Storybook / this documentation site
+
+Storybook's own manager UI and the `<Canvas>`/`<Controls>` blocks used throughout this documentation run on Emotion, which injects `<style data-emotion>` tags with no nonce support under the Vite-based Storybook builder - a known, still-open upstream limitation, not something fixable from this library's source. If you self-host these docs, scope `style-src 'unsafe-inline'` to that deployment specifically; it does not reflect anything about the CSP posture of the published package your app actually imports.

@@ -669,7 +669,7 @@ export const Table = <T extends Record<string, unknown>>({
       )}
 
       {/* ── Table (wrapped for horizontal scroll) ─────────────────────────── */}
-      <div style={{ overflowX: "auto" }}>
+      <div className="eidos-table-scroll">
         <table className={[
             "eidos-table",
             densityClass,

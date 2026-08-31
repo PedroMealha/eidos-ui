@@ -6,7 +6,11 @@
 	border: 1px solid var(--gray-200);
 	box-shadow: var(--box-shadow);
 	// overflow: hidden removed - sticky columns require no overflow:hidden on ancestors.
-	// Horizontal scroll is handled by the inner wrapper <div style="overflow-x:auto">.
+	// Horizontal scroll is handled by the inner .eidos-table-scroll wrapper.
+}
+
+.eidos-table-scroll {
+	overflow-x: auto;
 }
 
 .eidos-table-toolbar {

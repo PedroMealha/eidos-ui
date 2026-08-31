@@ -121,15 +121,13 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 			{isOpen && createPortal(
 				<div
 					ref={menuRef}
-					className="eidos-context-menu-panel"
+					className={[
+						'eidos-context-menu-panel',
+						isPositioned && 'eidos-context-menu-panel--positioned',
+					].filter(Boolean).join(' ')}
 					style={{
-						position: 'fixed',
 						top: position.y,
 						left: position.x,
-						opacity: isPositioned ? 1 : 0,
-						// Invisible but sized so useEffect can measure it before revealing.
-						visibility: isPositioned ? 'visible' : 'hidden',
-						zIndex: 'var(--z-index-dropdown)',
 					}}
 				>
 					<MenuPanel items={items} onItemClick={handleItemClick} />

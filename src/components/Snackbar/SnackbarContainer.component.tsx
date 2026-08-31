@@ -12,17 +12,8 @@ export const SnackbarContainer: React.FC = () => {
 
 	return createPortal(
 		<div className={'eidos-snackbar-container'}>
-			{snackbars.map((snackbar, index) => (
-				<div
-					key={snackbar.id}
-					className={'eidos-snackbar-wrapper'}
-					style={{
-						top: `${index * 70}px`,
-						// Stack newer snackbars above older ones, relative to the
-						// container's own layer rather than a hardcoded ceiling.
-						zIndex: `calc(var(--z-index-snackbar) - ${index})`,
-					}}
-				>
+			{snackbars.map((snackbar) => (
+				<div key={snackbar.id} className={'eidos-snackbar-wrapper'}>
 					<SnackbarComponent snackbar={snackbar} onClose={removeSnackbar} />
 				</div>
 			))}

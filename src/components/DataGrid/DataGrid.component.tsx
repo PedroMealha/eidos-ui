@@ -1057,7 +1057,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 				collisionDetection={closestCenter}
 				onDragEnd={handleRowDragEnd}
 			>
-				<div style={{ overflowX: 'auto' }}>
+				<div className="eidos-data-grid-scroll">
 					<table className={['eidos-data-grid', densityClass].filter(Boolean).join(' ')}>
 						<thead ref={theadRef}>
 							<tr>
@@ -1207,9 +1207,11 @@ function DataGridInner<T extends Record<string, unknown>>({
 															>
 																<span
 																	{...(dragHandleProps as React.HTMLAttributes<HTMLSpanElement>)}
-																	className="eidos-datagrid-drag-handle"
+																	className={[
+																		'eidos-datagrid-drag-handle',
+																		isDragging && 'eidos-datagrid-drag-handle--dragging',
+																	].filter(Boolean).join(' ')}
 																	title="Drag to reorder"
-																	style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
 																>
 																	<GripVertical size={14} />
 																</span>
