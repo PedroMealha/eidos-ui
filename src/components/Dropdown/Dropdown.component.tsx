@@ -156,31 +156,25 @@ const DropdownInternal: React.FC<DropdownProps> = ({
         left = triggerRect.left - contentRect.width - gap;
       }
 
-      const hasHeightConstraint =
-        minHeight !== undefined || maxHeight !== undefined;
-      if (hasHeightConstraint) {
-        top = Math.max(
-          gap,
-          Math.min(top, viewportHeight - contentRect.height - gap)
-        );
-      } else {
-        top = Math.max(gap, top);
-      }
+      // Always clamp to both viewport edges - not just the near one - regardless
+      // of whether an explicit min/max size was passed. `autoWidth` consumers
+      // (Combobox, Select, TagInput suggestions, Menu, ...) never set
+      // minWidth/maxWidth, so gating this on those props left the far edge
+      // (right/bottom) completely unclamped and let content overflow the
+      // viewport whenever it rendered wider/taller than its trigger.
+      top = Math.max(
+        gap,
+        Math.min(top, viewportHeight - contentRect.height - gap)
+      );
 
-      const hasWidthConstraint =
-        minWidth !== undefined || maxWidth !== undefined;
-      if (hasWidthConstraint) {
-        left = Math.max(
-          gap,
-          Math.min(left, viewportWidth - contentRect.width - gap)
-        );
-      } else {
-        left = Math.max(gap, left);
-      }
+      left = Math.max(
+        gap,
+        Math.min(left, viewportWidth - contentRect.width - gap)
+      );
 
       return { top, left, placement };
     },
-    [preferredPlacement, align, minHeight, maxHeight, minWidth, maxWidth]
+    [preferredPlacement, align]
   );
 
   const handleScroll = useCallback(() => {

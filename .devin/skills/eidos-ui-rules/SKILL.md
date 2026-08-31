@@ -55,6 +55,19 @@ Avatar is the only component with a defined `AvatarSize` type; it also uses `sm 
 ### Color naming
 Always: `primary | secondary | success | danger | warning | info`
 
+### Dropdown viewport clamping
+`Dropdown`'s `calculateOptimalPosition` must clamp its position against **both**
+edges of the viewport on **both** axes, unconditionally - never gate clamping
+on whether `minWidth`/`maxWidth`/`minHeight`/`maxHeight` were explicitly
+passed. `autoWidth` consumers (`Combobox`, `Select`, `TagInput` suggestions,
+`Menu`, ...) never set an explicit width/height constraint, so a clamp that
+only applied "if a constraint is set" left the far edge (right/bottom)
+completely unclamped for all of them - any dropdown anchored near the right
+edge with content wider than its trigger silently overflowed off-screen. The
+primary-axis flip (top↔bottom, left↔right when the preferred placement
+doesn't fit) is not a substitute for this - it only reacts to the *anchor*
+side, not to the *content* size once positioned.
+
 ### Layering (z-index)
 **Never hardcode a z-index on an overlay** - in SCSS or in a JSX `style` prop.
 An inline `zIndex` silently overrides the SCSS token, which makes the documented
