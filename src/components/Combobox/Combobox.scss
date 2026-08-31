@@ -64,9 +64,16 @@
 }
 
 // ─── Dropdown anchor (0-height trigger span, programmatically clicked to open) ─
+// Pinned to the trigger wrapper's own box via absolute positioning rather than
+// left in normal flow, so its rendered position never depends on the Input's
+// content. `.eidos-combobox-trigger` above already provides the `position:
+// relative` anchor point. See TagInput.scss for the bug this pattern avoids.
 
 .eidos-combobox-dropdown-anchor {
-  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   height: 0;
 }
 

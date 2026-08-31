@@ -40,6 +40,20 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   const animationFrameRef = useRef<number | undefined>(undefined);
   const isScrollingRef = useRef(false);
 
+  // The element to actually measure/anchor against. When a consumer passes
+  // `triggerRef`, that's an explicit statement of "this is what I want the
+  // dropdown positioned relative to" - it must win over the internal wrapper
+  // div, not just inform sizing. Consumers occasionally need `trigger` to be
+  // a small anchor node (e.g. a 0-height span) sitting inside a larger,
+  // variable-content field (chips, wrapped text); anchoring position to the
+  // wrapper instead of that field silently drifts as soon as the field's
+  // internal layout changes, since the wrapper only ever contains `trigger`
+  // itself, never the field around it.
+  const getTriggerElement = useCallback(
+    (): HTMLElement | null => externalTriggerRef?.current ?? triggerRef.current,
+    [externalTriggerRef]
+  );
+
   const calculateDynamicSizing = useCallback(
     (triggerRect: DOMRect) => {
       // Shrink the panel to its content by default. This prevents the
@@ -188,8 +202,9 @@ const DropdownInternal: React.FC<DropdownProps> = ({
     isScrollingRef.current = true;
 
     animationFrameRef.current = requestAnimationFrame(() => {
-      if (triggerRef.current && contentRef.current) {
-        const triggerRect = triggerRef.current.getBoundingClientRect();
+      const triggerElement = getTriggerElement();
+      if (triggerElement && contentRef.current) {
+        const triggerRect = triggerElement.getBoundingClientRect();
         const contentRect = contentRef.current.getBoundingClientRect();
 
         const { top, left, placement } = calculateOptimalPosition(
@@ -209,6 +224,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
     dropdownState.isVisible,
     dropdownState.isPositioned,
     calculateOptimalPosition,
+    getTriggerElement,
   ]);
 
   const handleTriggerClick = useCallback(() => {
@@ -286,7 +302,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
         return;
       }
 
-      if (triggerRef.current?.contains(target)) {
+      if (getTriggerElement()?.contains(target)) {
         return;
       }
 
@@ -311,7 +327,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
         isPositioned: false,
       }));
     },
-    [closeOnClickOutside, dropdownState.isVisible, actualLevel]
+    [closeOnClickOutside, dropdownState.isVisible, actualLevel, getTriggerElement]
   );
 
   const handleEscapeKey = useCallback(
@@ -328,13 +344,14 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   );
 
   useEffect(() => {
+    const triggerElement = getTriggerElement();
     if (
       dropdownState.isVisible &&
       !dropdownState.isPositioned &&
       contentRef.current &&
-      triggerRef.current
+      triggerElement
     ) {
-      const triggerRect = triggerRef.current.getBoundingClientRect();
+      const triggerRect = triggerElement.getBoundingClientRect();
       const contentRect = contentRef.current.getBoundingClientRect();
 
       const { top, left, placement } = calculateOptimalPosition(
@@ -352,17 +369,19 @@ const DropdownInternal: React.FC<DropdownProps> = ({
     dropdownState.isVisible,
     dropdownState.isPositioned,
     calculateOptimalPosition,
+    getTriggerElement,
   ]);
 
   useEffect(() => {
     const handleResize = () => {
+      const triggerElement = getTriggerElement();
       if (
         dropdownState.isVisible &&
         dropdownState.isPositioned &&
         contentRef.current &&
-        triggerRef.current
+        triggerElement
       ) {
-        const triggerRect = triggerRef.current.getBoundingClientRect();
+        const triggerRect = triggerElement.getBoundingClientRect();
         const contentRect = contentRef.current.getBoundingClientRect();
 
         const { top, left, placement } = calculateOptimalPosition(
@@ -383,6 +402,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
     dropdownState.isVisible,
     dropdownState.isPositioned,
     calculateOptimalPosition,
+    getTriggerElement,
   ]);
 
   useEffect(() => {
@@ -444,9 +464,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
               top: dropdownState.position.top,
               left: dropdownState.position.left,
               ...calculateDynamicSizing(
-                externalTriggerRef?.current?.getBoundingClientRect() ||
-                  triggerRef.current?.getBoundingClientRect() ||
-                  new DOMRect()
+                getTriggerElement()?.getBoundingClientRect() || new DOMRect()
               ),
             }}
             role="menu"

@@ -35,6 +35,7 @@
 // ============================================================================
 
 .eidos-tag-input-field {
+	position: relative; // anchor point for the absolutely-positioned dropdown anchor below
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -121,9 +122,20 @@
 // ============================================================================
 // DROPDOWN ANCHOR (0-height trigger span, programmatically clicked to open)
 // ============================================================================
+// Taken out of the field's flex flow entirely and pinned to its bottom-left
+// corner. Left in flow, this span's rendered position depends on how many
+// chips precede it and whether the row has wrapped - i.e. it silently drifts
+// away from the field as soon as any tag is added. Dropdown's position math
+// always anchors to wherever this trigger node physically renders (not to
+// the externally-passed `triggerRef`, which it only uses for width), so an
+// in-flow anchor and a field with variable content are fundamentally
+// incompatible. See also: Dropdown.component.tsx `calculateOptimalPosition`.
 
 .eidos-tag-input-dropdown-anchor {
-	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
 	height: 0;
 }
 
