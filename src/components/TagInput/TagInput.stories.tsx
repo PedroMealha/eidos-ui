@@ -93,6 +93,29 @@ export const WithLabel: Story = {
   },
 };
 
+const TECH_SUGGESTIONS = [
+  'React',
+  'TypeScript',
+  'JavaScript',
+  'Vue',
+  'Angular',
+  'Svelte',
+  'Node.js',
+  'GraphQL',
+  'Design System',
+  'Storybook',
+];
+
+export const WithSuggestions: Story = {
+  args: {
+    label: 'Technologies',
+    placeholder: 'Add a technology…',
+    hint: 'Type to see matching suggestions, or press Enter to add free text.',
+    suggestions: TECH_SUGGESTIONS,
+    defaultValue: ['React'],
+  },
+};
+
 export const WithError: Story = {
   args: {
     label: 'Tags',
@@ -124,28 +147,5 @@ export const Disabled: Story = {
     label: 'Tags',
     defaultValue: ['React', 'TypeScript'],
     disabled: true,
-  },
-};
-
-const TECH_SUGGESTIONS = [
-  'React',
-  'TypeScript',
-  'JavaScript',
-  'Vue',
-  'Angular',
-  'Svelte',
-  'Node.js',
-  'GraphQL',
-  'Design System',
-  'Storybook',
-];
-
-export const WithSuggestions: Story = {
-  args: {
-    label: 'Technologies',
-    placeholder: 'Add a technology…',
-    hint: 'Type to see matching suggestions, or press Enter to add free text.',
-    suggestions: TECH_SUGGESTIONS,
-    defaultValue: ['React'],
   },
 };
