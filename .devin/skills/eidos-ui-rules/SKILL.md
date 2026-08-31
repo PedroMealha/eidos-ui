@@ -80,6 +80,30 @@ Use the tokens, which are ordered in steps of 100:
   stacking context - sticky table cells, input adornments, calendar nav buttons.
   Only portalled overlays must use the tokens.
 
+### Cross-component adapters must forward shared config fields 1:1
+When one component projects its column/config type onto another's (e.g. `DataGrid`'s
+`DataGridColumn` → `Table`'s `TableColumn`, both consumed by the shared
+`TableFiltersDropdown`), every field the two types have in common must be
+forwarded by the adapter - not just the ones exercised by the first feature
+that used it. `DataGrid`'s filter adapter mapped `filterType`/`filterOptions`
+but dropped `dateFilterMode`, so `DataGrid`'s date filter was silently stuck
+in `'single'` mode even though the shared dropdown component fully supported
+`'range'`/`'multiple'`. When adding a field to one of the two column types
+because the shared component needs it, always check whether the adapter on
+the other side needs the same field added to its mapping.
+
+### Siblings with different capabilities must say so in both docs
+Components that read as interchangeable siblings (`Table`/`DataGrid`,
+`Combobox`/`Select`/`TagInput`) but differ in a load-bearing way - pagination
+model, single vs. multi-select, autocomplete vs. free-text - must state that
+difference explicitly in **both** components' `.mdx` files, not just one or
+neither. `Table`'s pagination is always client-side with no
+`onPageChange`/controlled-page equivalent, while `DataGrid` has a full
+server-side mode; `Table.mdx` didn't mention the limitation at all, which
+cost a real consumer a rebuild. Don't leave a capability gap to be discovered
+by trial and error - call it out where the consumer is deciding between the
+two.
+
 ---
 
 ## Storybook documentation rules
@@ -261,6 +285,14 @@ runs BEFORE the bump and checks npm auth, package ownership and a clean tree.
 It exists because `npm version` commits and tags immediately and is never rolled
 back - a failed publish otherwise strands a version that is tagged in git but
 absent from the registry (this happened to 3.1.0).
+
+`preflight-release.js` also runs `scripts/check-barrel-exports.js`, which diffs
+every component's own `index.ts` exports against the root barrel
+(`src/index.ts`) and fails the release if anything is missing. This is the
+enforcement for the "root barrel must re-export every public type" rule above -
+`ComboboxOption` shipped missing from the root barrel in 3.0.0 because nothing
+checked for this before. Run it standalone with
+`node scripts/check-barrel-exports.js`.
 
 **If publish fails after the bump, run `npm publish` alone to retry. Never
 re-run `release:*`** - that bumps again and strands another version.

@@ -33,6 +33,12 @@ import { TagInput } from '@pmealha/eidos-ui';
 
 <Canvas of={TagInputStories.WithLabel} />
 
+## With suggestions
+
+Pass a `suggestions` array to show an autocomplete dropdown as the user types - useful for tag pickers backed by history or a known taxonomy (e.g. "tags used before", "known categories"). Already-added tags are filtered out of the list automatically. Free-text entry via `separators` still works alongside suggestions, so users can add anything not in the list. For async/remote sources, use `onSearch` to refetch and update `suggestions` as the user types.
+
+<Canvas of={TagInputStories.WithSuggestions} />
+
 ## With error
 
 <Canvas of={TagInputStories.WithError} />

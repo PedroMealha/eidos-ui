@@ -35,9 +35,11 @@ Each option accepts an `icon` property (a Lucide or compatible icon component) r
 
 ## Multiple select
 
-Set `multiple` to allow picking more than one option; selected values are shown as removable tags inside the trigger.
+Set `multiple` to allow picking more than one option. The trigger shows selected labels comma-joined; once more than 2 options are selected it switches to a compact `"N selected"` label so the field stays readable. This is a plain-text label, not removable chips - to deselect, reopen the dropdown and toggle an option off (or use the clear button to reset).
 
 <Canvas of={SelectStories.MultipleSelect} />
+
+<Canvas of={SelectStories.MultipleSelectCompactLabel} />
 
 ## With disabled options
 

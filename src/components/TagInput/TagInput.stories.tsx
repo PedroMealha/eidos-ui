@@ -60,6 +60,13 @@ const meta = {
     separators: { control: false },
     value: { control: false },
     defaultValue: { control: false },
+    suggestions: { control: false },
+    onSearch: { control: false },
+    suggestionsEmptyText: {
+      control: 'text',
+      description: 'Message shown when `suggestions` is set but nothing matches the current input',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'No matches' } },
+    },
     className: { table: { disable: true } },
   },
 } satisfies Meta<typeof TagInput>;
@@ -117,5 +124,28 @@ export const Disabled: Story = {
     label: 'Tags',
     defaultValue: ['React', 'TypeScript'],
     disabled: true,
+  },
+};
+
+const TECH_SUGGESTIONS = [
+  'React',
+  'TypeScript',
+  'JavaScript',
+  'Vue',
+  'Angular',
+  'Svelte',
+  'Node.js',
+  'GraphQL',
+  'Design System',
+  'Storybook',
+];
+
+export const WithSuggestions: Story = {
+  args: {
+    label: 'Technologies',
+    placeholder: 'Add a technology…',
+    hint: 'Type to see matching suggestions, or press Enter to add free text.',
+    suggestions: TECH_SUGGESTIONS,
+    defaultValue: ['React'],
   },
 };

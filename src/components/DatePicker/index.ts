@@ -14,7 +14,5 @@ export type {
   DateFormatConfig,
   DatePickerProps,
   CalendarProps,
-  TimeSelectorProps,
-  MonthYearSelectorProps,
 } from './DatePicker.types';
 

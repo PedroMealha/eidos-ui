@@ -11,6 +11,7 @@
  */
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { checkBarrelExports } from './check-barrel-exports.js';
 
 const run = (command) => execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 
@@ -59,7 +60,23 @@ if (status) {
   );
 }
 
-// ── 3. Publish rights on this package ───────────────────────────────────────
+// ── 3. Root barrel export completeness ──────────────────────────────────────
+// Every type/value a component's own index.ts exports must also be reachable
+// from the root barrel (src/index.ts) - otherwise consumers importing from
+// `@pmealha/eidos-ui` hit a type they can see in the deep entry point but not
+// import from the package root. This exact gap shipped in 3.0.0
+// (`ComboboxOption` was missing) and went unnoticed until 3.2.0.
+const missingExports = checkBarrelExports();
+if (missingExports.length > 0) {
+  fail(
+    `Root barrel is missing ${missingExports.length} export(s).`,
+    'Add these to src/index.ts:',
+    '',
+    ...missingExports.map(({ component, kind, name }) => `  ${name} (${kind}) — from src/components/${component}/index.ts`),
+  );
+}
+
+// ── 4. Publish rights on this package ───────────────────────────────────────
 // Being logged in is not the same as being allowed to publish this name.
 const { name, version } = JSON.parse(readFileSync('./package.json', 'utf8'));
 

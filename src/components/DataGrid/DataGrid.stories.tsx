@@ -16,6 +16,7 @@ interface Person extends Record<string, unknown> {
 	department: string;
 	salary: number;
 	active: boolean;
+	joinDate?: string;
 }
 
 // ─── Option lists ─────────────────────────────────────────────────────────────
@@ -39,18 +40,18 @@ const DEPARTMENT_OPTIONS = [
 
 function makePeople(): Person[] {
 	return [
-		{ id:  1, name: 'Alice Nguyen',   role: 'lead',   department: 'engineering', salary: 145000, active: true  },
-		{ id:  2, name: 'Bob Smith',       role: 'senior', department: 'engineering', salary: 130000, active: true  },
-		{ id:  3, name: 'Carol Jones',     role: 'mid',    department: 'design',      salary: 105000, active: false },
-		{ id:  4, name: 'David Lee',       role: 'senior', department: 'product',     salary: 125000, active: true  },
-		{ id:  5, name: 'Eva Rossi',       role: 'junior', department: 'marketing',   salary:  75000, active: true  },
-		{ id:  6, name: 'Frank Garcia',    role: 'mid',    department: 'engineering', salary: 115000, active: false },
-		{ id:  7, name: 'Grace Kim',       role: 'senior', department: 'design',      salary: 120000, active: true  },
-		{ id:  8, name: 'Hiro Tanaka',     role: 'lead',   department: 'product',     salary: 140000, active: true  },
-		{ id:  9, name: 'Isla Patel',      role: 'mid',    department: 'ops',         salary: 100000, active: false },
-		{ id: 10, name: 'Jake Morrison',   role: 'junior', department: 'engineering', salary:  78000, active: true  },
-		{ id: 11, name: 'Karen Müller',    role: 'senior', department: 'marketing',   salary: 118000, active: true  },
-		{ id: 12, name: 'Lena Sousa',      role: 'mid',    department: 'design',      salary: 108000, active: false },
+		{ id:  1, name: 'Alice Nguyen',   role: 'lead',   department: 'engineering', salary: 145000, active: true,  joinDate: '2019-03-12' },
+		{ id:  2, name: 'Bob Smith',       role: 'senior', department: 'engineering', salary: 130000, active: true,  joinDate: '2020-07-01' },
+		{ id:  3, name: 'Carol Jones',     role: 'mid',    department: 'design',      salary: 105000, active: false, joinDate: '2021-01-18' },
+		{ id:  4, name: 'David Lee',       role: 'senior', department: 'product',     salary: 125000, active: true,  joinDate: '2018-11-05' },
+		{ id:  5, name: 'Eva Rossi',       role: 'junior', department: 'marketing',   salary:  75000, active: true,  joinDate: '2023-02-27' },
+		{ id:  6, name: 'Frank Garcia',    role: 'mid',    department: 'engineering', salary: 115000, active: false, joinDate: '2022-09-14' },
+		{ id:  7, name: 'Grace Kim',       role: 'senior', department: 'design',      salary: 120000, active: true,  joinDate: '2020-04-30' },
+		{ id:  8, name: 'Hiro Tanaka',     role: 'lead',   department: 'product',     salary: 140000, active: true,  joinDate: '2017-06-09' },
+		{ id:  9, name: 'Isla Patel',      role: 'mid',    department: 'ops',         salary: 100000, active: false, joinDate: '2021-10-22' },
+		{ id: 10, name: 'Jake Morrison',   role: 'junior', department: 'engineering', salary:  78000, active: true,  joinDate: '2023-08-03' },
+		{ id: 11, name: 'Karen Müller',    role: 'senior', department: 'marketing',   salary: 118000, active: true,  joinDate: '2019-12-15' },
+		{ id: 12, name: 'Lena Sousa',      role: 'mid',    department: 'design',      salary: 108000, active: false, joinDate: '2022-05-20' },
 	];
 }
 
@@ -105,6 +106,10 @@ const FILTERABLE_COLUMNS: DataGridColumn<Person>[] = [
 	},
 	{ key: 'salary', header: 'Salary', type: 'number',   width: 110 },
 	{ key: 'active', header: 'Active', type: 'checkbox', width: 80 },
+	{
+		key: 'joinDate', header: 'Join Date', type: 'text', width: 130,
+		filterable: true, filterType: 'date', dateFilterMode: 'range',
+	},
 ];
 
 // Pinned-from-middle demo columns.
@@ -387,10 +392,11 @@ export const WithFiltering: Story = {
 			description: {
 				story:
 					'Client-side filtering. Open the filter panel via the toolbar button and ' +
-					'try filtering by Name (text) or Role / Department (select). ' +
-					'Column-level options are set with `filterable: true`, `filterType`, ' +
-					'and `filterOptions`. No `onFiltersChange` callback means the grid ' +
-					'manages filter state internally.',
+					'try filtering by Name (text), Role / Department (select), or Join Date ' +
+					'(date range). Column-level options are set with `filterable: true`, ' +
+					'`filterType`, `filterOptions`, and - for `filterType: \'date\'` - ' +
+					'`dateFilterMode` (`\'single\' | \'multiple\' | \'range\'`). ' +
+					'No `onFiltersChange` callback means the grid manages filter state internally.',
 			},
 		},
 	},

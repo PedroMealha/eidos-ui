@@ -102,4 +102,8 @@ export const ticketsApi = {
     }),
 
   activity: (): Promise<ActivityEntry[]> => request('Loading activity', () => seedActivity()),
+
+  /** Distinct tags already used across all tickets - powers the tag-picker's autocomplete. */
+  listTags: (): Promise<string[]> =>
+    request('Loading tags', () => Array.from(new Set(tickets.flatMap((t) => t.tags))).sort()),
 };

@@ -36,6 +36,8 @@ export interface DataGridColumn<T = Record<string, unknown>> {
 	filterType?: 'text' | 'select' | 'date' | 'boolean';
 	/** Options for filterType='select'. Same shape as TableColumn filterOptions. */
 	filterOptions?: Array<{ id: string; value: string; label: string }>;
+	/** UI mode for filterType='date'. Same as TableColumn dateFilterMode. @default 'single' */
+	dateFilterMode?: 'single' | 'multiple' | 'range';
 	/** Lock this column to the left or right edge on horizontal scroll */
 	pin?: 'left' | 'right';
 }

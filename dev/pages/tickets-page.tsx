@@ -78,6 +78,9 @@ export const TicketsPage: React.FC = () => {
   );
   const { data, loading, error, reload } = useAsync<Ticket[]>(loadTickets);
 
+  const loadTags = useCallback(() => ticketsApi.listTags(), []);
+  const { data: knownTags, reload: reloadTags } = useAsync<string[]>(loadTags);
+
   const tickets = data ?? [];
   const activeTicket = tickets.find((ticket) => ticket.id === activeId) ?? null;
 
@@ -280,8 +283,12 @@ export const TicketsPage: React.FC = () => {
 
       <TicketDetailDrawer
         ticket={activeTicket}
+        knownTags={knownTags ?? []}
         onClose={() => setActiveId(null)}
-        onSaved={reload}
+        onSaved={() => {
+          reload();
+          reloadTags();
+        }}
         onRequestDelete={setPendingDelete}
       />
 

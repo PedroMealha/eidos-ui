@@ -88,7 +88,7 @@ export type { MenuProps, MenuWrapperProps, MenuItemType, MenuItem, MenuComponent
 export type { ModalProps, ModalAction } from './components/Modal';
 export type { SelectProps, SelectOption } from './components/Select';
 export type { SnackbarProps, SnackbarVariant, SnackbarAction, SnackbarState, SnackbarItem, SnackbarContextValue, UseSnackbarReturn } from './components/Snackbar';
-export type { DatePickerProps, DateSelectionMode, TimeConfig, DateTimeValue, TimeValue, RangeTimeValue, CalendarConfig, DateFormatConfig, CalendarProps } from './components/DatePicker';
+export type { DatePickerProps, DateSelectionMode, TimeConfig, DateTimeValue, TimeValue, RangeTimeValue, CalendarConfig, DateFormatConfig, CalendarProps, SingleDateValue, MultipleDateValue, RangeDateValue } from './components/DatePicker';
 export type { TableProps, TableColumn, TableFilters, FilterValue, BulkAction } from './components/Table';
 
 export type { ColorPickerProps, ColorFormat, RGBColor, HSLColor } from './components/ColorPicker';
@@ -99,6 +99,7 @@ export type {
   DataGridColumn,
   DataGridCellType,
   DataGridSelectOption,
+  EditingCell,
 } from './components/DataGrid';
 export type { OTPInputProps } from './components/OTPInput';
 export type { SpinnerProps } from './components/Spinner';

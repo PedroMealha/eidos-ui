@@ -121,23 +121,6 @@ interface CalendarProps {
   showNavigation?: boolean; // Whether to show month navigation arrows
 }
 
-// Time selector props
-interface TimeSelectorProps {
-  value: TimeValue;
-  onChange: (value: TimeValue) => void;
-  includeSeconds?: boolean;
-  disabled?: boolean;
-  format?: string;
-}
-
-// Month/Year selector props
-interface MonthYearSelectorProps {
-  currentDate: Dayjs;
-  onDateChange: (date: Dayjs) => void;
-  minDate?: Dayjs;
-  maxDate?: Dayjs;
-}
-
 export type {
   DateSelectionMode,
   TimeConfig,
@@ -151,6 +134,4 @@ export type {
   DateFormatConfig,
   DatePickerProps,
   CalendarProps,
-  TimeSelectorProps,
-  MonthYearSelectorProps,
 };

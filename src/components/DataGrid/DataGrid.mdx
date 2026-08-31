@@ -73,6 +73,8 @@ Mark individual columns with `sortable: true` to enable click-to-sort on their h
 
 Set `filterable: true`, `filterType`, and `filterOptions` on each column, then pass `showFilters={true}` to show the filter-panel toggle in the toolbar. Without `onFiltersChange` the grid filters client-side.
 
+For `filterType: 'date'` columns, `dateFilterMode` (`'single' | 'multiple' | 'range'`, same shape as `TableColumn`) controls which date-picker mode the filter dropdown uses - it defaults to `'single'` if omitted.
+
 <Canvas of={DataGridStories.WithFiltering} />
 
 ## With pagination

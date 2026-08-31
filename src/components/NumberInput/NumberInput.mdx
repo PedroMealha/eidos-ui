@@ -7,6 +7,8 @@ import * as NumberInputStories from './NumberInput.stories';
 
 Numeric text input with increment/decrement controls, min/max clamping, precision formatting, and optional keyboard-only typing restriction.
 
+> **Note**: `NumberInput` has a value-based `onChange(value: number)`, unlike every other input in this library. If you just want a plain numeric field with the same event-based `onChange` as the rest of your form (no stepper buttons, no clamping), use `Input` with `type="number"` instead.
+
 ## Usage
 
 ```tsx

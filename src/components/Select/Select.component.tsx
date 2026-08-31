@@ -275,15 +275,23 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       [disabled, isOpen, filteredOptions, focusedIndex, handleOptionSelect]
     );
 
+    // Past this many selections the full comma-joined label list becomes
+    // unreadable in the trigger, so we switch to a compact "N selected" label.
+    const COMPACT_LABEL_THRESHOLD = 2;
+
     const displayValue = useMemo(() => {
       if (selectedValues.size === 0) return "";
+
+      if (multiple && selectedValues.size > COMPACT_LABEL_THRESHOLD) {
+        return `${selectedValues.size} selected`;
+      }
 
       const selectedOptions = options.filter((option) =>
         selectedValues.has(option.value)
       );
       const text = selectedOptions.map((option) => option.label).join(", ");
       return text;
-    }, [options, selectedValues]);
+    }, [options, selectedValues, multiple]);
 
     const selectContent = useMemo(
       () => (

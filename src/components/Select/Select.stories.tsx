@@ -206,6 +206,25 @@ export const MultipleSelect: Story = {
   },
 };
 
+export const MultipleSelectCompactLabel: Story = {
+  name: "Multiple select (compact label)",
+  args: {
+    options: basicOptions,
+    multiple: true,
+    defaultValue: ["apple", "banana", "cherry"],
+    placeholder: "Select multiple fruits...",
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Past 2 selections the trigger switches from a comma-joined label list to a compact ' +
+          '"N selected" label, so the field stays readable regardless of how many options are picked.',
+      },
+    },
+  },
+};
+
 export const WithDisabledOptions: Story = {
   args: {
     options: optionsWithDisabled,

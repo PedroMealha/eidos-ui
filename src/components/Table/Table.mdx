@@ -59,6 +59,8 @@ Mark columns `sortable: true`, then pass `currentSort` and `onSortChange` to wir
 
 Enable `showPagination` and configure `pageSize` and `pageSizeOptions` to add a pagination bar below the table.
 
+> **Note**: Table's pagination is always client-side - it slices `data` internally and has no `onPageChange`/controlled-page equivalent. If you need server-side pagination (fetching one page at a time, `totalRows` driven by the backend), use `DataGrid` instead: it supports the same client-side mode plus a server-side mode via `onPageChange` and `totalRows`.
+
 <Canvas of={TableStories.WithPagination} />
 
 ## With filters

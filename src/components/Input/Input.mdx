@@ -7,6 +7,8 @@ import * as InputStories from './Input.stories';
 
 Single-line text input supporting labels, error messages, leading/trailing icons, loading state, and four visual variants: `filled`, `outlined`, `text`, and `bare`.
 
+> **Note**: `type="number"` gives you a numeric-only field with the same event-based `onChange` as every other `Input` type - use it when a number field should look and behave like the rest of your form. If you need increment/decrement stepper buttons, min/max clamping, or a value-based `onChange(value: number)` instead of an event, use the separate `NumberInput` component.
+
 ## Usage
 
 ```tsx

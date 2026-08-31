@@ -55,12 +55,14 @@ const toDraft = (ticket: Ticket): Draft => ({
 
 type Props = {
   ticket: Ticket | null;
+  /** Tags already used across other tickets - shown as autocomplete suggestions on the tag picker. */
+  knownTags: string[];
   onClose: () => void;
   onSaved: () => void;
   onRequestDelete: (ticket: Ticket) => void;
 };
 
-export const TicketDetailDrawer: React.FC<Props> = ({ ticket, onClose, onSaved, onRequestDelete }) => {
+export const TicketDetailDrawer: React.FC<Props> = ({ ticket, knownTags, onClose, onSaved, onRequestDelete }) => {
   const { showSuccess, showError } = useSnackbar();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
@@ -170,6 +172,7 @@ export const TicketDetailDrawer: React.FC<Props> = ({ ticket, onClose, onSaved, 
             value={draft.tags}
             onChange={(tags) => setDraft({ ...draft, tags })}
             placeholder="Add a tag and press Enter"
+            suggestions={knownTags}
             fullWidth
           />
 

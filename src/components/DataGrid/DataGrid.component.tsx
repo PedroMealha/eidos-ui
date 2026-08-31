@@ -223,6 +223,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 				filterable: true,
 				filterType: col.filterType,
 				filterOptions: col.filterOptions,
+				dateFilterMode: col.dateFilterMode,
 			} as TableColumn<T>));
 	}, [columns]);
 
