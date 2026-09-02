@@ -3,6 +3,25 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Avatar, AvatarGroup } from "./Avatar.component";
 import type { AvatarColor } from "./Avatar.types";
 
+// A self-contained inline SVG (soft-focus colour blobs, like an out-of-focus photo) used
+// as the "image avatar" sample. Deliberately not a live network image (e.g. picsum.photos) -
+// an external image is a flaky dependency for visual regression testing, since Chromatic
+// snapshots whatever that service happens to serve at capture time rather than our own,
+// deterministic markup. Uses a blurred bokeh look rather than an icon so it reads as a
+// photo, not a duplicate of the fallback-icon state shown elsewhere in these stories.
+const SAMPLE_AVATAR_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">
+    <defs>
+      <filter id="blur"><feGaussianBlur stdDeviation="9" /></filter>
+    </defs>
+    <rect width="100" height="100" fill="#1e1b4b" />
+    <circle cx="28" cy="32" r="26" fill="#f472b6" filter="url(#blur)" />
+    <circle cx="76" cy="22" r="22" fill="#fb923c" filter="url(#blur)" />
+    <circle cx="72" cy="76" r="28" fill="#818cf8" filter="url(#blur)" />
+    <circle cx="22" cy="78" r="20" fill="#34d399" filter="url(#blur)" />
+  </svg>
+`)}`;
+
 const meta = {
   title: "Elements/Avatar",
   component: Avatar,
@@ -76,7 +95,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    src: "https://picsum.photos/seed/avatar1/100/100",
+    src: SAMPLE_AVATAR_IMAGE,
     alt: "Sample avatar",
     size: "md",
     shape: "circle",
