@@ -128,7 +128,7 @@ const AppliedBadge = ({ filters }: { filters: TableFilters }) => {
 
 export const Default: Story = {
   render: () => {
-     
+
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
@@ -145,6 +145,20 @@ export const Default: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [filters, setFilters] = useState<TableFilters>({});
+
+<TableFiltersDropdown
+  columns={columns}
+  filters={filters}
+  onFiltersChange={setFilters}
+/>`.trim(),
+      },
+    },
+  },
 };
 
 // ── Story 2: Multiple Filters ─────────────────────────────────────────────────
@@ -152,7 +166,7 @@ export const Default: Story = {
 
 export const MultipleFilters: Story = {
   render: () => {
-     
+
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
@@ -169,6 +183,21 @@ export const MultipleFilters: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [filters, setFilters] = useState<TableFilters>({});
+
+// Columns can mix text, select, date-range, and boolean filter types.
+<TableFiltersDropdown
+  columns={columns}
+  filters={filters}
+  onFiltersChange={setFilters}
+/>`.trim(),
+      },
+    },
+  },
 };
 
 // ── Story 3: Pre-filled Filters ───────────────────────────────────────────────
@@ -177,7 +206,7 @@ export const MultipleFilters: Story = {
 
 export const PreFilledFilters: Story = {
   render: () => {
-     
+
     const [filters, setFilters] = useState<TableFilters>({});
 
     const defaultFilters: TableFilters = {
@@ -199,5 +228,20 @@ export const PreFilledFilters: Story = {
         <AppliedBadge filters={filters} />
       </div>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [filters, setFilters] = useState<TableFilters>({ name: 'Alice', role: 'Admin' });
+
+<TableFiltersDropdown
+  columns={columns}
+  filters={filters}
+  onFiltersChange={setFilters}
+  defaultFilters={{ name: 'Alice', role: 'Admin' }}
+/>`.trim(),
+      },
+    },
   },
 };

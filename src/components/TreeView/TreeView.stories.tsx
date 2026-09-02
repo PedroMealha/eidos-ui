@@ -244,6 +244,20 @@ export const DefaultExpandAll: Story = {
  */
 export const ControlledSelection: Story = {
   render: () => <ControlledSelectionDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [selectedId, setSelectedId] = useState<string>();
+
+<TreeView
+  data={data}
+  selectedId={selectedId}
+  onSelect={(node) => setSelectedId(node.id)}
+/>`.trim(),
+      },
+    },
+  },
 };
 
 /** Some nodes are marked disabled - they cannot be clicked or selected. */
@@ -260,6 +274,21 @@ export const Disabled: Story = {
  */
 export const MultiSelect: Story = {
   render: () => <MultiSelectDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+<TreeView
+  data={data}
+  multiSelect
+  selectedIds={selectedIds}
+  onSelectMulti={(nodes) => setSelectedIds(nodes.map((n) => n.id))}
+/>`.trim(),
+      },
+    },
+  },
 };
 
 /**

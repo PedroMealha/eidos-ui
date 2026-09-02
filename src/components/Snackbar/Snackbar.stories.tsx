@@ -141,10 +141,36 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => <SnackbarDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
+
+<button onClick={() => showSuccess('Changes saved!')}>Success</button>
+<button onClick={() => showError('An error occurred!')}>Error</button>
+<button onClick={() => showWarning('Please review your changes.')}>Warning</button>
+<button onClick={() => showInfo("Here's some useful information.")}>Info</button>`.trim(),
+      },
+    },
+  },
 };
 
 export const Examples: Story = {
   render: () => <SnackbarDemo />,
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
+
+<button onClick={() => showSuccess('Changes saved!')}>Success</button>
+<button onClick={() => showError('An error occurred!')}>Error</button>
+<button onClick={() => showWarning('Please review your changes.')}>Warning</button>
+<button onClick={() => showInfo("Here's some useful information.")}>Info</button>`.trim(),
+      },
+    },
+  },
 };
 
 export const SuccessVariant: Story = {

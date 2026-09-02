@@ -90,6 +90,19 @@ export const Default: Story = {
 		title: 'Default Modal',
 		children: <p>This is a basic modal with default styling.</p>,
 	},
+	parameters: {
+		docs: {
+			source: {
+				code: `
+const [isOpen, setIsOpen] = useState(false);
+
+<Button onClick={() => setIsOpen(true)}>Open Modal</Button>
+<Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Default Modal">
+  <p>This is a basic modal with default styling.</p>
+</Modal>`.trim(),
+			},
+		},
+	},
 };
 
 export const Examples = {

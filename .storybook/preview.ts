@@ -9,6 +9,15 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    docs: {
+      // Force the "Show code" panel to always serialize the actual rendered
+      // React tree to JSX, instead of falling back to the raw literal source
+      // of the story object for any story using a custom `render` function
+      // (which would otherwise show the `{ render: () => ... }` wrapper).
+      source: {
+        type: 'dynamic',
+      },
+    },
     options: {
       storySort: {
         // Sort stories alphabetically within each group.

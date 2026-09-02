@@ -6,7 +6,7 @@
 	position: relative;
 	border-radius: var(--border-radius-sm);
 	font-weight: var(--font-weight-medium);
-	padding: var(--spacing-sm);
+	padding: var(--spacing-xs) var(--spacing-sm);
 	transition: all 0.2s ease;
 	cursor: default;
 	text-decoration: none;
@@ -17,16 +17,19 @@
 
 	// Sizes
 	&--sm {
+    padding: var(--spacing-xs) var(--spacing-sm);
 		font-size: var(--font-size-xs);
 		min-height: var(--component-size-sm);
 	}
 
 	&--md {
+    padding: var(--spacing-sm) var(--spacing-md);
 		font-size: var(--font-size-sm);
 		min-height: var(--component-size-md);
 	}
 
 	&--lg {
+    padding: var(--spacing-md) var(--spacing-lg);
 		font-size: var(--font-size-base);
 		min-height: var(--component-size-lg);
 	}

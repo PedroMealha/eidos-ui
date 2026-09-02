@@ -155,6 +155,17 @@ export const Default = {
       </>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [open, setOpen] = useState(false);
+
+<button onClick={() => setOpen(true)}>Open Command Palette</button>
+<CommandPalette open={open} onClose={() => setOpen(false)} items={items} />`.trim(),
+      },
+    },
+  },
 };
 
 /**
@@ -170,6 +181,17 @@ export const WithGroups = {
         <CommandPalette open={open} onClose={() => setOpen(false)} items={ITEMS} />
       </>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [open, setOpen] = useState(false);
+
+// Items that share a \`group\` string are clustered under a labelled heading.
+<CommandPalette open={open} onClose={() => setOpen(false)} items={items} />`.trim(),
+      },
+    },
   },
 };
 
@@ -187,6 +209,17 @@ export const WithShortcuts = {
         <CommandPalette open={open} onClose={() => setOpen(false)} items={shortcutItems} />
       </>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [open, setOpen] = useState(false);
+
+// Each item's \`shortcut: string[]\` renders as <kbd> badges.
+<CommandPalette open={open} onClose={() => setOpen(false)} items={items} />`.trim(),
+      },
+    },
   },
 };
 
@@ -209,6 +242,21 @@ export const EmptyState = {
         />
       </>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [open, setOpen] = useState(false);
+
+<CommandPalette
+  open={open}
+  onClose={() => setOpen(false)}
+  items={[]}
+  emptyText="No commands available right now"
+/>`.trim(),
+      },
+    },
   },
 };
 
@@ -240,6 +288,21 @@ export const WithFooter = {
         />
       </>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [open, setOpen] = useState(false);
+
+<CommandPalette
+  open={open}
+  onClose={() => setOpen(false)}
+  items={items}
+  footer={<span>{items.length} commands</span>}
+/>`.trim(),
+      },
+    },
   },
 };
 
@@ -275,5 +338,16 @@ export const WithDisabledItems = {
         <CommandPalette open={open} onClose={() => setOpen(false)} items={mixed} />
       </>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [open, setOpen] = useState(false);
+
+// Set \`disabled: true\` on any item to skip it during keyboard navigation.
+<CommandPalette open={open} onClose={() => setOpen(false)} items={items} />`.trim(),
+      },
+    },
   },
 };
