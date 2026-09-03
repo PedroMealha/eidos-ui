@@ -28,6 +28,7 @@
 .eidos-breadcrumb-item {
 	@include flex-center-y;
 	gap: var(--spacing-xs);
+  will-change: transform;
 }
 
 // ============================================================================
@@ -111,6 +112,7 @@
 .eidos-breadcrumb-icon {
 	@include flex-center;
 	flex-shrink: 0;
+	margin-right: 2px;
 
 	svg {
 		width: 0.875em;

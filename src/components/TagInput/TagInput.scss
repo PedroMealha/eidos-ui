@@ -1,21 +1,21 @@
-@use '../../styles/mixins.scss' as *;
+@use "../../styles/mixins.scss" as *;
 
 // ============================================================================
 // TAG INPUT - OUTER CONTAINER
 // ============================================================================
 
 .eidos-tag-input {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 
-	&--full-width {
-		width: 100%;
+  &--full-width {
+    width: 100%;
 
-		.eidos-tag-input-field {
-			width: 100%;
-		}
-	}
+    .eidos-tag-input-field {
+      width: 100%;
+    }
+  }
 }
 
 // ============================================================================
@@ -23,11 +23,11 @@
 // ============================================================================
 
 .eidos-tag-input-label {
-	@include font-size(sm);
-	@include font-weight(medium);
-	color: var(--gray-700);
-	line-height: 1.4;
-	margin-bottom: var(--spacing-xs);
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--gray-700);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-xs);
 }
 
 // ============================================================================
@@ -35,71 +35,70 @@
 // ============================================================================
 
 .eidos-tag-input-field {
-	position: relative; // anchor point for the absolutely-positioned dropdown anchor below
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: var(--spacing-xs);
-	border: 1px solid var(--gray-300);
-	border-radius: var(--border-radius-md);
-	background-color: var(--white);
-	cursor: text;
-	box-sizing: border-box;
-	transition:
-		border-color 0.2s ease,
-		box-shadow 0.2s ease;
+  position: relative; // anchor point for the absolutely-positioned dropdown anchor below
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius-md);
+  background-color: var(--white);
+  cursor: text;
+  box-sizing: border-box;
+  will-change: transform;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
-	// ── Size variants ──────────────────────────────────────────────────────
+  // ── Size variants ──────────────────────────────────────────────────────
 
-	&--sm {
-		padding: var(--spacing-xs) var(--spacing-sm);
-		min-height: var(--component-size-sm);
+  &--sm {
+    min-height: var(--component-size-sm);
 
-		.eidos-tag-input-input {
-			@include font-size(sm);
-		}
-	}
+    .eidos-tag-input-input {
+      @include font-size(sm);
+    }
+  }
 
-	&--md {
-		padding: var(--spacing-sm) var(--spacing-md);
-		min-height: var(--component-size-md);
+  &--md {
+    min-height: var(--component-size-md);
 
-		.eidos-tag-input-input {
-			@include font-size(base);
-		}
-	}
+    .eidos-tag-input-input {
+      @include font-size(base);
+    }
+  }
 
-	&--lg {
-		padding: var(--spacing-md);
-		min-height: var(--component-size-lg);
+  &--lg {
+    min-height: var(--component-size-lg);
 
-		.eidos-tag-input-input {
-			@include font-size(lg);
-		}
-	}
+    .eidos-tag-input-input {
+      @include font-size(lg);
+    }
+  }
 
-	// ── State modifiers ────────────────────────────────────────────────────
+  // ── State modifiers ────────────────────────────────────────────────────
 
-	&--focused {
-		border-color: var(--primary-color);
-		box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
-		outline: none;
-	}
+  &--focused {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+    outline: none;
+  }
 
-	&--error {
-		border-color: var(--danger-color);
+  &--error {
+    border-color: var(--danger-color);
 
-		&.eidos-tag-input-field--focused {
-			border-color: var(--danger-color);
-			box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.15);
-		}
-	}
+    &.eidos-tag-input-field--focused {
+      border-color: var(--danger-color);
+      box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.15);
+    }
+  }
 
-	&--disabled {
-		opacity: 0.5;
-		pointer-events: none;
-		background-color: var(--gray-50);
-	}
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    background-color: var(--gray-50);
+  }
 }
 
 // ============================================================================
@@ -107,16 +106,16 @@
 // ============================================================================
 
 .eidos-tag-input-input {
-	@include input-reset;
-	flex: 1;
-	min-width: 6ch;
-	padding: 2px 0;
-	color: var(--dark-color);
-	line-height: 1.4;
+  @include input-reset;
+  flex: 1;
+  min-width: 6ch;
+  padding: 2px 0;
+  color: var(--dark-color);
+  line-height: 1.4;
 
-	&::placeholder {
-		color: var(--gray-400);
-	}
+  &::placeholder {
+    color: var(--gray-400);
+  }
 }
 
 // ============================================================================
@@ -132,11 +131,11 @@
 // incompatible. See also: Dropdown.component.tsx `calculateOptimalPosition`.
 
 .eidos-tag-input-dropdown-anchor {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	height: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
 }
 
 // ============================================================================
@@ -144,34 +143,34 @@
 // ============================================================================
 
 .eidos-tag-input-suggestions {
-	padding: var(--spacing-xs) 0;
-	width: 100%;
-	max-height: 240px;
-	overflow-y: auto;
+  padding: var(--spacing-xs) 0;
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 .eidos-tag-input-suggestion {
-	@include font-size(sm);
-	padding: var(--spacing-sm) var(--spacing-md);
-	cursor: pointer;
-	color: var(--dark-color);
-	user-select: none;
-	transition: background-color 0.15s ease;
+  @include font-size(sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  color: var(--dark-color);
+  user-select: none;
+  transition: background-color 0.15s ease;
 
-	&:hover {
-		background-color: var(--gray-50);
-	}
+  &:hover {
+    background-color: var(--gray-50);
+  }
 
-	&--focused {
-		background-color: var(--gray-100);
-	}
+  &--focused {
+    background-color: var(--gray-100);
+  }
 }
 
 .eidos-tag-input-suggestions-empty {
-	padding: var(--spacing-md);
-	text-align: center;
-	@include font-size(sm);
-	color: var(--gray-500);
+  padding: var(--spacing-md);
+  text-align: center;
+  @include font-size(sm);
+  color: var(--gray-500);
 }
 
 // ============================================================================
@@ -179,10 +178,10 @@
 // ============================================================================
 
 .eidos-tag-input-hint {
-	@include font-size(sm);
-	color: var(--gray-500);
-	margin-top: var(--spacing-xs);
-	line-height: 1.4;
+  @include font-size(sm);
+  color: var(--gray-500);
+  margin-top: var(--spacing-xs);
+  line-height: 1.4;
 }
 
 // ============================================================================
@@ -190,16 +189,17 @@
 // ============================================================================
 
 .eidos-tag-input-error-message {
-	@include flex-center-y;
-	gap: var(--spacing-xs);
-	@include font-size(sm);
-	color: var(--danger-color);
-	margin-top: var(--spacing-xs);
-	line-height: 1.4;
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  @include font-size(sm);
+  color: var(--danger-color);
+  margin-top: var(--spacing-xs);
+  line-height: 1.4;
 
-	svg {
-		width: 1em;
-		height: 1em;
-		flex-shrink: 0;
-	}
+  svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
 }
+

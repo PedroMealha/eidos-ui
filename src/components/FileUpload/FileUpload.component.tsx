@@ -187,8 +187,9 @@ export function FileUpload({
 
 				<div className="eidos-file-upload-text">
 					<p className="eidos-file-upload-title">
-						<em>Click to upload</em> or drag and drop
+						<em>Click to upload</em>
 					</p>
+					<span style={{ fontWeight: 'normal', fontSize: '0.875rem' }}>or drag and drop</span>
 					{displayHint && (
 						<p className="eidos-file-upload-hint">{displayHint}</p>
 					)}

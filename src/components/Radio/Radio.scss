@@ -138,6 +138,7 @@
 	border: 2px solid var(--gray-400);
 	border-radius: 50%;
 	background: var(--white);
+	will-change: transform;
 	transition: all 0.2s ease;
 
 	// Size is injected by wrapper size modifier (see above)
@@ -172,7 +173,7 @@
 
 .eidos-radio-label {
 	color: var(--dark-color);
-	line-height: 1.4;
+	line-height: 1;
 	user-select: none;
 
 	.eidos-radio-wrapper--disabled & {

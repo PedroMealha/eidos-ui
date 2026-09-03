@@ -8,6 +8,7 @@
 .eidos-split-button {
 	display: inline-flex;
 	align-items: stretch;
+	will-change: transform;
 
 	// Make the Dropdown's wrapper div participate in the flex layout correctly.
 	> .eidos-dropdown-trigger {

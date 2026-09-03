@@ -127,7 +127,7 @@
 	color: var(--dark-color);
 	// Font size is controlled per-size in wrapper modifiers above
 	user-select: none;
-	line-height: 1.4;
+	line-height: 1;
 }
 
 // ============================================================================
@@ -148,6 +148,7 @@
 	background: var(--gray-300);
 	transition: background 0.2s ease;
 	flex-shrink: 0;
+	will-change: transform;
 
 	// Default checked colour - overridden by colour-variant rules above
 	&--checked {

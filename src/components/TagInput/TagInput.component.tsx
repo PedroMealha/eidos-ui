@@ -258,7 +258,7 @@ export const TagInput: React.FC<TagInputProps> = ({
         {tags.map((tag, index) => (
           <Chip
             key={`${tag}-${index}`}
-            variant="text"
+            variant="filled"
             color="primary"
             size={size}
             onRemove={disabled ? undefined : () => removeTag(index)}

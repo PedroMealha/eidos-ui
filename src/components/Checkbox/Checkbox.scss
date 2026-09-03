@@ -153,6 +153,7 @@
 	border: 2px solid var(--gray-400);
 	@include border-radius(xs);
 	background: var(--white);
+	will-change: transform;
 	transition: all 0.2s ease;
 	overflow: hidden;
 
@@ -184,7 +185,7 @@
 
 .eidos-checkbox-label {
 	color: var(--dark-color);
-	line-height: 1.4;
+	line-height: 1;
 	user-select: none;
 
 	.eidos-checkbox-wrapper--disabled & {

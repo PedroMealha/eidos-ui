@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Download, Plus, Trash2, ArrowBigDownDash, ArrowRight } from 'lucide-react';
+import { Download, Plus, Trash2, ArrowBigDownDash, ArrowRight, Replace } from 'lucide-react';
 import { Button, IconButton } from './Button.component';
 
 const meta = {
@@ -232,8 +232,9 @@ export const Examples = {
             <Button preIcon={Download}>Download</Button>
             <Button posIcon={ArrowRight}>Next</Button>
             <Button icon={Plus} />
+            <IconButton icon={Trash2} color="danger" variant="outlined" size="sm" />
             <IconButton icon={ArrowBigDownDash} tooltip="Icon-only button" />
-            <IconButton icon={Trash2} color="danger" variant="outlined" />
+            <IconButton icon={Replace} tooltip="Icon-only button" size="lg" />
           </div>
         </div>
       </div>

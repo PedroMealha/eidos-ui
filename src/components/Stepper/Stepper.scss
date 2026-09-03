@@ -28,7 +28,8 @@
 
     .eidos-stepper-connector {
       flex: 1;
-      height: 2px;
+      height: 1px;
+      margin: 0 var(--spacing-xs);
       background: var(--gray-200);
       transition: background 0.25s ease;
     }
@@ -62,7 +63,7 @@
 
     .eidos-stepper-connector {
       flex: 1;
-      width: 2px;
+      width: 1px;
       min-height: var(--spacing-lg);
       background: var(--gray-200);
       margin: var(--spacing-xs) 0;

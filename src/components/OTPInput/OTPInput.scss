@@ -33,6 +33,7 @@
 		align-items: center;
 		justify-content: center;
 		flex-shrink: 0;
+		will-change: transform;
 
 		// Default to medium size; overridden by size modifiers below
 		width: var(--component-size-md);
@@ -130,6 +131,7 @@
 		.eidos-otp-slot {
 			width: var(--component-size-sm);
 			height: var(--component-size-sm);
+			@include border-radius(sm);
 
 			input {
 				@include font-size(sm);
@@ -143,6 +145,7 @@
 		.eidos-otp-slot {
 			width: var(--component-size-lg);
 			height: var(--component-size-lg);
+			@include border-radius(lg);
 
 			input {
 				@include font-size(lg);

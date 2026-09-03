@@ -1,4 +1,4 @@
-@use '../../styles/mixins.scss' as *;
+@use "../../styles/mixins.scss" as *;
 
 .eidos-button {
   @include flex-center;
@@ -10,6 +10,7 @@
   text-decoration: none;
   border: 1.5px solid transparent;
   gap: var(--spacing-sm);
+  will-change: transform;
 
   // Sizes
   &--sm {
@@ -31,19 +32,17 @@
   &--icon-only {
     aspect-ratio: 1;
     padding: var(--spacing-sm);
-    font-size: var(--font-size-md);
-    min-width: 1em;
-    min-height: 1m;
+    font-size: var(--font-size-base);
+    min-width: 2.5905em;
+    min-height: 2.5905em;
 
     &.eidos-button--sm {
-      width: var(--component-size-sm);
-      height: var(--component-size-sm);
+      font-size: var(--font-size-xs);
       padding: var(--spacing-xs);
     }
 
     &.eidos-button--lg {
-      width: var(--component-size-lg);
-      height: var(--component-size-lg);
+      font-size: var(--font-size-md);
       padding: var(--spacing-md);
     }
   }
@@ -276,3 +275,4 @@
     transform: rotate(360deg);
   }
 }
+
