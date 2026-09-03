@@ -54,8 +54,11 @@ function buildGroups(items: CommandItem[]): Group[] {
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
-  open,
+  open: openProp,
+  defaultOpen = false,
   onClose,
+  onOpen,
+  shortcutKey = 'k',
   items,
   onSelect,
   placeholder = 'Search commands…',
@@ -66,6 +69,41 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 }) => {
   const dialogId = useId();
   const listId = `${dialogId}-list`;
+
+  // ── Controlled / uncontrolled open state ───────────────────────────────────
+  // Omitting `open` lets the palette own its state entirely, which combined
+  // with the shortcut listener below means it needs zero external
+  // useState/useEffect to work. Passing `open` (+ `onClose`, optionally
+  // `onOpen`) keeps full external control for consumers who need it (syncing
+  // with a URL, another piece of app state, etc).
+  const isControlled = openProp !== undefined;
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const open = isControlled ? (openProp as boolean) : internalOpen;
+
+  const close = useCallback(() => {
+    if (!isControlled) setInternalOpen(false);
+    onClose?.();
+  }, [isControlled, onClose]);
+
+  // Global keyboard shortcut - Cmd/Ctrl+<shortcutKey> opens the palette.
+  // Uncontrolled: flips the internal state directly. Controlled: the palette
+  // has no way to change `open` itself, so it defers to `onOpen`.
+  useEffect(() => {
+    if (!shortcutKey) return;
+
+    const handler = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== shortcutKey.toLowerCase()) return;
+      e.preventDefault();
+      if (isControlled) {
+        onOpen?.();
+      } else {
+        setInternalOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [shortcutKey, isControlled, onOpen]);
 
   // ── Animation state machine (mirrors the Drawer pattern) ─────────────────
   // isMounted → portal exists in the DOM (controls render/null)
@@ -158,9 +196,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       if (item.disabled) return;
       item.action?.();
       onSelect?.(item);
-      onClose();
+      close();
     },
-    [onClose, onSelect],
+    [close, onSelect],
   );
 
   const handleKeyDown = useCallback(
@@ -186,12 +224,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         }
         case 'Escape': {
           e.preventDefault();
-          onClose();
+          close();
           break;
         }
       }
     },
-    [focusedIndex, navigable, onClose, selectItem],
+    [focusedIndex, navigable, close, selectItem],
   );
 
   const handleBackdropClick = useCallback(
@@ -199,10 +237,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       // Only fire when the click lands directly on the backdrop element,
       // not on any child (the dialog itself or its contents).
       if (e.target === e.currentTarget) {
-        onClose();
+        close();
       }
     },
-    [onClose],
+    [close],
   );
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -251,11 +289,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             autoComplete="off"
           />
 
-          {/* ⌘K shortcut badge - reminds users of the keyboard shortcut */}
-          <div className="eidos-cmd-search-badge" aria-hidden="true">
-            <Command size={11} />
-            <span>K</span>
-          </div>
+          {/* Reminds users of the configured shortcut, if any */}
+          {shortcutKey && (
+            <div className="eidos-cmd-search-badge" aria-hidden="true">
+              <Command size={11} />
+              <span>{shortcutKey.toUpperCase()}</span>
+            </div>
+          )}
         </div>
 
         {/* ── Results list ─────────────────────────────────────────────────── */}

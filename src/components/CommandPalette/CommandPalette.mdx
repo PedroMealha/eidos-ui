@@ -7,9 +7,11 @@ import * as CommandPaletteStories from './CommandPalette.stories';
 
 A keyboard-driven command launcher presented as a floating modal - type to fuzzy-search commands and execute them instantly, à la VS Code's `⌘K` palette.
 
-> **Note**: The palette renders via `createPortal` and manages its own focus trap; always control visibility with the `open` / `onClose` pair.
+> **Note**: The palette renders via `createPortal` and manages its own focus trap. `open` / `onClose` are optional - omit them and the palette manages its own open state, including the `⌘K` (customisable via `shortcutKey`) listener that opens it.
 
 ## Usage
+
+The simplest form needs no state at all - the palette opens itself on `⌘K` / `Ctrl+K`:
 
 ```tsx
 import { CommandPalette } from '@pmealha/eidos-ui';
@@ -22,22 +24,22 @@ const items: CommandItem[] = [
 ];
 
 function App() {
-  const [open, setOpen] = useState(false);
+  return <CommandPalette items={items} />;
+}
+```
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
+Pass `shortcutKey` to change the shortcut (e.g. `'r'` for `⌘R`), or `shortcutKey={null}` to disable the built-in listener entirely if you only want to open it from your own trigger (a button's `onClick`, for instance).
+
+If you need full external control - syncing with a URL, another piece of app state, etc - pass `open` (+ `onClose`, and `onOpen` if you also want the shortcut to still work):
+
+```tsx
+function App() {
+  const [open, setOpen] = useState(false);
 
   return (
     <CommandPalette
       open={open}
+      onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       items={items}
     />
@@ -52,6 +54,12 @@ The palette opens immediately in Storybook so you can interact with it right awa
 <Canvas of={CommandPaletteStories.Default} />
 
 <Controls of={CommandPaletteStories.Default} />
+
+## Uncontrolled
+
+Omit `open`/`onClose` entirely and the palette manages its own state, including the `⌘K` listener - no `useState`/`useEffect` required in your app.
+
+<Canvas of={CommandPaletteStories.Uncontrolled} />
 
 ## With groups
 

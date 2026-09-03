@@ -192,7 +192,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
 
             <button className="mrd-cmdk" type="button" onClick={() => setPaletteOpen(true)}>
               <span>Search</span>
-              <Kbd size="sm">⌘K</Kbd>
+              <Kbd size="sm">&#8984;K</Kbd>
             </button>
 
             <Menu

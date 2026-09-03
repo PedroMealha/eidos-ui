@@ -36,6 +36,7 @@
   flex-shrink: 0;
   border: 2px solid var(--gray-300);
   background: var(--white);
+  will-change: transform;
   position: relative;
 
   // Color variants

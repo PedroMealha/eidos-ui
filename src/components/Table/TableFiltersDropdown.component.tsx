@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Plus, X, Check, RotateCcw, Funnel } from 'lucide-react';
 import { Button } from '../Button';
 import { DatePicker } from '../DatePicker';
@@ -42,8 +42,19 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 		return initialFilters;
 	});
 
-	// Update pending filters when external filters change
+	// Update pending filters when external filters change. Skipped on the very
+	// first run (mount) - the lazy useState initializer above already computed
+	// the correct initial value, factoring in `defaultFilters` when `filters`
+	// starts empty. This effect only knows about `filters`, so without the
+	// skip it would immediately overwrite that pre-fill with a blank filter
+	// the instant it fires after mount, since `defaultFilters` is a staged
+	// value that's never actually reflected in `filters` until Apply is clicked.
+	const isFirstRender = useRef(true);
 	useEffect(() => {
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+			return;
+		}
 		if (Object.keys(filters).length === 0) {
 			// When filters are cleared externally, show one empty filter
 			setPendingFilters({ [`__temp_${Date.now()}`]: '' });
