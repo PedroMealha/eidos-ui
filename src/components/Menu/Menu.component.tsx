@@ -102,7 +102,7 @@ export const Menu: React.FC<MenuWrapperProps> = ({
 	tooltip,
 }) => {
 	const handleItemClick = useCallback(
-		 
+
 		(_item: MenuItem) => {
 			// Note: item.onClick is already called in MenuPanel's handleItemClick
 			// Here we only handle closing the dropdown if needed
@@ -123,7 +123,7 @@ export const Menu: React.FC<MenuWrapperProps> = ({
 		[closeOnItemClick]
 	);
 
-	const MenuContent = () => (
+	const dropdown = (
 		<Dropdown
 			trigger={trigger}
 			content={<MenuPanel items={items} onItemClick={handleItemClick} />}
@@ -136,11 +136,5 @@ export const Menu: React.FC<MenuWrapperProps> = ({
 		/>
 	);
 
-	return tooltip ? (
-		<Tooltip message={tooltip}>
-			<MenuContent />
-		</Tooltip>
-	) : (
-		<MenuContent />
-	);
+	return tooltip ? <Tooltip message={tooltip}>{dropdown}</Tooltip> : dropdown;
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useId } from "react";
+import React, { useEffect, useCallback, useId, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../Button/Button.component";
 import type { ModalProps } from "./Modal.types";
@@ -20,6 +20,45 @@ export const Modal: React.FC<ModalProps> = ({
   const titleId = useId();
   const bodyId = useId();
 
+  // ── Animation state ────────────────────────────────────────────────────────
+  // isMounted: whether the portal DOM node exists at all.
+  // isVisible: whether the '--is-open' CSS class is applied (drives the transition).
+  //
+  // On open:  mount first → one rAF → apply --is-open (browser sees the
+  //           initial faded/scaled-down state before transitioning, so the
+  //           animation fires instead of just painting straight into "open").
+  // On close: remove --is-open (CSS transition plays) → after 200 ms unmount.
+  //           200 ms matches the CSS `transition: 0.2s` in Modal.scss.
+  const TRANSITION_MS = 200;
+  const [isMounted, setIsMounted] = useState(isOpen);
+  const [isVisible, setIsVisible] = useState(isOpen);
+
+  useEffect(() => {
+    let raf1 = 0;
+    let raf2 = 0;
+    let timerId: ReturnType<typeof setTimeout>;
+
+    if (isOpen) {
+      setIsMounted(true);
+      // Double rAF: React 18 automatic batching means setIsMounted(true) may
+      // not produce a committed browser paint before the first rAF fires.
+      // The second frame guarantees the modal is rendered in its closed
+      // (faded/scaled-down) state before the CSS transition begins.
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setIsVisible(true));
+      });
+    } else {
+      setIsVisible(false);
+      timerId = setTimeout(() => setIsMounted(false), TRANSITION_MS);
+    }
+
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(timerId);
+    };
+  }, [isOpen]);
+
   // Handle escape key
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
@@ -40,7 +79,7 @@ export const Modal: React.FC<ModalProps> = ({
     [closeOnBackdropClick, onClose]
   );
 
-  // Add/remove escape key listener
+  // Add/remove escape key listener (tied to isOpen, not isMounted)
   useEffect(() => {
     if (isOpen) {
       document.addEventListener("keydown", handleEscapeKey);
@@ -54,13 +93,12 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, handleEscapeKey]);
 
-  // Don't render if not open
-  if (!isOpen) return null;
+  if (!isMounted) return null;
 
   const modalContent = (
     <div
       className={`eidos-modal ${
-        isOpen ? "eidos-modal--is-open" : ""
+        isVisible ? "eidos-modal--is-open" : ""
       } ${className}`}
     >
       <div className="eidos-modal-backdrop" onClick={handleBackdropClick} aria-hidden="true" />

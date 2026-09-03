@@ -87,6 +87,7 @@
   @include font-weight(medium);
   transition: all 0.2s ease;
   border-radius: 0; // reset browser default; variants override as needed
+  will-change: transform;
 
   // ── Size modifiers ────────────────────────────────────────────────────────
 

@@ -207,6 +207,39 @@ consumers of the published package (`ContentSecurityPolicy.mdx`) - the
 still held to the library's real CSP posture; only Storybook's own chrome
 needs the exception.
 
+### A large "Examples"-style story can freeze the Storybook tab under React 19
+Storybook's Docs "Show code" panel walks the *entire rendered element tree*
+of a story with a bundled `react-element-to-jsx-string` that reads
+`element.ref` - a property React 19 explicitly warns on and will remove
+(bundled inside Storybook's own build, not a resolvable dependency we can
+`overrides`; see [storybook#31480](https://github.com/storybookjs/storybook/issues/31480)).
+On a small tree that's just a harmless console warning. On `Menu`'s
+`Examples` story - 7 nested Menu/Dropdown/Button trees rendered at once,
+with icons, nested submenus, and a custom component item - walking and
+warning on every node in a tree that deep is expensive enough to actually
+freeze the tab, not just log noise.
+
+If a component's `Examples`-style story stacks many real instances (not
+just a handful), give it an explicit static source string instead of
+letting Storybook derive one dynamically:
+```ts
+parameters: {
+  docs: { source: { type: 'code', code: `...` } },
+},
+```
+This is the fix that actually matters - `parameters.docs.canvas.sourceState
+= 'none'` alone only hides the *panel's UI*, it does not skip Storybook
+computing the source, which happens eagerly during the initial render
+regardless of whether the panel is ever shown. On a heavy tree that eager
+computation is exactly what freezes the tab, so hiding the panel alone does
+nothing for this. An explicit `code` string sidesteps dynamic tree
+serialization entirely - Storybook just displays that text.
+
+Don't apply this project-wide; most stories are small enough that the
+underlying bug never manifests as more than a console warning, and letting
+Storybook derive source dynamically (so it can't drift from the real story)
+is more valuable there than the (currently theoretical) freeze risk.
+
 ---
 
 ## Dev example app rules

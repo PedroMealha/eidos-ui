@@ -33,6 +33,7 @@
 	transition: transform 0.2s ease;
 	display: flex;
 	flex-direction: column;
+	will-change: transform;
 
 	.eidos-modal.eidos-modal--is-open & {
 		transform: scale(1);

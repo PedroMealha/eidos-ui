@@ -18,7 +18,18 @@
       flex-direction: column;
       align-items: center;
 
-      &:last-child { flex: 0 0 auto; }
+      // The last step doesn't shrink below its own content (no connector
+      // after it needs the room), but still grows like every other step
+      // when there's leftover row space to distribute - e.g. `extendStart`
+      // adding its connector (see component) as one more `flex: 1`
+      // participant in the same row. With `flex-grow: 0`, this step sat out
+      // of that redistribution entirely, so the other steps/connectors had
+      // to absorb the whole adjustment on their own instead of sharing it
+      // evenly - visibly, one connector shrinking far more than the rest.
+      // `extendEnd` (see component) adds a connector as a *sibling* after
+      // this step, so it's no longer actually `:last-child` once that
+      // happens, and reverts to the plain flex: 1 rule above automatically.
+      &:last-child { flex: 1 0 auto; }
     }
 
     .eidos-stepper-dot-row {
@@ -34,12 +45,33 @@
       transition: background 0.25s ease;
     }
 
+    // `extendStart`/`extendEnd` (see component) are standalone connectors,
+    // not nested inside a step's dot-row like a between-step connector, so
+    // they don't inherit that row's vertical centering - hence the explicit
+    // offset: half the 32px dot minus half the 1px line.
+    .eidos-stepper-connector--extend {
+      margin-top: 15.5px;
+    }
+
+    // When `extendEnd` makes the last step render its own trailing
+    // connector (see component), that connector's right margin and the
+    // extend connector's left margin - both `var(--spacing-xs)`, meant for
+    // the gap before a *dot* - would otherwise stack into a visible dead
+    // gap between the two lines, since there's no dot between them to
+    // justify one. Both sides of that junction need zeroing.
+    .eidos-stepper-connector--joins-extend {
+      margin-right: 0;
+    }
+
+    .eidos-stepper-step--has-connector + .eidos-stepper-connector--extend {
+      margin-left: 0;
+    }
+
     .eidos-stepper-label-group {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      margin-top: var(--spacing-xs);
+      align-self: flex-start;
+      margin-top: var(--spacing-sm);
       padding: 0 var(--spacing-xs);
     }
   }
@@ -47,6 +79,11 @@
   &--vertical {
     flex-direction: column;
     align-items: stretch;
+    // Lets `extendStart`/`extendEnd` (see component) grow into any extra
+    // height the parent gives this container. Harmless when the parent
+    // sizes to content - the stepper just ends up exactly as tall as its
+    // content, same as before.
+    height: 100%;
 
     .eidos-stepper-step {
       display: flex;
@@ -68,6 +105,25 @@
       background: var(--gray-200);
       margin: var(--spacing-xs) 0;
       transition: background 0.25s ease;
+    }
+
+    // Same reasoning as the horizontal variant above, just on the other
+    // axis: half the 32px dot minus half the 1px line, so the line is
+    // centred under the dot column instead of flush against the left edge.
+    .eidos-stepper-connector--extend {
+      margin-left: 15.5px;
+    }
+
+    // Same reasoning as the horizontal variant above: when `extendEnd`
+    // makes the last step render its own trailing connector, its bottom
+    // margin and the extend connector's top margin would otherwise stack
+    // into a dead gap with no dot between them. Both sides need zeroing.
+    .eidos-stepper-connector--joins-extend {
+      margin-bottom: 0;
+    }
+
+    .eidos-stepper-step--has-connector + .eidos-stepper-connector--extend {
+      margin-top: 0;
     }
 
     .eidos-stepper-label-group {
@@ -121,12 +177,31 @@
   &.eidos-stepper-step--success   .eidos-stepper-dot { background: var(--success-color);   border-color: var(--success-color);   color: var(--white); }
   &.eidos-stepper-step--danger    .eidos-stepper-dot { background: var(--danger-color);    border-color: var(--danger-color);    color: var(--white); }
 
-  // Connector after completed step is also colored
-  &.eidos-stepper-step--primary   .eidos-stepper-connector { background: var(--primary-color); }
-  &.eidos-stepper-step--secondary .eidos-stepper-connector { background: var(--secondary-color); }
-  &.eidos-stepper-step--success   .eidos-stepper-connector { background: var(--success-color); }
-  &.eidos-stepper-step--danger    .eidos-stepper-connector { background: var(--danger-color); }
+  // Connector after completed step is also colored. `extendEnd`'s connector
+  // (see component) is a sibling of the last step rather than nested inside
+  // it like a between-step connector, hence the extra `+` rules.
+  &.eidos-stepper-step--primary   .eidos-stepper-connector,
+  &.eidos-stepper-step--primary   + .eidos-stepper-connector--extend { background: var(--primary-color); }
+  &.eidos-stepper-step--secondary .eidos-stepper-connector,
+  &.eidos-stepper-step--secondary + .eidos-stepper-connector--extend { background: var(--secondary-color); }
+  &.eidos-stepper-step--success   .eidos-stepper-connector,
+  &.eidos-stepper-step--success   + .eidos-stepper-connector--extend { background: var(--success-color); }
+  &.eidos-stepper-step--danger    .eidos-stepper-connector,
+  &.eidos-stepper-step--danger    + .eidos-stepper-connector--extend { background: var(--danger-color); }
 }
+
+// `extendStart`'s connector (see component) has no preceding step to color
+// it via the sibling rule above, so it takes an explicit color class
+// instead - applied only once the first step is actually completed.
+// Compounded with `.eidos-stepper-connector` (not just `--primary` etc. on
+// their own): the base `.eidos-stepper--horizontal .eidos-stepper-connector`
+// / `.eidos-stepper--vertical .eidos-stepper-connector` gray-background
+// rules above are two classes deep themselves, so a single-class override
+// here would always lose that specificity fight regardless of source order.
+.eidos-stepper-connector.eidos-stepper-connector--primary   { background: var(--primary-color); }
+.eidos-stepper-connector.eidos-stepper-connector--secondary { background: var(--secondary-color); }
+.eidos-stepper-connector.eidos-stepper-connector--success   { background: var(--success-color); }
+.eidos-stepper-connector.eidos-stepper-connector--danger    { background: var(--danger-color); }
 
 // Error
 .eidos-stepper-step--error {
@@ -148,5 +223,4 @@
 .eidos-stepper-description {
   @include font-size(xs);
   color: var(--gray-400);
-  margin-top: 2px;
 }

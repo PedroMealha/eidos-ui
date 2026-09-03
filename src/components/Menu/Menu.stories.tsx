@@ -76,6 +76,106 @@ export const Default: Story = {
 };
 
 export const Examples = {
+	// Storybook's own "Show code" source generation walks the entire rendered
+	// element tree with a version of `react-element-to-jsx-string` that reads
+	// the (React 19-removed) `element.ref` property - see
+	// https://github.com/storybookjs/storybook/issues/31480. That's just a
+	// console warning on a small tree, but this story renders 7 nested
+	// Menu/Dropdown/Button trees at once (icons, nested submenus, a custom
+	// component item); walking and warning on every node in a tree that deep
+	// is what freezes the tab, not the warning itself. `sourceState: 'none'`
+	// alone only hides the panel's UI - Storybook still computes the source
+	// eagerly during the initial render regardless, so the freeze happened
+	// before you could even see the hidden panel. Providing an explicit
+	// static `code` string instead bypasses dynamic tree serialization
+	// entirely: Storybook just displays this text, with no need to walk the
+	// rendered output at all.
+	parameters: {
+		docs: {
+			source: {
+				type: 'code',
+				code: `<Menu
+  trigger={<Button variant="filled">User Menu</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => {} },
+    { type: 'item', id: '2', label: 'Settings', icon: Settings, onClick: () => {} },
+    { type: 'separator', id: 'sep1' },
+    { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: () => {} },
+  ]}
+/>
+
+<Menu
+  trigger={<Button variant="filled" color="secondary">File Menu</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'New File', icon: FileText, shortcut: '⌘N', onClick: () => {} },
+    { type: 'item', id: '2', label: 'Copy', icon: Copy, shortcut: '⌘C', onClick: () => {} },
+    { type: 'item', id: '3', label: 'Delete', icon: Trash2, shortcut: '⌫', onClick: () => {} },
+  ]}
+/>
+
+<Menu
+  trigger={<Button variant="outlined" color="success">More Options</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'Copy', icon: Copy, onClick: () => {} },
+    { type: 'item', id: '2', label: 'Share', icon: Share2, onClick: () => {} },
+    { type: 'separator', id: 'sep1' },
+    {
+      type: 'nested',
+      id: 'nested1',
+      label: 'More Actions',
+      icon: Settings,
+      items: [
+        { type: 'item', id: 'n1', label: 'Archive', onClick: () => {} },
+        { type: 'item', id: 'n2', label: 'Export', onClick: () => {} },
+        { type: 'item', id: 'n3', label: 'Print', onClick: () => {} },
+      ],
+    },
+    { type: 'separator', id: 'sep2' },
+    { type: 'item', id: '3', label: 'Delete', icon: Trash2, color: 'danger', onClick: () => {} },
+  ]}
+/>
+
+<Menu
+  trigger={<Button variant="text">Edit</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'Cut', icon: 'scissors', shortcut: '⌘X', onClick: () => {} },
+    { type: 'item', id: '2', label: 'Copy', icon: 'copy', shortcut: '⌘C', onClick: () => {}, disabled: true },
+    { type: 'item', id: '3', label: 'Paste', icon: 'clipboard', shortcut: '⌘V', onClick: () => {}, disabled: true },
+  ]}
+/>
+
+<Menu
+  trigger={<Button variant="outlined" color="primary">Custom Menu</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => {} },
+    { type: 'separator', id: 'sep1' },
+    {
+      type: 'component',
+      id: 'custom',
+      component: <div>Any React content can go here</div>,
+    },
+    { type: 'separator', id: 'sep2' },
+    { type: 'item', id: '2', label: 'Logout', icon: LogOut, onClick: () => {} },
+  ]}
+/>
+
+<Menu
+  trigger={<Button variant="outlined" size="sm">Min Width</Button>}
+  items={[
+    { type: 'item', id: '1', label: 'Short', onClick: () => {} },
+    { type: 'item', id: '2', label: 'Item', onClick: () => {} },
+  ]}
+  minWidth={200}
+/>
+
+<Menu
+  trigger={<Button variant="filled">Hover Me</Button>}
+  items={basicMenuItems}
+  tooltip="Open menu to see options"
+/>`,
+			},
+		},
+	},
 	render: () => {
 		const label: React.CSSProperties = {
 			marginBottom: '0.625rem',

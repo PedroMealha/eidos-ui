@@ -51,7 +51,7 @@ export const Chip: React.FC<ChipProps> = ({
   // Use div when removable to avoid nested buttons, button only when clickable without remove
   const ChipElement = isClickable && !isRemovable ? "button" : "div";
 
-  const ChipContent = () => (
+  const chipContent = (
     <ChipElement
       className={chipClasses}
       disabled={ChipElement === "button" ? disabled : undefined}
@@ -91,10 +91,8 @@ export const Chip: React.FC<ChipProps> = ({
   );
 
   return tooltip ? (
-    <Tooltip message={tooltip}>
-      <ChipContent />
-    </Tooltip>
+    <Tooltip message={tooltip}>{chipContent}</Tooltip>
   ) : (
-    <ChipContent />
+    chipContent
   );
 };

@@ -21,5 +21,19 @@ export interface StepperProps {
   color?: 'primary' | 'secondary' | 'success' | 'danger';
   /** Whether to show step numbers inside the dot. Default: true. */
   showNumbers?: boolean;
+  /**
+   * Extend a connector before the first step out to the container's edge
+   * (the left edge when horizontal, the top edge when vertical). Combined
+   * with `extendEnd`, this centers the steps in the container; alone, it
+   * pushes them toward the end (right / bottom).
+   */
+  extendStart?: boolean;
+  /**
+   * Extend a connector after the last step out to the container's edge
+   * (the right edge when horizontal, the bottom edge when vertical).
+   * Combined with `extendStart`, this centers the steps in the container;
+   * alone, it pushes them toward the start (left / top).
+   */
+  extendEnd?: boolean;
   className?: string;
 }

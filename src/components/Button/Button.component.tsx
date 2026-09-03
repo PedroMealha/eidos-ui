@@ -46,7 +46,7 @@ export const Button: React.FC<ButtonProps> = ({
     .filter(Boolean)
     .join(" ");
 
-  const ButtonContent = () => (
+  const buttonContent = (
     <button
       type="button"
       {...buttonProps}
@@ -86,11 +86,9 @@ export const Button: React.FC<ButtonProps> = ({
   );
 
   return tooltip ? (
-    <Tooltip message={tooltip}>
-      <ButtonContent />
-    </Tooltip>
+    <Tooltip message={tooltip}>{buttonContent}</Tooltip>
   ) : (
-    <ButtonContent />
+    buttonContent
   );
 };
 
