@@ -10,7 +10,7 @@
   text-decoration: none;
   border: 1.5px solid transparent;
   gap: var(--spacing-sm);
-  will-change: transform;
+  // will-change: transform;
 
   // Sizes
   &--sm {
@@ -256,7 +256,7 @@
 }
 
 .eidos-button--spinner-icon {
-  animation: spin 1s linear infinite;
+  animation: eidos-button-spin 1s linear infinite;
 }
 
 .eidos-button--copy {
@@ -267,7 +267,11 @@
 }
 
 // Loading animation
-@keyframes spin {
+// Prefixed (not just `spin`) because @keyframes names are global across the
+// whole compiled stylesheet, not scoped to this file - an unprefixed name
+// silently collides with any other component's identically-named keyframes
+// (this exact collision existed with SplitButton's own `spin` until fixed).
+@keyframes eidos-button-spin {
   from {
     transform: rotate(0deg);
   }

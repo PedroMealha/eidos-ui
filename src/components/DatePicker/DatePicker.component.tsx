@@ -31,10 +31,10 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 	name,
 	id,
 	inputProps = {},
-	// minDate,
-	// maxDate,
-	// disabledDates = [],
-	// disabledDaysOfWeek = [],
+	minDate,
+	maxDate,
+	disabledDates = [],
+	disabledDaysOfWeek = [],
 	className = '',
 	fullWidth = false,
 	minWidth,
@@ -44,19 +44,129 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 	autoWidth = false,
 }: DatePickerProps<T>) => {
 	const [dropdownKey, setDropdownKey] = useState(0);
-	const [currentCalendarDate, setCurrentCalendarDate] = useState(dayjs());
+	// Two different, deliberately different, notions of "timezone" are in
+	// play here, matching two genuinely different kinds of value:
+	//
+	// - Date-only (time.enabled === false): a pure calendar date has no
+	//   wall-clock moment attached to it, so there's nothing for a timezone
+	//   to sensibly represent. It's anchored to a fixed `pickerTimezone`
+	//   (default UTC) so the same calendar date always serializes to the
+	//   same ISO instant no matter which machine picks it - see
+	//   `composeDateOnly`.
+	// - Date + time (time.enabled === true): this genuinely represents a
+	//   real-world instant, e.g. a meeting at a specific wall-clock time -
+	//   exactly the case a timezone exists to disambiguate. That instant
+	//   should be computed from *the picking user's own local offset*
+	//   (someone in UTC+3 typing "15:00" means 12:00 UTC), and later
+	//   displayed by converting that same UTC instant into *each viewer's
+	//   own* local offset (that same instant shows as "12:00" to a UTC+0
+	//   viewer). That's exactly plain, un-anchored dayjs/Date behavior with
+	//   no explicit timezone forcing at all, so this path intentionally
+	//   does not use `pickerTimezone` anywhere.
+	const pickerTimezone = format.timezone || 'UTC';
+	// Combines a calendar date (only its Y-M-D is read, so it's timezone-
+	// agnostic going in) with a start/end-of-day boundary, anchored to
+	// `pickerTimezone` - only ever used for date-only values.
+	const composeDateOnly = useCallback(
+		(date: Dayjs, boundary: 'start' | 'end' = 'start') => {
+			const anchored = dayjs.tz(date.format('YYYY-MM-DD'), pickerTimezone);
+			return boundary === 'end' ? anchored.endOf('day') : anchored.startOf('day');
+		},
+		[pickerTimezone]
+	);
+	// Combines a calendar date with a time-of-day using plain local
+	// semantics (no timezone forcing) - only ever used for date+time values,
+	// see the note above.
+	const composeLocalDateTime = useCallback(
+		(date: Dayjs, t: TimeValue): Dayjs => date.hour(t.hours).minute(t.minutes).second(t.seconds || 0),
+		[]
+	);
+	// Re-anchors an already-stored ISO instant's calendar day (read in the
+	// browser's own local timezone, matching how it was written) onto a new
+	// time-of-day - used when the user edits a TimeInput without re-picking
+	// the date, so that edit actually changes the returned value instead of
+	// only updating the separate `value.time` field alongside an unchanged
+	// `value.date`. Deliberately local, not anchored to `pickerTimezone` -
+	// see the note above.
+	const recomposeIsoWithTime = useCallback(
+		(isoString: string, t: TimeValue): string =>
+			dayjs(isoString)
+				.hour(t.hours)
+				.minute(t.minutes)
+				.second(t.seconds || 0)
+				.toISOString(),
+		[]
+	);
+	const numberOfCalendars = calendar.numberOfCalendars || 2;
+	const independentCalendars = calendar.independent ?? false;
+	// One entry per visible calendar. In the default (non-independent) mode
+	// these always stay consecutive months, kept in sync from a single shared
+	// control (see `handleCalendarMonthChange`) - the array shape is the same
+	// either way, only how a change to one entry propagates differs.
+	const [calendarDates, setCalendarDates] = useState<Dayjs[]>(() =>
+		Array.from({ length: numberOfCalendars }, (_, i) => dayjs().add(i, 'month'))
+	);
+	const handleCalendarMonthChange = useCallback(
+		(index: number, newDate: Dayjs) => {
+			if (!independentCalendars) {
+				// Coupled: every calendar shifts together, re-anchored so `index`
+				// lands on `newDate` - e.g. moving calendar 1 to November re-anchors
+				// calendar 0 to October, same as before this was array-based.
+				const anchor = newDate.subtract(index, 'month');
+				setCalendarDates(Array.from({ length: numberOfCalendars }, (_, i) => anchor.add(i, 'month')));
+				return;
+			}
+
+			// Independent: only this calendar moves, clamped so it can never reach
+			// or cross an immediate neighbor's month - two calendars both landing
+			// on (or swapping past) the same month would be exactly the confusing
+			// state independent mode exists to let users avoid, just self-inflicted
+			// instead of automatic.
+			setCalendarDates(prev => {
+				const next = [...prev];
+				let clamped = newDate;
+				const left = prev[index - 1];
+				const right = prev[index + 1];
+				if (left && !clamped.isAfter(left, 'month')) {
+					clamped = left.add(1, 'month');
+				}
+				if (right && !clamped.isBefore(right, 'month')) {
+					clamped = right.subtract(1, 'month');
+				}
+				next[index] = clamped;
+				return next;
+			});
+		},
+		[independentCalendars, numberOfCalendars]
+	);
 	const triggerRef = useRef<HTMLDivElement>(null);
+
+	// Convert the string-based constraint props to the Dayjs objects Calendar
+	// actually consumes for its `isBefore`/`isAfter`/`isSame` comparisons.
+	const minDateObj = useMemo(() => (minDate ? dayjs(minDate) : undefined), [minDate]);
+	const maxDateObj = useMemo(() => (maxDate ? dayjs(maxDate) : undefined), [maxDate]);
+	const disabledDatesObj = useMemo(() => disabledDates.map(d => dayjs(d)), [disabledDates]);
 
 	// Default time values
 	const defaultStartTime = useMemo<TimeValue>(() => ({ hours: 0, minutes: 0, seconds: 0 }), []);
 	const defaultEndTime = useMemo<TimeValue>(() => ({ hours: 23, minutes: 59, seconds: 59 }), []);
 
-	// Helper function to convert ISO strings to local date strings for calendar display
-	const toLocalDateString = (isoString: string | null): string | null => {
-		if (!isoString) return null;
-		// Extract just the date part from ISO string for calendar display
-		return dayjs(isoString).format('YYYY-MM-DD');
-	};
+	// Helper function to convert stored ISO strings back to the calendar date
+	// they represent, for calendar-grid display (which day to highlight).
+	const toLocalDateString = useCallback(
+		(isoString: string | null): string | null => {
+			if (!isoString) return null;
+			const parsed = dayjs(isoString);
+			// Date-only values were anchored to `pickerTimezone` when stored (see
+			// `composeDateOnly`) - reading them back via the browser's ambient
+			// timezone instead would recover the wrong calendar day for anyone
+			// not in that same timezone. Date+time values were deliberately
+			// never anchored (see the note above `pickerTimezone`), so they stay
+			// on local interpretation, matching how they were written.
+			return (time.enabled ? parsed : parsed.tz(pickerTimezone)).format('YYYY-MM-DD');
+		},
+		[time.enabled, pickerTimezone]
+	);
 
 	// Convert current value to calendar-compatible format
 	const { selectedDates, rangeStart, rangeEnd } = useMemo(() => {
@@ -96,33 +206,30 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 			default:
 				return { selectedDates: [], rangeStart: null, rangeEnd: null };
 		}
-	}, [value, mode]);
+	}, [value, mode, toLocalDateString]);
 
-	// Handle date selection from calendar - always return ISO strings
+	// Handle date selection from calendar - always return ISO strings. Uses
+	// `composeDateOnly` (fixed `pickerTimezone` anchor) when time.enabled is
+	// false, `composeLocalDateTime` (plain local semantics) when true - see
+	// the note above `pickerTimezone` for why these need to differ.
 	const handleDateSelect = useCallback(
 		(selectedDate: Dayjs) => {
 			switch (mode) {
 				case 'single': {
-					// Apply default time if time is enabled
 					let dateWithTime: Dayjs;
+					// Preserve whatever time the user already configured via
+					// TimeInput rather than resetting to the default every time a
+					// different date is picked.
+					const activeTime = (value?.time as TimeValue) ?? defaultStartTime;
 					if (time.enabled) {
-						dateWithTime = selectedDate
-							.hour(defaultStartTime.hours)
-							.minute(defaultStartTime.minutes)
-							.second(defaultStartTime.seconds || 0);
+						dateWithTime = composeLocalDateTime(selectedDate, activeTime);
 					} else {
-						// Set to start of day in local timezone for consistent ISO string
-						// Create a new date at midnight in local timezone
-						const year = selectedDate.year();
-						const month = selectedDate.month();
-						const date = selectedDate.date();
-						dateWithTime = dayjs(new Date(year, month, date, 0, 0, 0));
+						dateWithTime = composeDateOnly(selectedDate, 'start');
 					}
 
-					// Always return ISO string
 					const newValue: DateTimeValue<T> = {
 						date: dateWithTime.toISOString() as DateTimeValue<T>['date'],
-						time: time.enabled ? (defaultStartTime as DateTimeValue<T>['time']) : undefined,
+						time: time.enabled ? (activeTime as DateTimeValue<T>['time']) : undefined,
 					};
 
 					onChange?.(newValue);
@@ -142,24 +249,18 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 						// Remove if already selected
 						newDates = currentDayjs.filter((_, index) => index !== existingIndex);
 					} else {
-						// Add new date
-						let dateWithTime: Dayjs;
-						if (time.enabled) {
-							dateWithTime = selectedDate
-								.hour(defaultStartTime.hours)
-								.minute(defaultStartTime.minutes)
-								.second(defaultStartTime.seconds || 0);
-						} else {
-							// Set to start of day for consistent ISO string
-							dateWithTime = selectedDate.startOf('day');
-						}
+						// Add new date, preserving the shared time already configured.
+						const activeTime = (value?.time as TimeValue) ?? defaultStartTime;
+						const dateWithTime = time.enabled
+							? composeLocalDateTime(selectedDate, activeTime)
+							: composeDateOnly(selectedDate, 'start');
 						newDates = [...currentDayjs, dateWithTime];
 					}
 
 					// Always return ISO strings
 					const newValue: DateTimeValue<T> = {
 						date: newDates.map(d => d.toISOString()) as DateTimeValue<T>['date'],
-						time: time.enabled ? (defaultStartTime as DateTimeValue<T>['time']) : undefined,
+						time: time.enabled ? (((value?.time as TimeValue) ?? defaultStartTime) as DateTimeValue<T>['time']) : undefined,
 					};
 
 					onChange?.(newValue);
@@ -171,35 +272,33 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 						start: null,
 						end: null,
 					};
+					const currentRangeTime = (value?.time as RangeTimeValue) || {
+						start: defaultStartTime,
+						end: defaultEndTime,
+					};
 
 					if (!currentRange.start || (currentRange.start && currentRange.end)) {
-						// Start new range
-						let startWithTime: Dayjs;
-						if (time.enabled) {
-							startWithTime = selectedDate
-								.hour(defaultStartTime.hours)
-								.minute(defaultStartTime.minutes)
-								.second(defaultStartTime.seconds || 0);
-						} else {
-							// Set to start of day for consistent ISO string
-							startWithTime = selectedDate.startOf('day');
-						}
+						// Start new range, preserving the already-configured start time.
+						const startWithTime = time.enabled
+							? composeLocalDateTime(selectedDate, currentRangeTime.start)
+							: composeDateOnly(selectedDate, 'start');
 
 						// Always return ISO string
 						const newValue: DateTimeValue<T> = {
 							date: { start: startWithTime.toISOString(), end: null } as DateTimeValue<T>['date'],
-							time: time.enabled
-								? ({
-										start: defaultStartTime,
-										end: defaultEndTime,
-									} as DateTimeValue<T>['time'])
-								: undefined,
+							time: time.enabled ? (currentRangeTime as DateTimeValue<T>['time']) : undefined,
 						};
 
 						onChange?.(newValue);
 					} else {
-						// Complete the range
-						const start = dayjs(currentRange.start);
+						// Complete the range. Date-only starts were anchored to
+						// `pickerTimezone` when stored (see `composeDateOnly`) -
+						// re-read it the same way so the "is end before start"
+						// comparison below lines up with the day it actually
+						// represents. Date+time starts were never anchored, so
+						// they stay on local interpretation, matching how they
+						// were written.
+						const start = time.enabled ? dayjs(currentRange.start) : dayjs(currentRange.start).tz(pickerTimezone);
 						let end = selectedDate;
 
 						// Ensure end is after start
@@ -207,15 +306,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 							end = start;
 						}
 
-						if (time.enabled) {
-							end = end
-								.hour(defaultEndTime.hours)
-								.minute(defaultEndTime.minutes)
-								.second(defaultEndTime.seconds || 0);
-						} else {
-							// Set to end of day for consistent ISO string
-							end = end.endOf('day');
-						}
+						end = time.enabled ? composeLocalDateTime(end, currentRangeTime.end) : composeDateOnly(end, 'end');
 
 						// Always return ISO strings
 						const newValue: DateTimeValue<T> = {
@@ -223,12 +314,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 								start: currentRange.start,
 								end: end.toISOString(),
 							} as DateTimeValue<T>['date'],
-							time: time.enabled
-								? ({
-										start: defaultStartTime,
-										end: defaultEndTime,
-									} as DateTimeValue<T>['time'])
-								: undefined,
+							time: time.enabled ? (currentRangeTime as DateTimeValue<T>['time']) : undefined,
 						};
 
 						onChange?.(newValue);
@@ -238,7 +324,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 				}
 			}
 		},
-		[mode, time, value, onChange, defaultStartTime, defaultEndTime]
+		[mode, time, value, onChange, defaultStartTime, defaultEndTime, composeDateOnly, composeLocalDateTime, pickerTimezone]
 	);
 
 	// Format display value
@@ -246,10 +332,19 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 		if (!value?.date) return '';
 
 		const displayFmt = format.displayFormat || 'MMM DD, YYYY';
+		// Date-only values were anchored to `pickerTimezone` when stored (see
+		// `composeDateOnly`) - display them in that same timezone rather than
+		// the viewer's ambient one, so the trigger shows the actual calendar
+		// date that was picked. Date+time values were deliberately never
+		// anchored (see the note above `pickerTimezone`) - the viewer's own
+		// local timezone is exactly what should convert that instant for
+		// display, e.g. a UTC+3-scheduled 15:00 meeting showing as 12:00 to a
+		// UTC+0 viewer.
+		const parseDateOnlyAware = (iso: string) => (time.enabled ? dayjs(iso) : dayjs(iso).tz(pickerTimezone));
 
 		switch (mode) {
 			case 'single': {
-				const date = dayjs(value.date as string);
+				const date = parseDateOnlyAware(value.date as string);
 				let result = date.format(displayFmt);
 				if (time.enabled) {
 					const timeStr = time.includeSeconds ? date.format('HH:mm:ss') : date.format('HH:mm');
@@ -262,14 +357,14 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 				const dates = value.date as string[];
 				if (time.enabled) {
 					const formattedDates = dates.map(d => {
-						const date = dayjs(d);
+						const date = parseDateOnlyAware(d);
 						const dateStr = date.format(displayFmt);
 						const timeStr = time.includeSeconds ? date.format('HH:mm:ss') : date.format('HH:mm');
 						return `${dateStr} ${timeStr}`;
 					});
 					return formattedDates.join(', ');
 				} else {
-					const formattedDates = dates.map(d => dayjs(d).format(displayFmt));
+					const formattedDates = dates.map(d => parseDateOnlyAware(d).format(displayFmt));
 					return formattedDates.join(', ');
 				}
 			}
@@ -279,7 +374,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 				const parts: string[] = [];
 
 				if (rangeValue.start) {
-					const startDate = dayjs(rangeValue.start);
+					const startDate = parseDateOnlyAware(rangeValue.start);
 					let startStr = startDate.format(displayFmt);
 					if (time.enabled) {
 						const timeStr = time.includeSeconds ? startDate.format('HH:mm:ss') : startDate.format('HH:mm');
@@ -289,7 +384,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 				}
 
 				if (rangeValue.end) {
-					const endDate = dayjs(rangeValue.end);
+					const endDate = parseDateOnlyAware(rangeValue.end);
 					let endStr = endDate.format(displayFmt);
 					if (time.enabled) {
 						const timeStr = time.includeSeconds ? endDate.format('HH:mm:ss') : endDate.format('HH:mm');
@@ -304,7 +399,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 			default:
 				return '';
 		}
-	}, [value, mode, time, format]);
+	}, [value, mode, time, format, pickerTimezone]);
 
 	// Handle clear
 	const handleClear = useCallback(
@@ -366,8 +461,8 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 		<div className={'eidos-date-picker-content'}>
 			{/* Multiple calendars with container-level navigation */}
 			<div className={'eidos-date-picker-calendars-wrapper'}>
-				{Array.from({ length: calendar.numberOfCalendars || 2 }, (_, index) => {
-					const calendarDate = currentCalendarDate.add(index, 'month');
+				{Array.from({ length: numberOfCalendars }, (_, index) => {
+					const calendarDate = calendarDates[index] ?? dayjs().add(index, 'month');
 					return (
 						<Calendar
 							key={index}
@@ -377,18 +472,17 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 							rangeEnd={rangeEnd}
 							mode={mode}
 							onDateSelect={handleDateSelect}
-							onMonthChange={newDate => {
-								// Update the current calendar date based on which calendar was changed
-								if (index === 0) {
-									setCurrentCalendarDate(newDate);
-								} else {
-									// For subsequent calendars, adjust the first calendar accordingly
-									setCurrentCalendarDate(newDate.subtract(index, 'month'));
-								}
-							}}
+							onMonthChange={newDate => handleCalendarMonthChange(index, newDate)}
+							minDate={minDateObj}
+							maxDate={maxDateObj}
+							disabledDates={disabledDatesObj}
+							disabledDaysOfWeek={disabledDaysOfWeek}
 							showWeekNumbers={calendar.showWeekNumbers}
 							firstDayOfWeek={calendar.firstDayOfWeek}
-							showNavigation={(calendar.numberOfCalendars || 2) === 1} // Show navigation only for single calendar
+							// Non-independent: only the first calendar's control is
+							// interactive, since it's the one every other calendar
+							// actually follows. Independent: every calendar gets one.
+							showNavigation={independentCalendars || index === 0}
 						/>
 					);
 				})}
@@ -401,8 +495,15 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 						<TimeInput
 							value={(value?.time as TimeValue) || defaultStartTime}
 							onChange={newTime => {
+								// Recompose the actual returned value with the new
+								// time, not just the separate `time` field - see
+								// `recomposeIsoWithTime`.
+								const currentIso = value?.date as string | null;
 								const newValue = {
 									...value,
+									date: (currentIso
+										? recomposeIsoWithTime(currentIso, newTime)
+										: currentIso) as DateTimeValue<T>['date'],
 									time: newTime,
 								} as DateTimeValue<T>;
 								onChange?.(newValue);
@@ -417,8 +518,12 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 						<TimeInput
 							value={(value?.time as TimeValue) || defaultStartTime}
 							onChange={newTime => {
+								// Recompose every selected date with the new shared
+								// time - see `recomposeIsoWithTime`.
+								const currentDates = (value?.date as string[]) || [];
 								const newValue = {
 									...value,
+									date: currentDates.map(d => recomposeIsoWithTime(d, newTime)) as DateTimeValue<T>['date'],
 									time: newTime,
 								} as DateTimeValue<T>;
 								onChange?.(newValue);
@@ -438,8 +543,20 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 										start: defaultStartTime,
 										end: defaultEndTime,
 									};
+									// Recompose just the start of the range with the new
+									// time - see `recomposeIsoWithTime`.
+									const currentRange = (value?.date as { start: string | null; end: string | null }) || {
+										start: null,
+										end: null,
+									};
 									const newValue = {
 										...value,
+										date: {
+											...currentRange,
+											start: currentRange.start
+												? recomposeIsoWithTime(currentRange.start, newTime)
+												: currentRange.start,
+										} as DateTimeValue<T>['date'],
 										time: {
 											...currentRangeTime,
 											start: newTime,
@@ -458,8 +575,18 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 										start: defaultStartTime,
 										end: defaultEndTime,
 									};
+									// Recompose just the end of the range with the new
+									// time - see `recomposeIsoWithTime`.
+									const currentRange = (value?.date as { start: string | null; end: string | null }) || {
+										start: null,
+										end: null,
+									};
 									const newValue = {
 										...value,
+										date: {
+											...currentRange,
+											end: currentRange.end ? recomposeIsoWithTime(currentRange.end, newTime) : currentRange.end,
+										} as DateTimeValue<T>['date'],
 										time: {
 											...currentRangeTime,
 											end: newTime,

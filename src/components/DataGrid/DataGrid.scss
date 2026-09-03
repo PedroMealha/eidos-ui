@@ -188,6 +188,17 @@
 	position: relative;
 	color: var(--gray-700);
 
+	// A cell that failed validation, whether or not it's currently focused -
+	// see `cellErrors` in DataGrid.component.tsx. Just a background tint;
+	// unlike `--error` below (border + message), this doesn't require focus,
+	// so an invalid cell stays visibly flagged after the user moves on
+	// instead of only warning them for as long as they stay in it. Placed
+	// before `--editing` so that rule's `background: white` still wins once
+	// this specific cell is refocused (see `--error` for the detailed view).
+	&--has-error {
+		background: rgba(var(--danger-rgb), 0.12);
+	}
+
 	// Active edit mode: inset ring using primary colour.
 	// The editor (Input/Select) is absolutely positioned so it fills the cell
 	// without contributing to the row's height - this keeps the row height
@@ -239,6 +250,17 @@
 		&:hover:not(.eidos-data-grid-cell--editing) {
 			background: var(--gray-50);
 		}
+
+		// Overrides the plain hover rule above for a flagged cell. The
+		// redundant explicit `.eidos-data-grid-cell` (true regardless, since
+		// every cell always carries that base class) is what actually makes
+		// this win: without it, this selector and the plain hover rule above
+		// land on the exact same specificity (2 classes + 1 pseudo-class),
+		// so which one wins would be an accident of source order rather than
+		// an intentional cascade.
+		&.eidos-data-grid-cell.eidos-data-grid-cell--has-error:hover {
+			background: rgba(var(--danger-rgb), 0.18);
+		}
 	}
 
 	// Read-only cells are visually dimmed and never get a pointer cursor
@@ -283,16 +305,20 @@
 }
 
 // ─── Inline validation error ──────────────────────────────────────────────────
+// Portaled into document.body (see DataGrid.component.tsx) rather than a plain
+// descendant of the erroring cell - `position: absolute` still counts toward
+// its scroll-container ancestor's scrollable content size when it overflows
+// past the last row, forcing an unwanted scrollbar just to reveal a tooltip.
+// `top`/`left` are set inline per-instance from a measured DOMRect, matching
+// how Dropdown positions its own portaled content.
 
 .eidos-data-grid-cell-error {
-	position: absolute;
-	bottom: -1.4rem;
-	left: 0;
+	position: fixed;
 	font-size: 10px;
 	color: var(--white);
 	background: var(--danger-color);
 	white-space: nowrap;
-	z-index: 10;
+	z-index: var(--z-index-tooltip);
 	padding: 2px 6px;
 	border-radius: var(--border-radius-sm);
 	pointer-events: none;

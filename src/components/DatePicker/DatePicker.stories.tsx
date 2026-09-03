@@ -61,7 +61,7 @@ const meta: Meta<typeof DatePicker> = {
     value:              { control: false },
     onChange:           { control: false },
     time:               { control: false, description: "Time selection config `{ enabled, includeSeconds }`" },
-    calendar:           { control: false, description: "Calendar layout config `{ numberOfCalendars, showWeekNumbers, firstDayOfWeek }`" },
+    calendar:           { control: false, description: "Calendar layout config `{ numberOfCalendars, showWeekNumbers, firstDayOfWeek, independent }`. `independent` (default `false`) gives every calendar its own month/year control instead of one shared control driving them all - see the Independent Calendars story." },
     format:             { control: false, description: "Format config `{ displayFormat, inputFormat, timeFormat, timezone }`" },
     inputProps:         { control: false },
     disabledDates:      { control: false },
@@ -259,6 +259,37 @@ export const DateRangeWithTime: Story = {
           onChange={setValue}
           time={{ enabled: true, includeSeconds: false }}
           placeholder="Select date range with time..."
+        />
+        <div style={{ marginTop: "12px", fontSize: "13px", color: "#666" }}>
+          <div>Start: <strong>{value.date.start ?? "Not selected"}</strong></div>
+          <div>End: <strong>{value.date.end ?? "Not selected"}</strong></div>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const IndependentCalendars: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "By default, one shared month/year control drives every calendar - the others just follow along a consecutive month apart, rather than each showing its own (misleadingly editable) control. Setting `calendar={{ independent: true }}` gives every calendar its own control instead, clamped so a calendar can never reach or cross its neighbor's month - e.g. the left calendar here can't be navigated to the same month as the right one, or past it.",
+      },
+    },
+  },
+  render: () => {
+    const [value, setValue] = useState<DateTimeValue<"range">>({
+      date: { start: null, end: null },
+    });
+    return (
+      <div style={{ width: "300px" }}>
+        <DatePicker
+          mode="range"
+          value={value}
+          onChange={setValue}
+          calendar={{ independent: true }}
+          placeholder="Select date range..."
         />
         <div style={{ marginTop: "12px", fontSize: "13px", color: "#666" }}>
           <div>Start: <strong>{value.date.start ?? "Not selected"}</strong></div>

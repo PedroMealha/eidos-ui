@@ -23,6 +23,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 	disabledDaysOfWeek = [],
 	showWeekNumbers = false,
 	firstDayOfWeek = 1, // Monday
+	showNavigation = true,
 }) => {
 	// Generate month options (12 months)
 	const monthOptions = useMemo(() => {
@@ -159,32 +160,42 @@ export const Calendar: React.FC<CalendarProps> = ({
 
 	return (
 		<div className={'eidos-calendar'}>
-			{/* Header with navigation */}
+			{/* Header with navigation - only interactive when this calendar actually
+			    navigates independently of its neighbors (see `showNavigation` doc).
+			    Showing editable, interactive controls that silently move a sibling
+			    calendar instead of themselves is exactly the confusing behavior this
+			    is meant to avoid; a plain label is honest about what will happen. */}
 			<div className={'eidos-calendar-header'}>
-				<Button variant="text" icon={ChevronLeft} onClick={handlePrevMonth} />
+				{showNavigation ? (
+					<>
+						<Button variant="text" icon={ChevronLeft} onClick={handlePrevMonth} />
 
-				<div className={'eidos-calendar-selectors'}>
-					<Select
-						options={monthOptions}
-						value={currentDate.month().toString()}
-						onChange={handleMonthSelect}
-						clearable={false}
-						dropdownProps={{
-							dropdownGroup: 'calendar-navigation',
-						}}
-					/>
-					<Select
-						options={yearOptions}
-						value={currentDate.year().toString()}
-						onChange={handleYearSelect}
-						clearable={false}
-						dropdownProps={{
-							dropdownGroup: 'calendar-navigation',
-						}}
-					/>
-				</div>
+						<div className={'eidos-calendar-selectors'}>
+							<Select
+								options={monthOptions}
+								value={currentDate.month().toString()}
+								onChange={handleMonthSelect}
+								clearable={false}
+								dropdownProps={{
+									dropdownGroup: 'calendar-navigation',
+								}}
+							/>
+							<Select
+								options={yearOptions}
+								value={currentDate.year().toString()}
+								onChange={handleYearSelect}
+								clearable={false}
+								dropdownProps={{
+									dropdownGroup: 'calendar-navigation',
+								}}
+							/>
+						</div>
 
-				<Button variant="text" icon={ChevronRight} onClick={handleNextMonth} />
+						<Button variant="text" icon={ChevronRight} onClick={handleNextMonth} />
+					</>
+				) : (
+					<div className={'eidos-calendar-label'}>{currentDate.format('MMMM YYYY')}</div>
+				)}
 			</div>
 
 			{/* Calendar grid */}

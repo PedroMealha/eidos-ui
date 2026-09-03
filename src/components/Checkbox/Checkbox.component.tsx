@@ -16,6 +16,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 			checked,
 			defaultChecked,
 			onChange,
+			onClick,
 			...inputProps
 		},
 		ref
@@ -64,6 +65,21 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 			onChange?.(e);
 		};
 
+		// Clicking anywhere in the surrounding <label> (e.g. the custom
+		// `.eidos-checkbox-control` box) fires a click on the clicked element
+		// *and* a second, browser-synthesized click targeted at this input -
+		// both bubble up. A consumer that wraps Checkbox in its own click
+		// handler (e.g. DataGrid toggling a cell on click) would otherwise see
+		// that handler fire twice per click and cancel itself out. Stopping
+		// propagation here only cancels the synthesized click's bubbling; the
+		// original click (whichever element the user actually clicked) still
+		// bubbles normally. Still forwards to a caller-supplied `onClick`
+		// first, so passing one through doesn't silently disable this fix.
+		const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+			onClick?.(e);
+			e.stopPropagation();
+		};
+
 		const wrapperClasses = [
 			'eidos-checkbox-wrapper',
 			`eidos-checkbox-wrapper--${color}`,
@@ -94,6 +110,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 						className="eidos-checkbox-input"
 						disabled={disabled}
 						onChange={handleChange}
+						onClick={handleClick}
 						{...(isControlled ? { checked } : { defaultChecked })}
 						{...inputProps}
 					/>

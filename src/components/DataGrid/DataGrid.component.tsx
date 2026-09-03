@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Trash2, GripVertical, ArrowUp, ArrowDown, ChevronsUpDown, X, Plus, AlignJustify, Check, FolderOpen, SearchX } from 'lucide-react';
 import {
 	DndContext,
@@ -131,6 +132,44 @@ function DataGridInner<T extends Record<string, unknown>>({
 	const [editError, setEditError] = useState<string | null>(null);
 
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	// ── Validation error tooltip (portaled) ─────────────────────────────────────
+	// Positioned via a portal into document.body rather than `position: absolute`
+	// inside the cell - a cell on the last visible row would otherwise place the
+	// tooltip past the scroll container's bottom edge, which still counts toward
+	// that container's scrollable content size and forces an unwanted scrollbar
+	// just to reveal a tooltip nobody asked to scroll to. Portaling escapes the
+	// scroll container's box entirely, the same way Dropdown's own content does.
+	const errorTooltipAnchorRef = useRef<HTMLTableCellElement | null>(null);
+	const [errorTooltipPosition, setErrorTooltipPosition] = useState<{ top: number; left: number } | null>(null);
+	const activeCellError = editingCell && editError ? editError : null;
+
+	useLayoutEffect(() => {
+		if (!activeCellError) {
+			setErrorTooltipPosition(null);
+			return;
+		}
+
+		const updatePosition = () => {
+			const node = errorTooltipAnchorRef.current;
+			if (!node) return;
+			const rect = node.getBoundingClientRect();
+			setErrorTooltipPosition({ top: rect.bottom + 4, left: rect.left });
+		};
+
+		updatePosition();
+
+		// Capture phase catches scroll events from any scrollable ancestor
+		// (e.g. this grid's own scroll container), not just window/document -
+		// `scroll` doesn't bubble, so a plain (bubble-phase) listener on window
+		// would miss it entirely.
+		window.addEventListener('resize', updatePosition);
+		window.addEventListener('scroll', updatePosition, true);
+		return () => {
+			window.removeEventListener('resize', updatePosition);
+			window.removeEventListener('scroll', updatePosition, true);
+		};
+	}, [activeCellError]);
 
 	// ── New state ──────────────────────────────────────────────────────────────
 	// Density (internal when showDensity=true, otherwise respects the prop)
@@ -425,65 +464,94 @@ function DataGridInner<T extends Record<string, unknown>>({
 		return null;
 	}, []);
 
-	// ── Commit / discard (preserved exactly) ───────────────────────────────────
-	/**
-	 * Validates the current edit value and, if valid, persists it.
-	 * Returns `true` when the edit was committed (or there was nothing to commit),
-	 * `false` when validation failed (keeps edit mode open).
-	 */
-	const commitEdit = useCallback((): boolean => {
-		const cell = editingCellRef.current;
-		const value = editValueRef.current;
-		const currentData = localDataRef.current;
+	const cellErrorKey = (rowIndex: number, colKey: string) => `${rowIndex}:${colKey}`;
 
-		if (!cell) return true;
+	// Cells with a validation error, keyed by `${rowIndex}:${colKey}` - derived
+	// directly from the actual data rather than tracked as its own state, so a
+	// cell that starts out invalid (e.g. seeded with an empty required field)
+	// is flagged immediately on render instead of only after the user has
+	// focused and committed it at least once. Recomputes whenever the data
+	// actually changes, which already covers every case that needs it: typing
+	// a fix and committing, an external `data` prop update, a row being added,
+	// etc. Painted as a background tint on every render (see
+	// `eidos-data-grid-cell--has-error` below); the more prominent border +
+	// text (`eidos-data-grid-cell--error`) only shows while that specific cell
+	// is the one being edited, via `editError` (see `startEdit`).
+	const cellErrors = useMemo(() => {
+		const errors: Record<string, string> = {};
+		localData.forEach((row, rowIndex) => {
+			for (const col of columns) {
+				if (!isCellEditable(col)) continue;
+				const error = validateCell(col, row[col.key]);
+				if (error) errors[cellErrorKey(rowIndex, col.key)] = error;
+			}
+		});
+		return errors;
+	}, [localData, columns, isCellEditable, validateCell]);
+
+	// ── Commit / discard ────────────────────────────────────────────────────────
+	/**
+	 * Validates a cell's value and always persists it (even if invalid - see
+	 * `commitEdit` below for why). `cellErrors` above picks the result up
+	 * automatically once `localData` updates. Returns the validation error, if any.
+	 */
+	const commitValue = useCallback(
+		(rowIndex: number, colKey: string, value: unknown): string | null => {
+			const col = columns.find(c => c.key === colKey);
+			if (!col) return null;
+
+			const error = validateCell(col, value);
+
+			const newData = localDataRef.current.map<T>((row, idx) =>
+				idx === rowIndex ? ({ ...row, [colKey]: value } as T) : row,
+			);
+			setLocalData(newData);
+			onChange?.(newData);
+
+			return error;
+		},
+		[columns, onChange, setLocalData, validateCell],
+	);
+
+	/**
+	 * Commits the currently-editing cell and exits edit mode. Never blocks: an
+	 * invalid value is still saved and flagged via `cellErrors` (see above)
+	 * rather than trapping the user in the cell - a required field going empty
+	 * is exactly the case validation is there to catch and surface, not a
+	 * reason to freeze every other interaction with the grid until it's fixed.
+	 */
+	const commitEdit = useCallback(() => {
+		const cell = editingCellRef.current;
+		if (!cell) return;
 
 		const col = columns.find(c => c.key === cell.colKey);
 		if (!col) {
 			setEditingCell(null);
-			return true;
+			return;
 		}
 
-		const error = validateCell(col, value);
-		if (error) {
-			setEditError(error);
-			return false;
-		}
-
-		const newData = currentData.map<T>((row, idx) =>
-			idx === cell.rowIndex ? ({ ...row, [cell.colKey]: value } as T) : row,
-		);
-		setLocalData(newData);
-		onChange?.(newData);
+		commitValue(cell.rowIndex, cell.colKey, editValueRef.current);
 		setEditingCell(null);
 		setEditError(null);
-		return true;
-	}, [columns, onChange, setEditingCell, setLocalData, validateCell]);
+	}, [columns, commitValue, setEditingCell]);
 
 	const discardEdit = useCallback(() => {
 		setEditingCell(null);
 		setEditError(null);
 	}, [setEditingCell]);
 
-	// Keep refs to the latest commit/discard so the global handler never captures
+	// Keep a ref to the latest commit so the global handler never captures
 	// a stale version, without having the effect re-run on every re-render.
 	const commitEditRef = useRef(commitEdit);
-	const discardEditRef = useRef(discardEdit);
 	useEffect(() => {
 		commitEditRef.current = commitEdit;
 	}, [commitEdit]);
-	useEffect(() => {
-		discardEditRef.current = discardEdit;
-	}, [discardEdit]);
 
-	// ── Global mousedown: commit-or-discard when clicking outside the grid ──────
+	// ── Global mousedown: commit when clicking outside the grid ─────────────────
 	// Using mousedown (fires before blur/click) lets us finalize the active cell
 	// before a click on another cell starts a new edit.  We explicitly allow
 	// clicks inside portaled dropdowns (eidos-dropdown-content) so the Select
 	// editor doesn't accidentally commit when the user opens its dropdown.
-	//
-	// Crucially: if commit fails validation we DISCARD instead of trapping the
-	// user - clicking away signals intent to leave, not to save.
 	useEffect(() => {
 		if (!editingCell) return;
 
@@ -496,24 +564,25 @@ function DataGridInner<T extends Record<string, unknown>>({
 			// Inside a portaled dropdown - don't commit yet
 			if (target.closest?.('.eidos-dropdown-content')) return;
 
-			const committed = commitEditRef.current();
-			if (!committed) discardEditRef.current();
+			commitEditRef.current();
 		};
 
 		document.addEventListener('mousedown', handleMouseDown);
 		return () => document.removeEventListener('mousedown', handleMouseDown);
 	}, [editingCell]);
 
-	// ── Start editing (preserved) ───────────────────────────────────────────────
+	// ── Start editing ────────────────────────────────────────────────────────
 	const startEdit = useCallback(
 		(rowIndex: number, colKey: string, currentValue: unknown) => {
 			const col = columns.find(c => c.key === colKey);
 			if (!col || !isCellEditable(col)) return;
 			setEditingCell({ rowIndex, colKey });
 			setEditValue(currentValue);
-			setEditError(null);
+			// Re-focusing a cell that's already flagged shows its error
+			// immediately, without needing to retype/re-trigger validation first.
+			setEditError(cellErrors[cellErrorKey(rowIndex, colKey)] ?? null);
 		},
-		[columns, isCellEditable, setEditingCell, setEditValue],
+		[columns, isCellEditable, setEditingCell, setEditValue, cellErrors],
 	);
 
 	// ── Cell click handler (preserved) ─────────────────────────────────────────
@@ -538,16 +607,12 @@ function DataGridInner<T extends Record<string, unknown>>({
 			const cell = editingCellRef.current;
 			if (cell?.rowIndex === rowIndex && cell?.colKey === col.key) return;
 
-			// Commit any in-flight edit first.  If validation fails, DISCARD rather
-			// than blocking navigation - clicking another cell signals intent to move on.
-			if (cell) {
-				const committed = commitEdit();
-				if (!committed) discardEdit();
-			}
+			// Commit any in-flight edit first - never blocks navigation, see commitEdit.
+			if (cell) commitEdit();
 
 			startEdit(rowIndex, col.key, value);
 		},
-		[editable, isCellEditable, commitEdit, discardEdit, startEdit, setLocalData, onChange],
+		[editable, isCellEditable, commitEdit, startEdit, setLocalData, onChange],
 	);
 
 	// ── Keyboard navigation inside an editing cell (preserved) ─────────────────
@@ -568,16 +633,6 @@ function DataGridInner<T extends Record<string, unknown>>({
 			if (e.key === 'Tab') {
 				e.preventDefault();
 
-				// Validate before moving
-				const col = columns.find(c => c.key === colKey);
-				if (col) {
-					const error = validateCell(col, editValueRef.current);
-					if (error) {
-						setEditError(error);
-						return;
-					}
-				}
-
 				// Flat list of editable cells in DOM order (over the full dataset)
 				const editableCells: Array<{ rowIndex: number; colKey: string }> = [];
 				for (let ri = 0; ri < localDataRef.current.length; ri++) {
@@ -593,24 +648,20 @@ function DataGridInner<T extends Record<string, unknown>>({
 				);
 				const next = e.shiftKey ? editableCells[idx - 1] : editableCells[idx + 1];
 
-				// Commit the current cell first
-				const newData = localDataRef.current.map<T>((row, i) =>
-					i === rowIndex ? ({ ...row, [colKey]: editValueRef.current } as T) : row,
-				);
-				setLocalData(newData);
-				onChange?.(newData);
+				// Commit the current cell - never blocks navigation, see commitEdit.
+				commitValue(rowIndex, colKey, editValueRef.current);
 
 				if (next) {
 					setEditingCell(next);
-					setEditValue(newData[next.rowIndex][next.colKey]);
-					setEditError(null);
+					setEditValue(localDataRef.current[next.rowIndex][next.colKey]);
+					setEditError(cellErrors[cellErrorKey(next.rowIndex, next.colKey)] ?? null);
 				} else {
 					setEditingCell(null);
 					setEditError(null);
 				}
 			}
 		},
-		[columns, isCellEditable, commitEdit, discardEdit, validateCell, onChange, setEditingCell, setEditValue, setLocalData],
+		[columns, isCellEditable, commitEdit, commitValue, discardEdit, cellErrors, setEditingCell, setEditValue],
 	);
 
 	// ── Row actions (preserved) ─────────────────────────────────────────────────
@@ -1233,6 +1284,10 @@ function DataGridInner<T extends Record<string, unknown>>({
 																editingCell?.rowIndex === localIndex &&
 																editingCell?.colKey === col.key;
 															const canEdit = isCellEditable(col);
+															// Persists for a cell regardless of focus (background tint only);
+															// the border + message only show once this exact cell is
+															// focused again, via `hasError` below.
+															const isFlagged = cellErrorKey(localIndex, col.key) in cellErrors;
 															const hasError = isEditing && Boolean(editError);
 															const { style: pinnedStyle, className: pinnedClass } =
 																getCellPinnedProps(col.key);
@@ -1241,6 +1296,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 																'eidos-data-grid-cell',
 																isEditing && 'eidos-data-grid-cell--editing',
 																hasError && 'eidos-data-grid-cell--error',
+																isFlagged && !hasError && 'eidos-data-grid-cell--has-error',
 																canEdit && !isEditing && 'eidos-data-grid-cell--editable',
 																col.type === 'readonly' && 'eidos-data-grid-cell--readonly',
 																pinnedClass,
@@ -1251,6 +1307,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 															return (
 																<td
 																	key={col.key}
+																	ref={hasError ? errorTooltipAnchorRef : undefined}
 																	className={cellCls}
 																	style={pinnedStyle}
 																	onClick={() => handleCellClick(localIndex, col)}
@@ -1265,12 +1322,6 @@ function DataGridInner<T extends Record<string, unknown>>({
 																	{isEditing
 																		? renderEditCell(col, editValue, row, localIndex)
 																		: renderViewCell(col, value, row, localIndex)}
-
-																	{hasError && (
-																		<div className="eidos-data-grid-cell-error">
-																			{editError}
-																		</div>
-																	)}
 																</td>
 															);
 														})}
@@ -1343,6 +1394,18 @@ function DataGridInner<T extends Record<string, unknown>>({
 					/>
 				</div>
 			)}
+
+			{/* Portaled rather than a child of the erroring cell - see errorTooltipPosition above */}
+			{activeCellError && errorTooltipPosition &&
+				createPortal(
+					<div
+						className="eidos-data-grid-cell-error"
+						style={{ top: errorTooltipPosition.top, left: errorTooltipPosition.left }}
+					>
+						{activeCellError}
+					</div>,
+					document.body,
+				)}
 		</div>
 	);
 }

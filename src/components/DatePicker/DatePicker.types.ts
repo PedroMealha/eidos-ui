@@ -51,6 +51,13 @@ interface CalendarConfig {
   numberOfCalendars?: number; // Default: 2
   showWeekNumbers?: boolean; // Default: false
   firstDayOfWeek?: number; // 0 = Sunday, 1 = Monday, etc. Default: 1 (Monday)
+  // Default (false): a single month/year control drives every calendar at once,
+  // each showing a consecutive month - avoids the confusing appearance of `numberOfCalendars`
+  // separate, editable month/year pickers that don't actually behave independently.
+  // true: every calendar gets its own month/year control. Still constrained so a
+  // calendar can never reach or cross its neighbors' months (e.g. the left calendar
+  // in a 2-up layout can't be navigated to the same month as the right one, or past it).
+  independent?: boolean; // Default: false
 }
 
 // Formatting options
