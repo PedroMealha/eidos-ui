@@ -59,6 +59,7 @@
   "author": "Pedro Mealha",
   "license": "MIT",
   "dependencies": {
+    "@pmealha/eidos-ui": "^4.0.2",
     "lucide-react": "^1.34.0"
   },
   "peerDependencies": {
