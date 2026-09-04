@@ -4,26 +4,28 @@
 // we only add the drop-shadow that the Dropdown applies when menus are open.
 
 .eidos-context-menu-target {
-	// Don't change the layout of the wrapped children.
-	display: contents;
+  // Don't change the layout of the wrapped children.
+  display: contents;
 }
 
 .eidos-context-menu-panel {
-	position: fixed;
-	z-index: var(--z-index-dropdown);
-	// Drop-shadow matches the Dropdown content's panel appearance.
-	border-radius: var(--border-radius-md);
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.08);
-	background: var(--white);
-	overflow: hidden;
-	// Invisible but sized so useEffect can measure it before revealing.
-	opacity: 0;
-	visibility: hidden;
-	// Smooth opacity transition from hidden → visible after positioning.
-	transition: opacity 0.08s ease;
+  position: fixed;
+  z-index: var(--z-index-dropdown);
+  // Drop-shadow matches the Dropdown content's panel appearance.
+  border-radius: var(--border-radius-md);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.12),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+  background: var(--white);
+  overflow: hidden;
+  // Invisible but sized so useEffect can measure it before revealing.
+  opacity: 0;
+  visibility: hidden;
+  // Smooth opacity transition from hidden → visible after positioning.
+  transition: opacity 0.08s ease;
 
-	&--positioned {
-		opacity: 1;
-		visibility: visible;
-	}
+  &--positioned {
+    opacity: 1;
+    visibility: visible;
+  }
 }

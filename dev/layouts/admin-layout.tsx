@@ -143,7 +143,11 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <div className="mrd-shell">
       <aside className="mrd-sidebar">
-        <button className="mrd-brand mrd-brand--sidebar" type="button" onClick={() => navigate('/app/dashboard')}>
+        <button
+          className="mrd-brand mrd-brand--sidebar"
+          type="button"
+          onClick={() => navigate('/app/dashboard')}
+        >
           <span className="mrd-brand__mark">M</span>
           <span className="mrd-brand__name">Meridian</span>
         </button>

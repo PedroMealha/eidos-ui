@@ -82,7 +82,8 @@ const meta = {
     },
     preIcon: {
       control: 'text',
-      description: 'Icon to display before text. Pass Lucide component (Download) or string name ("download").',
+      description:
+        'Icon to display before text. Pass Lucide component (Download) or string name ("download").',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',
@@ -91,7 +92,8 @@ const meta = {
     },
     posIcon: {
       control: 'text',
-      description: 'Icon to display after text. Pass Lucide component (ChevronRight) or string name ("mouse-pointer-click").',
+      description:
+        'Icon to display after text. Pass Lucide component (ChevronRight) or string name ("mouse-pointer-click").',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',
@@ -100,7 +102,8 @@ const meta = {
     },
     icon: {
       control: 'text',
-      description: 'Icon for icon-only button. Pass Lucide component (Plus) or string name ("plus"). Mutually exclusive with children/preIcon/posIcon.',
+      description:
+        'Icon for icon-only button. Pass Lucide component (Plus) or string name ("plus"). Mutually exclusive with children/preIcon/posIcon.',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',
@@ -179,15 +182,22 @@ export const Examples = {
       letterSpacing: '0.07em',
       color: '#94a3b8',
     };
-    const row: React.CSSProperties = { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' };
+    const row: React.CSSProperties = {
+      display: 'flex',
+      gap: '0.75rem',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+    };
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-        gap: '2rem 3rem',
-        padding: '1.5rem',
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: '2rem 3rem',
+          padding: '1.5rem',
+        }}
+      >
         <div>
           <p style={label}>Variants</p>
           <div style={row}>

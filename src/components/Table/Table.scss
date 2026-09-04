@@ -1,295 +1,297 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-table-container {
-	background: var(--white);
-	border-radius: var(--border-radius-md);
-	border: 1px solid var(--gray-200);
-	box-shadow: var(--box-shadow);
-	// overflow: hidden removed - sticky columns require no overflow:hidden on ancestors.
-	// Horizontal scroll is handled by the inner .eidos-table-scroll wrapper.
+  background: var(--white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--box-shadow);
+  // overflow: hidden removed - sticky columns require no overflow:hidden on ancestors.
+  // Horizontal scroll is handled by the inner .eidos-table-scroll wrapper.
 }
 
 .eidos-table-scroll {
-	overflow-x: auto;
+  overflow-x: auto;
 }
 
 .eidos-table-toolbar {
-	position: relative;
-	padding: var(--spacing-sm) var(--spacing-md);
-	background: var(--gray-50);
-	border-bottom: 1px solid var(--gray-200);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: var(--spacing-sm);
-	min-height: 44px;
+  position: relative;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 44px;
 }
 
 .eidos-table-toolbar-left {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-sm);
-	flex: 1;
-	min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 0;
 }
 
 .eidos-table-toolbar-right {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-sm);
-	flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
 }
 
 .eidos-table-selection-count {
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-semibold);
-	color: var(--primary-700);
-	white-space: nowrap;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary-700);
+  white-space: nowrap;
 }
 
 .eidos-table-bulk-actions {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .eidos-table-clear-selection {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	border: none;
-	background: var(--gray-200);
-	color: var(--gray-600);
-	cursor: pointer;
-	padding: 0;
-	flex-shrink: 0;
-	transition: background-color 0.15s ease, color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gray-200);
+  color: var(--gray-600);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 
-	&:hover {
-		background: var(--gray-300);
-		color: var(--gray-800);
-	}
+  &:hover {
+    background: var(--gray-300);
+    color: var(--gray-800);
+  }
 }
 
 .eidos-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: var(--font-size-sm);
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
 }
 
 .eidos-table-header-cell {
-	background: var(--gray-100);
-	padding: var(--spacing-md);
-	font-weight: var(--font-weight-semibold);
-	border-bottom: 1px solid var(--gray-200);
-	position: relative;
+  background: var(--gray-100);
+  padding: var(--spacing-md);
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 1px solid var(--gray-200);
+  position: relative;
 
-	&.eidos-table-sortable {
-		cursor: pointer;
-		user-select: none;
-		transition: background-color 0.2s ease;
+  &.eidos-table-sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
 
-		&:hover {
-			background: var(--gray-200);
-		}
-	}
+    &:hover {
+      background: var(--gray-200);
+    }
+  }
 
-	&.eidos-table-sorted {
-		background: var(--primary-50);
-		color: var(--primary-700);
-	}
+  &.eidos-table-sorted {
+    background: var(--primary-50);
+    color: var(--primary-700);
+  }
 }
 
 .eidos-table-header-content {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 
-	&.eidos-table-align-left {
-		justify-content: space-between;
-	}
+  &.eidos-table-align-left {
+    justify-content: space-between;
+  }
 
-	&.eidos-table-align-center {
-		justify-content: center;
-	}
+  &.eidos-table-align-center {
+    justify-content: center;
+  }
 
-	&.eidos-table-align-right {
-		justify-content: flex-end;
-	}
+  &.eidos-table-align-right {
+    justify-content: flex-end;
+  }
 }
 
 .eidos-table-sort-indicator {
-	display: flex;
-	font-size: var(--font-size-xs);
-	color: var(--gray-500);
-	transition: color 0.2s ease;
+  display: flex;
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+  transition: color 0.2s ease;
 
-	.eidos-table-sortable:hover & {
-		color: var(--gray-700);
-	}
+  .eidos-table-sortable:hover & {
+    color: var(--gray-700);
+  }
 
-	.eidos-table-sorted & {
-		color: var(--primary-600);
-	}
+  .eidos-table-sorted & {
+    color: var(--primary-600);
+  }
 }
 
 .eidos-table-row {
-	border-bottom: 1px solid var(--gray-100);
-	transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background-color 0.2s ease;
 
-	&:hover {
-		background: var(--gray-50);
-	}
+  &:hover {
+    background: var(--gray-50);
+  }
 
-	&:last-child {
-		border-bottom: none;
-	}
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .eidos-table-clickable {
-	cursor: pointer;
+  cursor: pointer;
 
-	&:hover {
-		background: var(--primary-50);
-	}
+  &:hover {
+    background: var(--primary-50);
+  }
 }
 
 .eidos-table-row--selected {
-	background: var(--primary-50);
+  background: var(--primary-50);
 
-	&:hover {
-		background: var(--primary-100);
-	}
+  &:hover {
+    background: var(--primary-100);
+  }
 }
 
 // Checkbox column - shared by <th> and <td>
 .eidos-table-checkbox-cell {
-	width: 40px;
-	min-width: 40px;
-	padding: 0;
-	text-align: center;
-	vertical-align: middle;
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
 
-	// text-align:center doesn't affect flex containers (the Checkbox component).
-	// Use margin:auto on the container and flex on span wrappers to ensure
-	// consistent centering in both <th> and <td> contexts.
-	.eidos-checkbox-container {
-		margin: 0 auto;
-	}
+  // text-align:center doesn't affect flex containers (the Checkbox component).
+  // Use margin:auto on the container and flex on span wrappers to ensure
+  // consistent centering in both <th> and <td> contexts.
+  .eidos-checkbox-container {
+    margin: 0 auto;
+  }
 
-	// The <span> wrapper added in row cells to stop click-event bubbling
-	> span {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
+  // The <span> wrapper added in row cells to stop click-event bubbling
+  > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .eidos-table-cell {
-	padding: var(--spacing-md);
-	color: var(--gray-700);
-	vertical-align: middle;
+  padding: var(--spacing-md);
+  color: var(--gray-700);
+  vertical-align: middle;
 }
 
 .eidos-table-loading {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: var(--spacing-md);
-	padding: var(--spacing-xl);
-	color: var(--gray-600);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  color: var(--gray-600);
 
-	p {
-		margin: 0;
-		font-size: var(--font-size-sm);
-	}
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
 }
 
 .eidos-table-empty {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: var(--spacing-xl);
-	color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  color: var(--gray-600);
 
-	p {
-		margin: 0;
-		font-size: var(--font-size-sm);
-	}
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
 }
 
 .eidos-table-empty-row {
-	border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);
 
-	&:hover {
-		background: transparent;
-	}
+  &:hover {
+    background: transparent;
+  }
 }
 
 .eidos-table-empty-cell {
-	text-align: center;
-	padding: var(--spacing-xl) var(--spacing-md);
-	color: var(--gray-600);
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--gray-600);
 }
 
 .eidos-table-empty-message {
-	font-size: var(--font-size-sm);
-	color: var(--gray-600);
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
 }
 
 // Column type styles
 .eidos-table-header-cell-icon,
 .eidos-table-cell-icon {
-	width: var(--component-size-lg);
-	padding: 0 var(--spacing-md);
-	text-align: center;
+  width: var(--component-size-lg);
+  padding: 0 var(--spacing-md);
+  text-align: center;
 
-	// Prevent menu from being cut off
-	overflow: visible;
+  // Prevent menu from being cut off
+  overflow: visible;
 }
 
 .eidos-table-header-cell-action,
 .eidos-table-cell-action {
-	width: auto;
-	min-width: 120px;
-	text-align: center;
+  width: auto;
+  min-width: 120px;
+  text-align: center;
 
-	// Prevent menu from being cut off
-	overflow: visible;
+  // Prevent menu from being cut off
+  overflow: visible;
 }
 
 // Alignment classes
 .eidos-table-align-left {
-	text-align: left;
-	justify-items: flex-start;
+  text-align: left;
+  justify-items: flex-start;
 }
 
 .eidos-table-align-center {
-	text-align: center;
-	justify-items: center;
+  text-align: center;
+  justify-items: center;
 }
 
 .eidos-table-align-right {
-	text-align: right;
-	justify-items: flex-end;
+  text-align: right;
+  justify-items: flex-end;
 }
 
 // ── Feature 1: Row density ────────────────────────────────────────────────────
 
 .eidos-table--compact .eidos-table-header-cell,
 .eidos-table--compact .eidos-table-cell {
-	padding: 4px 12px;
+  padding: 4px 12px;
 }
 
 // comfortable = existing default padding, no modifier class needed
 
 .eidos-table--spacious .eidos-table-header-cell,
 .eidos-table--spacious .eidos-table-cell {
-	padding: 16px 12px;
+  padding: 16px 12px;
 }
 
 // ── Feature 4: Pinned / sticky columns ────────────────────────────────────────
@@ -297,79 +299,79 @@
 // Left-pinned cells: solid background + right-side shadow
 .eidos-table-cell--pinned-left,
 .eidos-table-header-cell--pinned-left {
-	position: relative;
+  position: relative;
 
-	&::after {
-		content: '';
-		position: absolute;
-		top: 0;
-		right: -4px;
-		bottom: 0;
-		width: 4px;
-		background: linear-gradient(to right, rgba(0, 0, 0, 0.06), transparent);
-		pointer-events: none;
-		z-index: 1;
-	}
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -4px;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.06), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 // Right-pinned cells: solid background + left-side shadow
 .eidos-table-cell--pinned-right,
 .eidos-table-header-cell--pinned-right {
-	position: relative;
+  position: relative;
 
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: -4px;
-		bottom: 0;
-		width: 4px;
-		background: linear-gradient(to left, rgba(0, 0, 0, 0.06), transparent);
-		pointer-events: none;
-		z-index: 1;
-	}
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -4px;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.06), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 // Body cell backgrounds - need concrete values so scrolled content doesn't bleed through
 .eidos-table-cell--pinned-left,
 .eidos-table-cell--pinned-right {
-	background: var(--white);
+  background: var(--white);
 }
 
 .eidos-table-row:hover .eidos-table-cell--pinned-left,
 .eidos-table-row:hover .eidos-table-cell--pinned-right {
-	background: var(--gray-50);
+  background: var(--gray-50);
 }
 
 .eidos-table-clickable:hover .eidos-table-cell--pinned-left,
 .eidos-table-clickable:hover .eidos-table-cell--pinned-right {
-	background: var(--primary-50);
+  background: var(--primary-50);
 }
 
 .eidos-table-row--selected .eidos-table-cell--pinned-left,
 .eidos-table-row--selected .eidos-table-cell--pinned-right {
-	background: var(--primary-50);
+  background: var(--primary-50);
 }
 
 .eidos-table-row--selected:hover .eidos-table-cell--pinned-left,
 .eidos-table-row--selected:hover .eidos-table-cell--pinned-right {
-	background: var(--primary-100);
+  background: var(--primary-100);
 }
 
 // Header cell backgrounds
 .eidos-table-header-cell--pinned-left,
 .eidos-table-header-cell--pinned-right {
-	background: var(--gray-100);
+  background: var(--gray-100);
 }
 
 .eidos-table-header-cell--pinned-left.eidos-table-sorted,
 .eidos-table-header-cell--pinned-right.eidos-table-sorted {
-	background: var(--primary-50);
+  background: var(--primary-50);
 }
 
 .eidos-table-header-cell--pinned-left.eidos-table-sortable:hover,
 .eidos-table-header-cell--pinned-right.eidos-table-sortable:hover {
-	background: var(--gray-200);
+  background: var(--gray-200);
 }
 
 // ── Feature 5: Drag handle ────────────────────────────────────────────────────
@@ -378,31 +380,31 @@
 // This way it never participates in the flex layout of .eidos-table-header-content
 // and therefore never pushes the column label out of alignment with body cells.
 .eidos-table-drag-handle {
-	position: absolute;
-	left: 4px;
-	top: 50%;
-	transform: translateY(-50%);
-	display: inline-flex;
-	align-items: center;
-	cursor: grab;
-	color: var(--gray-400);
-	line-height: 0;
-	opacity: 0;
-	transition: opacity 0.15s ease;
-	pointer-events: none;
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  cursor: grab;
+  color: var(--gray-400);
+  line-height: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
 
-	.eidos-table-header-cell:hover & {
-		opacity: 1;
-		pointer-events: auto;
-	}
+  .eidos-table-header-cell:hover & {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-	&:hover {
-		color: var(--gray-700);
-	}
+  &:hover {
+    color: var(--gray-700);
+  }
 
-	&:active {
-		cursor: grabbing;
-	}
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 // When draggable columns are enabled, reserve left padding space for the grip
@@ -410,173 +412,175 @@
 // :not(.eidos-table-checkbox-cell) has higher specificity (3 classes) than the
 // density overrides (2 classes), so it wins correctly.
 .eidos-table--draggable-columns {
-	.eidos-table-header-cell:not(.eidos-table-checkbox-cell),
-	.eidos-table-cell:not(.eidos-table-checkbox-cell) {
-		padding-left: calc(var(--spacing-md) + 16px);
-	}
+  .eidos-table-header-cell:not(.eidos-table-checkbox-cell),
+  .eidos-table-cell:not(.eidos-table-checkbox-cell) {
+    padding-left: calc(var(--spacing-md) + 16px);
+  }
 }
 
 // The label in draggable header cells grows to fill remaining flex space so
 // the drag-handle (left) and sort-indicator (right) stay at the edges.
 .eidos-table-header-label {
-	flex: 1;
-	min-width: 0;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // ── Toolbar menu panel (density picker, column visibility) ────────────────────
 // Mirrors .eidos-select-option styles so all in-table menus look the same.
 
 .eidos-table-menu-panel {
-	padding: var(--spacing-xs) 0;
-	min-width: 180px;
+  padding: var(--spacing-xs) 0;
+  min-width: 180px;
 }
 
 .eidos-table-menu-item {
-	@include button-reset;
+  @include button-reset;
 
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-sm);
-	width: 100%;
-	padding: var(--spacing-sm) var(--spacing-md);
-	cursor: pointer;
-	font-size: var(--font-size-sm);
-	color: var(--dark-color);
-	transition: background-color 0.15s ease, color 0.15s ease;
-	user-select: none;
-	text-align: left;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--dark-color);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+  user-select: none;
+  text-align: left;
 
-	&:hover {
-		background-color: var(--gray-50);
-	}
+  &:hover {
+    background-color: var(--gray-50);
+  }
 
-	&:active {
-		background-color: var(--gray-100);
-	}
+  &:active {
+    background-color: var(--gray-100);
+  }
 
-	&--active {
-		background-color: var(--primary-50);
-		color: var(--primary-700);
+  &--active {
+    background-color: var(--primary-50);
+    color: var(--primary-700);
 
-		&:hover {
-			background-color: var(--primary-100);
-		}
-	}
+    &:hover {
+      background-color: var(--primary-100);
+    }
+  }
 
-	&:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 
-		&:hover {
-			background-color: transparent;
-		}
-	}
+    &:hover {
+      background-color: transparent;
+    }
+  }
 }
 
 // Fixed-width check-mark slot so label text doesn't shift when item is active
 .eidos-table-menu-item-check {
-	width: 14px;
-	height: 14px;
-	flex-shrink: 0;
-	display: flex;
-	align-items: center;
-	color: var(--primary-600);
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--primary-600);
 }
 
 // Responsive design
 @media (max-width: 768px) {
-	.eidos-table-container {
-		overflow-x: auto;
-	}
+  .eidos-table-container {
+    overflow-x: auto;
+  }
 
-	.eidos-table {
-		min-width: 600px;
-	}
+  .eidos-table {
+    min-width: 600px;
+  }
 
-	.eidos-table-header-cell,
-	.eidos-table-cell {
-		padding: var(--spacing-sm);
-		font-size: var(--font-size-xs);
-	}
+  .eidos-table-header-cell,
+  .eidos-table-cell {
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
 }
 
 // Footer styles
 .eidos-table-footer {
-	background: var(--gray-50);
-	border-top: 1px solid var(--gray-200);
-	padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-200);
+  padding: var(--spacing-md);
 }
 
 .eidos-table-footer-content {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .eidos-table-results-info {
-	color: var(--gray-600);
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-medium);
+  color: var(--gray-600);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 // Pagination controls
 .eidos-table-pagination-controls {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
 }
 
 .eidos-table-page-size-selector {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 
-	label {
-		color: var(--gray-600);
-		font-size: var(--font-size-sm);
-		font-weight: var(--font-weight-medium);
-	}
+  label {
+    color: var(--gray-600);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
 }
 
 // Page size select is now handled by our custom Select component
 
 .eidos-table-page-navigation {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .eidos-table-page-numbers {
-	display: flex;
-	gap: var(--spacing-xs);
-	align-items: center;
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
 }
 
 // Page buttons are now handled by our custom Button component
 
 // Responsive pagination
 @media (max-width: 768px) {
-	.eidos-table-footer-content {
-		flex-direction: column;
-		gap: var(--spacing-sm);
-		align-items: flex-start;
-	}
+  .eidos-table-footer-content {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+  }
 
-	.eidos-table-pagination-controls {
-		flex-direction: column;
-		gap: var(--spacing-sm);
-		width: 100%;
-	}
+  .eidos-table-pagination-controls {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
 
-	.eidos-table-page-navigation {
-		justify-content: center;
-		width: 100%;
-	}
+  .eidos-table-page-navigation {
+    justify-content: center;
+    width: 100%;
+  }
 
-	.eidos-table-page-numbers {
-		justify-content: center;
-	}
+  .eidos-table-page-numbers {
+    justify-content: center;
+  }
 }

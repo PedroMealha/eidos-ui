@@ -113,7 +113,7 @@ export const Popover: React.FC<PopoverProps> = ({
 
       return { top, left, placement };
     },
-    [preferredPlacement]
+    [preferredPlacement],
   );
 
   // ── Sync isVisible → popoverState ─────────────────────────────────────────
@@ -220,7 +220,7 @@ export const Popover: React.FC<PopoverProps> = ({
 
       close();
     },
-    [closeOnClickOutside, popoverState.isVisible, close]
+    [closeOnClickOutside, popoverState.isVisible, close],
   );
 
   // ── Escape key handler ────────────────────────────────────────────────────
@@ -230,7 +230,7 @@ export const Popover: React.FC<PopoverProps> = ({
         close();
       }
     },
-    [closeOnEscape, popoverState.isVisible, close]
+    [closeOnEscape, popoverState.isVisible, close],
   );
 
   // ── Register global event listeners ──────────────────────────────────────
@@ -313,7 +313,7 @@ export const Popover: React.FC<PopoverProps> = ({
             )}
             <div className="eidos-popover-body">{children}</div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

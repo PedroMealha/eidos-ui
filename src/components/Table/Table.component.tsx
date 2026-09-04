@@ -1,5 +1,5 @@
-import { useState, useMemo, useLayoutEffect, useRef } from "react";
-import React from "react";
+import { useState, useMemo, useLayoutEffect, useRef } from 'react';
+import React from 'react';
 import {
   ChevronsUpDown,
   ArrowUp,
@@ -12,38 +12,27 @@ import {
   GripVertical,
   FolderOpen,
   SearchX,
-} from "lucide-react";
-import {
-  DndContext,
-  PointerSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+} from 'lucide-react';
+import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   SortableContext,
   horizontalListSortingStrategy,
   useSortable,
   sortableKeyboardCoordinates,
   arrayMove,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import type {
-  TableColumn,
-  TableProps,
-  TableFilters,
-  FilterValue,
-} from "./Table.types";
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import type { TableColumn, TableProps, TableFilters, FilterValue } from './Table.types';
 
 export type { TableColumn, TableProps, TableFilters, FilterValue };
-import { Button } from "../Button";
-import { Checkbox } from "../Checkbox";
-import { Dropdown } from "../Dropdown";
-import { EmptyState } from "../EmptyState";
-import { Pagination } from "../Pagination";
-import { Spinner } from "../Spinner";
-import { TableFiltersDropdown } from "./TableFiltersDropdown.component";
+import { Button } from '../Button';
+import { Checkbox } from '../Checkbox';
+import { Dropdown } from '../Dropdown';
+import { EmptyState } from '../EmptyState';
+import { Pagination } from '../Pagination';
+import { Spinner } from '../Spinner';
+import { TableFiltersDropdown } from './TableFiltersDropdown.component';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -58,7 +47,7 @@ const DENSITY_OPTIONS: { value: Density; label: string }[] = [
 // ── CSV helpers ───────────────────────────────────────────────────────────────
 
 function escapeCsvValue(value: string): string {
-  if (value.includes(",") || value.includes("\n") || value.includes('"')) {
+  if (value.includes(',') || value.includes('\n') || value.includes('"')) {
     return `"${value.replace(/"/g, '""')}"`;
   }
   return value;
@@ -73,7 +62,7 @@ interface SortableThProps {
   column: { label: string };
   isSortable: boolean;
   isCurrentlySorted: boolean;
-  sortDirection: "asc" | "desc" | null;
+  sortDirection: 'asc' | 'desc' | null;
   alignment: string;
   columnType: string;
   columnWidth: string | undefined;
@@ -95,27 +84,22 @@ function SortableColumnHeader({
   stickyStyle,
   onSortClick,
 }: SortableThProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const transformStr = CSS.Transform.toString(transform);
 
   const thClassName = [
-    "eidos-table-header-cell",
+    'eidos-table-header-cell',
     `eidos-table-header-cell-${columnType}`,
-    isSortable ? "eidos-table-sortable" : "",
-    isCurrentlySorted ? "eidos-table-sorted" : "",
+    isSortable ? 'eidos-table-sortable' : '',
+    isCurrentlySorted ? 'eidos-table-sorted' : '',
     `eidos-table-align-${alignment}`,
     pinnedClass,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   return (
     <th
@@ -142,14 +126,12 @@ function SortableColumnHeader({
       >
         <GripVertical size={12} />
       </span>
-      <div
-        className={`eidos-table-header-content eidos-table-align-${alignment}`}
-      >
+      <div className={`eidos-table-header-content eidos-table-align-${alignment}`}>
         <span className="eidos-table-header-label">{column.label}</span>
         {isSortable && (
           <div className="eidos-table-sort-indicator">
-            {sortDirection === "asc" && <ArrowUp size={14} />}
-            {sortDirection === "desc" && <ArrowDown size={14} />}
+            {sortDirection === 'asc' && <ArrowUp size={14} />}
+            {sortDirection === 'desc' && <ArrowDown size={14} />}
             {!sortDirection && <ChevronsUpDown size={14} />}
           </div>
         )}
@@ -164,7 +146,7 @@ export const Table = <T extends Record<string, unknown>>({
   data,
   columns,
   loading = false,
-  emptyMessage = "No data available",
+  emptyMessage = 'No data available',
   onRowClick,
   className,
   showFooter = false,
@@ -186,7 +168,7 @@ export const Table = <T extends Record<string, unknown>>({
   onSelectionChange,
   bulkActions = [],
   // New features
-  density = "comfortable",
+  density = 'comfortable',
   showDensity = false,
   showColumnVisibility = false,
   showExport = false,
@@ -194,13 +176,11 @@ export const Table = <T extends Record<string, unknown>>({
   onColumnReorder,
 }: TableProps<T>) => {
   // ── Column ordering (drag-reorder) ────────────────────────────────────────
-  const [columnOrder, setColumnOrder] = useState<string[]>(() =>
-    columns.map((c) => String(c.key))
-  );
+  const [columnOrder, setColumnOrder] = useState<string[]>(() => columns.map((c) => String(c.key)));
 
   // Derived-state reset: when the set of column keys changes, reset the order.
   // Calling setState during render is the React-idiomatic way to do this.
-  const columnKeysSignature = columns.map((c) => String(c.key)).join("\0");
+  const columnKeysSignature = columns.map((c) => String(c.key)).join('\0');
   const prevKeysRef = useRef(columnKeysSignature);
   if (prevKeysRef.current !== columnKeysSignature) {
     prevKeysRef.current = columnKeysSignature;
@@ -222,19 +202,17 @@ export const Table = <T extends Record<string, unknown>>({
   const effectiveDensity: Density = showDensity ? internalDensity : (density as Density);
 
   // ── Column visibility ─────────────────────────────────────────────────────
-  const [hiddenColumnKeys, setHiddenColumnKeys] = useState<Set<string>>(
-    () => new Set<string>()
-  );
+  const [hiddenColumnKeys, setHiddenColumnKeys] = useState<Set<string>>(() => new Set<string>());
 
   const visibleColumns = useMemo(
     () => orderedColumns.filter((c) => !hiddenColumnKeys.has(String(c.key))),
-    [orderedColumns, hiddenColumnKeys]
+    [orderedColumns, hiddenColumnKeys],
   );
 
   // ── Pinned / sticky columns ────────────────────────────────────────────────
   const theadRef = useRef<HTMLTableSectionElement>(null);
   const [pinnedOffsets, setPinnedOffsets] = useState<
-    Map<string, { side: "left" | "right"; offset: number }>
+    Map<string, { side: 'left' | 'right'; offset: number }>
   >(new Map());
 
   useLayoutEffect(() => {
@@ -244,30 +222,25 @@ export const Table = <T extends Record<string, unknown>>({
       return;
     }
 
-    const headerRow = theadRef.current.querySelector("tr");
+    const headerRow = theadRef.current.querySelector('tr');
     if (!headerRow) return;
 
-    const cells = Array.from(
-      headerRow.querySelectorAll<HTMLTableCellElement>("th[data-col-key]")
-    );
+    const cells = Array.from(headerRow.querySelectorAll<HTMLTableCellElement>('th[data-col-key]'));
 
-    const newOffsets = new Map<
-      string,
-      { side: "left" | "right"; offset: number }
-    >();
+    const newOffsets = new Map<string, { side: 'left' | 'right'; offset: number }>();
 
     // Left-pinned: scan left-to-right.
     // Checkbox (when selectable) counts as a left-pinned element.
     let leftAccum = 0;
     for (const cell of cells) {
       const key = cell.dataset.colKey!;
-      if (key === "__checkbox__") {
-        newOffsets.set(key, { side: "left", offset: leftAccum });
+      if (key === '__checkbox__') {
+        newOffsets.set(key, { side: 'left', offset: leftAccum });
         leftAccum += cell.offsetWidth;
       } else {
         const col = visibleColumns.find((c) => String(c.key) === key);
-        if (col?.pin === "left") {
-          newOffsets.set(key, { side: "left", offset: leftAccum });
+        if (col?.pin === 'left') {
+          newOffsets.set(key, { side: 'left', offset: leftAccum });
           leftAccum += cell.offsetWidth;
         }
       }
@@ -279,8 +252,8 @@ export const Table = <T extends Record<string, unknown>>({
       const cell = cells[i];
       const key = cell.dataset.colKey!;
       const col = visibleColumns.find((c) => String(c.key) === key);
-      if (col?.pin === "right") {
-        newOffsets.set(key, { side: "right", offset: rightAccum });
+      if (col?.pin === 'right') {
+        newOffsets.set(key, { side: 'right', offset: rightAccum });
         rightAccum += cell.offsetWidth;
       }
     }
@@ -290,19 +263,16 @@ export const Table = <T extends Record<string, unknown>>({
 
   // ── Selection state (controlled / uncontrolled) ──────────────────────────
   const isControlledSelection = controlledSelected !== undefined;
-  const [internalSelected, setInternalSelected] = useState<string[]>(
-    defaultSelectedRows
-  );
+  const [internalSelected, setInternalSelected] = useState<string[]>(defaultSelectedRows);
   const selectedSet = useMemo(
-    () =>
-      new Set(isControlledSelection ? controlledSelected : internalSelected),
-    [isControlledSelection, controlledSelected, internalSelected]
+    () => new Set(isControlledSelection ? controlledSelected : internalSelected),
+    [isControlledSelection, controlledSelected, internalSelected],
   );
 
   /** Stable string key for a row - uses `rowKey` prop, then "id", then index. */
   const getRowKey = (item: T, index: number): string => {
     if (rowKey) return String(item[rowKey]);
-    if ("id" in item) return String(item.id);
+    if ('id' in item) return String(item.id);
     return String(index);
   };
 
@@ -322,13 +292,11 @@ export const Table = <T extends Record<string, unknown>>({
   const allKeys = useMemo(
     () => data.map((item, idx) => getRowKey(item, idx)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, rowKey]
+    [data, rowKey],
   );
 
-  const allSelected =
-    allKeys.length > 0 && allKeys.every((k) => selectedSet.has(k));
-  const someSelected =
-    !allSelected && allKeys.some((k) => selectedSet.has(k));
+  const allSelected = allKeys.length > 0 && allKeys.every((k) => selectedSet.has(k));
+  const someSelected = !allSelected && allKeys.some((k) => selectedSet.has(k));
 
   const toggleAll = () => {
     commitSelection(allSelected ? [] : allKeys);
@@ -350,9 +318,7 @@ export const Table = <T extends Record<string, unknown>>({
 
   const handleSort = (key: string) => {
     const newDirection =
-      currentSort?.key === key && currentSort?.direction === "asc"
-        ? "desc"
-        : "asc";
+      currentSort?.key === key && currentSort?.direction === 'asc' ? 'desc' : 'asc';
     onSortChange?.(key, newDirection);
   };
 
@@ -374,39 +340,34 @@ export const Table = <T extends Record<string, unknown>>({
   const selectedItems = useMemo(
     () => data.filter((item, idx) => selectedSet.has(getRowKey(item, idx))),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, selectedSet, rowKey]
+    [data, selectedSet, rowKey],
   );
 
   // ── CSV Export ────────────────────────────────────────────────────────────
   const getRawValue = (item: T, column: TableColumn<T>): string => {
     const value =
-      typeof column.key === "string" && column.key.includes(".")
+      typeof column.key === 'string' && column.key.includes('.')
         ? (column.key as string)
-            .split(".")
+            .split('.')
             .reduce(
-              (obj: unknown, k: string) =>
-                (obj as Record<string, unknown>)?.[k],
-              item as unknown
+              (obj: unknown, k: string) => (obj as Record<string, unknown>)?.[k],
+              item as unknown,
             )
         : item[column.key as keyof T];
-    return String(value ?? "");
+    return String(value ?? '');
   };
 
   const handleExportCsv = () => {
-    const headers = visibleColumns
-      .map((c) => escapeCsvValue(c.label))
-      .join(",");
+    const headers = visibleColumns.map((c) => escapeCsvValue(c.label)).join(',');
     const rows = data.map((item) =>
-      visibleColumns
-        .map((col) => escapeCsvValue(getRawValue(item, col)))
-        .join(",")
+      visibleColumns.map((col) => escapeCsvValue(getRawValue(item, col))).join(','),
     );
-    const csv = [headers, ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const csv = [headers, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
-    link.download = "export.csv";
+    link.download = 'export.csv';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -418,7 +379,7 @@ export const Table = <T extends Record<string, unknown>>({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -449,50 +410,49 @@ export const Table = <T extends Record<string, unknown>>({
 
   /** Returns sticky style + className for body <td> cells (zIndex: 1). */
   const getCellPinnedProps = (
-    colKey: string
+    colKey: string,
   ): { style: React.CSSProperties; className: string } => {
     const pinInfo = pinnedOffsets.get(colKey);
-    if (!pinInfo) return { style: {}, className: "" };
+    if (!pinInfo) return { style: {}, className: '' };
     return {
       style: {
-        position: "sticky",
+        position: 'sticky',
         [pinInfo.side]: pinInfo.offset,
         zIndex: 1,
       },
       className:
-        pinInfo.side === "left"
-          ? "eidos-table-cell--pinned-left"
-          : "eidos-table-cell--pinned-right",
+        pinInfo.side === 'left'
+          ? 'eidos-table-cell--pinned-left'
+          : 'eidos-table-cell--pinned-right',
     };
   };
 
   /** Returns sticky style + className for header <th> cells (zIndex: 3). */
   const getHeaderPinnedProps = (
-    colKey: string
+    colKey: string,
   ): { style: React.CSSProperties; className: string } => {
     const pinInfo = pinnedOffsets.get(colKey);
-    if (!pinInfo) return { style: {}, className: "" };
+    if (!pinInfo) return { style: {}, className: '' };
     return {
       style: {
-        position: "sticky",
+        position: 'sticky',
         [pinInfo.side]: pinInfo.offset,
         zIndex: 3,
       },
       className:
-        pinInfo.side === "left"
-          ? "eidos-table-header-cell--pinned-left"
-          : "eidos-table-header-cell--pinned-right",
+        pinInfo.side === 'left'
+          ? 'eidos-table-header-cell--pinned-left'
+          : 'eidos-table-header-cell--pinned-right',
     };
   };
 
   // ── Density class ─────────────────────────────────────────────────────────
-  const densityClass =
-    effectiveDensity !== "comfortable" ? `eidos-table--${effectiveDensity}` : "";
+  const densityClass = effectiveDensity !== 'comfortable' ? `eidos-table--${effectiveDensity}` : '';
 
   // ── Loading ───────────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className={`eidos-table-container ${className || ""}`}>
+      <div className={`eidos-table-container ${className || ''}`}>
         <div className="eidos-table-loading">
           <Spinner size="md" />
           <p>Loading...</p>
@@ -508,11 +468,11 @@ export const Table = <T extends Record<string, unknown>>({
         <button
           key={option.value}
           className={[
-            "eidos-table-menu-item",
-            effectiveDensity === option.value ? "eidos-table-menu-item--active" : "",
+            'eidos-table-menu-item',
+            effectiveDensity === option.value ? 'eidos-table-menu-item--active' : '',
           ]
             .filter(Boolean)
-            .join(" ")}
+            .join(' ')}
           onClick={() => setInternalDensity(option.value)}
         >
           <span className="eidos-table-menu-item-check">
@@ -535,12 +495,9 @@ export const Table = <T extends Record<string, unknown>>({
         return (
           <button
             key={key}
-            className={[
-              "eidos-table-menu-item",
-              isVisible ? "eidos-table-menu-item--active" : "",
-            ]
+            className={['eidos-table-menu-item', isVisible ? 'eidos-table-menu-item--active' : '']
               .filter(Boolean)
-              .join(" ")}
+              .join(' ')}
             disabled={isLastVisible}
             onClick={() => {
               setHiddenColumnKeys((prev) => {
@@ -555,7 +512,9 @@ export const Table = <T extends Record<string, unknown>>({
               checked={isVisible}
               disabled={isLastVisible}
               size="sm"
-              onChange={() => {/* click handled by parent button */}}
+              onChange={() => {
+                /* click handled by parent button */
+              }}
             />
             <span>{col.label}</span>
           </button>
@@ -569,7 +528,7 @@ export const Table = <T extends Record<string, unknown>>({
 
   // ── Main JSX ──────────────────────────────────────────────────────────────
   const tableContent = (
-    <div className={`eidos-table-container ${className || ""}`}>
+    <div className={`eidos-table-container ${className || ''}`}>
       {/* ── Toolbar ───────────────────────────────────────────────────────── */}
       {showToolbar && (
         <div className="eidos-table-toolbar">
@@ -577,23 +536,21 @@ export const Table = <T extends Record<string, unknown>>({
           <div className="eidos-table-toolbar-left">
             {selectable && hasSelection && (
               <>
-                <span className="eidos-table-selection-count">
-                  {selectedSet.size} selected
-                </span>
+                <span className="eidos-table-selection-count">{selectedSet.size} selected</span>
 
                 {bulkActions.length > 0 && (
                   <div className="eidos-table-bulk-actions">
                     {bulkActions.map((action) => {
                       const isDisabled =
-                        typeof action.disabled === "function"
+                        typeof action.disabled === 'function'
                           ? action.disabled(selectedItems)
                           : (action.disabled ?? false);
                       return (
                         <Button
                           key={action.id}
                           size="sm"
-                          variant={action.variant ?? "outlined"}
-                          color={action.color ?? "secondary"}
+                          variant={action.variant ?? 'outlined'}
+                          color={action.color ?? 'secondary'}
                           preIcon={action.icon}
                           disabled={isDisabled}
                           onClick={() => action.onClick(selectedItems)}
@@ -670,23 +627,27 @@ export const Table = <T extends Record<string, unknown>>({
 
       {/* ── Table (wrapped for horizontal scroll) ─────────────────────────── */}
       <div className="eidos-table-scroll">
-        <table className={[
-            "eidos-table",
+        <table
+          className={[
+            'eidos-table',
             densityClass,
-            draggableColumns ? "eidos-table--draggable-columns" : "",
-          ].filter(Boolean).join(" ")}>
+            draggableColumns ? 'eidos-table--draggable-columns' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           <thead ref={theadRef}>
             <tr>
               {selectable && (
                 <th
                   className={[
-                    "eidos-table-header-cell",
-                    "eidos-table-checkbox-cell",
-                    getHeaderPinnedProps("__checkbox__").className,
+                    'eidos-table-header-cell',
+                    'eidos-table-checkbox-cell',
+                    getHeaderPinnedProps('__checkbox__').className,
                   ]
                     .filter(Boolean)
-                    .join(" ")}
-                  style={getHeaderPinnedProps("__checkbox__").style}
+                    .join(' ')}
+                  style={getHeaderPinnedProps('__checkbox__').style}
                   data-col-key="__checkbox__"
                 >
                   <Checkbox
@@ -703,17 +664,15 @@ export const Table = <T extends Record<string, unknown>>({
               {draggableColumns
                 ? visibleColumns.map((column) => {
                     const colKey = String(column.key);
-                    const columnType = column.type || "data";
+                    const columnType = column.type || 'data';
                     const columnWidth =
-                      column.type === "icon"
-                        ? "var(--component-size-lg)"
-                        : column.width;
+                      column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
                     const isSortable = !!column.sortable;
                     const isCurrentlySorted = currentSort?.key === colKey;
                     const sortDirection = isCurrentlySorted
-                      ? (currentSort!.direction as "asc" | "desc")
+                      ? (currentSort!.direction as 'asc' | 'desc')
                       : null;
-                    const alignment = column.align || "left";
+                    const alignment = column.align || 'left';
                     const { style: pinnedStyle, className: pinnedClass } =
                       getHeaderPinnedProps(colKey);
 
@@ -736,17 +695,13 @@ export const Table = <T extends Record<string, unknown>>({
                   })
                 : visibleColumns.map((column, index) => {
                     const colKey = String(column.key);
-                    const columnType = column.type || "data";
+                    const columnType = column.type || 'data';
                     const columnWidth =
-                      column.type === "icon"
-                        ? "var(--component-size-lg)"
-                        : column.width;
+                      column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
                     const isSortable = column.sortable;
                     const isCurrentlySorted = currentSort?.key === colKey;
-                    const sortDirection = isCurrentlySorted
-                      ? currentSort!.direction
-                      : null;
-                    const alignment = column.align || "left";
+                    const sortDirection = isCurrentlySorted ? currentSort!.direction : null;
+                    const alignment = column.align || 'left';
                     const alignmentClass = `eidos-table-align-${alignment}`;
                     const { style: pinnedStyle, className: pinnedClass } =
                       getHeaderPinnedProps(colKey);
@@ -755,33 +710,25 @@ export const Table = <T extends Record<string, unknown>>({
                       <th
                         key={index}
                         className={[
-                          "eidos-table-header-cell",
+                          'eidos-table-header-cell',
                           `eidos-table-header-cell-${columnType}`,
-                          isSortable ? "eidos-table-sortable" : "",
-                          isCurrentlySorted ? "eidos-table-sorted" : "",
+                          isSortable ? 'eidos-table-sortable' : '',
+                          isCurrentlySorted ? 'eidos-table-sorted' : '',
                           alignmentClass,
                           pinnedClass,
                         ]
                           .filter(Boolean)
-                          .join(" ")}
+                          .join(' ')}
                         style={{ width: columnWidth, ...pinnedStyle }}
                         data-col-key={colKey}
-                        onClick={() =>
-                          isSortable && handleSort(colKey)
-                        }
+                        onClick={() => isSortable && handleSort(colKey)}
                       >
-                        <div
-                          className={`eidos-table-header-content ${alignmentClass}`}
-                        >
+                        <div className={`eidos-table-header-content ${alignmentClass}`}>
                           <span>{column.label}</span>
                           {isSortable && (
                             <div className="eidos-table-sort-indicator">
-                              {sortDirection === "asc" && (
-                                <ArrowUp size={14} />
-                              )}
-                              {sortDirection === "desc" && (
-                                <ArrowDown size={14} />
-                              )}
+                              {sortDirection === 'asc' && <ArrowUp size={14} />}
+                              {sortDirection === 'desc' && <ArrowDown size={14} />}
                               {!sortDirection && <ChevronsUpDown size={14} />}
                             </div>
                           )}
@@ -804,24 +751,24 @@ export const Table = <T extends Record<string, unknown>>({
                   <tr
                     key={key}
                     className={[
-                      "eidos-table-row",
-                      onRowClick ? "eidos-table-clickable" : "",
-                      isSelected ? "eidos-table-row--selected" : "",
+                      'eidos-table-row',
+                      onRowClick ? 'eidos-table-clickable' : '',
+                      isSelected ? 'eidos-table-row--selected' : '',
                     ]
                       .filter(Boolean)
-                      .join(" ")}
+                      .join(' ')}
                     onClick={() => onRowClick?.(item)}
                   >
                     {selectable && (
                       <td
                         className={[
-                          "eidos-table-cell",
-                          "eidos-table-checkbox-cell",
-                          getCellPinnedProps("__checkbox__").className,
+                          'eidos-table-cell',
+                          'eidos-table-checkbox-cell',
+                          getCellPinnedProps('__checkbox__').className,
                         ]
                           .filter(Boolean)
-                          .join(" ")}
-                        style={getCellPinnedProps("__checkbox__").style}
+                          .join(' ')}
+                        style={getCellPinnedProps('__checkbox__').style}
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleRow(key);
@@ -844,23 +791,19 @@ export const Table = <T extends Record<string, unknown>>({
                     {visibleColumns.map((column, colIndex) => {
                       const colKey = String(column.key);
                       const value =
-                        typeof column.key === "string" &&
-                        column.key.includes(".")
+                        typeof column.key === 'string' && column.key.includes('.')
                           ? (column.key as string)
-                              .split(".")
+                              .split('.')
                               .reduce(
-                                (obj: unknown, k: string) =>
-                                  (obj as Record<string, unknown>)?.[k],
-                                item as unknown
+                                (obj: unknown, k: string) => (obj as Record<string, unknown>)?.[k],
+                                item as unknown,
                               )
                           : item[column.key as keyof T];
 
-                      const columnType = column.type || "data";
+                      const columnType = column.type || 'data';
                       const columnWidth =
-                        column.type === "icon"
-                          ? "var(--component-size-lg)"
-                          : column.width;
-                      const alignment = column.align || "left";
+                        column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                      const alignment = column.align || 'left';
                       const alignmentClass = `eidos-table-align-${alignment}`;
                       const { style: pinnedStyle, className: pinnedClass } =
                         getCellPinnedProps(colKey);
@@ -869,18 +812,16 @@ export const Table = <T extends Record<string, unknown>>({
                         <td
                           key={colIndex}
                           className={[
-                            "eidos-table-cell",
+                            'eidos-table-cell',
                             `eidos-table-cell-${columnType}`,
                             alignmentClass,
                             pinnedClass,
                           ]
                             .filter(Boolean)
-                            .join(" ")}
+                            .join(' ')}
                           style={{ width: columnWidth, ...pinnedStyle }}
                         >
-                          {column.render
-                            ? column.render(value, item)
-                            : String(value ?? "")}
+                          {column.render ? column.render(value, item) : String(value ?? '')}
                         </td>
                       );
                     })}
@@ -890,11 +831,7 @@ export const Table = <T extends Record<string, unknown>>({
             ) : (
               <tr className="eidos-table-empty-row">
                 <td
-                  colSpan={
-                    selectable
-                      ? visibleColumns.length + 1
-                      : visibleColumns.length
-                  }
+                  colSpan={selectable ? visibleColumns.length + 1 : visibleColumns.length}
                   className="eidos-table-cell eidos-table-empty-cell"
                 >
                   {Object.keys(filters).length > 0 ? (
@@ -961,10 +898,7 @@ export const Table = <T extends Record<string, unknown>>({
   if (draggableColumns) {
     return (
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={sortableItems}
-          strategy={horizontalListSortingStrategy}
-        >
+        <SortableContext items={sortableItems} strategy={horizontalListSortingStrategy}>
           {tableContent}
         </SortableContext>
       </DndContext>

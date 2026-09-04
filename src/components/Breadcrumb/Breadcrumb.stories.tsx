@@ -3,21 +3,21 @@ import { Home, Folder, File, ChevronRight } from 'lucide-react';
 import { Breadcrumb } from './Breadcrumb.component';
 
 const meta = {
-	title: 'Navigation/Breadcrumb',
-	component: Breadcrumb,
-	parameters: { layout: 'padded' },
-	argTypes: {
-		separator: {
-			control: 'text',
-			description: 'Separator rendered between items. Accepts a string or ReactNode.',
-			table: {
-				type: { summary: 'React.ReactNode' },
-				defaultValue: { summary: '/' },
-			},
-		},
-		items: { table: { disable: true } },
-		className: { table: { disable: true } },
-	},
+  title: 'Navigation/Breadcrumb',
+  component: Breadcrumb,
+  parameters: { layout: 'padded' },
+  argTypes: {
+    separator: {
+      control: 'text',
+      description: 'Separator rendered between items. Accepts a string or ReactNode.',
+      table: {
+        type: { summary: 'React.ReactNode' },
+        defaultValue: { summary: '/' },
+      },
+    },
+    items: { table: { disable: true } },
+    className: { table: { disable: true } },
+  },
 } satisfies Meta<typeof Breadcrumb>;
 
 export default meta;
@@ -28,14 +28,14 @@ type Story = StoryObj<typeof meta>;
 // ============================================================================
 
 export const Default: Story = {
-	args: {
-		items: [
-			{ label: 'Home' },
-			{ label: 'Products' },
-			{ label: 'Electronics' },
-			{ label: 'Smartphones' },
-		],
-	},
+  args: {
+    items: [
+      { label: 'Home' },
+      { label: 'Products' },
+      { label: 'Electronics' },
+      { label: 'Smartphones' },
+    ],
+  },
 };
 
 // ============================================================================
@@ -43,14 +43,14 @@ export const Default: Story = {
 // ============================================================================
 
 export const WithHrefs: Story = {
-	args: {
-		items: [
-			{ label: 'Home', href: '/' },
-			{ label: 'Products', href: '/products' },
-			{ label: 'Electronics', href: '/products/electronics' },
-			{ label: 'Smartphones' },
-		],
-	},
+  args: {
+    items: [
+      { label: 'Home', href: '/' },
+      { label: 'Products', href: '/products' },
+      { label: 'Electronics', href: '/products/electronics' },
+      { label: 'Smartphones' },
+    ],
+  },
 };
 
 // ============================================================================
@@ -58,14 +58,14 @@ export const WithHrefs: Story = {
 // ============================================================================
 
 export const WithIcons: Story = {
-	args: {
-		items: [
-			{ label: 'Home', icon: <Home /> },
-			{ label: 'Projects', icon: <Folder /> },
-			{ label: 'Q4 Report', icon: <Folder /> },
-			{ label: 'Summary.pdf', icon: <File /> },
-		],
-	},
+  args: {
+    items: [
+      { label: 'Home', icon: <Home /> },
+      { label: 'Projects', icon: <Folder /> },
+      { label: 'Q4 Report', icon: <Folder /> },
+      { label: 'Summary.pdf', icon: <File /> },
+    ],
+  },
 };
 
 // ============================================================================
@@ -73,15 +73,15 @@ export const WithIcons: Story = {
 // ============================================================================
 
 export const CustomSeparator: Story = {
-	args: {
-		separator: <ChevronRight size={14} />,
-		items: [
-			{ label: 'Dashboard' },
-			{ label: 'Settings' },
-			{ label: 'Account' },
-			{ label: 'Security' },
-		],
-	},
+  args: {
+    separator: <ChevronRight size={14} />,
+    items: [
+      { label: 'Dashboard' },
+      { label: 'Settings' },
+      { label: 'Account' },
+      { label: 'Security' },
+    ],
+  },
 };
 
 // ============================================================================
@@ -89,12 +89,9 @@ export const CustomSeparator: Story = {
 // ============================================================================
 
 export const Short: Story = {
-	args: {
-		items: [
-			{ label: 'Home' },
-			{ label: 'Profile' },
-		],
-	},
+  args: {
+    items: [{ label: 'Home' }, { label: 'Profile' }],
+  },
 };
 
 // ============================================================================
@@ -102,14 +99,14 @@ export const Short: Story = {
 // ============================================================================
 
 export const Long: Story = {
-	args: {
-		items: [
-			{ label: 'Home' },
-			{ label: 'Organisation' },
-			{ label: 'Teams' },
-			{ label: 'Engineering' },
-			{ label: 'Frontend' },
-			{ label: 'Design System' },
-		],
-	},
+  args: {
+    items: [
+      { label: 'Home' },
+      { label: 'Organisation' },
+      { label: 'Teams' },
+      { label: 'Engineering' },
+      { label: 'Frontend' },
+      { label: 'Design System' },
+    ],
+  },
 };

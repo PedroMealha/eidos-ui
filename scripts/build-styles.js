@@ -13,4 +13,3 @@ writeFileSync('./dist/index.css', result.css);
 writeFileSync('./dist/index.css.d.ts', '// eidos-ui styles\nexport {};\n');
 
 console.log('✓ SCSS compiled successfully');
-

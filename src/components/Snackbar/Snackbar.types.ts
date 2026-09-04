@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
-type SnackbarVariant = "success" | "danger" | "warning" | "info";
+type SnackbarVariant = 'success' | 'danger' | 'warning' | 'info';
 
 interface SnackbarAction {
   label: string;
   onClick: () => void;
-  variant?: "primary" | "secondary";
+  variant?: 'primary' | 'secondary';
 }
 
 interface BaseSnackbarProps {
@@ -31,7 +31,7 @@ interface ComponentSnackbarProps extends BaseSnackbarProps {
 
 type SnackbarProps = TextSnackbarProps | ComponentSnackbarProps;
 
-type SnackbarState = "entering" | "entered" | "exiting" | "exited";
+type SnackbarState = 'entering' | 'entered' | 'exiting' | 'exited';
 
 interface SnackbarItem {
   id: string;
@@ -49,30 +49,30 @@ interface SnackbarItem {
 
 interface SnackbarContextValue {
   snackbars: SnackbarItem[];
-  addSnackbar: (snackbar: Omit<SnackbarProps, "id">) => string;
+  addSnackbar: (snackbar: Omit<SnackbarProps, 'id'>) => string;
   removeSnackbar: (id: string) => void;
   clearAllSnackbars: () => void;
 }
 
 interface UseSnackbarReturn {
-  showSnackbar: (snackbar: Omit<SnackbarProps, "id">) => string;
+  showSnackbar: (snackbar: Omit<SnackbarProps, 'id'>) => string;
   hideSnackbar: (id: string) => void;
   clearAll: () => void;
   showSuccess: (
     message: string,
-    options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
+    options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>,
   ) => string;
   showError: (
     message: string,
-    options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
+    options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>,
   ) => string;
   showWarning: (
     message: string,
-    options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
+    options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>,
   ) => string;
   showInfo: (
     message: string,
-    options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
+    options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>,
   ) => string;
 }
 

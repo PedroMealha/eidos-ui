@@ -1,8 +1,8 @@
-import React, { useEffect, useCallback, useId, useState } from "react";
-import { createPortal } from "react-dom";
-import { Button } from "../Button/Button.component";
-import type { ModalProps } from "./Modal.types";
-import { renderIcon } from "../../utils";
+import React, { useEffect, useCallback, useId, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Button } from '../Button/Button.component';
+import type { ModalProps } from './Modal.types';
+import { renderIcon } from '../../utils';
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -14,8 +14,8 @@ export const Modal: React.FC<ModalProps> = ({
   actions = [],
   closeOnBackdropClick = true,
   closeOnEscape = true,
-  size = "md",
-  className = "",
+  size = 'md',
+  className = '',
 }) => {
   const titleId = useId();
   const bodyId = useId();
@@ -62,11 +62,11 @@ export const Modal: React.FC<ModalProps> = ({
   // Handle escape key
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
-      if (closeOnEscape && event.key === "Escape" && isOpen) {
+      if (closeOnEscape && event.key === 'Escape' && isOpen) {
         onClose();
       }
     },
-    [closeOnEscape, isOpen, onClose]
+    [closeOnEscape, isOpen, onClose],
   );
 
   // Handle backdrop click
@@ -76,31 +76,27 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     },
-    [closeOnBackdropClick, onClose]
+    [closeOnBackdropClick, onClose],
   );
 
   // Add/remove escape key listener (tied to isOpen, not isMounted)
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener("keydown", handleEscapeKey);
+      document.addEventListener('keydown', handleEscapeKey);
       // Prevent body scroll when modal is open
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscapeKey);
-      document.body.style.overflow = "";
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = '';
     };
   }, [isOpen, handleEscapeKey]);
 
   if (!isMounted) return null;
 
   const modalContent = (
-    <div
-      className={`eidos-modal ${
-        isVisible ? "eidos-modal--is-open" : ""
-      } ${className}`}
-    >
+    <div className={`eidos-modal ${isVisible ? 'eidos-modal--is-open' : ''} ${className}`}>
       <div className="eidos-modal-backdrop" onClick={handleBackdropClick} aria-hidden="true" />
       <div
         role="dialog"
@@ -110,26 +106,24 @@ export const Modal: React.FC<ModalProps> = ({
         className={`eidos-modal-content eidos-modal-content--${size}`}
       >
         {title && (
-          <div
-            className={`eidos-modal-header ${
-              type ? `eidos-modal-header--${type}` : ""
-            }`}
-          >
+          <div className={`eidos-modal-header ${type ? `eidos-modal-header--${type}` : ''}`}>
             <h4 id={titleId}>
               {icon && renderIcon(icon, 'eidos-modal-icon')} {title}
             </h4>
           </div>
         )}
 
-        <div id={bodyId} className="eidos-modal-body">{children}</div>
+        <div id={bodyId} className="eidos-modal-body">
+          {children}
+        </div>
 
         {actions.length > 0 && (
           <div className={`eidos-modal-footer`}>
             {actions.map((action) => (
               <Button
                 key={action.id}
-                variant={action.variant || "outlined"}
-                size={action.size || "md"}
+                variant={action.variant || 'outlined'}
+                size={action.size || 'md'}
                 color={action.color}
                 disabled={action.disabled}
                 loading={action.loading}
@@ -147,4 +141,4 @@ export const Modal: React.FC<ModalProps> = ({
   return createPortal(modalContent, document.body);
 };
 
-Modal.displayName = "Modal";
+Modal.displayName = 'Modal';

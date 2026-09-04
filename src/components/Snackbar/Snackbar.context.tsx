@@ -1,20 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
-import type {
-  SnackbarContextValue,
-  SnackbarItem,
-  SnackbarProps,
-} from "./Snackbar.types";
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+import type { SnackbarContextValue, SnackbarItem, SnackbarProps } from './Snackbar.types';
 
-const SnackbarContext = createContext<SnackbarContextValue | undefined>(
-  undefined
-);
+const SnackbarContext = createContext<SnackbarContextValue | undefined>(undefined);
 
 export const useSnackbarContext = (): SnackbarContextValue => {
   const context = useContext(SnackbarContext);
   if (!context) {
-    throw new Error(
-      "useSnackbarContext must be used within a SnackbarProvider"
-    );
+    throw new Error('useSnackbarContext must be used within a SnackbarProvider');
   }
   return context;
 };
@@ -23,9 +15,7 @@ interface SnackbarProviderProps {
   children: React.ReactNode;
 }
 
-export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
-  children,
-}) => {
+export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({ children }) => {
   const [snackbars, setSnackbars] = useState<SnackbarItem[]>([]);
   // Mirror state in a ref so removeSnackbar can read current items synchronously
   // without placing side-effects inside a setState updater (which StrictMode calls twice).
@@ -48,9 +38,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 
     // Transition to exiting state, then remove after the CSS animation (300ms).
     setSnackbars((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, state: "exiting" } : item
-      )
+      prev.map((item) => (item.id === id ? { ...item, state: 'exiting' } : item)),
     );
 
     setTimeout(() => {
@@ -59,12 +47,12 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
   }, []);
 
   const addSnackbar = useCallback(
-    (snackbar: Omit<SnackbarProps, "id">): string => {
+    (snackbar: Omit<SnackbarProps, 'id'>): string => {
       const id = generateId();
       const newSnackbar: SnackbarItem = {
         ...snackbar,
         id,
-        state: "entering",
+        state: 'entering',
         createdAt: Date.now(),
       };
 
@@ -74,9 +62,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setSnackbars((prev) =>
-            prev.map((item) =>
-              item.id === id ? { ...item, state: "entered" } : item
-            )
+            prev.map((item) => (item.id === id ? { ...item, state: 'entered' } : item)),
           );
         });
       });
@@ -90,12 +76,12 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 
       return id;
     },
-    [generateId, removeSnackbar]
+    [generateId, removeSnackbar],
   );
 
   const clearAllSnackbars = useCallback((): void => {
     // Transition all to exiting state
-    setSnackbars((prev) => prev.map((item) => ({ ...item, state: "exiting" })));
+    setSnackbars((prev) => prev.map((item) => ({ ...item, state: 'exiting' })));
 
     // Remove all after animation completes (300ms to match CSS animation)
     setTimeout(() => {
@@ -110,11 +96,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
     clearAllSnackbars,
   };
 
-  return (
-    <SnackbarContext.Provider value={contextValue}>
-      {children}
-    </SnackbarContext.Provider>
-  );
+  return <SnackbarContext.Provider value={contextValue}>{children}</SnackbarContext.Provider>;
 };
 
-SnackbarProvider.displayName = "SnackbarProvider";
+SnackbarProvider.displayName = 'SnackbarProvider';

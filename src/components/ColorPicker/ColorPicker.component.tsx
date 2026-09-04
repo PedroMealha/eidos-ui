@@ -14,9 +14,16 @@ import type {
 // ============================================================================
 
 const DEFAULT_SWATCHES: string[] = [
-  '#ef4444', '#f97316', '#f59e0b', '#10b981',
-  '#06b6d4', '#6366f1', '#8b5cf6', '#ec4899',
-  '#64748b', '#1e293b',
+  '#ef4444',
+  '#f97316',
+  '#f59e0b',
+  '#10b981',
+  '#06b6d4',
+  '#6366f1',
+  '#8b5cf6',
+  '#ec4899',
+  '#64748b',
+  '#1e293b',
 ];
 
 // ============================================================================
@@ -32,12 +39,31 @@ function hsvToRgb(h: number, s: number, v: number): RGBColor {
   const m = vn - c;
 
   let r: number, g: number, b: number;
-  if (h < 60)       { r = c; g = x; b = 0; }
-  else if (h < 120) { r = x; g = c; b = 0; }
-  else if (h < 180) { r = 0; g = c; b = x; }
-  else if (h < 240) { r = 0; g = x; b = c; }
-  else if (h < 300) { r = x; g = 0; b = c; }
-  else              { r = c; g = 0; b = x; }
+  if (h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else {
+    r = c;
+    g = 0;
+    b = x;
+  }
 
   return {
     r: Math.round((r + m) * 255),
@@ -61,9 +87,9 @@ function rgbToHsv(r: number, g: number, b: number): HSVColor {
 
   let h = 0;
   if (delta !== 0) {
-    if (max === rn)      h = ((gn - bn) / delta) % 6;
+    if (max === rn) h = ((gn - bn) / delta) % 6;
     else if (max === gn) h = (bn - rn) / delta + 2;
-    else                 h = (rn - gn) / delta + 4;
+    else h = (rn - gn) / delta + 4;
     h = h * 60;
     if (h < 0) h += 360;
   }
@@ -73,7 +99,9 @@ function rgbToHsv(r: number, g: number, b: number): HSVColor {
 
 function rgbToHex(r: number, g: number, b: number): string {
   const ch = (n: number) =>
-    Math.round(Math.max(0, Math.min(255, n))).toString(16).padStart(2, '0');
+    Math.round(Math.max(0, Math.min(255, n)))
+      .toString(16)
+      .padStart(2, '0');
   return `#${ch(r)}${ch(g)}${ch(b)}`;
 }
 
@@ -113,9 +141,9 @@ function rgbToHsl(r: number, g: number, b: number): HSLColor {
 
   if (delta !== 0) {
     s = delta / (1 - Math.abs(2 * l - 1));
-    if (max === rn)      h = ((gn - bn) / delta) % 6;
+    if (max === rn) h = ((gn - bn) / delta) % 6;
     else if (max === gn) h = (bn - rn) / delta + 2;
-    else                 h = (rn - gn) / delta + 4;
+    else h = (rn - gn) / delta + 4;
     h = h * 60;
     if (h < 0) h += 360;
   }
@@ -132,12 +160,31 @@ function hslToRgb(h: number, s: number, l: number): RGBColor {
   const m = ln - c / 2;
 
   let r: number, g: number, b: number;
-  if (h < 60)       { r = c; g = x; b = 0; }
-  else if (h < 120) { r = x; g = c; b = 0; }
-  else if (h < 180) { r = 0; g = c; b = x; }
-  else if (h < 240) { r = 0; g = x; b = c; }
-  else if (h < 300) { r = x; g = 0; b = c; }
-  else              { r = c; g = 0; b = x; }
+  if (h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else {
+    r = c;
+    g = 0;
+    b = x;
+  }
 
   return {
     r: Math.round((r + m) * 255),
@@ -274,7 +321,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     if (!rgb) return;
     const newHsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
     const newNormalised = rgbToHex(
-      ...Object.values(hsvToRgb(newHsv.h, newHsv.s, newHsv.v)) as [number, number, number],
+      ...(Object.values(hsvToRgb(newHsv.h, newHsv.s, newHsv.v)) as [number, number, number]),
     );
     // currentHex is captured from this render - guards against echo loops
     // when the parent echoes back our own onChange emission
@@ -391,13 +438,16 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   // ── Copy to clipboard ─────────────────────────────────────────────────────
   const handleCopy = useCallback(() => {
     const text = colorToText(hsvRef.current, alphaRef.current, activeFormatRef.current);
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
-      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
-    }).catch(() => {
-      // Clipboard access denied - silently ignore
-    });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopied(true);
+        if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+        copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => {
+        // Clipboard access denied - silently ignore
+      });
   }, []);
 
   // ── Alpha-slider background gradient ─────────────────────────────────────
@@ -487,7 +537,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               className={[
                 'eidos-color-picker-format-btn',
                 activeFormat === fmt && 'eidos-color-picker-format-btn--active',
-              ].filter(Boolean).join(' ')}
+              ]
+                .filter(Boolean)
+                .join(' ')}
               onClick={() => handleFormatChange(fmt)}
               disabled={disabled}
               aria-pressed={activeFormat === fmt}
@@ -505,7 +557,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           spellCheck={false}
           aria-label="Colour value"
           onChange={(e) => setInputText(e.target.value)}
-          onFocus={() => { inputFocusedRef.current = true; }}
+          onFocus={() => {
+            inputFocusedRef.current = true;
+          }}
           onBlur={() => {
             inputFocusedRef.current = false;
             handleInputCommit();
@@ -520,10 +574,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
         <button
           type="button"
-          className={[
-            'eidos-color-picker-copy',
-            copied && 'eidos-color-picker-copy--copied',
-          ].filter(Boolean).join(' ')}
+          className={['eidos-color-picker-copy', copied && 'eidos-color-picker-copy--copied']
+            .filter(Boolean)
+            .join(' ')}
           onClick={handleCopy}
           disabled={disabled}
           aria-label="Copy colour value"
@@ -543,7 +596,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
               className={[
                 'eidos-color-picker-swatch',
                 currentHex === swatchHex && 'eidos-color-picker-swatch--active',
-              ].filter(Boolean).join(' ')}
+              ]
+                .filter(Boolean)
+                .join(' ')}
               style={{ background: swatchHex }}
               onClick={() => handleSwatchClick(swatchHex)}
               disabled={disabled}
@@ -562,7 +617,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     `eidos-color-picker--${size}`,
     disabled && 'eidos-color-picker--disabled',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   // ── Inline mode ───────────────────────────────────────────────────────────
   if (inline) {

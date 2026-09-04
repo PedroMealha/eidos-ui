@@ -4,22 +4,22 @@ import { useSnackbarContext } from './Snackbar.context';
 import { SnackbarComponent } from './Snackbar.component';
 
 export const SnackbarContainer: React.FC = () => {
-	const { snackbars, removeSnackbar } = useSnackbarContext();
+  const { snackbars, removeSnackbar } = useSnackbarContext();
 
-	if (snackbars.length === 0) {
-		return null;
-	}
+  if (snackbars.length === 0) {
+    return null;
+  }
 
-	return createPortal(
-		<div className={'eidos-snackbar-container'}>
-			{snackbars.map((snackbar) => (
-				<div key={snackbar.id} className={'eidos-snackbar-wrapper'}>
-					<SnackbarComponent snackbar={snackbar} onClose={removeSnackbar} />
-				</div>
-			))}
-		</div>,
-		document.body
-	);
+  return createPortal(
+    <div className={'eidos-snackbar-container'}>
+      {snackbars.map((snackbar) => (
+        <div key={snackbar.id} className={'eidos-snackbar-wrapper'}>
+          <SnackbarComponent snackbar={snackbar} onClose={removeSnackbar} />
+        </div>
+      ))}
+    </div>,
+    document.body,
+  );
 };
 
 SnackbarContainer.displayName = 'SnackbarContainer';

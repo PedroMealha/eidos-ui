@@ -1,2 +1,2 @@
-export { Skeleton } from "./Skeleton.component";
-export type { SkeletonProps } from "./Skeleton.types";
+export { Skeleton } from './Skeleton.component';
+export type { SkeletonProps } from './Skeleton.types';

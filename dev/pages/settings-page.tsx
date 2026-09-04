@@ -27,9 +27,7 @@ export const SettingsPage: React.FC = () => {
   const { showSuccess, showInfo } = useSnackbar();
 
   const [name, setName] = useState(session?.name ?? '');
-  const [signature, setSignature] = useState(
-    'Ana Ferreira\nCustomer Support - Meridian',
-  );
+  const [signature, setSignature] = useState('Ana Ferreira\nCustomer Support - Meridian');
   const [avatar, setAvatar] = useState<string | undefined>(undefined);
   const [digest, setDigest] = useState('hourly');
   const [notifyAssigned, setNotifyAssigned] = useState(true);

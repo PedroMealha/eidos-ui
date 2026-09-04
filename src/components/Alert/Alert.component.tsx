@@ -1,16 +1,16 @@
-import React from "react";
-import { Info, CircleCheck, TriangleAlert, CircleX, X } from "lucide-react";
-import type { AlertProps } from "./Alert.types";
-import type { IconType } from "../../utils";
-import { renderIcon } from "../../utils";
-import { Button } from "../Button/Button.component";
-import "./Alert.scss";
+import React from 'react';
+import { Info, CircleCheck, TriangleAlert, CircleX, X } from 'lucide-react';
+import type { AlertProps } from './Alert.types';
+import type { IconType } from '../../utils';
+import { renderIcon } from '../../utils';
+import { Button } from '../Button/Button.component';
+import './Alert.scss';
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-type Variant = NonNullable<AlertProps["variant"]>;
+type Variant = NonNullable<AlertProps['variant']>;
 
 const DEFAULT_ICONS: Record<Variant, React.ComponentType<{ className?: string }>> = {
   info: Info,
@@ -23,11 +23,11 @@ const DEFAULT_ICONS: Record<Variant, React.ComponentType<{ className?: string }>
  * Button only ships primary | secondary | success | danger.
  * Warning maps to primary (closest neutral-positive colour available).
  */
-const VARIANT_TO_BUTTON_COLOR: Record<Variant, "primary" | "success" | "danger"> = {
-  info: "primary",
-  success: "success",
-  warning: "primary",
-  danger: "danger",
+const VARIANT_TO_BUTTON_COLOR: Record<Variant, 'primary' | 'success' | 'danger'> = {
+  info: 'primary',
+  success: 'success',
+  warning: 'primary',
+  danger: 'danger',
 };
 
 // ============================================================================
@@ -35,7 +35,7 @@ const VARIANT_TO_BUTTON_COLOR: Record<Variant, "primary" | "success" | "danger">
 // ============================================================================
 
 function isIconType(value: boolean | IconType): value is IconType {
-  return typeof value !== "boolean";
+  return typeof value !== 'boolean';
 }
 
 // ============================================================================
@@ -43,21 +43,15 @@ function isIconType(value: boolean | IconType): value is IconType {
 // ============================================================================
 
 export const Alert: React.FC<AlertProps> = ({
-  variant = "info",
+  variant = 'info',
   title,
   children,
   icon,
   onDismiss,
   action,
-  className = "",
+  className = '',
 }) => {
-  const classes = [
-    "eidos-alert",
-    `eidos-alert--${variant}`,
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const classes = ['eidos-alert', `eidos-alert--${variant}`, className].filter(Boolean).join(' ');
 
   // Determine icon rendering
   const showIcon = icon !== false;
@@ -68,7 +62,7 @@ export const Alert: React.FC<AlertProps> = ({
       const DefaultIcon = DEFAULT_ICONS[variant];
       iconNode = <DefaultIcon className="eidos-alert-icon" aria-hidden="true" />;
     } else if (isIconType(icon)) {
-      iconNode = renderIcon(icon, "eidos-alert-icon");
+      iconNode = renderIcon(icon, 'eidos-alert-icon');
     }
   }
 
@@ -76,9 +70,7 @@ export const Alert: React.FC<AlertProps> = ({
 
   return (
     <div className={classes} role="alert">
-      {showIcon && (
-        <span className="eidos-alert-icon-wrapper">{iconNode}</span>
-      )}
+      {showIcon && <span className="eidos-alert-icon-wrapper">{iconNode}</span>}
 
       <div className="eidos-alert-body">
         {title && <p className="eidos-alert-title">{title}</p>}
@@ -86,7 +78,7 @@ export const Alert: React.FC<AlertProps> = ({
         {action && (
           <div className="eidos-alert-action">
             <Button
-              variant={action.variant === "filled" ? "filled" : "text"}
+              variant={action.variant === 'filled' ? 'filled' : 'text'}
               size="sm"
               color={buttonColor}
               onClick={action.onClick}

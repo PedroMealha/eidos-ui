@@ -1,59 +1,59 @@
-import React from "react";
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Badge } from "./Badge.component";
-import { Chip } from "../Chip/Chip.component";
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Badge } from './Badge.component';
+import { Chip } from '../Chip/Chip.component';
 
 const meta = {
-  title: "Elements/Badge",
+  title: 'Elements/Badge',
   component: Badge,
   parameters: {
-    layout: "padded",
+    layout: 'padded',
   },
   argTypes: {
     children: {
-      control: "text",
-      description: "Badge content. When a number and `max` is set, shows `max+` if exceeded.",
-      table: { type: { summary: "React.ReactNode" } },
+      control: 'text',
+      description: 'Badge content. When a number and `max` is set, shows `max+` if exceeded.',
+      table: { type: { summary: 'React.ReactNode' } },
     },
     color: {
-      control: "select",
-      options: ["primary", "secondary", "success", "danger", "warning", "info"],
-      description: "Color theme",
+      control: 'select',
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      description: 'Color theme',
       table: {
         type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
-        defaultValue: { summary: "primary" },
+        defaultValue: { summary: 'primary' },
       },
     },
     variant: {
-      control: "select",
-      options: ["filled", "outlined", "text"],
-      description: "Visual style variant",
+      control: 'select',
+      options: ['filled', 'outlined', 'text'],
+      description: 'Visual style variant',
       table: {
         type: { summary: '"filled" | "outlined" | "text"' },
-        defaultValue: { summary: "filled" },
+        defaultValue: { summary: 'filled' },
       },
     },
     size: {
-      control: "select",
-      options: ["small", "medium"],
-      description: "Badge size",
+      control: 'select',
+      options: ['small', 'medium'],
+      description: 'Badge size',
       table: {
         type: { summary: '"small" | "medium"' },
-        defaultValue: { summary: "md" },
+        defaultValue: { summary: 'md' },
       },
     },
     dot: {
-      control: "boolean",
-      description: "Render a coloured dot with no text content",
+      control: 'boolean',
+      description: 'Render a coloured dot with no text content',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     max: {
-      control: "number",
-      description: "When children is a number, display `max+` if the value exceeds this threshold",
-      table: { type: { summary: "number" } },
+      control: 'number',
+      description: 'When children is a number, display `max+` if the value exceeds this threshold',
+      table: { type: { summary: 'number' } },
     },
     className: { table: { disable: true } },
   },
@@ -68,10 +68,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    children: "New",
-    color: "primary",
-    variant: "filled",
-    size: "md",
+    children: 'New',
+    color: 'primary',
+    variant: 'filled',
+    size: 'md',
   },
 };
 
@@ -82,39 +82,57 @@ export const Default: Story = {
 export const Variants = {
   render: () => {
     const label: React.CSSProperties = {
-      marginBottom: "0.5rem",
-      fontSize: "0.7rem",
+      marginBottom: '0.5rem',
+      fontSize: '0.7rem',
       fontWeight: 600,
-      textTransform: "uppercase" as const,
-      letterSpacing: "0.07em",
-      color: "#94a3b8",
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
     };
-    const row: React.CSSProperties = { display: "flex", gap: "0.5rem", alignItems: "center" };
+    const row: React.CSSProperties = { display: 'flex', gap: '0.5rem', alignItems: 'center' };
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", padding: "1rem" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem' }}>
         <div>
           <p style={label}>Filled</p>
           <div style={row}>
-            <Badge variant="filled" color="primary">Filled</Badge>
-            <Badge variant="filled" color="success">Filled</Badge>
-            <Badge variant="filled" color="danger">Filled</Badge>
+            <Badge variant="filled" color="primary">
+              Filled
+            </Badge>
+            <Badge variant="filled" color="success">
+              Filled
+            </Badge>
+            <Badge variant="filled" color="danger">
+              Filled
+            </Badge>
           </div>
         </div>
         <div>
           <p style={label}>Outlined</p>
           <div style={row}>
-            <Badge variant="outlined" color="primary">Outlined</Badge>
-            <Badge variant="outlined" color="success">Outlined</Badge>
-            <Badge variant="outlined" color="danger">Outlined</Badge>
+            <Badge variant="outlined" color="primary">
+              Outlined
+            </Badge>
+            <Badge variant="outlined" color="success">
+              Outlined
+            </Badge>
+            <Badge variant="outlined" color="danger">
+              Outlined
+            </Badge>
           </div>
         </div>
         <div>
           <p style={label}>Text</p>
           <div style={row}>
-            <Badge variant="text" color="primary">Text</Badge>
-            <Badge variant="text" color="success">Text</Badge>
-            <Badge variant="text" color="danger">Text</Badge>
+            <Badge variant="text" color="primary">
+              Text
+            </Badge>
+            <Badge variant="text" color="success">
+              Text
+            </Badge>
+            <Badge variant="text" color="danger">
+              Text
+            </Badge>
           </div>
         </div>
       </div>
@@ -128,10 +146,15 @@ export const Variants = {
 
 export const Colors = {
   render: () => {
-    const row: React.CSSProperties = { display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" };
+    const row: React.CSSProperties = {
+      display: 'flex',
+      gap: '0.5rem',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+    };
 
     return (
-      <div style={{ padding: "1rem" }}>
+      <div style={{ padding: '1rem' }}>
         <div style={row}>
           <Badge color="primary">Primary</Badge>
           <Badge color="secondary">Secondary</Badge>
@@ -151,10 +174,15 @@ export const Colors = {
 
 export const Dot = {
   render: () => {
-    const row: React.CSSProperties = { display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" };
+    const row: React.CSSProperties = {
+      display: 'flex',
+      gap: '0.75rem',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+    };
 
     return (
-      <div style={{ padding: "1rem" }}>
+      <div style={{ padding: '1rem' }}>
         <div style={row}>
           <Badge dot color="primary" />
           <Badge dot color="secondary" />
@@ -175,23 +203,27 @@ export const Dot = {
 export const Sizes = {
   render: () => {
     const label: React.CSSProperties = {
-      marginBottom: "0.5rem",
-      fontSize: "0.7rem",
+      marginBottom: '0.5rem',
+      fontSize: '0.7rem',
       fontWeight: 600,
-      textTransform: "uppercase" as const,
-      letterSpacing: "0.07em",
-      color: "#94a3b8",
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
     };
-    const row: React.CSSProperties = { display: "flex", gap: "0.75rem", alignItems: "center" };
+    const row: React.CSSProperties = { display: 'flex', gap: '0.75rem', alignItems: 'center' };
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", padding: "1rem" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem' }}>
         <div>
           <p style={label}>Small</p>
           <div style={row}>
             <Badge size="sm">Small</Badge>
-            <Badge size="sm" variant="outlined">Small</Badge>
-            <Badge size="sm" variant="text">Small</Badge>
+            <Badge size="sm" variant="outlined">
+              Small
+            </Badge>
+            <Badge size="sm" variant="text">
+              Small
+            </Badge>
             <Badge size="sm" dot color="success" />
           </div>
         </div>
@@ -199,8 +231,12 @@ export const Sizes = {
           <p style={label}>Medium</p>
           <div style={row}>
             <Badge size="md">Medium</Badge>
-            <Badge size="md" variant="outlined">Medium</Badge>
-            <Badge size="md" variant="text">Medium</Badge>
+            <Badge size="md" variant="outlined">
+              Medium
+            </Badge>
+            <Badge size="md" variant="text">
+              Medium
+            </Badge>
             <Badge size="md" dot color="success" />
           </div>
         </div>
@@ -216,22 +252,30 @@ export const Sizes = {
 export const Numbers = {
   render: () => {
     const label: React.CSSProperties = {
-      fontSize: "0.7rem",
+      fontSize: '0.7rem',
       fontWeight: 600,
-      textTransform: "uppercase" as const,
-      letterSpacing: "0.07em",
-      color: "#94a3b8",
-      marginBottom: "0.5rem",
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
+      marginBottom: '0.5rem',
     };
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", padding: "1rem" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
         <p style={label}>With max=99 - value 150 is clamped to &ldquo;99+&rdquo;</p>
-        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-          <Badge color="primary" max={99}>{1}</Badge>
-          <Badge color="primary" max={99}>{5}</Badge>
-          <Badge color="primary" max={99}>{99}</Badge>
-          <Badge color="danger" max={99}>{150}</Badge>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <Badge color="primary" max={99}>
+            {1}
+          </Badge>
+          <Badge color="primary" max={99}>
+            {5}
+          </Badge>
+          <Badge color="primary" max={99}>
+            {99}
+          </Badge>
+          <Badge color="danger" max={99}>
+            {150}
+          </Badge>
         </div>
       </div>
     );
@@ -245,47 +289,68 @@ export const Numbers = {
 export const WithChip = {
   render: () => {
     const label: React.CSSProperties = {
-      marginBottom: "0.5rem",
-      fontSize: "0.7rem",
+      marginBottom: '0.5rem',
+      fontSize: '0.7rem',
       fontWeight: 600,
-      textTransform: "uppercase" as const,
-      letterSpacing: "0.07em",
-      color: "#94a3b8",
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
     };
-    const row: React.CSSProperties = { display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" };
+    const row: React.CSSProperties = {
+      display: 'flex',
+      gap: '0.75rem',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+    };
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "2rem", padding: "1rem" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '1rem' }}>
         <div>
           <p style={label}>Status label + badge count</p>
           <div style={row}>
-            <Chip color="primary" variant="text">In Progress</Chip>
+            <Chip color="primary" variant="text">
+              In Progress
+            </Chip>
             <Badge color="primary">4</Badge>
           </div>
         </div>
         <div>
           <p style={label}>Category chip + text badge</p>
           <div style={row}>
-            <Chip color="success" variant="text">Completed</Chip>
-            <Badge color="success" variant="text">12</Badge>
+            <Chip color="success" variant="text">
+              Completed
+            </Chip>
+            <Badge color="success" variant="text">
+              12
+            </Badge>
           </div>
         </div>
         <div>
           <p style={label}>Alert chip + danger badge</p>
           <div style={row}>
-            <Chip color="danger" variant="text">Errors</Chip>
-            <Badge color="danger" max={9}>{15}</Badge>
+            <Chip color="danger" variant="text">
+              Errors
+            </Chip>
+            <Badge color="danger" max={9}>
+              {15}
+            </Badge>
           </div>
         </div>
         <div>
           <p style={label}>Dot indicator alongside chip</p>
           <div style={row}>
             <Badge dot color="success" />
-            <Chip color="success" variant="outlined">Online</Chip>
+            <Chip color="success" variant="outlined">
+              Online
+            </Chip>
             <Badge dot color="danger" />
-            <Chip color="danger" variant="outlined">Offline</Chip>
+            <Chip color="danger" variant="outlined">
+              Offline
+            </Chip>
             <Badge dot color="warning" />
-            <Chip color="warning" variant="outlined">Away</Chip>
+            <Chip color="warning" variant="outlined">
+              Away
+            </Chip>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
-import type { InputProps } from "../Input/Input.types";
-import type { IconType } from "../../utils";
+import type { InputProps } from '../Input/Input.types';
+import type { IconType } from '../../utils';
 
 export interface SelectOption {
   id: string;

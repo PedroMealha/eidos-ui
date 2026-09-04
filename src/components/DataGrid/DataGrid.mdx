@@ -22,30 +22,24 @@ interface Person extends Record<string, unknown> {
 }
 
 const columns: DataGridColumn<Person>[] = [
-  { key: 'id',   header: 'ID',   type: 'readonly', width: 60 },
-  { key: 'name', header: 'Name', type: 'text',     minWidth: 160, required: true },
+  { key: 'id', header: 'ID', type: 'readonly', width: 60 },
+  { key: 'name', header: 'Name', type: 'text', minWidth: 160, required: true },
   {
-    key: 'role', header: 'Role', type: 'select', width: 130,
+    key: 'role',
+    header: 'Role',
+    type: 'select',
+    width: 130,
     options: [
-      { value: 'lead',   label: 'Lead' },
+      { value: 'lead', label: 'Lead' },
       { value: 'senior', label: 'Senior' },
     ],
   },
 ];
 
 function TeamTable() {
-  const [data, setData] = useState<Person[]>([
-    { id: 1, name: 'Alice', role: 'lead' },
-  ]);
+  const [data, setData] = useState<Person[]>([{ id: 1, name: 'Alice', role: 'lead' }]);
 
-  return (
-    <DataGrid<Person>
-      columns={columns}
-      data={data}
-      rowKey="id"
-      onChange={setData}
-    />
-  );
+  return <DataGrid<Person> columns={columns} data={data} rowKey="id" onChange={setData} />;
 }
 ```
 

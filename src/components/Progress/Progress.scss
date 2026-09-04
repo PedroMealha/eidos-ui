@@ -5,9 +5,9 @@
 // ============================================================================
 
 .eidos-progress {
-	@include flex-center-y;
-	gap: var(--spacing-sm);
-	width: 100%;
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  width: 100%;
 }
 
 // ============================================================================
@@ -15,11 +15,11 @@
 // ============================================================================
 
 .eidos-progress-track {
-	flex: 1;
-	background-color: var(--gray-100);
-	border-radius: 9999px;
-	overflow: hidden;
-	position: relative;
+  flex: 1;
+  background-color: var(--gray-100);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
 }
 
 // ============================================================================
@@ -27,21 +27,25 @@
 // ============================================================================
 
 .eidos-progress-fill {
-	height: 100%;
-	background-color: var(--primary-color);
-	border-radius: 9999px;
-	transition: width 0.4s ease;
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 9999px;
+  transition: width 0.4s ease;
 
-	// Indeterminate animation
-	&--indeterminate {
-		width: 40%;
-		animation: eidos-progress-slide 1.5s ease-in-out infinite;
-	}
+  // Indeterminate animation
+  &--indeterminate {
+    width: 40%;
+    animation: eidos-progress-slide 1.5s ease-in-out infinite;
+  }
 }
 
 @keyframes eidos-progress-slide {
-	0% { transform: translateX(-150%); }
-	100% { transform: translateX(350%); }
+  0% {
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
 }
 
 // ============================================================================
@@ -49,44 +53,62 @@
 // ============================================================================
 
 .eidos-progress--striped .eidos-progress-fill {
-	background-image: repeating-linear-gradient(
-		45deg,
-		rgba(255, 255, 255, 0.15) 0px,
-		rgba(255, 255, 255, 0.15) 10px,
-		transparent 10px,
-		transparent 20px
-	);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 0px,
+    rgba(255, 255, 255, 0.15) 10px,
+    transparent 10px,
+    transparent 20px
+  );
 }
 
 // ============================================================================
 // Sizes
 // ============================================================================
 
-.eidos-progress--sm .eidos-progress-track { height: 4px; }
-.eidos-progress--md .eidos-progress-track { height: 8px; }
-.eidos-progress--lg .eidos-progress-track { height: 12px; }
+.eidos-progress--sm .eidos-progress-track {
+  height: 4px;
+}
+.eidos-progress--md .eidos-progress-track {
+  height: 8px;
+}
+.eidos-progress--lg .eidos-progress-track {
+  height: 12px;
+}
 
 // ============================================================================
 // Colors
 // ============================================================================
 
-.eidos-progress--primary .eidos-progress-fill { background-color: var(--primary-color); }
-.eidos-progress--secondary .eidos-progress-fill { background-color: var(--secondary-color); }
-.eidos-progress--success .eidos-progress-fill { background-color: var(--success-color); }
-.eidos-progress--danger .eidos-progress-fill { background-color: var(--danger-color); }
-.eidos-progress--warning .eidos-progress-fill { background-color: var(--warning-color); }
-.eidos-progress--info .eidos-progress-fill { background-color: var(--info-color); }
+.eidos-progress--primary .eidos-progress-fill {
+  background-color: var(--primary-color);
+}
+.eidos-progress--secondary .eidos-progress-fill {
+  background-color: var(--secondary-color);
+}
+.eidos-progress--success .eidos-progress-fill {
+  background-color: var(--success-color);
+}
+.eidos-progress--danger .eidos-progress-fill {
+  background-color: var(--danger-color);
+}
+.eidos-progress--warning .eidos-progress-fill {
+  background-color: var(--warning-color);
+}
+.eidos-progress--info .eidos-progress-fill {
+  background-color: var(--info-color);
+}
 
 // ============================================================================
 // Label
 // ============================================================================
 
 .eidos-progress-label {
-	@include font-size(sm);
-	@include font-weight(medium);
-	color: var(--gray-600);
-	white-space: nowrap;
-	flex-shrink: 0;
-	min-width: 3ch;
-	text-align: right;
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--gray-600);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 3ch;
+  text-align: right;
 }

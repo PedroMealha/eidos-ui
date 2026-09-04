@@ -138,11 +138,11 @@ export const AllColors = {
   render: () => (
     <Timeline
       items={[
-        { id: '1', title: 'Default',   description: 'Default gray dot.',         color: 'default'   },
-        { id: '2', title: 'Primary',   description: 'Primary brand color.',       color: 'primary'   },
-        { id: '3', title: 'Secondary', description: 'Secondary accent color.',    color: 'secondary' },
-        { id: '4', title: 'Success',   description: 'Green success state.',        color: 'success'   },
-        { id: '5', title: 'Danger',    description: 'Red danger / error state.',  color: 'danger'    },
+        { id: '1', title: 'Default', description: 'Default gray dot.', color: 'default' },
+        { id: '2', title: 'Primary', description: 'Primary brand color.', color: 'primary' },
+        { id: '3', title: 'Secondary', description: 'Secondary accent color.', color: 'secondary' },
+        { id: '4', title: 'Success', description: 'Green success state.', color: 'success' },
+        { id: '5', title: 'Danger', description: 'Red danger / error state.', color: 'danger' },
       ]}
     />
   ),

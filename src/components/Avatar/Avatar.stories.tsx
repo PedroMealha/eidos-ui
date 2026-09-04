@@ -1,7 +1,7 @@
-import React from "react";
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, AvatarGroup } from "./Avatar.component";
-import type { AvatarColor } from "./Avatar.types";
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Avatar, AvatarGroup } from './Avatar.component';
+import type { AvatarColor } from './Avatar.types';
 
 // A self-contained inline SVG (soft-focus colour blobs, like an out-of-focus photo) used
 // as the "image avatar" sample. Deliberately not a live network image (e.g. picsum.photos) -
@@ -23,40 +23,40 @@ const SAMPLE_AVATAR_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
 `)}`;
 
 const meta = {
-  title: "Elements/Avatar",
+  title: 'Elements/Avatar',
   component: Avatar,
   parameters: {
-    layout: "padded",
+    layout: 'padded',
   },
   argTypes: {
     src: {
-      control: "text",
-      description: "Image URL. Falls back to initials or fallback icon on error.",
-      table: { type: { summary: "string" } },
+      control: 'text',
+      description: 'Image URL. Falls back to initials or fallback icon on error.',
+      table: { type: { summary: 'string' } },
     },
     alt: {
-      control: "text",
-      description: "Alt text for the image element.",
-      table: { type: { summary: "string" } },
+      control: 'text',
+      description: 'Alt text for the image element.',
+      table: { type: { summary: 'string' } },
     },
     name: {
-      control: "text",
-      description: "Display name used to generate initials and auto-derive background colour.",
-      table: { type: { summary: "string" } },
+      control: 'text',
+      description: 'Display name used to generate initials and auto-derive background colour.',
+      table: { type: { summary: 'string' } },
     },
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Avatar dimensions.",
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Avatar dimensions.',
       table: {
         type: { summary: '"sm" | "md" | "lg"' },
-        defaultValue: { summary: "md" },
+        defaultValue: { summary: 'md' },
       },
     },
     color: {
-      control: "select",
-      options: ["primary", "secondary", "success", "danger", "warning", "info", "gray"],
-      description: "Override the auto-derived background colour for the initials variant.",
+      control: 'select',
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'gray'],
+      description: 'Override the auto-derived background colour for the initials variant.',
       table: {
         type: {
           summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info" | "gray"',
@@ -64,23 +64,24 @@ const meta = {
       },
     },
     shape: {
-      control: "select",
-      options: ["circle", "square"],
-      description: "Border-radius shape.",
+      control: 'select',
+      options: ['circle', 'square'],
+      description: 'Border-radius shape.',
       table: {
         type: { summary: '"circle" | "square"' },
-        defaultValue: { summary: "circle" },
+        defaultValue: { summary: 'circle' },
       },
     },
     onClick: {
       control: false,
-      description: "Click handler. When provided, the avatar gains button semantics and a focus ring.",
-      table: { type: { summary: "() => void" } },
+      description:
+        'Click handler. When provided, the avatar gains button semantics and a focus ring.',
+      table: { type: { summary: '() => void' } },
     },
     fallback: {
       control: false,
-      description: "Custom content rendered when both src and name are absent.",
-      table: { type: { summary: "React.ReactNode" } },
+      description: 'Custom content rendered when both src and name are absent.',
+      table: { type: { summary: 'React.ReactNode' } },
     },
     className: { table: { disable: true } },
   },
@@ -96,9 +97,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     src: SAMPLE_AVATAR_IMAGE,
-    alt: "Sample avatar",
-    size: "md",
-    shape: "circle",
+    alt: 'Sample avatar',
+    size: 'md',
+    shape: 'circle',
   },
 };
 
@@ -108,9 +109,9 @@ export const Default: Story = {
 
 export const WithInitials: Story = {
   args: {
-    name: "John Doe",
-    size: "md",
-    shape: "circle",
+    name: 'John Doe',
+    size: 'md',
+    shape: 'circle',
   },
 };
 
@@ -120,9 +121,9 @@ export const WithInitials: Story = {
 
 export const WithCustomColor: Story = {
   args: {
-    name: "Alice",
-    color: "success",
-    size: "md",
+    name: 'Alice',
+    color: 'success',
+    size: 'md',
   },
 };
 
@@ -132,8 +133,8 @@ export const WithCustomColor: Story = {
 
 export const Fallback: Story = {
   args: {
-    size: "md",
-    shape: "circle",
+    size: 'md',
+    shape: 'circle',
   },
 };
 
@@ -143,7 +144,7 @@ export const Fallback: Story = {
 
 export const Shapes = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
       <div>
         <p style={labelStyle}>Circle</p>
         <Avatar name="John Doe" size="lg" shape="circle" />
@@ -162,9 +163,12 @@ export const Shapes = {
 
 export const Sizes = {
   render: () => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <div key={size} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
+    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <div
+          key={size}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
+        >
           <Avatar name="Jane Smith" size={size} />
           <span style={labelStyle}>{size}</span>
         </div>
@@ -178,20 +182,23 @@ export const Sizes = {
 // ============================================================================
 
 const avatarColors: AvatarColor[] = [
-  "primary",
-  "secondary",
-  "success",
-  "danger",
-  "warning",
-  "info",
-  "gray",
+  'primary',
+  'secondary',
+  'success',
+  'danger',
+  'warning',
+  'info',
+  'gray',
 ];
 
 export const Colors = {
   render: () => (
-    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
+    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
       {avatarColors.map((color) => (
-        <div key={color} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
+        <div
+          key={color}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
+        >
           <Avatar name="AB" color={color} size="md" />
           <span style={labelStyle}>{color}</span>
         </div>
@@ -206,9 +213,9 @@ export const Colors = {
 
 export const Clickable: Story = {
   args: {
-    name: "Jane Smith",
-    size: "md",
-    onClick: () => console.log("Avatar clicked"),
+    name: 'Jane Smith',
+    size: 'md',
+    onClick: () => console.log('Avatar clicked'),
   },
 };
 
@@ -218,9 +225,9 @@ export const Clickable: Story = {
 
 export const WithError: Story = {
   args: {
-    src: "invalid-url.jpg",
-    name: "John Doe",
-    size: "md",
+    src: 'invalid-url.jpg',
+    name: 'John Doe',
+    size: 'md',
   },
 };
 
@@ -247,10 +254,10 @@ export const Group = {
 
 export const GroupSizes = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <div key={size} style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ ...labelStyle, minWidth: "2rem" }}>{size}</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <div key={size} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{ ...labelStyle, minWidth: '2rem' }}>{size}</span>
           <AvatarGroup size={size} max={4}>
             <Avatar name="Alice Johnson" />
             <Avatar name="Bob Smith" />
@@ -270,9 +277,9 @@ export const GroupSizes = {
 
 const labelStyle: React.CSSProperties = {
   margin: 0,
-  fontSize: "0.7rem",
+  fontSize: '0.7rem',
   fontWeight: 600,
-  textTransform: "uppercase",
-  letterSpacing: "0.07em",
-  color: "#94a3b8",
+  textTransform: 'uppercase',
+  letterSpacing: '0.07em',
+  color: '#94a3b8',
 };

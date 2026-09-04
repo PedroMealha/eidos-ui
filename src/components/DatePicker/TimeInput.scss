@@ -1,44 +1,44 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-time-input {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
 .eidos-time-input-label {
-	font-size: var(--font-size-sm);
-	font-weight: var(--font-weight-medium);
-	color: var(--gray-700);
-	margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-700);
+  margin: 0;
 }
 
 .eidos-time-input-inputs {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .eidos-time-input-input-group {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .eidos-time-input-time-field {
-	width: 60px;
-	text-align: center;
+  width: 60px;
+  text-align: center;
 
-	input {
-		text-align: center;
-		font-family: var(--font-family-mono);
-		font-size: var(--font-size-sm);
-	}
+  input {
+    text-align: center;
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+  }
 }
 
 .eidos-time-input-separator {
-	font-size: var(--font-size-lg);
-	font-weight: var(--font-weight-medium);
-	color: var(--gray-500);
-	user-select: none;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-500);
+  user-select: none;
 }

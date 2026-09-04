@@ -1,157 +1,157 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: var(--z-index-modal);
-	opacity: 0;
-	visibility: hidden;
-	transition:
-		opacity 0.2s ease,
-		visibility 0.2s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-index-modal);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
 
-	&.eidos-modal--is-open {
-		opacity: 1;
-		visibility: visible;
-	}
+  &.eidos-modal--is-open {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .eidos-modal-content {
-	background: var(--white);
-	border-radius: var(--border-radius-md);
-	box-shadow: var(--box-shadow-lg);
-	max-height: 90vh;
-	overflow-y: auto;
-	transform: scale(0.95);
-	transition: transform 0.2s ease;
-	display: flex;
-	flex-direction: column;
-	will-change: transform;
+  background: var(--white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--box-shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
 
-	.eidos-modal.eidos-modal--is-open & {
-		transform: scale(1);
-	}
+  .eidos-modal.eidos-modal--is-open & {
+    transform: scale(1);
+  }
 
-	// Size variants
-	&--sm {
-		max-width: 400px;
-		width: 90%;
-	}
+  // Size variants
+  &--sm {
+    max-width: 400px;
+    width: 90%;
+  }
 
-	&--md {
-		max-width: 600px;
-		width: 90%;
-	}
+  &--md {
+    max-width: 600px;
+    width: 90%;
+  }
 
-	&--lg {
-		max-width: 800px;
-		width: 90%;
-	}
+  &--lg {
+    max-width: 800px;
+    width: 90%;
+  }
 
-	&--full {
-		max-width: 95vw;
-		width: 95vw;
-		height: 95vh;
-	}
+  &--full {
+    max-width: 95vw;
+    width: 95vw;
+    height: 95vh;
+  }
 }
 
 .eidos-modal-header {
-	padding: var(--spacing-lg) var(--spacing-lg) 0;
-	border-bottom: 1px solid var(--gray-200);
-	margin-bottom: var(--spacing-lg);
-	padding-bottom: var(--spacing-lg);
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-lg) 0;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 
-	h4 {
-		display: inline-flex;
-		gap: 0.3rem;
-		margin: 0;
-		color: inherit;
-		line-height: 1;
-	}
+  h4 {
+    display: inline-flex;
+    gap: 0.3rem;
+    margin: 0;
+    color: inherit;
+    line-height: 1;
+  }
 
-	.eidos-modal-icon {
-		flex-shrink: 0;
-		width: 1.4rem;
-		height: 1.4rem;
-	}
+  .eidos-modal-icon {
+    flex-shrink: 0;
+    width: 1.4rem;
+    height: 1.4rem;
+  }
 
-	// Type-based title colors
-	&--info {
-		color: var(--info-color);
-	}
+  // Type-based title colors
+  &--info {
+    color: var(--info-color);
+  }
 
-	&--success {
-		color: var(--success-color);
-	}
+  &--success {
+    color: var(--success-color);
+  }
 
-	&--warning {
-		color: var(--warning-color);
-	}
+  &--warning {
+    color: var(--warning-color);
+  }
 
-	&--danger {
-		color: var(--danger-color);
-	}
+  &--danger {
+    color: var(--danger-color);
+  }
 }
 
 .eidos-modal-body {
-	padding: 0 var(--spacing-lg) var(--spacing-lg);
-	flex: 1;
-	overflow-y: auto;
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  flex: 1;
+  overflow-y: auto;
 }
 
 .eidos-modal-footer {
-	padding: var(--spacing-md);
-	border-top: 1px solid var(--gray-200);
-	margin-top: var(--spacing-md);
-	display: flex;
-	gap: var(--spacing-sm);
-	justify-content: flex-end;
-	align-items: center;
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--gray-200);
+  margin-top: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  align-items: center;
 }
 
 // Button styles are handled by the Button component
 
 // Backdrop click area
 .eidos-modal-backdrop {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 // Responsive adjustments
 @media (max-width: 768px) {
-	.eidos-modal-content {
-		margin: var(--spacing-sm);
-		width: calc(100% - var(--spacing-sm) * 2);
+  .eidos-modal-content {
+    margin: var(--spacing-sm);
+    width: calc(100% - var(--spacing-sm) * 2);
 
-		&--sm,
-		&--md,
-		&--lg {
-			max-width: none;
-		}
-	}
+    &--sm,
+    &--md,
+    &--lg {
+      max-width: none;
+    }
+  }
 
-	.eidos-modal-header,
-	.eidos-modal-body,
-	.eidos-modal-footer {
-		padding-left: var(--spacing-md);
-		padding-right: var(--spacing-md);
-	}
+  .eidos-modal-header,
+  .eidos-modal-body,
+  .eidos-modal-footer {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
 
-	.eidos-modal-footer {
-		flex-direction: column;
-	}
+  .eidos-modal-footer {
+    flex-direction: column;
+  }
 }

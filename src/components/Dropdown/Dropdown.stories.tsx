@@ -34,7 +34,10 @@ const meta = {
       control: 'select',
       options: ['top', 'bottom', 'left', 'right'],
       description: 'Preferred placement of the dropdown (auto-adjusts if no space)',
-      table: { type: { summary: '"top" | "bottom" | "left" | "right"' }, defaultValue: { summary: 'bottom' } },
+      table: {
+        type: { summary: '"top" | "bottom" | "left" | "right"' },
+        defaultValue: { summary: 'bottom' },
+      },
     },
     delay: {
       control: 'number',
@@ -69,7 +72,10 @@ const meta = {
     maxWidth: {
       control: 'text',
       description: 'Maximum width of dropdown (number in px, string with units, or "auto")',
-      table: { type: { summary: 'number | string | "auto"' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'number | string | "auto"' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     minHeight: {
       control: 'text',
@@ -79,7 +85,10 @@ const meta = {
     maxHeight: {
       control: 'text',
       description: 'Maximum height of dropdown',
-      table: { type: { summary: 'number | string | "auto"' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'number | string | "auto"' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     triggerClassName: {
       control: 'text',
@@ -136,174 +145,189 @@ export const Examples = {
     };
 
     return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
-      <div>
-        <p style={label}>Basic Menu</p>
-        <Dropdown
-          trigger={
-            <Button variant="outlined" posIcon={ChevronDown}>
-              User Menu
-            </Button>
-          }
-          content={
-            <div style={{ minWidth: '200px' }}>
-              <div
-                style={{
-                  padding: '0.75rem 1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                }}
-                onClick={() => alert('Profile clicked')}
-              >
-                <User size={16} />
-                <span>Profile</span>
-              </div>
-              <div
-                style={{
-                  padding: '0.75rem 1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                }}
-                onClick={() => alert('Settings clicked')}
-              >
-                <Settings size={16} />
-                <span>Settings</span>
-              </div>
-              <div style={{ height: '1px', background: 'var(--gray-200)', margin: '0.5rem 0' }} />
-              <div
-                style={{
-                  padding: '0.75rem 1rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  color: 'var(--danger)',
-                }}
-                onClick={() => alert('Logout clicked')}
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
-              </div>
-            </div>
-          }
-        />
-      </div>
-
-      <div>
-        <p style={label}>Placements</p>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
+        <div>
+          <p style={label}>Basic Menu</p>
           <Dropdown
-            placement="top"
-            trigger={<Button variant="filled">Top</Button>}
-            content={<div style={{ padding: '1rem' }}>Top placement</div>}
-          />
-          <Dropdown
-            placement="bottom"
-            trigger={<Button variant="filled">Bottom</Button>}
-            content={<div style={{ padding: '1rem' }}>Bottom placement</div>}
-          />
-          <Dropdown
-            placement="left"
-            trigger={<Button variant="filled">Left</Button>}
-            content={<div style={{ padding: '1rem' }}>Left placement</div>}
-          />
-          <Dropdown
-            placement="right"
-            trigger={<Button variant="filled">Right</Button>}
-            content={<div style={{ padding: '1rem' }}>Right placement</div>}
-          />
-        </div>
-      </div>
-
-      <div>
-        <p style={label}>Sizing</p>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Dropdown
-            trigger={<Button variant="outlined">Min Width 300px</Button>}
-            content={<div style={{ padding: '1rem' }}>This dropdown has a minimum width of 300px</div>}
-            minWidth={300}
-          />
-          <Dropdown
-            trigger={<Button variant="outlined">Max Height 150px</Button>}
+            trigger={
+              <Button variant="outlined" posIcon={ChevronDown}>
+                User Menu
+              </Button>
+            }
             content={
-              <div style={{ padding: '1rem' }}>
-                <p>This dropdown has scrollable content</p>
-                <p>Line 1</p>
-                <p>Line 2</p>
-                <p>Line 3</p>
-                <p>Line 4</p>
-                <p>Line 5</p>
-                <p>Line 6</p>
+              <div style={{ minWidth: '200px' }}>
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                  onClick={() => alert('Profile clicked')}
+                >
+                  <User size={16} />
+                  <span>Profile</span>
+                </div>
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                  onClick={() => alert('Settings clicked')}
+                >
+                  <Settings size={16} />
+                  <span>Settings</span>
+                </div>
+                <div style={{ height: '1px', background: 'var(--gray-200)', margin: '0.5rem 0' }} />
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    color: 'var(--danger)',
+                  }}
+                  onClick={() => alert('Logout clicked')}
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </div>
               </div>
             }
-            maxHeight={150}
+          />
+        </div>
+
+        <div>
+          <p style={label}>Placements</p>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <Dropdown
+              placement="top"
+              trigger={<Button variant="filled">Top</Button>}
+              content={<div style={{ padding: '1rem' }}>Top placement</div>}
+            />
+            <Dropdown
+              placement="bottom"
+              trigger={<Button variant="filled">Bottom</Button>}
+              content={<div style={{ padding: '1rem' }}>Bottom placement</div>}
+            />
+            <Dropdown
+              placement="left"
+              trigger={<Button variant="filled">Left</Button>}
+              content={<div style={{ padding: '1rem' }}>Left placement</div>}
+            />
+            <Dropdown
+              placement="right"
+              trigger={<Button variant="filled">Right</Button>}
+              content={<div style={{ padding: '1rem' }}>Right placement</div>}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Sizing</p>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <Dropdown
+              trigger={<Button variant="outlined">Min Width 300px</Button>}
+              content={
+                <div style={{ padding: '1rem' }}>This dropdown has a minimum width of 300px</div>
+              }
+              minWidth={300}
+            />
+            <Dropdown
+              trigger={<Button variant="outlined">Max Height 150px</Button>}
+              content={
+                <div style={{ padding: '1rem' }}>
+                  <p>This dropdown has scrollable content</p>
+                  <p>Line 1</p>
+                  <p>Line 2</p>
+                  <p>Line 3</p>
+                  <p>Line 4</p>
+                  <p>Line 5</p>
+                  <p>Line 6</p>
+                </div>
+              }
+              maxHeight={150}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>With Delay</p>
+          <Dropdown
+            delay={500}
+            trigger={<Button variant="outlined">Click me (500ms delay)</Button>}
+            content={<div style={{ padding: '1rem' }}>This appeared after a delay!</div>}
+          />
+        </div>
+
+        <div>
+          <p style={label}>Grouped (mutual exclusion)</p>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <Dropdown
+              dropdownGroup="actions"
+              trigger={
+                <Button variant="filled" color="primary">
+                  Action 1
+                </Button>
+              }
+              content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 1 content</div>}
+            />
+            <Dropdown
+              dropdownGroup="actions"
+              trigger={
+                <Button variant="filled" color="secondary">
+                  Action 2
+                </Button>
+              }
+              content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 2 content</div>}
+            />
+            <Dropdown
+              dropdownGroup="actions"
+              trigger={
+                <Button variant="filled" color="success">
+                  Action 3
+                </Button>
+              }
+              content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 3 content</div>}
+            />
+          </div>
+        </div>
+
+        <div>
+          <p style={label}>Custom Trigger</p>
+          <Dropdown
+            trigger={
+              <div
+                style={{
+                  padding: '0.5rem 1rem',
+                  border: '1px solid var(--gray-300)',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                }}
+              >
+                <HelpCircle size={16} />
+                <span>Need Help?</span>
+              </div>
+            }
+            content={
+              <div style={{ padding: '1rem', maxWidth: '250px' }}>
+                <h4 style={{ margin: '0 0 0.5rem 0' }}>Help Center</h4>
+                <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--gray-600)' }}>
+                  Click here to access documentation, tutorials, and support resources.
+                </p>
+              </div>
+            }
           />
         </div>
       </div>
-
-      <div>
-        <p style={label}>With Delay</p>
-        <Dropdown
-          delay={500}
-          trigger={<Button variant="outlined">Click me (500ms delay)</Button>}
-          content={<div style={{ padding: '1rem' }}>This appeared after a delay!</div>}
-        />
-      </div>
-
-      <div>
-        <p style={label}>Grouped (mutual exclusion)</p>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <Dropdown
-            dropdownGroup="actions"
-            trigger={<Button variant="filled" color="primary">Action 1</Button>}
-            content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 1 content</div>}
-          />
-          <Dropdown
-            dropdownGroup="actions"
-            trigger={<Button variant="filled" color="secondary">Action 2</Button>}
-            content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 2 content</div>}
-          />
-          <Dropdown
-            dropdownGroup="actions"
-            trigger={<Button variant="filled" color="success">Action 3</Button>}
-            content={<div style={{ padding: '1rem', minWidth: '150px' }}>Dropdown 3 content</div>}
-          />
-        </div>
-      </div>
-
-      <div>
-        <p style={label}>Custom Trigger</p>
-        <Dropdown
-          trigger={
-            <div style={{
-              padding: '0.5rem 1rem',
-              border: '1px solid var(--gray-300)',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}>
-              <HelpCircle size={16} />
-              <span>Need Help?</span>
-            </div>
-          }
-          content={
-            <div style={{ padding: '1rem', maxWidth: '250px' }}>
-              <h4 style={{ margin: '0 0 0.5rem 0' }}>Help Center</h4>
-              <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--gray-600)' }}>
-                Click here to access documentation, tutorials, and support resources.
-              </p>
-            </div>
-          }
-        />
-      </div>
-    </div>
     );
   },
 };
-

@@ -16,15 +16,15 @@ import { ContextMenu } from '@pmealha/eidos-ui';
 import type { MenuItemType } from '@pmealha/eidos-ui';
 
 const items: MenuItemType[] = [
-  { type: 'item', id: 'copy',   label: 'Copy',   icon: Copy,   onClick: () => copy() },
-  { type: 'item', id: 'cut',    label: 'Cut',    icon: Scissors, onClick: () => cut() },
+  { type: 'item', id: 'copy', label: 'Copy', icon: Copy, onClick: () => copy() },
+  { type: 'item', id: 'cut', label: 'Cut', icon: Scissors, onClick: () => cut() },
   { type: 'separator', id: 'sep1' },
   { type: 'item', id: 'delete', label: 'Delete', icon: Trash2, onClick: () => remove() },
 ];
 
 <ContextMenu items={items}>
   <div className="canvas-area">Right-click anywhere here</div>
-</ContextMenu>
+</ContextMenu>;
 ```
 
 ## Default
@@ -57,9 +57,9 @@ When `disabled` is true, the component passes through to the browser's native co
 
 ContextMenu accepts the same `MenuItemType` union as `Menu`:
 
-| Type | Description |
-|------|-------------|
-| `item` | Standard clickable row with optional icon and keyboard shortcut |
-| `separator` | A horizontal dividing line |
-| `nested` | A row that opens a submenu on hover |
-| `component` | Any custom React node rendered inside a list item |
+| Type        | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `item`      | Standard clickable row with optional icon and keyboard shortcut |
+| `separator` | A horizontal dividing line                                      |
+| `nested`    | A row that opens a submenu on hover                             |
+| `component` | Any custom React node rendered inside a list item               |

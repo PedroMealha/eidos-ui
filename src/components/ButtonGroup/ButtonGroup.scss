@@ -6,71 +6,71 @@
 //      hover/focus.
 
 .eidos-button-group {
-	display: inline-flex;
-	align-items: stretch;
+  display: inline-flex;
+  align-items: stretch;
 
-	// ── Common child overrides ────────────────────────────────────────────────
+  // ── Common child overrides ────────────────────────────────────────────────
 
-	> .eidos-button {
-		// Kill ALL four corners so inner buttons are square.
-		border-radius: 0;
+  > .eidos-button {
+    // Kill ALL four corners so inner buttons are square.
+    border-radius: 0;
 
-		// Collapse the shared border between adjacent siblings.
-		// z-index elevation on interaction ensures the ring/border of the focused
-		// or hovered button is always fully visible on top of its neighbour.
-		& + .eidos-button {
-			margin-left: -1.5px;
-		}
+    // Collapse the shared border between adjacent siblings.
+    // z-index elevation on interaction ensures the ring/border of the focused
+    // or hovered button is always fully visible on top of its neighbour.
+    & + .eidos-button {
+      margin-left: -1.5px;
+    }
 
-		&:hover,
-		&:focus,
-		&:focus-visible {
-			position: relative;
-			z-index: 1;
-		}
-	}
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      position: relative;
+      z-index: 1;
+    }
+  }
 
-	// ── Horizontal (default) – restore outer radii ────────────────────────────
+  // ── Horizontal (default) – restore outer radii ────────────────────────────
 
-	&--horizontal {
-		> .eidos-button:first-child {
-			border-top-left-radius: var(--border-radius-md);
-			border-bottom-left-radius: var(--border-radius-md);
-		}
+  &--horizontal {
+    > .eidos-button:first-child {
+      border-top-left-radius: var(--border-radius-md);
+      border-bottom-left-radius: var(--border-radius-md);
+    }
 
-		> .eidos-button:last-child {
-			border-top-right-radius: var(--border-radius-md);
-			border-bottom-right-radius: var(--border-radius-md);
-		}
+    > .eidos-button:last-child {
+      border-top-right-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+    }
 
-		// Edge-case: single button - full radius.
-		> .eidos-button:only-child {
-			border-radius: var(--border-radius-md);
-		}
-	}
+    // Edge-case: single button - full radius.
+    > .eidos-button:only-child {
+      border-radius: var(--border-radius-md);
+    }
+  }
 
-	// ── Vertical – stack buttons and restore top/bottom outer radii ───────────
+  // ── Vertical – stack buttons and restore top/bottom outer radii ───────────
 
-	&--vertical {
-		flex-direction: column;
+  &--vertical {
+    flex-direction: column;
 
-		> .eidos-button + .eidos-button {
-			margin-left: 0;
-			margin-top: -1.5px;
-		}
+    > .eidos-button + .eidos-button {
+      margin-left: 0;
+      margin-top: -1.5px;
+    }
 
-		> .eidos-button:first-child {
-			border-top-left-radius: var(--border-radius-md);
-			border-top-right-radius: var(--border-radius-md);
-		}
+    > .eidos-button:first-child {
+      border-top-left-radius: var(--border-radius-md);
+      border-top-right-radius: var(--border-radius-md);
+    }
 
-		> .eidos-button:last-child {
-			border-bottom-left-radius: var(--border-radius-md);
-			border-bottom-right-radius: var(--border-radius-md);
-		}
+    > .eidos-button:last-child {
+      border-bottom-left-radius: var(--border-radius-md);
+      border-bottom-right-radius: var(--border-radius-md);
+    }
 
-		> .eidos-button:only-child {
-			border-radius: var(--border-radius-md);
-		}
-	}
+    > .eidos-button:only-child {
+      border-radius: var(--border-radius-md);
+    }
+  }
 }

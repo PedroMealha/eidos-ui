@@ -136,11 +136,24 @@ const meta = {
     },
   },
   argTypes: {
-    open: { control: false, description: 'Controlled open state. Omit (with `onClose`) for the palette to manage its own state.' },
-    defaultOpen: { control: false, description: 'Initial open state when uncontrolled (`open` omitted).' },
+    open: {
+      control: false,
+      description:
+        'Controlled open state. Omit (with `onClose`) for the palette to manage its own state.',
+    },
+    defaultOpen: {
+      control: false,
+      description: 'Initial open state when uncontrolled (`open` omitted).',
+    },
     onClose: { control: false },
-    onOpen: { control: false, description: 'Called when `shortcutKey` fires while `open` is controlled.' },
-    shortcutKey: { control: 'text', description: 'Cmd/Ctrl+<key> shortcut that opens the palette. Pass `null` to disable it.' },
+    onOpen: {
+      control: false,
+      description: 'Called when `shortcutKey` fires while `open` is controlled.',
+    },
+    shortcutKey: {
+      control: 'text',
+      description: 'Cmd/Ctrl+<key> shortcut that opens the palette. Pass `null` to disable it.',
+    },
     items: { control: false },
     footer: { control: false },
     placeholder: { control: 'text' },
@@ -179,10 +192,7 @@ export const Default = {
             functional shortcut defaults to disabled above - this story's
             trigger is the button; `shortcutKey` only reflects a value you've
             explicitly set via Controls. */}
-        <TriggerButton
-          onClick={() => setOpen(true)}
-          shortcutKey={args.shortcutKey || 'k'}
-        />
+        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
         <CommandPalette
           {...args}
           open={open}
@@ -237,7 +247,9 @@ export const Uncontrolled = {
             Press <kbd style={{ fontFamily: 'monospace' }}>⌘{key.toUpperCase()}</kbd> to open
           </span>
         ) : (
-          <span>No trigger here - `shortcutKey` is disabled and there's no button in this story</span>
+          <span>
+            No trigger here - `shortcutKey` is disabled and there's no button in this story
+          </span>
         )}
         <CommandPalette {...args} items={ITEMS} />
       </div>
@@ -269,10 +281,7 @@ export const WithGroups = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <TriggerButton
-          onClick={() => setOpen(true)}
-          shortcutKey={args.shortcutKey || 'k'}
-        />
+        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
         <CommandPalette
           {...args}
           open={open}
@@ -313,10 +322,7 @@ export const WithShortcuts = {
     const shortcutItems: CommandItem[] = ITEMS.filter((item) => item.shortcut);
     return (
       <>
-        <TriggerButton
-          onClick={() => setOpen(true)}
-          shortcutKey={args.shortcutKey || 'k'}
-        />
+        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
         <CommandPalette
           {...args}
           open={open}
@@ -357,10 +363,7 @@ export const EmptyState = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <TriggerButton
-          onClick={() => setOpen(true)}
-          shortcutKey={args.shortcutKey || 'k'}
-        />
+        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
         <CommandPalette
           {...args}
           open={open}
@@ -401,10 +404,7 @@ export const WithFooter = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <TriggerButton
-          onClick={() => setOpen(true)}
-          shortcutKey={args.shortcutKey || 'k'}
-        />
+        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
         <CommandPalette
           {...args}
           open={open}
@@ -474,10 +474,7 @@ export const WithDisabledItems = {
     ];
     return (
       <>
-        <TriggerButton
-          onClick={() => setOpen(true)}
-          shortcutKey={args.shortcutKey || 'k'}
-        />
+        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
         <CommandPalette
           {...args}
           open={open}

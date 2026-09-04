@@ -1,18 +1,18 @@
-import React from "react";
-import { LoaderCircle } from "lucide-react";
-import { Tooltip } from "../Tooltip";
-import { ButtonProps, IconButtonProps } from "./Button.types";
-import { renderIcon } from "../../utils";
+import React from 'react';
+import { LoaderCircle } from 'lucide-react';
+import { Tooltip } from '../Tooltip';
+import { ButtonProps, IconButtonProps } from './Button.types';
+import { renderIcon } from '../../utils';
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = "filled",
-  color = "primary",
-  size = "md",
+  variant = 'filled',
+  color = 'primary',
+  size = 'md',
   disabled = false,
   loading = false,
-  loadingText = "Loading...",
+  loadingText = 'Loading...',
   tooltip,
-  className = "",
+  className = '',
   preIcon,
   posIcon,
   icon,
@@ -23,36 +23,31 @@ export const Button: React.FC<ButtonProps> = ({
 
   if (isIconOnly) {
     if (children) {
-      throw new Error("Icon-only buttons cannot have children");
+      throw new Error('Icon-only buttons cannot have children');
     }
     if (preIcon) {
-      throw new Error("Icon-only buttons cannot have preIcon");
+      throw new Error('Icon-only buttons cannot have preIcon');
     }
     if (posIcon) {
-      throw new Error("Icon-only buttons cannot have posIcon");
+      throw new Error('Icon-only buttons cannot have posIcon');
     }
   }
 
   const buttonClasses = [
-    "eidos-button",
+    'eidos-button',
     `eidos-button--${variant}`,
     `eidos-button--${color}`,
     `eidos-button--${size}`,
-    isIconOnly && "eidos-button--icon-only",
-    disabled && "eidos-button--disabled",
-    loading && "eidos-button--loading",
+    isIconOnly && 'eidos-button--icon-only',
+    disabled && 'eidos-button--disabled',
+    loading && 'eidos-button--loading',
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   const buttonContent = (
-    <button
-      type="button"
-      {...buttonProps}
-      className={buttonClasses}
-      disabled={disabled || loading}
-    >
+    <button type="button" {...buttonProps} className={buttonClasses} disabled={disabled || loading}>
       {loading ? (
         <>
           {!isIconOnly && (
@@ -71,25 +66,21 @@ export const Button: React.FC<ButtonProps> = ({
         </>
       ) : (
         <>
-          {preIcon && renderIcon(preIcon, "eidos-button--pre-icon")}
+          {preIcon && renderIcon(preIcon, 'eidos-button--pre-icon')}
 
           {isIconOnly && icon ? (
-            renderIcon(icon, "eidos-button--icon")
+            renderIcon(icon, 'eidos-button--icon')
           ) : (
             <span className="eidos-button--copy">{children}</span>
           )}
 
-          {posIcon && renderIcon(posIcon, "eidos-button--pos-icon")}
+          {posIcon && renderIcon(posIcon, 'eidos-button--pos-icon')}
         </>
       )}
     </button>
   );
 
-  return tooltip ? (
-    <Tooltip message={tooltip}>{buttonContent}</Tooltip>
-  ) : (
-    buttonContent
-  );
+  return tooltip ? <Tooltip message={tooltip}>{buttonContent}</Tooltip> : buttonContent;
 };
 
 /**

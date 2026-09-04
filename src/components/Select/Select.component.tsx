@@ -1,15 +1,9 @@
-import React, {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-  useMemo,
-} from "react";
-import { X, Check } from "lucide-react";
-import { Input } from "../Input/Input.component";
-import { Dropdown } from "../Dropdown/Dropdown.component";
-import type { SelectProps, SelectOption } from "./Select.types";
-import { renderIcon } from "../../utils";
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { X, Check } from 'lucide-react';
+import { Input } from '../Input/Input.component';
+import { Dropdown } from '../Dropdown/Dropdown.component';
+import type { SelectProps, SelectOption } from './Select.types';
+import { renderIcon } from '../../utils';
 
 export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
   (
@@ -18,9 +12,9 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       value,
       defaultValue,
       onChange,
-      className = "",
+      className = '',
       multiple = false,
-      placeholder = "Select an option...",
+      placeholder = 'Select an option...',
       disabled = false,
       inputProps = {},
       name,
@@ -30,13 +24,13 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       minWidth,
       maxWidth,
       minHeight,
-      maxHeight = "300px",
+      maxHeight = '300px',
       autoWidth = true,
       clearable = true,
       autoOpen = false,
       dropdownProps = {},
     },
-    ref
+    ref,
   ) => {
     const isControlled = value !== undefined;
 
@@ -48,7 +42,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       }
       return new Set();
     });
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
     const [menuKey, setMenuKey] = useState(0);
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isOpen, setIsOpen] = useState(false);
@@ -61,14 +55,14 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       if (value !== undefined) {
         const values = Array.isArray(value) ? value : [value];
 
-        const validValues = values.filter((v) => v !== "");
+        const validValues = values.filter((v) => v !== '');
         setSelectedValues(new Set(validValues));
       }
     }, [value]);
 
     const filteredOptions = useMemo(() => {
       return options.filter((option) =>
-        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+        option.label.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }, [options, searchQuery]);
 
@@ -110,7 +104,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         if (onChange) {
           const newValue = multiple
             ? Array.from(newSelectedValues)
-            : Array.from(newSelectedValues)[0] || "";
+            : Array.from(newSelectedValues)[0] || '';
           onChange(newValue);
         }
 
@@ -119,7 +113,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           setMenuKey((prev) => prev + 1);
         }
       },
-      [multiple, onChange, selectedValues, isControlled]
+      [multiple, onChange, selectedValues, isControlled],
     );
 
     const handleClear = useCallback(
@@ -134,38 +128,34 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         setIsOpen(false);
         setMenuKey((prev) => prev + 1);
         if (onChange) {
-          onChange(multiple ? [] : "");
+          onChange(multiple ? [] : '');
         }
       },
-      [multiple, onChange, isControlled]
+      [multiple, onChange, isControlled],
     );
 
-    const handleSearchChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-      },
-      []
-    );
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    }, []);
 
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
         if (disabled) return;
 
         switch (e.key) {
-          case "ArrowDown":
+          case 'ArrowDown':
             e.preventDefault();
             if (!isOpen) {
               setIsOpen(true);
               setFocusedIndex(0);
             } else {
               setFocusedIndex((prev) => {
-                const nextIndex =
-                  prev < filteredOptions.length - 1 ? prev + 1 : 0;
+                const nextIndex = prev < filteredOptions.length - 1 ? prev + 1 : 0;
 
                 setTimeout(() => {
                   optionRefs.current[nextIndex]?.scrollIntoView({
-                    block: "nearest",
-                    behavior: "smooth",
+                    block: 'nearest',
+                    behavior: 'smooth',
                   });
                 }, 0);
                 return nextIndex;
@@ -173,20 +163,19 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             }
             break;
 
-          case "ArrowUp":
+          case 'ArrowUp':
             e.preventDefault();
             if (!isOpen) {
               setIsOpen(true);
               setFocusedIndex(filteredOptions.length - 1);
             } else {
               setFocusedIndex((prev) => {
-                const nextIndex =
-                  prev > 0 ? prev - 1 : filteredOptions.length - 1;
+                const nextIndex = prev > 0 ? prev - 1 : filteredOptions.length - 1;
 
                 setTimeout(() => {
                   optionRefs.current[nextIndex]?.scrollIntoView({
-                    block: "nearest",
-                    behavior: "smooth",
+                    block: 'nearest',
+                    behavior: 'smooth',
                   });
                 }, 0);
                 return nextIndex;
@@ -194,22 +183,19 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             }
             break;
 
-          case "Enter":
-          case " ":
+          case 'Enter':
+          case ' ':
             e.preventDefault();
             if (!isOpen) {
               setIsOpen(true);
               setFocusedIndex(0);
-            } else if (
-              focusedIndex >= 0 &&
-              focusedIndex < filteredOptions.length
-            ) {
+            } else if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
               const focusedOption = filteredOptions[focusedIndex];
               handleOptionSelect(focusedOption);
             }
             break;
 
-          case "Escape":
+          case 'Escape':
             e.preventDefault();
             if (isOpen) {
               setIsOpen(false);
@@ -218,25 +204,25 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             }
             break;
 
-          case "Home":
+          case 'Home':
             e.preventDefault();
             if (isOpen) {
               setFocusedIndex(0);
               optionRefs.current[0]?.scrollIntoView({
-                block: "nearest",
-                behavior: "smooth",
+                block: 'nearest',
+                behavior: 'smooth',
               });
             }
             break;
 
-          case "End":
+          case 'End':
             e.preventDefault();
             if (isOpen) {
               const lastIndex = filteredOptions.length - 1;
               setFocusedIndex(lastIndex);
               optionRefs.current[lastIndex]?.scrollIntoView({
-                block: "nearest",
-                behavior: "smooth",
+                block: 'nearest',
+                behavior: 'smooth',
               });
             }
             break;
@@ -246,25 +232,24 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
               const searchChar = e.key.toLowerCase();
               const foundIndex = filteredOptions.findIndex(
                 (option, index) =>
-                  index > focusedIndex &&
-                  option.label.toLowerCase().startsWith(searchChar)
+                  index > focusedIndex && option.label.toLowerCase().startsWith(searchChar),
               );
 
               if (foundIndex !== -1) {
                 setFocusedIndex(foundIndex);
                 optionRefs.current[foundIndex]?.scrollIntoView({
-                  block: "nearest",
-                  behavior: "smooth",
+                  block: 'nearest',
+                  behavior: 'smooth',
                 });
               } else {
                 const foundFromStart = filteredOptions.findIndex((option) =>
-                  option.label.toLowerCase().startsWith(searchChar)
+                  option.label.toLowerCase().startsWith(searchChar),
                 );
                 if (foundFromStart !== -1) {
                   setFocusedIndex(foundFromStart);
                   optionRefs.current[foundFromStart]?.scrollIntoView({
-                    block: "nearest",
-                    behavior: "smooth",
+                    block: 'nearest',
+                    behavior: 'smooth',
                   });
                 }
               }
@@ -272,7 +257,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             break;
         }
       },
-      [disabled, isOpen, filteredOptions, focusedIndex, handleOptionSelect]
+      [disabled, isOpen, filteredOptions, focusedIndex, handleOptionSelect],
     );
 
     // Past this many selections the full comma-joined label list becomes
@@ -280,16 +265,14 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const COMPACT_LABEL_THRESHOLD = 2;
 
     const displayValue = useMemo(() => {
-      if (selectedValues.size === 0) return "";
+      if (selectedValues.size === 0) return '';
 
       if (multiple && selectedValues.size > COMPACT_LABEL_THRESHOLD) {
         return `${selectedValues.size} selected`;
       }
 
-      const selectedOptions = options.filter((option) =>
-        selectedValues.has(option.value)
-      );
-      const text = selectedOptions.map((option) => option.label).join(", ");
+      const selectedOptions = options.filter((option) => selectedValues.has(option.value));
+      const text = selectedOptions.map((option) => option.label).join(', ');
       return text;
     }, [options, selectedValues, multiple]);
 
@@ -307,9 +290,9 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 }}
                 className={`
 										${'eidos-select-option'}
-										${isSelected ? 'eidos-select-option--selected' : ""}
-										${option.disabled ? 'eidos-select-option--disabled' : ""}
-										${isFocused ? 'eidos-select-option--focused' : ""}
+										${isSelected ? 'eidos-select-option--selected' : ''}
+										${option.disabled ? 'eidos-select-option--disabled' : ''}
+										${isFocused ? 'eidos-select-option--focused' : ''}
 									`.trim()}
                 onClick={() => handleOptionSelect(option)}
                 onMouseEnter={() => setFocusedIndex(index)}
@@ -325,7 +308,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           })}
         </div>
       ),
-      [filteredOptions, selectedValues, focusedIndex, handleOptionSelect]
+      [filteredOptions, selectedValues, focusedIndex, handleOptionSelect],
     );
 
     const triggerElement = (
@@ -337,23 +320,19 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         role="combobox"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        aria-controls={`${id || "select"}-options`}
+        aria-controls={`${id || 'select'}-options`}
         aria-activedescendant={
-          focusedIndex >= 0
-            ? `${id || "select"}-option-${focusedIndex}`
-            : undefined
+          focusedIndex >= 0 ? `${id || 'select'}-option-${focusedIndex}` : undefined
         }
       >
         <Input
           ref={inputRef}
-          value={selectedValues.size > 0 ? displayValue : ""}
+          value={selectedValues.size > 0 ? displayValue : ''}
           onChange={handleSearchChange}
-          placeholder={selectedValues.size === 0 ? placeholder : ""}
+          placeholder={selectedValues.size === 0 ? placeholder : ''}
           posIcon={selectedValues.size > 0 && clearable ? X : undefined}
           posIconButton={selectedValues.size > 0 && clearable}
-          onPosIconClick={
-            selectedValues.size > 0 && clearable ? handleClear : undefined
-          }
+          onPosIconClick={selectedValues.size > 0 && clearable ? handleClear : undefined}
           disabled={disabled}
           readOnly={true}
           isSelect={true}
@@ -370,7 +349,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       <div
         ref={ref}
         className={`${'eidos-select-container'} ${
-          fullWidth ? 'eidos-select-container--fullWidth' : ""
+          fullWidth ? 'eidos-select-container--fullWidth' : ''
         } ${className}`}
       >
         <Dropdown
@@ -378,11 +357,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           defaultOpen={autoOpen}
           trigger={triggerElement}
           content={
-            <div
-              id={`${id || "select"}-options`}
-              role="listbox"
-              aria-multiselectable={multiple}
-            >
+            <div id={`${id || 'select'}-options`} role="listbox" aria-multiselectable={multiple}>
               {selectContent}
             </div>
           }
@@ -396,7 +371,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         />
       </div>
     );
-  }
+  },
 );
 
-Select.displayName = "Select";
+Select.displayName = 'Select';

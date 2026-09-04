@@ -90,7 +90,7 @@ Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lu
 import { Download, Plus } from 'lucide-react';
 import { Button } from '@pmealha/eidos-ui';
 
-<Button preIcon={Download}>Export</Button>
+<Button preIcon={Download}>Export</Button>;
 ```
 
 ## TypeScript
@@ -109,7 +109,7 @@ All design tokens are CSS custom properties defined on `:root`. Override them af
 :root {
   /* Brand colour */
   --primary-color: #0ea5e9;
-  --primary-dark:  #0284c7;
+  --primary-dark: #0284c7;
   --primary-light: #7dd3fc;
 
   /* Border radius */
@@ -130,17 +130,17 @@ they all compete on the same plane and DOM order must never be what decides the
 outcome. The layers are ordered in steps of 100 so you can slot your own
 elements in between:
 
-| Token | Value | Used by |
-| --- | --- | --- |
-| `--z-index-drawer` | `1200` | `Drawer` |
-| `--z-index-modal` | `1300` | `Modal` |
-| `--z-index-dropdown` | `1400` | `Dropdown`, `Select`, `Combobox`, `Menu`, `DatePicker`, `SplitButton`, `ColorPicker`, `ContextMenu`, `Popover`, table/grid filter menus |
-| `--z-index-command-palette` | `1500` | `CommandPalette` |
-| `--z-index-snackbar` | `1600` | `SnackbarContainer` |
-| `--z-index-tooltip` | `1700` | `Tooltip` |
+| Token                       | Value  | Used by                                                                                                                                 |
+| --------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `--z-index-drawer`          | `1200` | `Drawer`                                                                                                                                |
+| `--z-index-modal`           | `1300` | `Modal`                                                                                                                                 |
+| `--z-index-dropdown`        | `1400` | `Dropdown`, `Select`, `Combobox`, `Menu`, `DatePicker`, `SplitButton`, `ColorPicker`, `ContextMenu`, `Popover`, table/grid filter menus |
+| `--z-index-command-palette` | `1500` | `CommandPalette`                                                                                                                        |
+| `--z-index-snackbar`        | `1600` | `SnackbarContainer`                                                                                                                     |
+| `--z-index-tooltip`         | `1700` | `Tooltip`                                                                                                                               |
 
 The ordering is deliberate: anchored popups sit **above** `Modal` and `Drawer`
-because they are opened *from* modal and drawer content — a `Select` inside a
+because they are opened _from_ modal and drawer content — a `Select` inside a
 `Modal` must be able to render over it. Tooltips sit at the top because they are
 small, transient and never interactive.
 
@@ -250,10 +250,10 @@ npm run release:needed              # compares the latest tag against HEAD
 npm run release:needed -- v3.0.0    # or against a specific ref
 ```
 
-| Needs a release | Push only |
-| --- | --- |
-| `src/**` (components, styles, `index.ts`) | `dev/**`, `.storybook/**`, `.github/**` |
-| `tsup.config.ts`, `scripts/build-styles.js` | docs, `AGENTS.md`, `.devin/**` |
+| Needs a release                                                                                        | Push only                                    |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `src/**` (components, styles, `index.ts`)                                                              | `dev/**`, `.storybook/**`, `.github/**`      |
+| `tsup.config.ts`, `scripts/build-styles.js`                                                            | docs, `AGENTS.md`, `.devin/**`               |
 | `package.json`: `exports`, `main`, `types`, `files`, `sideEffects`, `dependencies`, `peerDependencies` | `package.json`: `scripts`, `devDependencies` |
 
 Two deliberate subtleties: `.mdx` and `.stories.tsx` live under `src/` but are
@@ -306,15 +306,15 @@ case up front.
 
 49 components across 9 categories:
 
-| Category | Components |
-|---|---|
-| Elements | Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, SegmentedControl, SplitButton |
-| Forms | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
-| Feedback | Alert, Progress, Skeleton, Spinner |
-| Layout | Stepper |
-| Navigation | Pagination, Tabs |
-| Overlays | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip |
-| Data Display | Avatar, Timeline, TreeView |
-| Data | DataGrid, DatePicker, Table, TableFiltersDropdown, VirtualList |
+| Category     | Components                                                                                                                               |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Elements     | Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, SegmentedControl, SplitButton            |
+| Forms        | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
+| Feedback     | Alert, Progress, Skeleton, Spinner                                                                                                       |
+| Layout       | Stepper                                                                                                                                  |
+| Navigation   | Pagination, Tabs                                                                                                                         |
+| Overlays     | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip                                                   |
+| Data Display | Avatar, Timeline, TreeView                                                                                                               |
+| Data         | DataGrid, DatePicker, Table, TableFiltersDropdown, VirtualList                                                                           |
 
 For full interactive documentation, run `npm run storybook`.

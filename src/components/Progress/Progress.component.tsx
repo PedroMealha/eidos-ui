@@ -1,21 +1,19 @@
-import React from "react";
-import type { ProgressProps } from "./Progress.types";
-import "./Progress.scss";
+import React from 'react';
+import type { ProgressProps } from './Progress.types';
+import './Progress.scss';
 
 export const Progress: React.FC<ProgressProps> = ({
   value,
   max = 100,
-  color = "primary",
-  size = "md",
+  color = 'primary',
+  size = 'md',
   showLabel = false,
   label,
   striped = false,
   className,
 }) => {
   const percentage =
-    value !== undefined
-      ? Math.min(100, Math.max(0, (value / max) * 100))
-      : undefined;
+    value !== undefined ? Math.min(100, Math.max(0, (value / max) * 100)) : undefined;
 
   const isIndeterminate = percentage === undefined;
 
@@ -23,22 +21,22 @@ export const Progress: React.FC<ProgressProps> = ({
     label ?? (percentage !== undefined ? `${Math.round(percentage)}%` : undefined);
 
   const classes = [
-    "eidos-progress",
+    'eidos-progress',
     `eidos-progress--${color}`,
     `eidos-progress--${size}`,
-    striped && "eidos-progress--striped",
-    isIndeterminate && "eidos-progress--indeterminate",
+    striped && 'eidos-progress--striped',
+    isIndeterminate && 'eidos-progress--indeterminate',
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   const fillClasses = [
-    "eidos-progress-fill",
-    isIndeterminate && "eidos-progress-fill--indeterminate",
+    'eidos-progress-fill',
+    isIndeterminate && 'eidos-progress-fill--indeterminate',
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   return (
     <div
@@ -47,7 +45,7 @@ export const Progress: React.FC<ProgressProps> = ({
       aria-valuenow={percentage}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-label={label ?? (isIndeterminate ? "Loading…" : `${Math.round(percentage!)}%`)}
+      aria-label={label ?? (isIndeterminate ? 'Loading…' : `${Math.round(percentage!)}%`)}
     >
       <div className="eidos-progress-track">
         <div

@@ -149,37 +149,75 @@ export const Examples = {
     const row: React.CSSProperties = { display: 'flex', gap: '1rem', flexWrap: 'wrap' };
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-        gap: '2rem 2.5rem',
-        padding: '1.5rem',
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          gap: '2rem 2.5rem',
+          padding: '1.5rem',
+        }}
+      >
         <div>
           <p style={label}>Placements</p>
           <div style={row}>
-            <Tooltip message="Top" placement="top"><Button variant="outlined" size="sm">Top</Button></Tooltip>
-            <Tooltip message="Bottom" placement="bottom"><Button variant="outlined" size="sm">Bottom</Button></Tooltip>
-            <Tooltip message="Left" placement="left"><Button variant="outlined" size="sm">Left</Button></Tooltip>
-            <Tooltip message="Right" placement="right"><Button variant="outlined" size="sm">Right</Button></Tooltip>
+            <Tooltip message="Top" placement="top">
+              <Button variant="outlined" size="sm">
+                Top
+              </Button>
+            </Tooltip>
+            <Tooltip message="Bottom" placement="bottom">
+              <Button variant="outlined" size="sm">
+                Bottom
+              </Button>
+            </Tooltip>
+            <Tooltip message="Left" placement="left">
+              <Button variant="outlined" size="sm">
+                Left
+              </Button>
+            </Tooltip>
+            <Tooltip message="Right" placement="right">
+              <Button variant="outlined" size="sm">
+                Right
+              </Button>
+            </Tooltip>
           </div>
         </div>
 
         <div>
           <p style={label}>Triggers</p>
           <div style={row}>
-            <Tooltip message="Triggered on hover" triggerType="hover"><Button variant="outlined" size="sm">Hover</Button></Tooltip>
-            <Tooltip message="Triggered on click" triggerType="click"><Button variant="outlined" size="sm">Click</Button></Tooltip>
-            <Tooltip message="Triggered on focus" triggerType="focus"><Button variant="outlined" size="sm">Focus</Button></Tooltip>
+            <Tooltip message="Triggered on hover" triggerType="hover">
+              <Button variant="outlined" size="sm">
+                Hover
+              </Button>
+            </Tooltip>
+            <Tooltip message="Triggered on click" triggerType="click">
+              <Button variant="outlined" size="sm">
+                Click
+              </Button>
+            </Tooltip>
+            <Tooltip message="Triggered on focus" triggerType="focus">
+              <Button variant="outlined" size="sm">
+                Focus
+              </Button>
+            </Tooltip>
           </div>
         </div>
 
         <div>
           <p style={label}>Common Use Cases</p>
           <div style={row}>
-            <Tooltip message="More information"><Button preIcon={Info} variant="text">Info</Button></Tooltip>
-            <Tooltip message="Delete permanently" placement="bottom"><Button color="danger">Delete</Button></Tooltip>
-            <Tooltip message="This action is disabled"><Button disabled>Disabled</Button></Tooltip>
+            <Tooltip message="More information">
+              <Button preIcon={Info} variant="text">
+                Info
+              </Button>
+            </Tooltip>
+            <Tooltip message="Delete permanently" placement="bottom">
+              <Button color="danger">Delete</Button>
+            </Tooltip>
+            <Tooltip message="This action is disabled">
+              <Button disabled>Disabled</Button>
+            </Tooltip>
           </div>
         </div>
       </div>

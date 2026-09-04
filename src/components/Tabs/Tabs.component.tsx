@@ -34,14 +34,15 @@ export const Tab: React.FC<TabProps> = ({
     if (!list) return;
 
     const allTabs = Array.from(
-      list.querySelectorAll('[role="tab"]:not([disabled])')
+      list.querySelectorAll('[role="tab"]:not([disabled])'),
     ) as HTMLElement[];
     const currentIndex = allTabs.indexOf(e.currentTarget);
     if (currentIndex === -1) return;
 
     let targetIndex = -1;
     if (e.key === 'ArrowRight') targetIndex = (currentIndex + 1) % allTabs.length;
-    else if (e.key === 'ArrowLeft') targetIndex = (currentIndex - 1 + allTabs.length) % allTabs.length;
+    else if (e.key === 'ArrowLeft')
+      targetIndex = (currentIndex - 1 + allTabs.length) % allTabs.length;
     else if (e.key === 'Home') targetIndex = 0;
     else if (e.key === 'End') targetIndex = allTabs.length - 1;
 
@@ -75,11 +76,7 @@ export const Tab: React.FC<TabProps> = ({
       onKeyDown={handleKeyDown}
       type="button"
     >
-      {icon && (
-        <span className="eidos-tab-icon">
-          {renderIcon(icon, 'eidos-tab-icon-svg')}
-        </span>
-      )}
+      {icon && <span className="eidos-tab-icon">{renderIcon(icon, 'eidos-tab-icon-svg')}</span>}
       <span className="eidos-tab-label">{children}</span>
     </button>
   );
@@ -92,11 +89,7 @@ Tab.displayName = 'Tab';
 // Defined before Tabs for the same `child.type === TabPanel` check.
 // ============================================================================
 
-export const TabPanel: React.FC<TabPanelProps> = ({
-  value,
-  children,
-  className = '',
-}) => {
+export const TabPanel: React.FC<TabPanelProps> = ({ value, children, className = '' }) => {
   const { activeValue } = useTabsContext();
   const isActive = activeValue === value;
 
@@ -191,12 +184,7 @@ export const Tabs: React.FC<TabsProps> = ({
     }
   });
 
-  const rootClasses = [
-    'eidos-tabs',
-    `eidos-tabs--${variant}`,
-    `eidos-tabs--${color}`,
-    className,
-  ]
+  const rootClasses = ['eidos-tabs', `eidos-tabs--${variant}`, `eidos-tabs--${color}`, className]
     .filter(Boolean)
     .join(' ');
 
@@ -227,9 +215,7 @@ export const Tabs: React.FC<TabsProps> = ({
             <span ref={indicatorRef} className="eidos-tabs-indicator" aria-hidden="true" />
           )}
         </div>
-        <div className="eidos-tabs-panels">
-          {panelChildren}
-        </div>
+        <div className="eidos-tabs-panels">{panelChildren}</div>
       </div>
     </TabsContext.Provider>
   );

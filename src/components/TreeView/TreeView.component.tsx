@@ -158,10 +158,7 @@ const TreeNodeItem: React.FC<TreeNodeItemProps> = ({ node, depth }) => {
     .filter(Boolean)
     .join(' ');
 
-  const childrenClasses = [
-    'eidos-tree-children',
-    ctx.showLines && 'eidos-tree-children--lines',
-  ]
+  const childrenClasses = ['eidos-tree-children', ctx.showLines && 'eidos-tree-children--lines']
     .filter(Boolean)
     .join(' ');
 
@@ -200,9 +197,7 @@ const TreeNodeItem: React.FC<TreeNodeItemProps> = ({ node, depth }) => {
         </span>
 
         <span className="eidos-tree-label">
-          {ctx.renderLabel
-            ? ctx.renderLabel(node, isSelected, isExpanded)
-            : node.label}
+          {ctx.renderLabel ? ctx.renderLabel(node, isSelected, isExpanded) : node.label}
         </span>
       </div>
 
@@ -452,17 +447,11 @@ export const TreeView: React.FC<TreeViewProps> = ({
     ],
   );
 
-  const rootClasses = ['eidos-tree', `eidos-tree--${size}`, className]
-    .filter(Boolean)
-    .join(' ');
+  const rootClasses = ['eidos-tree', `eidos-tree--${size}`, className].filter(Boolean).join(' ');
 
   return (
     <TreeContext.Provider value={contextValue}>
-      <ul
-        role="tree"
-        aria-multiselectable={multiSelect || undefined}
-        className={rootClasses}
-      >
+      <ul role="tree" aria-multiselectable={multiSelect || undefined} className={rootClasses}>
         {data.map((node) => (
           <TreeNodeItem key={node.id} node={node} depth={1} />
         ))}

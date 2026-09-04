@@ -45,8 +45,7 @@ function VirtualListInner<T = unknown>({
   // `rowHeight` into the single `(index: number) => number` signature that
   // `useVirtualizer` expects for `estimateSize`.
   const estimateSize = useCallback(
-    (index: number): number =>
-      typeof rowHeight === 'function' ? rowHeight(index) : rowHeight,
+    (index: number): number => (typeof rowHeight === 'function' ? rowHeight(index) : rowHeight),
     [rowHeight],
   );
 
@@ -133,10 +132,7 @@ function VirtualListInner<T = unknown>({
 
       {/* ── Virtualized content ───────────────────────────────────────── */}
       {!loading && data.length > 0 && (
-        <div
-          className="eidos-virtual-list-inner"
-          style={{ height: virtualizer.getTotalSize() }}
-        >
+        <div className="eidos-virtual-list-inner" style={{ height: virtualizer.getTotalSize() }}>
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = data[virtualItem.index] as T;
             // Prefer the consumer's stable key; fall back to the numeric index.

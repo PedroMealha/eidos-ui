@@ -33,9 +33,13 @@ const PRIORITY_OPTIONS = Object.entries(PRIORITY_LABELS).map(([value, label]) =>
   label,
 }));
 
-const ASSIGNEE_OPTIONS = ['Ana Ferreira', 'Bruno Costa', 'Chiara Ricci', 'Diego Marín', 'Unassigned'].map(
-  (name) => ({ id: name, value: name, label: name }),
-);
+const ASSIGNEE_OPTIONS = [
+  'Ana Ferreira',
+  'Bruno Costa',
+  'Chiara Ricci',
+  'Diego Marín',
+  'Unassigned',
+].map((name) => ({ id: name, value: name, label: name }));
 
 type Draft = {
   subject: string;
@@ -62,7 +66,13 @@ type Props = {
   onRequestDelete: (ticket: Ticket) => void;
 };
 
-export const TicketDetailDrawer: React.FC<Props> = ({ ticket, knownTags, onClose, onSaved, onRequestDelete }) => {
+export const TicketDetailDrawer: React.FC<Props> = ({
+  ticket,
+  knownTags,
+  onClose,
+  onSaved,
+  onRequestDelete,
+}) => {
   const { showSuccess, showError } = useSnackbar();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
@@ -73,9 +83,7 @@ export const TicketDetailDrawer: React.FC<Props> = ({ ticket, knownTags, onClose
   }, [ticket]);
 
   const dirty =
-    ticket !== null &&
-    draft !== null &&
-    JSON.stringify(draft) !== JSON.stringify(toDraft(ticket));
+    ticket !== null && draft !== null && JSON.stringify(draft) !== JSON.stringify(toDraft(ticket));
 
   const save = async () => {
     if (!ticket || !draft) return;

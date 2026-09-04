@@ -1,10 +1,9 @@
-import type { IconType } from "../../utils";
+import type { IconType } from '../../utils';
 
-interface BaseButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "filled" | "outlined" | "text";
-  color?: "primary" | "secondary" | "success" | "danger";
-  size?: "sm" | "md" | "lg";
+interface BaseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'filled' | 'outlined' | 'text';
+  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
   className?: string;

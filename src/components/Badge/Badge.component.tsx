@@ -1,33 +1,33 @@
-import React from "react";
-import type { BadgeProps } from "./Badge.types";
-import "./Badge.scss";
+import React from 'react';
+import type { BadgeProps } from './Badge.types';
+import './Badge.scss';
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
-  color = "primary",
-  variant = "filled",
-  size = "md",
+  color = 'primary',
+  variant = 'filled',
+  size = 'md',
   dot = false,
   max,
-  className = "",
+  className = '',
 }) => {
   const classes = [
-    "eidos-badge",
+    'eidos-badge',
     `eidos-badge--${variant}`,
     `eidos-badge--${color}`,
     `eidos-badge--${size}`,
-    dot && "eidos-badge--dot",
+    dot && 'eidos-badge--dot',
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   if (dot) {
     return <span className={classes} />;
   }
 
   let content: React.ReactNode = children;
-  if (typeof children === "number" && max !== undefined) {
+  if (typeof children === 'number' && max !== undefined) {
     content = children > max ? `${max}+` : children;
   }
 

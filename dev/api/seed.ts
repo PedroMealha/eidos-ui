@@ -1,10 +1,4 @@
-import type {
-  ActivityEntry,
-  TeamMember,
-  Ticket,
-  TicketPriority,
-  TicketStatus,
-} from './types';
+import type { ActivityEntry, TeamMember, Ticket, TicketPriority, TicketStatus } from './types';
 
 /**
  * Seeded PRNG (mulberry32) so the dataset is identical on every reload.
@@ -52,7 +46,16 @@ const CUSTOMERS = [
 
 const AGENTS = ['Ana Ferreira', 'Bruno Costa', 'Chiara Ricci', 'Diego Marín', 'Unassigned'];
 
-const TAG_POOL = ['billing', 'api', 'auth', 'urgent-followup', 'integrations', 'mobile', 'reporting', 'onboarding'];
+const TAG_POOL = [
+  'billing',
+  'api',
+  'auth',
+  'urgent-followup',
+  'integrations',
+  'mobile',
+  'reporting',
+  'onboarding',
+];
 
 const STATUSES: TicketStatus[] = ['open', 'in_progress', 'waiting', 'resolved'];
 const PRIORITIES: TicketPriority[] = ['low', 'medium', 'high', 'urgent'];
@@ -68,13 +71,11 @@ export const seedTickets = (): Ticket[] => {
   const random = createRandom(20260828);
 
   return SUBJECTS.map((subject, index) => {
-    const pick = <T,>(list: T[]): T => list[Math.floor(random() * list.length)];
+    const pick = <T>(list: T[]): T => list[Math.floor(random() * list.length)];
     const created = daysAgo(Math.floor(random() * 21), Math.floor(random() * 12));
     const status = pick(STATUSES);
     const tagCount = 1 + Math.floor(random() * 2);
-    const tags = Array.from(
-      new Set(Array.from({ length: tagCount }, () => pick(TAG_POOL))),
-    );
+    const tags = Array.from(new Set(Array.from({ length: tagCount }, () => pick(TAG_POOL))));
 
     return {
       id: `tkt_${String(index + 1).padStart(3, '0')}`,
@@ -108,11 +109,46 @@ export const seedTickets = (): Ticket[] => {
 };
 
 export const seedTeam = (): TeamMember[] => [
-  { id: 'usr_1', name: 'Ana Ferreira', email: 'ana@meridian.test', role: 'admin', active: true, joinedAt: daysAgo(420) },
-  { id: 'usr_2', name: 'Bruno Costa', email: 'bruno@meridian.test', role: 'member', active: true, joinedAt: daysAgo(310) },
-  { id: 'usr_3', name: 'Chiara Ricci', email: 'chiara@meridian.test', role: 'member', active: true, joinedAt: daysAgo(180) },
-  { id: 'usr_4', name: 'Diego Marín', email: 'diego@meridian.test', role: 'admin', active: false, joinedAt: daysAgo(95) },
-  { id: 'usr_5', name: 'Eve Nakamura', email: 'eve@meridian.test', role: 'member', active: true, joinedAt: daysAgo(30) },
+  {
+    id: 'usr_1',
+    name: 'Ana Ferreira',
+    email: 'ana@meridian.test',
+    role: 'admin',
+    active: true,
+    joinedAt: daysAgo(420),
+  },
+  {
+    id: 'usr_2',
+    name: 'Bruno Costa',
+    email: 'bruno@meridian.test',
+    role: 'member',
+    active: true,
+    joinedAt: daysAgo(310),
+  },
+  {
+    id: 'usr_3',
+    name: 'Chiara Ricci',
+    email: 'chiara@meridian.test',
+    role: 'member',
+    active: true,
+    joinedAt: daysAgo(180),
+  },
+  {
+    id: 'usr_4',
+    name: 'Diego Marín',
+    email: 'diego@meridian.test',
+    role: 'admin',
+    active: false,
+    joinedAt: daysAgo(95),
+  },
+  {
+    id: 'usr_5',
+    name: 'Eve Nakamura',
+    email: 'eve@meridian.test',
+    role: 'member',
+    active: true,
+    joinedAt: daysAgo(30),
+  },
 ];
 
 export const seedActivity = (): ActivityEntry[] => [

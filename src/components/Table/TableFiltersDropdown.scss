@@ -1,151 +1,151 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-table-filters-dropdown {
-	background: var(--white);
-	border-radius: var(--border-radius-md);
-	padding: var(--spacing-lg);
+  background: var(--white);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
 }
 
 .eidos-table-filters-header {
-	margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .eidos-table-filters-title {
-	margin: 0;
-	font-size: var(--font-size-lg);
-	font-weight: var(--font-weight-semibold);
-	color: var(--gray-800);
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--gray-800);
 }
 
 .eidos-table-filter-rows {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-md);
-	margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
 .eidos-table-filter-row {
-	display: flex;
-	gap: var(--spacing-md);
-	align-items: center;
-	padding: var(--spacing-md);
-	background: var(--gray-50);
-	border-radius: var(--border-radius-sm);
-	border: 1px solid var(--gray-200);
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--gray-200);
 }
 
 .eidos-table-column-select {
-	flex: 0 0 200px;
-	min-width: 200px;
+  flex: 0 0 200px;
+  min-width: 200px;
 }
 
 .eidos-table-value-input {
-	flex: 1;
-	min-width: 200px;
+  flex: 1;
+  min-width: 200px;
 }
 
 .eidos-table-filters-footer {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-md);
-	padding-top: var(--spacing-md);
-	border-top: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-200);
 }
 
 .eidos-table-filters-actions {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--spacing-sm);
-	align-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  align-items: center;
 }
 
 .eidos-table-filters-apply-actions {
-	display: flex;
-	gap: var(--spacing-sm);
-	justify-content: flex-end;
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
 }
 
 // Filter button styles
 .eidos-table-active-filter-button {
-	background: var(--primary-50);
-	border-color: var(--primary-200);
-	color: var(--primary-700);
+  background: var(--primary-50);
+  border-color: var(--primary-200);
+  color: var(--primary-700);
 }
 
 .eidos-table-filter-count {
-	background: var(--primary-600);
-	color: var(--white);
-	border-radius: 50%;
-	padding: 2px 6px;
-	font-size: var(--font-size-xs);
-	font-weight: var(--font-weight-semibold);
-	margin-left: var(--spacing-xs);
-	min-width: 18px;
-	height: 18px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+  background: var(--primary-600);
+  color: var(--white);
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  margin-left: var(--spacing-xs);
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 // Responsive design
 @media (max-width: 768px) {
-	.eidos-table-filters-dropdown {
-		min-width: 300px;
-		max-width: 400px;
-	}
+  .eidos-table-filters-dropdown {
+    min-width: 300px;
+    max-width: 400px;
+  }
 
-	.eidos-table-filter-row {
-		flex-direction: column;
-		align-items: stretch;
-		gap: var(--spacing-sm);
-	}
+  .eidos-table-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
 
-	.eidos-table-column-select,
-	.eidos-table-value-input {
-		flex: none;
-		min-width: auto;
-	}
+  .eidos-table-column-select,
+  .eidos-table-value-input {
+    flex: none;
+    min-width: auto;
+  }
 
-	.eidos-table-filter-row > :last-child {
-		align-self: flex-end;
-	}
+  .eidos-table-filter-row > :last-child {
+    align-self: flex-end;
+  }
 
-	.eidos-table-filters-actions {
-		flex-direction: column;
-		align-items: stretch;
-	}
+  .eidos-table-filters-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-	.eidos-table-filters-apply-actions {
-		flex-direction: column;
-		align-items: stretch;
-	}
+  .eidos-table-filters-apply-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 // Animation for adding/removing filters
 .eidos-table-filter-row {
-	animation: slideIn 0.2s ease-out;
+  animation: slideIn 0.2s ease-out;
 }
 
 @keyframes slideIn {
-	from {
-		opacity: 0;
-		transform: translateY(-10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 // Hover effects
 .eidos-table-filter-row:hover {
-	background: var(--gray-100);
-	border-color: var(--gray-300);
+  background: var(--gray-100);
+  border-color: var(--gray-300);
 }
 
 // Focus states
 .eidos-table-filter-row:focus-within {
-	background: var(--primary-50);
-	border-color: var(--primary-200);
+  background: var(--primary-50);
+  border-color: var(--primary-200);
 }

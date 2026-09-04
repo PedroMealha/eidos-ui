@@ -11,7 +11,13 @@ import {
   Table,
   useSnackbar,
 } from '@pmealha/eidos-ui';
-import type { BulkAction, FilterValue, MenuItemType, TableColumn, TableFilters } from '@pmealha/eidos-ui';
+import type {
+  BulkAction,
+  FilterValue,
+  MenuItemType,
+  TableColumn,
+  TableFilters,
+} from '@pmealha/eidos-ui';
 import { CircleCheck, Clock, Lock } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { ticketsApi } from '../api/tickets';
@@ -86,7 +92,13 @@ export const TicketsPage: React.FC = () => {
 
   const rowMenu = useCallback(
     (ticket: Ticket): MenuItemType[] => [
-      { type: 'item', id: 'open', label: 'Open details', icon: 'panel-right-open', onClick: () => setActiveId(ticket.id) },
+      {
+        type: 'item',
+        id: 'open',
+        label: 'Open details',
+        icon: 'panel-right-open',
+        onClick: () => setActiveId(ticket.id),
+      },
       {
         type: 'item',
         id: 'copy',
@@ -171,7 +183,11 @@ export const TicketsPage: React.FC = () => {
         width: '56px',
         align: 'right',
         render: (_value, ticket) => (
-          <Menu trigger={<Button variant="text" color="secondary" size="sm" icon="ellipsis-vertical" />} items={rowMenu(ticket)} minWidth={190} />
+          <Menu
+            trigger={<Button variant="text" color="secondary" size="sm" icon="ellipsis-vertical" />}
+            items={rowMenu(ticket)}
+            minWidth={190}
+          />
         ),
       },
     ],
@@ -255,7 +271,11 @@ export const TicketsPage: React.FC = () => {
       </div>
 
       {error && (
-        <Alert variant="danger" title="Could not load tickets" action={{ label: 'Retry', onClick: reload }}>
+        <Alert
+          variant="danger"
+          title="Could not load tickets"
+          action={{ label: 'Retry', onClick: reload }}
+        >
           {error}
         </Alert>
       )}
@@ -266,7 +286,9 @@ export const TicketsPage: React.FC = () => {
           columns={columns}
           rowKey="id"
           loading={loading}
-          emptyMessage={appliedSearch ? `No tickets match "${appliedSearch}".` : 'The queue is empty.'}
+          emptyMessage={
+            appliedSearch ? `No tickets match "${appliedSearch}".` : 'The queue is empty.'
+          }
           onRowClick={(ticket) => setActiveId(ticket.id)}
           selectable
           bulkActions={bulkActions}

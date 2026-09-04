@@ -64,7 +64,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         onClose();
       }
     },
-    [closeOnEscape, isOpen, onClose]
+    [closeOnEscape, isOpen, onClose],
   );
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         onClose();
       }
     },
-    [closeOnBackdropClick, onClose]
+    [closeOnBackdropClick, onClose],
   );
 
   if (!isMounted) return null;
@@ -102,11 +102,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         .join(' ')}
     >
       {/* Backdrop */}
-      <div
-        className="eidos-drawer-backdrop"
-        onClick={handleBackdropClick}
-        aria-hidden="true"
-      />
+      <div className="eidos-drawer-backdrop" onClick={handleBackdropClick} aria-hidden="true" />
 
       {/* Panel */}
       <div
@@ -163,7 +159,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

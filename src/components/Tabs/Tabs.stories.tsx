@@ -81,7 +81,14 @@ const labelStyle: React.CSSProperties = {
 };
 
 const panelContent = (tab: string) => (
-  <div style={{ padding: '0.25rem 0', color: 'var(--gray-600)', fontSize: '0.875rem', lineHeight: 1.6 }}>
+  <div
+    style={{
+      padding: '0.25rem 0',
+      color: 'var(--gray-600)',
+      fontSize: '0.875rem',
+      lineHeight: 1.6,
+    }}
+  >
     <strong style={{ color: 'var(--dark-color)' }}>{tab}</strong> - content for this tab panel.
     Change the active tab above to navigate between panels.
   </div>
@@ -155,9 +162,15 @@ export const Pills = {
 export const WithIcons = {
   render: () => (
     <Tabs defaultValue="home">
-      <Tab value="home" icon={Home}>Home</Tab>
-      <Tab value="settings" icon={Settings}>Settings</Tab>
-      <Tab value="notifications" icon={Bell}>Notifications</Tab>
+      <Tab value="home" icon={Home}>
+        Home
+      </Tab>
+      <Tab value="settings" icon={Settings}>
+        Settings
+      </Tab>
+      <Tab value="notifications" icon={Bell}>
+        Notifications
+      </Tab>
       <TabPanel value="home">{panelContent('Home')}</TabPanel>
       <TabPanel value="settings">{panelContent('Settings')}</TabPanel>
       <TabPanel value="notifications">{panelContent('Notifications')}</TabPanel>
@@ -295,7 +308,9 @@ export const WithDisabledTab = {
   render: () => (
     <Tabs defaultValue="overview">
       <Tab value="overview">Overview</Tab>
-      <Tab value="analytics" disabled>Analytics</Tab>
+      <Tab value="analytics" disabled>
+        Analytics
+      </Tab>
       <Tab value="reports">Reports</Tab>
       <TabPanel value="overview">{panelContent('Overview')}</TabPanel>
       <TabPanel value="analytics">{panelContent('Analytics')}</TabPanel>

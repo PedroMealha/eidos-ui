@@ -93,7 +93,10 @@ const chipStyle = (department: string): React.CSSProperties => {
 // ============================================================================
 
 function renderItem(item: Item): React.ReactNode {
-  const initials = item.name.split(' ').map((w) => w[0]).join('');
+  const initials = item.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('');
   const hue = (item.id * 37) % 360;
   return (
     <div style={rowStyle}>
@@ -226,7 +229,10 @@ function variableRowHeight(index: number): number {
 
 function renderVariableItem(item: Item, index: number): React.ReactNode {
   const isTall = index % 2 !== 0;
-  const initials = item.name.split(' ').map((w) => w[0]).join('');
+  const initials = item.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('');
   const hue = (item.id * 37) % 360;
 
   return (
@@ -325,7 +331,14 @@ function EmptyPlaceholder(): React.ReactElement {
       <div style={{ fontWeight: 600, color: 'var(--gray-600)', fontSize: '0.9375rem' }}>
         No results found
       </div>
-      <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', maxWidth: 240, textAlign: 'center' }}>
+      <div
+        style={{
+          fontSize: '0.8125rem',
+          color: 'var(--gray-400)',
+          maxWidth: 240,
+          textAlign: 'center',
+        }}
+      >
         Try adjusting your filters or search query.
       </div>
     </div>
@@ -415,9 +428,7 @@ threshold above their scroll position.
             Showing <strong>{items.length.toLocaleString()}</strong> of{' '}
             <strong>{ITEMS.length.toLocaleString()}</strong> items
           </span>
-          {isLoadingMore && (
-            <span style={{ color: 'var(--primary-color)' }}>Loading more…</span>
-          )}
+          {isLoadingMore && <span style={{ color: 'var(--primary-color)' }}>Loading more…</span>}
         </div>
         <VirtualList
           data={items}

@@ -13,12 +13,13 @@ const ACTIVITY_ICONS: Record<ActivityEntry['kind'], React.ReactNode> = {
   created: <CirclePlus size={14} />,
 };
 
-const ACTIVITY_COLORS: Record<ActivityEntry['kind'], 'success' | 'danger' | 'primary' | 'default'> = {
-  resolved: 'success',
-  escalated: 'danger',
-  assigned: 'primary',
-  created: 'default',
-};
+const ACTIVITY_COLORS: Record<ActivityEntry['kind'], 'success' | 'danger' | 'primary' | 'default'> =
+  {
+    resolved: 'success',
+    escalated: 'danger',
+    assigned: 'primary',
+    created: 'default',
+  };
 
 const StatCard: React.FC<{
   label: string;
@@ -68,7 +69,12 @@ export const DashboardPage: React.FC = () => {
           <h1 className="mrd-page__title">Dashboard</h1>
           <p className="mrd-page__subtitle">Support performance for the current week.</p>
         </div>
-        <Button variant="outlined" preIcon="refresh-cw" onClick={stats.reload} loading={stats.loading}>
+        <Button
+          variant="outlined"
+          preIcon="refresh-cw"
+          onClick={stats.reload}
+          loading={stats.loading}
+        >
           Refresh
         </Button>
       </div>

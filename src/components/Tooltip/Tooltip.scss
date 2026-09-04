@@ -1,53 +1,53 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-tooltip-trigger {
-	display: inline-flex;
+  display: inline-flex;
 }
 
 .eidos-tooltip {
-	position: fixed;
-	z-index: var(--z-index-tooltip);
-	background-color: rgba(var(--white-rgb), 0.95);
-	border: 1px solid var(--gray-50);
-	// Invisible but sized so useEffect can measure it before revealing.
-	opacity: 0;
-	visibility: hidden;
-	border-radius: var(--border-radius-md);
-	padding: var(--spacing-sm) var(--spacing-md);
-	box-shadow: var(--box-shadow-lg);
-	max-width: 300px;
-	word-wrap: break-word;
-	pointer-events: none;
-	transition:
-		opacity 0.2s ease-in-out,
-		transform 0.2s ease-in-out;
+  position: fixed;
+  z-index: var(--z-index-tooltip);
+  background-color: rgba(var(--white-rgb), 0.95);
+  border: 1px solid var(--gray-50);
+  // Invisible but sized so useEffect can measure it before revealing.
+  opacity: 0;
+  visibility: hidden;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--box-shadow-lg);
+  max-width: 300px;
+  word-wrap: break-word;
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
 
-	// Placement-specific transform origins for better animations
-	&--top {
-		transform-origin: center bottom;
-	}
+  // Placement-specific transform origins for better animations
+  &--top {
+    transform-origin: center bottom;
+  }
 
-	&--bottom {
-		transform-origin: center top;
-	}
+  &--bottom {
+    transform-origin: center top;
+  }
 
-	&--left {
-		transform-origin: right center;
-	}
+  &--left {
+    transform-origin: right center;
+  }
 
-	&--right {
-		transform-origin: left center;
-	}
+  &--right {
+    transform-origin: left center;
+  }
 
-	// Revealed once the position calculation completes.
-	&[data-state="entered"] {
-		opacity: 1;
-		visibility: visible;
-	}
+  // Revealed once the position calculation completes.
+  &[data-state='entered'] {
+    opacity: 1;
+    visibility: visible;
+  }
 
-	// Message styles
-	.eidos-tooltip-message {
-		font-size: var(--font-size-sm);
-		font-weight: var(--font-weight-medium);
-	}
+  // Message styles
+  .eidos-tooltip-message {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
 }

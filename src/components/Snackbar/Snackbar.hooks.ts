@@ -1,23 +1,22 @@
-import { useCallback } from "react";
-import { useSnackbarContext } from "./Snackbar.context";
-import type { UseSnackbarReturn, SnackbarProps } from "./Snackbar.types";
+import { useCallback } from 'react';
+import { useSnackbarContext } from './Snackbar.context';
+import type { UseSnackbarReturn, SnackbarProps } from './Snackbar.types';
 
 export const useSnackbar = (): UseSnackbarReturn => {
-  const { addSnackbar, removeSnackbar, clearAllSnackbars } =
-    useSnackbarContext();
+  const { addSnackbar, removeSnackbar, clearAllSnackbars } = useSnackbarContext();
 
   const showSnackbar = useCallback(
-    (snackbar: Omit<SnackbarProps, "id">): string => {
+    (snackbar: Omit<SnackbarProps, 'id'>): string => {
       return addSnackbar(snackbar);
     },
-    [addSnackbar]
+    [addSnackbar],
   );
 
   const hideSnackbar = useCallback(
     (id: string): void => {
       removeSnackbar(id);
     },
-    [removeSnackbar]
+    [removeSnackbar],
   );
 
   const clearAll = useCallback((): void => {
@@ -25,63 +24,51 @@ export const useSnackbar = (): UseSnackbarReturn => {
   }, [clearAllSnackbars]);
 
   const showSuccess = useCallback(
-    (
-      message: string,
-      options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
-    ) => {
+    (message: string, options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>) => {
       return showSnackbar({
         message,
-        variant: "success",
+        variant: 'success',
         duration: 5000,
         ...options,
       });
     },
-    [showSnackbar]
+    [showSnackbar],
   );
 
   const showError = useCallback(
-    (
-      message: string,
-      options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
-    ) => {
+    (message: string, options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>) => {
       return showSnackbar({
         message,
-        variant: "danger",
+        variant: 'danger',
         duration: 5000,
         ...options,
       });
     },
-    [showSnackbar]
+    [showSnackbar],
   );
 
   const showWarning = useCallback(
-    (
-      message: string,
-      options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
-    ) => {
+    (message: string, options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>) => {
       return showSnackbar({
         message,
-        variant: "warning",
+        variant: 'warning',
         duration: 5000,
         ...options,
       });
     },
-    [showSnackbar]
+    [showSnackbar],
   );
 
   const showInfo = useCallback(
-    (
-      message: string,
-      options?: Partial<Omit<SnackbarProps, "id" | "message" | "variant">>
-    ) => {
+    (message: string, options?: Partial<Omit<SnackbarProps, 'id' | 'message' | 'variant'>>) => {
       return showSnackbar({
         message,
-        variant: "info",
+        variant: 'info',
         duration: 5000,
         ...options,
       });
     },
-    [showSnackbar]
+    [showSnackbar],
   );
 
   return {

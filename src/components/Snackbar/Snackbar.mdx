@@ -26,11 +26,7 @@ function App() {
 function YourApp() {
   const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
 
-  return (
-    <button onClick={() => showSuccess('Changes saved!')}>
-      Save
-    </button>
-  );
+  return <button onClick={() => showSuccess('Changes saved!')}>Save</button>;
 }
 ```
 

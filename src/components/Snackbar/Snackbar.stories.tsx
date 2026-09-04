@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { SnackbarProvider, SnackbarContainer } from "./index";
-import { useSnackbar } from "./Snackbar.hooks";
-import { Button } from "../Button";
-import { UserCircle } from "lucide-react";
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { SnackbarProvider, SnackbarContainer } from './index';
+import { useSnackbar } from './Snackbar.hooks';
+import { Button } from '../Button';
+import { UserCircle } from 'lucide-react';
 
 const label: React.CSSProperties = {
-  marginBottom: "0.5rem",
-  fontSize: "0.7rem",
+  marginBottom: '0.5rem',
+  fontSize: '0.7rem',
   fontWeight: 600,
-  textTransform: "uppercase",
-  letterSpacing: "0.07em",
-  color: "#94a3b8",
+  textTransform: 'uppercase',
+  letterSpacing: '0.07em',
+  color: '#94a3b8',
 };
 
 // Wrapper component used by the Examples story
@@ -18,24 +18,26 @@ const SnackbarDemo = () => {
   const { showSuccess, showError, showWarning, showInfo, showSnackbar, clearAll } = useSnackbar();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", padding: "1.5rem" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.5rem' }}>
       <div>
         <p style={label}>Variants</p>
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <Button onClick={() => showSuccess("Operation completed successfully!")}>Success</Button>
-          <Button onClick={() => showError("An error occurred!")}>Error</Button>
-          <Button onClick={() => showWarning("Warning: Please review your changes.")}>Warning</Button>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <Button onClick={() => showSuccess('Operation completed successfully!')}>Success</Button>
+          <Button onClick={() => showError('An error occurred!')}>Error</Button>
+          <Button onClick={() => showWarning('Warning: Please review your changes.')}>
+            Warning
+          </Button>
           <Button onClick={() => showInfo("Here's some useful information.")}>Info</Button>
         </div>
       </div>
 
       <div>
         <p style={label}>With Actions</p>
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button
             onClick={() =>
-              showSuccess("File uploaded successfully", {
-                action: { label: "View", onClick: () => alert("Viewing file...") },
+              showSuccess('File uploaded successfully', {
+                action: { label: 'View', onClick: () => alert('Viewing file...') },
               })
             }
           >
@@ -43,8 +45,8 @@ const SnackbarDemo = () => {
           </Button>
           <Button
             onClick={() =>
-              showError("Failed to delete item", {
-                action: { label: "Retry", onClick: () => alert("Retrying...") },
+              showError('Failed to delete item', {
+                action: { label: 'Retry', onClick: () => alert('Retrying...') },
               })
             }
           >
@@ -52,8 +54,8 @@ const SnackbarDemo = () => {
           </Button>
           <Button
             onClick={() =>
-              showWarning("You have unsaved changes", {
-                action: { label: "Save", onClick: () => alert("Saving...") },
+              showWarning('You have unsaved changes', {
+                action: { label: 'Save', onClick: () => alert('Saving...') },
                 duration: 0,
               })
             }
@@ -65,21 +67,21 @@ const SnackbarDemo = () => {
 
       <div>
         <p style={label}>Duration</p>
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-          <Button onClick={() => showSuccess("Stays 10 seconds", { duration: 10000 })}>10s</Button>
-          <Button onClick={() => showError("Stays 2 seconds", { duration: 2000 })}>2s</Button>
-          <Button onClick={() => showInfo("No auto-close", { duration: 0 })}>Persistent</Button>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <Button onClick={() => showSuccess('Stays 10 seconds', { duration: 10000 })}>10s</Button>
+          <Button onClick={() => showError('Stays 2 seconds', { duration: 2000 })}>2s</Button>
+          <Button onClick={() => showInfo('No auto-close', { duration: 0 })}>Persistent</Button>
         </div>
       </div>
 
       <div>
         <p style={label}>Advanced</p>
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button
             onClick={() => {
-              showSuccess("First notification");
-              setTimeout(() => showInfo("Second notification"), 300);
-              setTimeout(() => showWarning("Third notification"), 600);
+              showSuccess('First notification');
+              setTimeout(() => showInfo('Second notification'), 300);
+              setTimeout(() => showWarning('Third notification'), 600);
             }}
           >
             Stack Multiple
@@ -88,17 +90,17 @@ const SnackbarDemo = () => {
             onClick={() =>
               showSnackbar({
                 component: () => (
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <UserCircle size={40} style={{ color: "#667eea" }} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <UserCircle size={40} style={{ color: '#667eea' }} />
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: "14px" }}>New Message</div>
-                      <div style={{ fontSize: "13px", color: "#666" }}>
+                      <div style={{ fontWeight: 600, fontSize: '14px' }}>New Message</div>
+                      <div style={{ fontSize: '13px', color: '#666' }}>
                         John Doe sent you a message
                       </div>
                     </div>
                   </div>
                 ),
-                variant: "info",
+                variant: 'info',
                 duration: 5000,
               })
             }
@@ -116,7 +118,7 @@ const SnackbarDemo = () => {
 
 // Meta configuration for Storybook
 const meta: Meta = {
-  title: "Overlays/Snackbar",
+  title: 'Overlays/Snackbar',
   decorators: [
     (Story) => (
       <SnackbarProvider>
@@ -126,11 +128,11 @@ const meta: Meta = {
     ),
   ],
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
-          "A notification system (toast/snackbar) that displays temporary messages to users. Supports multiple variants, custom durations, actions, and custom components. Built with Context API and Portal rendering for optimal positioning.",
+          'A notification system (toast/snackbar) that displays temporary messages to users. Supports multiple variants, custom durations, actions, and custom components. Built with Context API and Portal rendering for optimal positioning.',
       },
     },
   },
@@ -178,8 +180,8 @@ export const SuccessVariant: Story = {
     const { showSuccess } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
-        <Button onClick={() => showSuccess("Operation completed successfully!")}>
+      <div style={{ padding: '20px' }}>
+        <Button onClick={() => showSuccess('Operation completed successfully!')}>
           Show Success Notification
         </Button>
       </div>
@@ -192,8 +194,8 @@ export const ErrorVariant: Story = {
     const { showError } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
-        <Button onClick={() => showError("An error occurred while processing your request.")}>
+      <div style={{ padding: '20px' }}>
+        <Button onClick={() => showError('An error occurred while processing your request.')}>
           Show Error Notification
         </Button>
       </div>
@@ -206,8 +208,8 @@ export const WarningVariant: Story = {
     const { showWarning } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
-        <Button onClick={() => showWarning("Warning: Please review your changes before saving.")}>
+      <div style={{ padding: '20px' }}>
+        <Button onClick={() => showWarning('Warning: Please review your changes before saving.')}>
           Show Warning Notification
         </Button>
       </div>
@@ -220,7 +222,7 @@ export const InfoVariant: Story = {
     const { showInfo } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: '20px' }}>
         <Button onClick={() => showInfo("Here's some useful information for you.")}>
           Show Info Notification
         </Button>
@@ -234,13 +236,13 @@ export const WithAction: Story = {
     const { showSuccess } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: '20px' }}>
         <Button
           onClick={() =>
-            showSuccess("File uploaded successfully", {
+            showSuccess('File uploaded successfully', {
               action: {
-                label: "View",
-                onClick: () => alert("Opening file..."),
+                label: 'View',
+                onClick: () => alert('Opening file...'),
               },
             })
           }
@@ -257,7 +259,7 @@ export const PersistentNotification: Story = {
     const { showWarning } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: '20px' }}>
         <Button
           onClick={() =>
             showWarning("This notification won't auto-close. You must close it manually.", {
@@ -277,13 +279,13 @@ export const MultipleNotifications: Story = {
     const { showSuccess, showInfo, showWarning, showError } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: '20px' }}>
         <Button
           onClick={() => {
-            showSuccess("First notification");
-            setTimeout(() => showInfo("Second notification"), 300);
-            setTimeout(() => showWarning("Third notification"), 600);
-            setTimeout(() => showError("Fourth notification"), 900);
+            showSuccess('First notification');
+            setTimeout(() => showInfo('Second notification'), 300);
+            setTimeout(() => showWarning('Third notification'), 600);
+            setTimeout(() => showError('Fourth notification'), 900);
           }}
         >
           Show Multiple Notifications
@@ -298,28 +300,28 @@ export const CustomComponent: Story = {
     const { showSnackbar } = useSnackbar();
 
     return (
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: '20px' }}>
         <Button
           onClick={() =>
             showSnackbar({
               component: () => (
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <UserCircle size={40} style={{ color: "#667eea" }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <UserCircle size={40} style={{ color: '#667eea' }} />
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: "14px", marginBottom: "2px" }}>
+                    <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>
                       New Message
                     </div>
-                    <div style={{ fontSize: "13px", color: "#666" }}>
+                    <div style={{ fontSize: '13px', color: '#666' }}>
                       John Doe: "Hey, can we schedule a meeting?"
                     </div>
                   </div>
                 </div>
               ),
-              variant: "info",
+              variant: 'info',
               duration: 8000,
               action: {
-                label: "Reply",
-                onClick: () => alert("Opening chat..."),
+                label: 'Reply',
+                onClick: () => alert('Opening chat...'),
               },
             })
           }
@@ -330,5 +332,3 @@ export const CustomComponent: Story = {
     );
   },
 };
-
-

@@ -6,118 +6,121 @@
 // physical selected state.
 
 .eidos-segmented {
-	display: inline-flex;
-	align-items: center;
-	background: var(--gray-100);
-	border-radius: var(--border-radius-xl);
-	padding: 3px;
-	gap: 2px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--gray-100);
+  border-radius: var(--border-radius-xl);
+  padding: 3px;
+  gap: 2px;
 
-	&--full-width {
-		display: flex;
-		width: 100%;
+  &--full-width {
+    display: flex;
+    width: 100%;
 
-		> .eidos-segmented-item {
-			flex: 1;
-		}
-	}
+    > .eidos-segmented-item {
+      flex: 1;
+    }
+  }
 
-	&--disabled {
-		opacity: 0.5;
-		pointer-events: none;
-	}
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 // ─── Individual segment ───────────────────────────────────────────────────────
 
 .eidos-segmented-item {
-	@include flex-center;
-	gap: var(--spacing-xs);
-	border: none;
-	background: transparent;
-	border-radius: var(--border-radius-lg);
-	cursor: pointer;
-	font-weight: var(--font-weight-medium);
-	color: var(--gray-500);
-	transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-	white-space: nowrap;
-	line-height: 1;
-	will-change: transform;
+  @include flex-center;
+  gap: var(--spacing-xs);
+  border: none;
+  background: transparent;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-500);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+  white-space: nowrap;
+  line-height: 1;
+  will-change: transform;
 
-	// ── Sizes ──────────────────────────────────────────────────────────────────
+  // ── Sizes ──────────────────────────────────────────────────────────────────
 
-	.eidos-segmented--sm & {
-		padding: 3px 8px;
-		@include font-size(xs);
-		min-height: 24px;
-	}
+  .eidos-segmented--sm & {
+    padding: 3px 8px;
+    @include font-size(xs);
+    min-height: 24px;
+  }
 
-	.eidos-segmented--md & {
-		padding: 5px 12px;
-		@include font-size(sm);
-		min-height: 30px;
-	}
+  .eidos-segmented--md & {
+    padding: 5px 12px;
+    @include font-size(sm);
+    min-height: 30px;
+  }
 
-	.eidos-segmented--lg & {
-		padding: 7px 16px;
-		@include font-size(base);
-		min-height: 38px;
-	}
+  .eidos-segmented--lg & {
+    padding: 7px 16px;
+    @include font-size(base);
+    min-height: 38px;
+  }
 
-	// ── Icon sizing ────────────────────────────────────────────────────────────
+  // ── Icon sizing ────────────────────────────────────────────────────────────
 
-	.eidos-segmented-icon {
-		.eidos-segmented--sm & {
-			width: 12px;
-			height: 12px;
-		}
+  .eidos-segmented-icon {
+    .eidos-segmented--sm & {
+      width: 12px;
+      height: 12px;
+    }
 
-		.eidos-segmented--md & {
-			width: 14px;
-			height: 14px;
-		}
+    .eidos-segmented--md & {
+      width: 14px;
+      height: 14px;
+    }
 
-		.eidos-segmented--lg & {
-			width: 16px;
-			height: 16px;
-		}
-	}
+    .eidos-segmented--lg & {
+      width: 16px;
+      height: 16px;
+    }
+  }
 
-	// ── Hover - only on inactive, enabled segments ─────────────────────────────
+  // ── Hover - only on inactive, enabled segments ─────────────────────────────
 
-	&:hover:not(:disabled):not(.eidos-segmented-item--active) {
-		background: var(--gray-200);
-		color: var(--gray-700);
-	}
+  &:hover:not(:disabled):not(.eidos-segmented-item--active) {
+    background: var(--gray-200);
+    color: var(--gray-700);
+  }
 
-	// ── Disabled ───────────────────────────────────────────────────────────────
+  // ── Disabled ───────────────────────────────────────────────────────────────
 
-	&:disabled {
-		opacity: 0.45;
-		cursor: not-allowed;
-	}
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 
-	// ── Active (selected) chip ─────────────────────────────────────────────────
+  // ── Active (selected) chip ─────────────────────────────────────────────────
 
-	&--active {
-		background: var(--white);
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  &--active {
+    background: var(--white);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
-		// Color variants: active segment text matches the chosen color token.
-		.eidos-segmented--primary & {
-			color: var(--primary-color);
-		}
+    // Color variants: active segment text matches the chosen color token.
+    .eidos-segmented--primary & {
+      color: var(--primary-color);
+    }
 
-		.eidos-segmented--secondary & {
-			color: var(--secondary-color);
-		}
+    .eidos-segmented--secondary & {
+      color: var(--secondary-color);
+    }
 
-		.eidos-segmented--success & {
-			color: var(--success-color);
-		}
+    .eidos-segmented--success & {
+      color: var(--success-color);
+    }
 
-		.eidos-segmented--danger & {
-			color: var(--danger-color);
-		}
-	}
+    .eidos-segmented--danger & {
+      color: var(--danger-color);
+    }
+  }
 }

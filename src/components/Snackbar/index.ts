@@ -10,4 +10,3 @@ export type {
   SnackbarContextValue,
   UseSnackbarReturn,
 } from './Snackbar.types';
-

@@ -1,7 +1,7 @@
 export interface DropdownPosition {
   top: number;
   left: number;
-  placement: "top" | "bottom" | "left" | "right";
+  placement: 'top' | 'bottom' | 'left' | 'right';
 }
 
 export interface DropdownState {
@@ -15,8 +15,8 @@ export interface DropdownProps {
   content: React.ReactNode;
   /** Open the dropdown immediately on first mount. Useful for programmatic contexts. */
   defaultOpen?: boolean;
-  placement?: "top" | "bottom" | "left" | "right";
-  align?: "start" | "end" | "center";
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+  align?: 'start' | 'end' | 'center';
   delay?: number;
   disabled?: boolean;
   className?: string;

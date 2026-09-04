@@ -22,16 +22,8 @@ import type { KbdProps } from './Kbd.types';
  * Press <Kbd>Enter</Kbd> to confirm.
  * ```
  */
-export const Kbd: React.FC<KbdProps> = ({
-	children,
-	size = 'md',
-	className = '',
-}) => {
-	const classes = [
-		'eidos-kbd',
-		`eidos-kbd--${size}`,
-		className,
-	].filter(Boolean).join(' ');
+export const Kbd: React.FC<KbdProps> = ({ children, size = 'md', className = '' }) => {
+  const classes = ['eidos-kbd', `eidos-kbd--${size}`, className].filter(Boolean).join(' ');
 
-	return <kbd className={classes}>{children}</kbd>;
+  return <kbd className={classes}>{children}</kbd>;
 };

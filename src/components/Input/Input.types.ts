@@ -1,11 +1,10 @@
-import React from "react";
-import type { IconType } from "../../utils";
+import React from 'react';
+import type { IconType } from '../../utils';
 
-interface BaseInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
-  variant?: "filled" | "outlined" | "text" | "bare";
-  color?: "primary" | "secondary" | "success" | "danger";
-  size?: "sm" | "md" | "lg";
+interface BaseInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  variant?: 'filled' | 'outlined' | 'text' | 'bare';
+  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
   className?: string;
@@ -25,28 +24,24 @@ interface BaseInputProps
 }
 
 interface TextInputProps extends BaseInputProps {
-  type?: "text" | "email" | "tel" | "url" | "search";
+  type?: 'text' | 'email' | 'tel' | 'url' | 'search';
 }
 
 interface PasswordInputProps extends BaseInputProps {
-  type: "password";
+  type: 'password';
 }
 
 interface NumberInputProps extends BaseInputProps {
-  type: "number";
+  type: 'number';
   min?: number | string;
   max?: number | string;
   step?: number | string;
 }
 
 interface DateInputProps extends BaseInputProps {
-  type: "date";
+  type: 'date';
 }
 
-export type InputProps =
-  | TextInputProps
-  | PasswordInputProps
-  | NumberInputProps
-  | DateInputProps;
+export type InputProps = TextInputProps | PasswordInputProps | NumberInputProps | DateInputProps;
 
 export type { IconType };

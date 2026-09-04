@@ -26,12 +26,14 @@ export const Examples = {
     };
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-        gap: '2rem 2.5rem',
-        padding: '1.5rem',
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          gap: '2rem 2.5rem',
+          padding: '1.5rem',
+        }}
+      >
         <div>
           <p style={label}>Sizes</p>
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -53,7 +55,14 @@ export const Examples = {
 
         <div>
           <p style={label}>Contained</p>
-          <div style={{ height: '80px', position: 'relative', border: '1px dashed #e2e8f0', borderRadius: '8px' }}>
+          <div
+            style={{
+              height: '80px',
+              position: 'relative',
+              border: '1px dashed #e2e8f0',
+              borderRadius: '8px',
+            }}
+          >
             <Spinner />
           </div>
         </div>

@@ -48,9 +48,7 @@ export const Accordion: React.FC<AccordionProps> = ({
       let next: string[];
 
       if (multiple) {
-        next = isOpen
-          ? openValues.filter((v) => v !== itemValue)
-          : [...openValues, itemValue];
+        next = isOpen ? openValues.filter((v) => v !== itemValue) : [...openValues, itemValue];
       } else {
         next = isOpen ? [] : [itemValue];
       }
@@ -61,19 +59,13 @@ export const Accordion: React.FC<AccordionProps> = ({
     [openValues, multiple, isControlled, onChange],
   );
 
-  const rootClasses = [
-    'eidos-accordion',
-    `eidos-accordion--${variant}`,
-    className,
-  ]
+  const rootClasses = ['eidos-accordion', `eidos-accordion--${variant}`, className]
     .filter(Boolean)
     .join(' ');
 
   return (
     <AccordionContext.Provider value={{ openValues, toggle, variant, size, color }}>
-      <div className={rootClasses}>
-        {children}
-      </div>
+      <div className={rootClasses}>{children}</div>
     </AccordionContext.Provider>
   );
 };
@@ -151,9 +143,7 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
         className="eidos-accordion-content-wrapper"
         style={{ maxHeight: `${maxHeight}px` }}
       >
-        <div className="eidos-accordion-content">
-          {children}
-        </div>
+        <div className="eidos-accordion-content">{children}</div>
       </div>
     </div>
   );

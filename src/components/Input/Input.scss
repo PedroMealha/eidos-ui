@@ -1,10 +1,10 @@
-@use "../../styles/mixins.scss" as *;
+@use '../../styles/mixins.scss' as *;
 
 .eidos-input-container {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-	will-change: transform;
+  will-change: transform;
   position: relative;
 
   &--fullWidth {
@@ -344,10 +344,10 @@
   text-overflow: ellipsis;
 
   // Remove native search clear button
-  &[type="search"]::-webkit-search-cancel-button,
-  &[type="search"]::-webkit-search-decoration,
-  &[type="search"]::-webkit-search-results-button,
-  &[type="search"]::-webkit-search-results-decoration {
+  &[type='search']::-webkit-search-cancel-button,
+  &[type='search']::-webkit-search-decoration,
+  &[type='search']::-webkit-search-results-button,
+  &[type='search']::-webkit-search-results-decoration {
     -webkit-appearance: none;
     appearance: none;
   }

@@ -5,55 +5,55 @@
 // ============================================================================
 
 .eidos-skeleton {
-	display: block;
-	background-color: var(--gray-200);
+  display: block;
+  background-color: var(--gray-200);
 
-	// ========================================================================
-	// Variants
-	// ========================================================================
+  // ========================================================================
+  // Variants
+  // ========================================================================
 
-	&--text {
-		height: 1em;
-		width: 100%;
-		border-radius: var(--border-radius-xs);
-	}
+  &--text {
+    height: 1em;
+    width: 100%;
+    border-radius: var(--border-radius-xs);
+  }
 
-	&--circular {
-		border-radius: 50%;
-		width: 40px;
-		height: 40px;
-	}
+  &--circular {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
 
-	&--rectangular {
-		width: 100%;
-		height: 120px;
-		border-radius: 0;
-	}
+  &--rectangular {
+    width: 100%;
+    height: 120px;
+    border-radius: 0;
+  }
 
-	&--rounded {
-		width: 100%;
-		height: 120px;
-		@include border-radius(md);
-	}
+  &--rounded {
+    width: 100%;
+    height: 120px;
+    @include border-radius(md);
+  }
 
-	// ========================================================================
-	// Animations
-	// ========================================================================
+  // ========================================================================
+  // Animations
+  // ========================================================================
 
-	&--pulse {
-		animation: eidos-skeleton-pulse 1.5s ease-in-out infinite;
-	}
+  &--pulse {
+    animation: eidos-skeleton-pulse 1.5s ease-in-out infinite;
+  }
 
-	&--wave {
-		background: linear-gradient(
-			90deg,
-			var(--gray-200) 25%,
-			var(--gray-100) 50%,
-			var(--gray-200) 75%
-		);
-		background-size: 200% 100%;
-		animation: eidos-skeleton-wave 1.5s ease-in-out infinite;
-	}
+  &--wave {
+    background: linear-gradient(
+      90deg,
+      var(--gray-200) 25%,
+      var(--gray-100) 50%,
+      var(--gray-200) 75%
+    );
+    background-size: 200% 100%;
+    animation: eidos-skeleton-wave 1.5s ease-in-out infinite;
+  }
 }
 
 // ============================================================================
@@ -61,9 +61,9 @@
 // ============================================================================
 
 .eidos-skeleton-text-group {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
 
 // ============================================================================
@@ -71,11 +71,20 @@
 // ============================================================================
 
 @keyframes eidos-skeleton-pulse {
-	0%, 100% { opacity: 1; }
-	50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 @keyframes eidos-skeleton-wave {
-	0% { background-position: 200% 0; }
-	100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

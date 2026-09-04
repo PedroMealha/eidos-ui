@@ -1,29 +1,51 @@
 .eidos-spinner-wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	line-height: 1;
-	color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  color: var(--primary-color);
 
-	&--sm  { font-size: 1.5rem; }
-	&--md { font-size: 2.5rem; }
-	&--lg  { font-size: 4rem; }
+  &--sm {
+    font-size: 1.5rem;
+  }
+  &--md {
+    font-size: 2.5rem;
+  }
+  &--lg {
+    font-size: 4rem;
+  }
 
-	&--primary   { color: var(--primary-color); }
-	&--secondary { color: var(--secondary-color); }
-	&--success   { color: var(--success-color); }
-	&--danger    { color: var(--danger-color); }
-	&--warning   { color: var(--warning-color); }
-	&--info      { color: var(--info-color); }
+  &--primary {
+    color: var(--primary-color);
+  }
+  &--secondary {
+    color: var(--secondary-color);
+  }
+  &--success {
+    color: var(--success-color);
+  }
+  &--danger {
+    color: var(--danger-color);
+  }
+  &--warning {
+    color: var(--warning-color);
+  }
+  &--info {
+    color: var(--info-color);
+  }
 }
 
 .eidos-spinner {
-	width: 1em;
-	height: 1em;
-	animation: spin-pulse 1s linear infinite;
+  width: 1em;
+  height: 1em;
+  animation: spin-pulse 1s linear infinite;
 }
 
 @keyframes spin-pulse {
-	from { transform: rotate(0deg); }
-	to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

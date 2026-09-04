@@ -5,165 +5,165 @@
 // ============================================================================
 
 .eidos-otp {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 
-	// ── Label ─────────────────────────────────────────────────────────────────
+  // ── Label ─────────────────────────────────────────────────────────────────
 
-	.eidos-otp-label {
-		@include font-size(sm);
-		@include font-weight(medium);
-		color: var(--gray-700);
-		line-height: 1.4;
-	}
+  .eidos-otp-label {
+    @include font-size(sm);
+    @include font-weight(medium);
+    color: var(--gray-700);
+    line-height: 1.4;
+  }
 
-	// ── Slots row ─────────────────────────────────────────────────────────────
+  // ── Slots row ─────────────────────────────────────────────────────────────
 
-	.eidos-otp-slots {
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-sm);
-	}
+  .eidos-otp-slots {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
 
-	// ── Individual slot ───────────────────────────────────────────────────────
+  // ── Individual slot ───────────────────────────────────────────────────────
 
-	.eidos-otp-slot {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
-		will-change: transform;
+  .eidos-otp-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    will-change: transform;
 
-		// Default to medium size; overridden by size modifiers below
-		width: var(--component-size-md);
-		height: var(--component-size-md);
+    // Default to medium size; overridden by size modifiers below
+    width: var(--component-size-md);
+    height: var(--component-size-md);
 
-		border: 1.5px solid var(--gray-300);
-		@include border-radius(md);
-		background-color: var(--white);
-		transition:
-			border-color 0.2s ease,
-			box-shadow 0.2s ease,
-			background-color 0.2s ease;
+    border: 1.5px solid var(--gray-300);
+    @include border-radius(md);
+    background-color: var(--white);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
 
-		// ── Inner input ────────────────────────────────────────────────────────
+    // ── Inner input ────────────────────────────────────────────────────────
 
-		input {
-			@include input-reset;
-			width: 100%;
-			height: 100%;
-			text-align: center;
-			background: transparent;
-			color: var(--dark-color);
-			@include font-weight(semibold);
-			@include font-size(base); // overridden by size variants
-			cursor: text;
-			caret-color: var(--primary-color);
+    input {
+      @include input-reset;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      background: transparent;
+      color: var(--dark-color);
+      @include font-weight(semibold);
+      @include font-size(base); // overridden by size variants
+      cursor: text;
+      caret-color: var(--primary-color);
 
-			// Password dots should be centred too
-			&[type='password'] {
-				letter-spacing: 0.1em;
-			}
-		}
+      // Password dots should be centred too
+      &[type='password'] {
+        letter-spacing: 0.1em;
+      }
+    }
 
-		// ── State modifiers ────────────────────────────────────────────────────
+    // ── State modifiers ────────────────────────────────────────────────────
 
-		&--filled {
-			border-color: var(--primary-300);
-			background-color: var(--primary-50);
-		}
+    &--filled {
+      border-color: var(--primary-300);
+      background-color: var(--primary-50);
+    }
 
-		&--focused {
-			border-color: var(--primary-color);
-			box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
-			background-color: var(--white);
-		}
+    &--focused {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+      background-color: var(--white);
+    }
 
-		&--error {
-			border-color: var(--danger-color);
-			background-color: rgba(var(--danger-rgb), 0.04);
+    &--error {
+      border-color: var(--danger-color);
+      background-color: rgba(var(--danger-rgb), 0.04);
 
-			&.eidos-otp-slot--focused {
-				box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.15);
-			}
-		}
+      &.eidos-otp-slot--focused {
+        box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.15);
+      }
+    }
 
-		&--disabled {
-			opacity: 0.5;
-			background-color: var(--gray-50);
-			cursor: not-allowed;
+    &--disabled {
+      opacity: 0.5;
+      background-color: var(--gray-50);
+      cursor: not-allowed;
 
-			input {
-				cursor: not-allowed;
-				pointer-events: none;
-			}
-		}
-	}
+      input {
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+    }
+  }
 
-	// ── Hint ──────────────────────────────────────────────────────────────────
+  // ── Hint ──────────────────────────────────────────────────────────────────
 
-	.eidos-otp-hint {
-		@include font-size(sm);
-		color: var(--gray-500);
-		line-height: 1.4;
-	}
+  .eidos-otp-hint {
+    @include font-size(sm);
+    color: var(--gray-500);
+    line-height: 1.4;
+  }
 
-	// ── Error message ─────────────────────────────────────────────────────────
+  // ── Error message ─────────────────────────────────────────────────────────
 
-	.eidos-otp-error-message {
-		@include flex-center-y;
-		gap: var(--spacing-xs);
-		@include font-size(sm);
-		color: var(--danger-color);
-		line-height: 1.4;
+  .eidos-otp-error-message {
+    @include flex-center-y;
+    gap: var(--spacing-xs);
+    @include font-size(sm);
+    color: var(--danger-color);
+    line-height: 1.4;
 
-		svg {
-			flex-shrink: 0;
-			width: 1em;
-			height: 1em;
-		}
-	}
+    svg {
+      flex-shrink: 0;
+      width: 1em;
+      height: 1em;
+    }
+  }
 
-	// ── Size variants ─────────────────────────────────────────────────────────
+  // ── Size variants ─────────────────────────────────────────────────────────
 
-	&--sm {
-		.eidos-otp-slot {
-			width: var(--component-size-sm);
-			height: var(--component-size-sm);
-			@include border-radius(sm);
+  &--sm {
+    .eidos-otp-slot {
+      width: var(--component-size-sm);
+      height: var(--component-size-sm);
+      @include border-radius(sm);
 
-			input {
-				@include font-size(sm);
-			}
-		}
-	}
+      input {
+        @include font-size(sm);
+      }
+    }
+  }
 
-	// medium is the default - declared on the slot itself above
+  // medium is the default - declared on the slot itself above
 
-	&--lg {
-		.eidos-otp-slot {
-			width: var(--component-size-lg);
-			height: var(--component-size-lg);
-			@include border-radius(lg);
+  &--lg {
+    .eidos-otp-slot {
+      width: var(--component-size-lg);
+      height: var(--component-size-lg);
+      @include border-radius(lg);
 
-			input {
-				@include font-size(lg);
-			}
-		}
-	}
+      input {
+        @include font-size(lg);
+      }
+    }
+  }
 
-	// ── Disabled container modifier ───────────────────────────────────────────
-	// (individual slots also carry --disabled for pointer-events; this covers
-	//  any surrounding chrome if needed in the future)
+  // ── Disabled container modifier ───────────────────────────────────────────
+  // (individual slots also carry --disabled for pointer-events; this covers
+  //  any surrounding chrome if needed in the future)
 
-	&--disabled {
-		.eidos-otp-label {
-			opacity: 0.5;
-		}
+  &--disabled {
+    .eidos-otp-label {
+      opacity: 0.5;
+    }
 
-		.eidos-otp-hint {
-			opacity: 0.5;
-		}
-	}
+    .eidos-otp-hint {
+      opacity: 0.5;
+    }
+  }
 }

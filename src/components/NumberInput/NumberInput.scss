@@ -5,7 +5,9 @@
   flex-direction: column;
   gap: var(--spacing-xs);
 
-  &--fullWidth { width: 100%; }
+  &--fullWidth {
+    width: 100%;
+  }
 }
 
 .eidos-number-input-label {
@@ -20,7 +22,9 @@
   border-radius: var(--border-radius-sm);
   background: var(--white);
   overflow: hidden;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 
   &:focus-within:not(.eidos-number-input-control--disabled) {
     border-color: var(--primary-color);
@@ -29,7 +33,9 @@
 
   .eidos-number-input--error & {
     border-color: var(--danger-color);
-    &:focus-within { box-shadow: 0 0 0 3px rgba(var(--danger-rgb, 239, 68, 68), 0.15); }
+    &:focus-within {
+      box-shadow: 0 0 0 3px rgba(var(--danger-rgb, 239, 68, 68), 0.15);
+    }
   }
 
   &--disabled {
@@ -40,9 +46,15 @@
   }
 
   // Size variants
-  .eidos-number-input--sm & { height: var(--component-size-sm); }
-  .eidos-number-input--md & { height: var(--component-size-md); }
-  .eidos-number-input--lg & { height: var(--component-size-lg); }
+  .eidos-number-input--sm & {
+    height: var(--component-size-sm);
+  }
+  .eidos-number-input--md & {
+    height: var(--component-size-md);
+  }
+  .eidos-number-input--lg & {
+    height: var(--component-size-lg);
+  }
 }
 
 .eidos-number-input-btn {
@@ -52,12 +64,20 @@
   height: 100%;
   cursor: pointer;
   color: var(--gray-500);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
   border: none;
 
-  .eidos-number-input--sm & { width: 28px; }
-  .eidos-number-input--md & { width: 36px; }
-  .eidos-number-input--lg & { width: 44px; }
+  .eidos-number-input--sm & {
+    width: 28px;
+  }
+  .eidos-number-input--md & {
+    width: 36px;
+  }
+  .eidos-number-input--lg & {
+    width: 44px;
+  }
 
   &:hover:not(:disabled) {
     background: var(--gray-100);
@@ -69,12 +89,24 @@
     cursor: not-allowed;
   }
 
-  &:focus-visible { outline: 2px solid var(--primary-color); outline-offset: -2px; }
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+  }
 
   svg {
-    .eidos-number-input--sm &  { width: 14px; height: 14px; }
-    .eidos-number-input--md & { width: 16px; height: 16px; }
-    .eidos-number-input--lg &  { width: 18px; height: 18px; }
+    .eidos-number-input--sm & {
+      width: 14px;
+      height: 14px;
+    }
+    .eidos-number-input--md & {
+      width: 16px;
+      height: 16px;
+    }
+    .eidos-number-input--lg & {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 

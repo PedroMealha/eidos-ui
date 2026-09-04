@@ -5,70 +5,70 @@
 // ============================================================================
 
 .eidos-alert {
-	@include flex-center-y;
-	// Override align-items: center from the mixin - icon should pin to the top
-	// of multi-line content, not vertically centre across the full height.
-	align-items: flex-start;
-	gap: var(--spacing-md);
-	@include border-radius(md);
-	padding: var(--spacing-md);
-	border: 1px solid transparent;
+  @include flex-center-y;
+  // Override align-items: center from the mixin - icon should pin to the top
+  // of multi-line content, not vertically centre across the full height.
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  @include border-radius(md);
+  padding: var(--spacing-md);
+  border: 1px solid transparent;
 
-	// ========================================================================
-	// Variant colour themes
-	// ========================================================================
+  // ========================================================================
+  // Variant colour themes
+  // ========================================================================
 
-	&--info {
-		@include bg-color-opacity(primary, 0.08);
-		@include border-color-opacity(primary, 0.2);
+  &--info {
+    @include bg-color-opacity(primary, 0.08);
+    @include border-color-opacity(primary, 0.2);
 
-		.eidos-alert-icon-wrapper {
-			color: var(--primary-color);
-		}
+    .eidos-alert-icon-wrapper {
+      color: var(--primary-color);
+    }
 
-		.eidos-alert-title {
-			color: var(--primary-color);
-		}
-	}
+    .eidos-alert-title {
+      color: var(--primary-color);
+    }
+  }
 
-	&--success {
-		@include bg-color-opacity(success, 0.08);
-		@include border-color-opacity(success, 0.2);
+  &--success {
+    @include bg-color-opacity(success, 0.08);
+    @include border-color-opacity(success, 0.2);
 
-		.eidos-alert-icon-wrapper {
-			color: var(--success-color);
-		}
+    .eidos-alert-icon-wrapper {
+      color: var(--success-color);
+    }
 
-		.eidos-alert-title {
-			color: var(--success-color);
-		}
-	}
+    .eidos-alert-title {
+      color: var(--success-color);
+    }
+  }
 
-	&--warning {
-		@include bg-color-opacity(warning, 0.08);
-		@include border-color-opacity(warning, 0.2);
+  &--warning {
+    @include bg-color-opacity(warning, 0.08);
+    @include border-color-opacity(warning, 0.2);
 
-		.eidos-alert-icon-wrapper {
-			color: var(--warning-color);
-		}
+    .eidos-alert-icon-wrapper {
+      color: var(--warning-color);
+    }
 
-		.eidos-alert-title {
-			color: var(--warning-color);
-		}
-	}
+    .eidos-alert-title {
+      color: var(--warning-color);
+    }
+  }
 
-	&--danger {
-		@include bg-color-opacity(danger, 0.08);
-		@include border-color-opacity(danger, 0.2);
+  &--danger {
+    @include bg-color-opacity(danger, 0.08);
+    @include border-color-opacity(danger, 0.2);
 
-		.eidos-alert-icon-wrapper {
-			color: var(--danger-color);
-		}
+    .eidos-alert-icon-wrapper {
+      color: var(--danger-color);
+    }
 
-		.eidos-alert-title {
-			color: var(--danger-color);
-		}
-	}
+    .eidos-alert-title {
+      color: var(--danger-color);
+    }
+  }
 }
 
 // ============================================================================
@@ -76,16 +76,16 @@
 // ============================================================================
 
 .eidos-alert-icon-wrapper {
-	@include flex-center;
-	flex-shrink: 0;
-	// Nudge the icon down slightly so its optical centre aligns with the
-	// first line of title text rather than the top edge of the container.
-	margin-top: 2px;
+  @include flex-center;
+  flex-shrink: 0;
+  // Nudge the icon down slightly so its optical centre aligns with the
+  // first line of title text rather than the top edge of the container.
+  margin-top: 2px;
 }
 
 .eidos-alert-icon {
-	width: 1.1em;
-	height: 1.1em;
+  width: 1.1em;
+  height: 1.1em;
 }
 
 // ============================================================================
@@ -93,29 +93,29 @@
 // ============================================================================
 
 .eidos-alert-body {
-	flex: 1;
-	min-width: 0;
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
 .eidos-alert-title {
-	margin: 0;
-	@include font-size(sm);
-	@include font-weight(bold);
-	line-height: 1.4;
+  margin: 0;
+  @include font-size(sm);
+  @include font-weight(bold);
+  line-height: 1.4;
 }
 
 .eidos-alert-content {
-	@include font-size(sm);
-	color: var(--gray-600);
-	line-height: 1.6;
-	margin: 0;
+  @include font-size(sm);
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin: 0;
 }
 
 .eidos-alert-action {
-	margin-top: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
 }
 
 // ============================================================================
@@ -123,22 +123,22 @@
 // ============================================================================
 
 .eidos-alert-dismiss {
-	@include button-reset;
-	@include flex-center;
-	flex-shrink: 0;
-	color: var(--gray-400);
-	padding: 2px;
-	@include border-radius(sm);
-	transition: all 0.2s ease;
-	cursor: pointer;
+  @include button-reset;
+  @include flex-center;
+  flex-shrink: 0;
+  color: var(--gray-400);
+  padding: 2px;
+  @include border-radius(sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
 
-	svg {
-		width: 1em;
-		height: 1em;
-	}
+  svg {
+    width: 1em;
+    height: 1em;
+  }
 
-	&:hover {
-		color: var(--gray-600);
-		background: rgba(0, 0, 0, 0.05);
-	}
+  &:hover {
+    color: var(--gray-600);
+    background: rgba(0, 0, 0, 0.05);
+  }
 }

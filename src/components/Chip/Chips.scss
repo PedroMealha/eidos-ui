@@ -1,295 +1,295 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-chip {
-	@include flex-center-y;
-	@include button-reset;
-	position: relative;
-	border-radius: var(--border-radius-sm);
-	font-weight: var(--font-weight-medium);
-	padding: var(--spacing-xs) var(--spacing-sm);
-	transition: all 0.2s ease;
-	cursor: default;
-	text-decoration: none;
-	border: 1px solid transparent;
-	gap: var(--spacing-xs);
-	white-space: nowrap;
-	max-width: 100%;
+  @include flex-center-y;
+  @include button-reset;
+  position: relative;
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-medium);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  transition: all 0.2s ease;
+  cursor: default;
+  text-decoration: none;
+  border: 1px solid transparent;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
+  max-width: 100%;
 
-	// Sizes
-	&--sm {
+  // Sizes
+  &--sm {
     padding: var(--spacing-xs) var(--spacing-sm);
-		font-size: var(--font-size-xs);
-	}
+    font-size: var(--font-size-xs);
+  }
 
-	&--md {
+  &--md {
     padding: var(--spacing-sm) var(--spacing-md);
-		font-size: var(--font-size-sm);
-	}
+    font-size: var(--font-size-sm);
+  }
 
-	&--lg {
+  &--lg {
     padding: var(--spacing-md) var(--spacing-lg);
-		font-size: var(--font-size-base);
-	}
+    font-size: var(--font-size-base);
+  }
 
-	&--full-width {
-		width: 100%;
-	}
+  &--full-width {
+    width: 100%;
+  }
 
-	// Clickable state
-	&--clickable {
-		cursor: pointer;
+  // Clickable state
+  &--clickable {
+    cursor: pointer;
 
-		&:focus,
-		&:focus-visible {
-			outline: none;
-		}
-	}
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
 
-	// Filled variant (default)
-	&--filled {
-		background-color: var(--primary-color);
-		color: var(--white);
+  // Filled variant (default)
+  &--filled {
+    background-color: var(--primary-color);
+    color: var(--white);
 
-		&:hover:not(.eidos-chip--disabled) {
-			background-color: var(--primary-dark);
-		}
+    &:hover:not(.eidos-chip--disabled) {
+      background-color: var(--primary-dark);
+    }
 
-		&.eidos-chip--primary {
-			background-color: var(--primary-color);
-			color: var(--white);
+    &.eidos-chip--primary {
+      background-color: var(--primary-color);
+      color: var(--white);
 
-			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--primary-dark);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        background-color: var(--primary-dark);
+      }
+    }
 
-		&.eidos-chip--secondary {
-			background-color: var(--secondary-color);
-			color: var(--white);
+    &.eidos-chip--secondary {
+      background-color: var(--secondary-color);
+      color: var(--white);
 
-			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--secondary-dark);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        background-color: var(--secondary-dark);
+      }
+    }
 
-		&.eidos-chip--success {
-			background-color: var(--success-color);
-			color: var(--white);
+    &.eidos-chip--success {
+      background-color: var(--success-color);
+      color: var(--white);
 
-			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--success-dark);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        background-color: var(--success-dark);
+      }
+    }
 
-		&.eidos-chip--danger {
-			background-color: var(--danger-color);
-			color: var(--white);
+    &.eidos-chip--danger {
+      background-color: var(--danger-color);
+      color: var(--white);
 
-			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--danger-dark);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        background-color: var(--danger-dark);
+      }
+    }
 
-		&.eidos-chip--warning {
-			background-color: var(--warning-color);
-			color: var(--white);
+    &.eidos-chip--warning {
+      background-color: var(--warning-color);
+      color: var(--white);
 
-			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--warning-dark);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        background-color: var(--warning-dark);
+      }
+    }
 
-		&.eidos-chip--info {
-			background-color: var(--info-color);
-			color: var(--white);
+    &.eidos-chip--info {
+      background-color: var(--info-color);
+      color: var(--white);
 
-			&:hover:not(.eidos-chip--disabled) {
-				background-color: var(--info-dark);
-			}
-		}
-	}
+      &:hover:not(.eidos-chip--disabled) {
+        background-color: var(--info-dark);
+      }
+    }
+  }
 
-	// Outlined variant
-	&--outlined {
-		background-color: transparent;
-		border: 1px solid var(--primary-color);
-		color: var(--primary-color);
+  // Outlined variant
+  &--outlined {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
 
-		&:hover:not(.eidos-chip--disabled) {
-			@include bg-color-opacity(primary, 0.05);
-		}
+    &:hover:not(.eidos-chip--disabled) {
+      @include bg-color-opacity(primary, 0.05);
+    }
 
-		&.eidos-chip--primary {
-			border-color: var(--primary-color);
-			color: var(--primary-color);
+    &.eidos-chip--primary {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(primary, 0.05);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(primary, 0.05);
+      }
+    }
 
-		&.eidos-chip--secondary {
-			border-color: var(--secondary-color);
-			color: var(--secondary-color);
+    &.eidos-chip--secondary {
+      border-color: var(--secondary-color);
+      color: var(--secondary-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(secondary, 0.05);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(secondary, 0.05);
+      }
+    }
 
-		&.eidos-chip--success {
-			border-color: var(--success-color);
-			color: var(--success-color);
+    &.eidos-chip--success {
+      border-color: var(--success-color);
+      color: var(--success-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(success, 0.05);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(success, 0.05);
+      }
+    }
 
-		&.eidos-chip--danger {
-			border-color: var(--danger-color);
-			color: var(--danger-color);
+    &.eidos-chip--danger {
+      border-color: var(--danger-color);
+      color: var(--danger-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(danger, 0.05);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(danger, 0.05);
+      }
+    }
 
-		&.eidos-chip--warning {
-			border-color: var(--warning-color);
-			color: var(--warning-color);
+    &.eidos-chip--warning {
+      border-color: var(--warning-color);
+      color: var(--warning-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(warning, 0.05);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(warning, 0.05);
+      }
+    }
 
-		&.eidos-chip--info {
-			border-color: var(--info-color);
-			color: var(--info-color);
+    &.eidos-chip--info {
+      border-color: var(--info-color);
+      color: var(--info-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(info, 0.05);
-			}
-		}
-	}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(info, 0.05);
+      }
+    }
+  }
 
-	// Text variant - no background; the colour is carried by the label alone.
-	// This matches Button's `text` variant, so `text` means the same thing
-	// everywhere in the library. A tint appears on hover only, as an
-	// interaction affordance for clickable chips.
-	&--text {
-		background-color: transparent;
-		border: 1px solid transparent;
+  // Text variant - no background; the colour is carried by the label alone.
+  // This matches Button's `text` variant, so `text` means the same thing
+  // everywhere in the library. A tint appears on hover only, as an
+  // interaction affordance for clickable chips.
+  &--text {
+    background-color: transparent;
+    border: 1px solid transparent;
 
-		&.eidos-chip--primary {
-			color: var(--primary-color);
+    &.eidos-chip--primary {
+      color: var(--primary-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(primary, 0.1);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(primary, 0.1);
+      }
+    }
 
-		&.eidos-chip--secondary {
-			color: var(--secondary-color);
+    &.eidos-chip--secondary {
+      color: var(--secondary-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(secondary, 0.1);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(secondary, 0.1);
+      }
+    }
 
-		&.eidos-chip--success {
-			color: var(--success-color);
+    &.eidos-chip--success {
+      color: var(--success-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(success, 0.1);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(success, 0.1);
+      }
+    }
 
-		&.eidos-chip--danger {
-			color: var(--danger-color);
+    &.eidos-chip--danger {
+      color: var(--danger-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(danger, 0.1);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(danger, 0.1);
+      }
+    }
 
-		&.eidos-chip--warning {
-			color: var(--warning-color);
+    &.eidos-chip--warning {
+      color: var(--warning-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(warning, 0.1);
-			}
-		}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(warning, 0.1);
+      }
+    }
 
-		&.eidos-chip--info {
-			color: var(--info-color);
+    &.eidos-chip--info {
+      color: var(--info-color);
 
-			&:hover:not(.eidos-chip--disabled) {
-				@include bg-color-opacity(info, 0.1);
-			}
-		}
-	}
+      &:hover:not(.eidos-chip--disabled) {
+        @include bg-color-opacity(info, 0.1);
+      }
+    }
+  }
 
-	// Disabled state
-	&--disabled {
-		background-color: var(--gray-100) !important;
-		color: var(--gray-400) !important;
-		border-color: var(--gray-200) !important;
-		cursor: not-allowed !important;
-		opacity: 0.6;
+  // Disabled state
+  &--disabled {
+    background-color: var(--gray-100) !important;
+    color: var(--gray-400) !important;
+    border-color: var(--gray-200) !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
 
-		.eidos-chip--remove-button {
-			cursor: not-allowed;
-			opacity: 0.5;
-		}
-	}
+    .eidos-chip--remove-button {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
 }
 
 // Icon styles
 .eidos-chip--pre-icon,
 .eidos-chip--pos-icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 1em;
-	line-height: 1;
-	width: auto;
-	height: 1em;
-	flex-shrink: 0;
-	color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  line-height: 1;
+  width: auto;
+  height: 1em;
+  flex-shrink: 0;
+  color: inherit;
 }
 
 .eidos-chip--copy {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	line-height: 1;
-	@include text-truncate;
-	flex: 1;
-	min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  @include text-truncate;
+  flex: 1;
+  min-width: 0;
 }
 
 // Remove button styles
 .eidos-chip--remove-button {
-	@include button-reset;
-	@include flex-center;
-	color: inherit;
-	border-radius: 50%;
-	transition: all 0.2s ease;
-	cursor: pointer;
-	flex-shrink: 0;
+  @include button-reset;
+  @include flex-center;
+  color: inherit;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
 
-	&:hover:not(:disabled) {
-		background-color: rgba(255, 255, 255, 0.2);
-	}
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 
-	&:focus {
-		outline: none;
-	}
+  &:focus {
+    outline: none;
+  }
 }
 
 .eidos-chip--remove-icon {
-	display: block;
-	flex-shrink: 0;
+  display: block;
+  flex-shrink: 0;
 }

@@ -11,7 +11,7 @@ A precise reference for running `@pmealha/eidos-ui` under a strict CSP (`style-s
 ## The stylesheet
 
 ```css
-Content-Security-Policy: style-src 'self';
+content-security-policy: style-src 'self';
 ```
 
 `@pmealha/eidos-ui/styles` is a single, pre-compiled, same-origin `dist/index.css` file - every colour, variant, layout rule, and keyframe animation in this library ships there. `style-src 'self'` covers all of it. No nonce, no hash, no `unsafe-inline` needed for the stylesheet under any circumstance.
@@ -22,7 +22,7 @@ A handful of components set `style={{ ... }}` at runtime for values that are gen
 
 **For any component tree that is rendered purely on the client** (a SPA, or a React "use client" component that is never rendered to HTML on a server), none of this matters: React updates these styles through the CSSOM's per-property setters (`element.style.top = ...`, `element.style.setProperty(...)`), which CSP's `style-src`/`style-src-attr` directives do not gate at all - only the HTML `style="..."` attribute string and `.cssText`/`setAttribute('style', ...)` are gated, and this library never uses those. This is true today, with no configuration needed, verified directly against React DOM's own implementation.
 
-**Server-side rendering** is the one case where this matters: `renderToString`/`renderToPipeableStream` serialises the `style` prop into a literal `style="..."` string in the HTML response, which *is* markup-parsed inline-attribute usage and *is* blocked by strict `style-src-attr`.
+**Server-side rendering** is the one case where this matters: `renderToString`/`renderToPipeableStream` serialises the `style` prop into a literal `style="..."` string in the HTML response, which _is_ markup-parsed inline-attribute usage and _is_ blocked by strict `style-src-attr`.
 
 ### Components that are always safe, including under SSR
 
@@ -48,7 +48,7 @@ Note this only relaxes the attribute directive, not `style-src` as a whole - ext
 
 ## Consumer-supplied `style` props
 
-`Input`, `Textarea`, and a few other form components accept and forward a `style` prop from your own code. If *you* pass `style={{...}}` into one of them, that's your app's markup choice, subject to the same SSR/CSR reasoning above - it's outside this library's control either way.
+`Input`, `Textarea`, and a few other form components accept and forward a `style` prop from your own code. If _you_ pass `style={{...}}` into one of them, that's your app's markup choice, subject to the same SSR/CSR reasoning above - it's outside this library's control either way.
 
 ## Storybook / this documentation site
 

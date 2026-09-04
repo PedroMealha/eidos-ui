@@ -37,7 +37,7 @@ export const LandingPage: React.FC = () => {
           public/authenticated split.
         </p>
         <div className="mrd-hero__actions">
-          <Button size="lg" posIcon="arrow-right" onClick={() => navigate('/sign-in')}>
+          <Button posIcon="arrow-right" onClick={() => navigate('/sign-in')}>
             Try the demo
           </Button>
           <Chip variant="outlined" color="secondary" preIcon="key-round">

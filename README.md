@@ -19,6 +19,7 @@ npm install @pmealha/eidos-ui
 ```
 
 **Optional:** If you want to use component-based icons (recommended):
+
 ```bash
 npm install lucide-react
 # or use MUI Icons, Heroicons, etc.
@@ -36,7 +37,7 @@ function App() {
       <Button variant="filled" color="primary">
         Click me
       </Button>
-      
+
       <Tooltip message="Helpful hint">
         <Button>Hover me</Button>
       </Tooltip>
@@ -95,11 +96,11 @@ All design tokens are customizable via CSS custom properties:
   /* Colors */
   --primary-color: #6366f1;
   --secondary-color: #ec4899;
-  
+
   /* Spacing */
   --spacing-md: 1em;
   --spacing-lg: 1.5em;
-  
+
   /* Border radius */
   --border-radius-md: 8px;
 }
@@ -108,7 +109,7 @@ All design tokens are customizable via CSS custom properties:
 ### Dark Mode Example
 
 ```css
-[data-theme="dark"] {
+[data-theme='dark'] {
   --primary-color: #818cf8;
   --background: #1e293b;
   --text-color: #f1f5f9;

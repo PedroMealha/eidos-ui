@@ -16,11 +16,13 @@ const SESSION_KEY = 'meridian.session';
 
 const nameFromEmail = (email: string): string => {
   const [local] = email.split('@');
-  return local
-    .split(/[._-]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ') || 'Demo User';
+  return (
+    local
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ') || 'Demo User'
+  );
 };
 
 export const readStoredSession = (): Session | null => {
@@ -29,7 +31,11 @@ export const readStoredSession = (): Session | null => {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<Session>;
     if (!parsed.email || !parsed.role) return null;
-    return { email: parsed.email, name: parsed.name ?? nameFromEmail(parsed.email), role: parsed.role };
+    return {
+      email: parsed.email,
+      name: parsed.name ?? nameFromEmail(parsed.email),
+      role: parsed.role,
+    };
   } catch {
     // Corrupt or unavailable storage should never block the demo.
     return null;

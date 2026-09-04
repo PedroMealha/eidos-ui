@@ -30,7 +30,13 @@ const assertUnlocked = (ticket: Ticket): void => {
 const matchesQuery = (ticket: Ticket, query: TicketQuery): boolean => {
   const term = query.search?.trim().toLowerCase();
   if (term) {
-    const haystack = [ticket.reference, ticket.subject, ticket.customer, ticket.assignee, ...ticket.tags]
+    const haystack = [
+      ticket.reference,
+      ticket.subject,
+      ticket.customer,
+      ticket.assignee,
+      ...ticket.tags,
+    ]
       .join(' ')
       .toLowerCase();
     if (!haystack.includes(term)) return false;
@@ -60,7 +66,10 @@ export const ticketsApi = {
       return clone(updated);
     }),
 
-  bulkSetStatus: (ids: string[], status: TicketStatus): Promise<{ updated: number; skipped: string[] }> =>
+  bulkSetStatus: (
+    ids: string[],
+    status: TicketStatus,
+  ): Promise<{ updated: number; skipped: string[] }> =>
     request('Updating tickets', () => {
       const skipped: string[] = [];
       let updated = 0;

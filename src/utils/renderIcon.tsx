@@ -1,5 +1,5 @@
-import React from "react";
-import { icons } from "lucide-react";
+import React from 'react';
+import { icons } from 'lucide-react';
 
 export type IconType = React.ComponentType<{ className?: string }> | string;
 
@@ -25,34 +25,29 @@ export type IconType = React.ComponentType<{ className?: string }> | string;
  * // String-based CSS class (for Font Awesome, Remixicon, etc.)
  * renderIcon('fas fa-heart', 'my-icon-class');
  */
-export const renderIcon = (
-  icon: IconType | undefined,
-  className?: string
-): React.ReactNode => {
+export const renderIcon = (icon: IconType | undefined, className?: string): React.ReactNode => {
   if (!icon) return null;
 
-  if (typeof icon === "string") {
+  if (typeof icon === 'string') {
     // Convert kebab-case to PascalCase for Lucide icons
     const iconName = icon
-      .split("-")
+      .split('-')
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join("");
+      .join('');
 
     // Try to find the icon in lucide-react
     const LucideIcon = icons[iconName as keyof typeof icons] as
-      | React.ComponentType<{ className?: string }>
-      | undefined;
+      React.ComponentType<{ className?: string }> | undefined;
 
     if (LucideIcon) {
       return <LucideIcon className={className} aria-hidden="true" />;
     }
 
     // Fallback: render as a CSS class (for Font Awesome, Remixicon, etc.)
-    return <i className={`${icon} ${className || ""}`} aria-hidden="true" />;
+    return <i className={`${icon} ${className || ''}`} aria-hidden="true" />;
   }
 
   // It's a React component
   const IconComponent = icon;
   return <IconComponent className={className} aria-hidden="true" />;
 };
-

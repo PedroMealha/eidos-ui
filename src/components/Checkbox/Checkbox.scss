@@ -5,10 +5,10 @@
 // ============================================================================
 
 .eidos-checkbox-container {
-	display: flex;
-	flex-direction: column;
-	gap: var(--spacing-xs);
-	width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: fit-content;
 }
 
 // ============================================================================
@@ -16,123 +16,125 @@
 // ============================================================================
 
 .eidos-checkbox-wrapper {
-	@include flex-center-y;
-	cursor: pointer;
-	width: fit-content;
+  @include flex-center-y;
+  cursor: pointer;
+  width: fit-content;
 
-	&--disabled {
-		cursor: not-allowed;
-		pointer-events: none;
-	}
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 
-	// ── Size variants ──────────────────────────────────────────────────────
+  // ── Size variants ──────────────────────────────────────────────────────
 
-	&--sm {
-		gap: var(--spacing-xs);
-		@include font-size(xs);
+  &--sm {
+    gap: var(--spacing-xs);
+    @include font-size(xs);
 
-		.eidos-checkbox-control {
-			width: 14px;
-			height: 14px;
-		}
+    .eidos-checkbox-control {
+      width: 14px;
+      height: 14px;
+    }
 
-		.eidos-checkbox-icon {
-			width: 9px;
-			height: 9px;
-		}
-	}
+    .eidos-checkbox-icon {
+      width: 9px;
+      height: 9px;
+    }
+  }
 
-	&--md {
-		gap: var(--spacing-sm);
-		@include font-size(sm);
+  &--md {
+    gap: var(--spacing-sm);
+    @include font-size(sm);
 
-		.eidos-checkbox-control {
-			width: 18px;
-			height: 18px;
-		}
+    .eidos-checkbox-control {
+      width: 18px;
+      height: 18px;
+    }
 
-		.eidos-checkbox-icon {
-			width: 11px;
-			height: 11px;
-		}
-	}
+    .eidos-checkbox-icon {
+      width: 11px;
+      height: 11px;
+    }
+  }
 
-	&--lg {
-		gap: var(--spacing-sm);
-		font-size: var(--font-size-base);
+  &--lg {
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-base);
 
-		.eidos-checkbox-control {
-			width: 22px;
-			height: 22px;
-		}
+    .eidos-checkbox-control {
+      width: 22px;
+      height: 22px;
+    }
 
-		.eidos-checkbox-icon {
-			width: 14px;
-			height: 14px;
-		}
-	}
+    .eidos-checkbox-icon {
+      width: 14px;
+      height: 14px;
+    }
+  }
 
-	// ── Color variants – focus ring + checked/indeterminate fill ───────────
+  // ── Color variants – focus ring + checked/indeterminate fill ───────────
 
-	&--primary {
-		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
-		}
+  &--primary {
+    .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+    }
 
-		.eidos-checkbox-control--checked,
-		.eidos-checkbox-control--indeterminate {
-			background: var(--primary-color);
-			border-color: var(--primary-color);
-		}
-	}
+    .eidos-checkbox-control--checked,
+    .eidos-checkbox-control--indeterminate {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+  }
 
-	&--secondary {
-		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
-		}
+  &--secondary {
+    .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
+    }
 
-		.eidos-checkbox-control--checked,
-		.eidos-checkbox-control--indeterminate {
-			background: var(--secondary-color);
-			border-color: var(--secondary-color);
-		}
-	}
+    .eidos-checkbox-control--checked,
+    .eidos-checkbox-control--indeterminate {
+      background: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+  }
 
-	&--success {
-		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
-		}
+  &--success {
+    .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
+    }
 
-		.eidos-checkbox-control--checked,
-		.eidos-checkbox-control--indeterminate {
-			background: var(--success-color);
-			border-color: var(--success-color);
-		}
-	}
+    .eidos-checkbox-control--checked,
+    .eidos-checkbox-control--indeterminate {
+      background: var(--success-color);
+      border-color: var(--success-color);
+    }
+  }
 
-	&--danger {
-		.eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
-		}
+  &--danger {
+    .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
+    }
 
-		.eidos-checkbox-control--checked,
-		.eidos-checkbox-control--indeterminate {
-			background: var(--danger-color);
-			border-color: var(--danger-color);
-		}
-	}
+    .eidos-checkbox-control--checked,
+    .eidos-checkbox-control--indeterminate {
+      background: var(--danger-color);
+      border-color: var(--danger-color);
+    }
+  }
 
-	// ── Hover: darken border on unchecked controls ─────────────────────────
+  // ── Hover: darken border on unchecked controls ─────────────────────────
 
-	&:hover:not(&--disabled) {
-		.eidos-checkbox-control:not(.eidos-checkbox-control--checked):not(.eidos-checkbox-control--indeterminate):not(.eidos-checkbox-control--disabled) {
-			border-color: var(--gray-500);
-		}
-	}
+  &:hover:not(&--disabled) {
+    .eidos-checkbox-control:not(.eidos-checkbox-control--checked):not(
+        .eidos-checkbox-control--indeterminate
+      ):not(.eidos-checkbox-control--disabled) {
+      border-color: var(--gray-500);
+    }
+  }
 }
 
 // ============================================================================
@@ -140,7 +142,7 @@
 // ============================================================================
 
 .eidos-checkbox-input {
-	@include visually-hidden;
+  @include visually-hidden;
 }
 
 // ============================================================================
@@ -148,25 +150,25 @@
 // ============================================================================
 
 .eidos-checkbox-control {
-	@include flex-center;
-	flex-shrink: 0;
-	border: 2px solid var(--gray-400);
-	@include border-radius(xs);
-	background: var(--white);
-	will-change: transform;
-	transition: all 0.2s ease;
-	overflow: hidden;
+  @include flex-center;
+  flex-shrink: 0;
+  border: 2px solid var(--gray-400);
+  @include border-radius(xs);
+  background: var(--white);
+  will-change: transform;
+  transition: all 0.2s ease;
+  overflow: hidden;
 
-	// Size is injected by wrapper size modifier (see above)
+  // Size is injected by wrapper size modifier (see above)
 
-	&--disabled {
-		background: var(--gray-100);
-		border-color: var(--gray-300);
-	}
+  &--disabled {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+  }
 
-	&--error:not(&--disabled) {
-		border-color: var(--danger-color);
-	}
+  &--error:not(&--disabled) {
+    border-color: var(--danger-color);
+  }
 }
 
 // ============================================================================
@@ -174,9 +176,9 @@
 // ============================================================================
 
 .eidos-checkbox-icon {
-	color: var(--white);
-	flex-shrink: 0;
-	// Width/height injected by wrapper size modifier (see above)
+  color: var(--white);
+  flex-shrink: 0;
+  // Width/height injected by wrapper size modifier (see above)
 }
 
 // ============================================================================
@@ -184,13 +186,13 @@
 // ============================================================================
 
 .eidos-checkbox-label {
-	color: var(--dark-color);
-	line-height: 1;
-	user-select: none;
+  color: var(--dark-color);
+  line-height: 1;
+  user-select: none;
 
-	.eidos-checkbox-wrapper--disabled & {
-		color: var(--gray-400);
-	}
+  .eidos-checkbox-wrapper--disabled & {
+    color: var(--gray-400);
+  }
 }
 
 // ============================================================================
@@ -198,14 +200,14 @@
 // ============================================================================
 
 .eidos-checkbox-error-message {
-	@include flex-center-y;
-	gap: var(--spacing-xs);
-	color: var(--danger-color);
-	@include font-size(sm);
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  color: var(--danger-color);
+  @include font-size(sm);
 
-	svg {
-		width: 1em;
-		height: 1em;
-		flex-shrink: 0;
-	}
+  svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
 }

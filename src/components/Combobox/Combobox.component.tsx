@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-  useMemo,
-  useId,
-} from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo, useId } from 'react';
 import { Check, ChevronDown, X, Loader2, CircleAlert } from 'lucide-react';
 import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
@@ -80,7 +73,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
   };
 
   const getInitialCommittedValue = (): string => {
-    return isControlled ? value ?? '' : defaultValue ?? '';
+    return isControlled ? (value ?? '') : (defaultValue ?? '');
   };
 
   const [inputValue, _setInputValue] = useState<string>(getInitialInputValue);
@@ -90,9 +83,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
     _setInputValue(v);
   }, []);
 
-  const [committedValue, _setCommittedValue] = useState<string>(
-    getInitialCommittedValue
-  );
+  const [committedValue, _setCommittedValue] = useState<string>(getInitialCommittedValue);
   const committedValueRef = useRef<string>(committedValue);
   const setCommittedValue = useCallback((v: string) => {
     committedValueRef.current = v;
@@ -195,16 +186,10 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
       if (revertInput) {
         const match = options.find((o) => o.value === committedValueRef.current);
-        setInputValue(
-          match
-            ? match.label
-            : allowFreeText
-            ? committedValueRef.current
-            : ''
-        );
+        setInputValue(match ? match.label : allowFreeText ? committedValueRef.current : '');
       }
     },
-    [options, allowFreeText, setInputValue]
+    [options, allowFreeText, setInputValue],
   );
 
   // ─── Click-outside detection ──────────────────────────────────────────────
@@ -227,9 +212,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
       const committed = committedValueRef.current;
 
       if (!allowFreeText) {
-        const match = options.find(
-          (o) => o.label.toLowerCase() === current.toLowerCase()
-        );
+        const match = options.find((o) => o.label.toLowerCase() === current.toLowerCase());
         if (match) {
           if (match.value !== committed) {
             setCommittedValue(match.value);
@@ -265,7 +248,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
       onSearch?.(query);
       if (!isOpenRef.current) openDropdown();
     },
-    [setInputValue, onSearch, openDropdown]
+    [setInputValue, onSearch, openDropdown],
   );
 
   /**
@@ -291,9 +274,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
       // Validate
       if (!allowFreeText) {
-        const match = options.find(
-          (o) => o.label.toLowerCase() === current.toLowerCase()
-        );
+        const match = options.find((o) => o.label.toLowerCase() === current.toLowerCase());
         if (match) {
           if (match.value !== committed) {
             setCommittedValue(match.value);
@@ -333,8 +314,11 @@ export const Combobox: React.FC<ComboboxProps> = ({
               const next = prev < filteredOptions.length - 1 ? prev + 1 : 0;
               setTimeout(
                 () =>
-                  optionRefs.current[next]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }),
-                0
+                  optionRefs.current[next]?.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                  }),
+                0,
               );
               return next;
             });
@@ -351,8 +335,11 @@ export const Combobox: React.FC<ComboboxProps> = ({
               const next = prev > 0 ? prev - 1 : filteredOptions.length - 1;
               setTimeout(
                 () =>
-                  optionRefs.current[next]?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }),
-                0
+                  optionRefs.current[next]?.scrollIntoView({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                  }),
+                0,
               );
               return next;
             });
@@ -393,7 +380,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
       openDropdown,
       closeDropdown,
       setCommittedValue,
-    ]
+    ],
   );
 
   // ─── Option selection ─────────────────────────────────────────────────────
@@ -408,7 +395,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
       // Return focus to the input so the user can continue interacting
       inputRef.current?.focus();
     },
-    [onChange, closeDropdown, setInputValue, setCommittedValue]
+    [onChange, closeDropdown, setInputValue, setCommittedValue],
   );
 
   // ─── Clear ────────────────────────────────────────────────────────────────
@@ -472,16 +459,14 @@ export const Combobox: React.FC<ComboboxProps> = ({
               />
               <span className="eidos-combobox-option-label">{option.label}</span>
               {option.description && (
-                <span className="eidos-combobox-option-description">
-                  {option.description}
-                </span>
+                <span className="eidos-combobox-option-description">{option.description}</span>
               )}
             </>
           )}
         </div>
       );
     },
-    [committedValue, focusedIndex, handleOptionSelect, renderOption, uid]
+    [committedValue, focusedIndex, handleOptionSelect, renderOption, uid],
   );
 
   // ─── Render: dropdown content ─────────────────────────────────────────────
@@ -510,14 +495,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
       }
       return renderOptionItem(entry.option, entry.index);
     });
-  }, [
-    loading,
-    loadingText,
-    filteredOptions.length,
-    emptyText,
-    optionEntries,
-    renderOptionItem,
-  ]);
+  }, [loading, loadingText, filteredOptions.length, emptyText, optionEntries, renderOptionItem]);
 
   // ─── posIcon / posIconButton wiring ───────────────────────────────────────
 
@@ -537,8 +515,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
     .filter(Boolean)
     .join(' ');
 
-  const maxHeightValue =
-    typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
+  const maxHeightValue = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
 
   // ─── Render ───────────────────────────────────────────────────────────────
 
@@ -568,16 +545,14 @@ export const Combobox: React.FC<ComboboxProps> = ({
           size={size}
           fullWidth
           label={label}
-          clearable={false}          // we render our own clear via posIcon
+          clearable={false} // we render our own clear via posIcon
           isSelect={false}
           posIcon={posIcon}
           posIconButton
           onPosIconClick={posIconClick}
           aria-autocomplete="list"
           aria-controls={`${uid}-listbox`}
-          aria-activedescendant={
-            focusedIndex >= 0 ? `${uid}-option-${focusedIndex}` : undefined
-          }
+          aria-activedescendant={focusedIndex >= 0 ? `${uid}-option-${focusedIndex}` : undefined}
         />
 
         {/*
@@ -618,9 +593,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
         />
       </div>
 
-      {hint && !error && (
-        <span className="eidos-combobox-hint">{hint}</span>
-      )}
+      {hint && !error && <span className="eidos-combobox-hint">{hint}</span>}
       {error && (
         <span className="eidos-combobox-error-message">
           <CircleAlert className="eidos-combobox-error-icon" />

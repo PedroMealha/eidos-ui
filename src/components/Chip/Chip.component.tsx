@@ -1,17 +1,17 @@
-import React from "react";
-import { X } from "lucide-react";
-import type { ChipProps } from "./Chip.types";
-import { Tooltip } from "../Tooltip/Tooltip.component";
-import { renderIcon } from "../../utils";
+import React from 'react';
+import { X } from 'lucide-react';
+import type { ChipProps } from './Chip.types';
+import { Tooltip } from '../Tooltip/Tooltip.component';
+import { renderIcon } from '../../utils';
 
 export const Chip: React.FC<ChipProps> = ({
-  variant = "filled",
-  color = "primary",
-  size = "md",
+  variant = 'filled',
+  color = 'primary',
+  size = 'md',
   disabled = false,
   fullWidth = false,
   tooltip,
-  className = "",
+  className = '',
   preIcon,
   posIcon,
   children,
@@ -24,18 +24,18 @@ export const Chip: React.FC<ChipProps> = ({
 
   // Build CSS classes
   const chipClasses = [
-    "eidos-chip",
+    'eidos-chip',
     `eidos-chip--${variant}`,
     `eidos-chip--${color}`,
     `eidos-chip--${size}`,
-    disabled && "eidos-chip--disabled",
-    isClickable && "eidos-chip--clickable",
-    isRemovable && "eidos-chip--removable",
-    fullWidth && "eidos-chip--full-width",
+    disabled && 'eidos-chip--disabled',
+    isClickable && 'eidos-chip--clickable',
+    isRemovable && 'eidos-chip--removable',
+    fullWidth && 'eidos-chip--full-width',
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   const handleClick = () => {
     if (disabled || !onClick) return;
@@ -49,19 +49,19 @@ export const Chip: React.FC<ChipProps> = ({
   };
 
   // Use div when removable to avoid nested buttons, button only when clickable without remove
-  const ChipElement = isClickable && !isRemovable ? "button" : "div";
+  const ChipElement = isClickable && !isRemovable ? 'button' : 'div';
 
   const chipContent = (
     <ChipElement
       className={chipClasses}
-      disabled={ChipElement === "button" ? disabled : undefined}
+      disabled={ChipElement === 'button' ? disabled : undefined}
       onClick={isClickable ? handleClick : undefined}
-      role={ChipElement === "div" && isClickable ? "button" : undefined}
-      tabIndex={ChipElement === "div" && isClickable ? 0 : undefined}
+      role={ChipElement === 'div' && isClickable ? 'button' : undefined}
+      tabIndex={ChipElement === 'div' && isClickable ? 0 : undefined}
       onKeyDown={
-        ChipElement === "div" && isClickable
+        ChipElement === 'div' && isClickable
           ? (e) => {
-              if ((e.key === "Enter" || e.key === " ") && !disabled) {
+              if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
                 e.preventDefault();
                 handleClick();
               }
@@ -70,11 +70,11 @@ export const Chip: React.FC<ChipProps> = ({
       }
       {...chipProps}
     >
-      {preIcon && renderIcon(preIcon, "eidos-chip--pre-icon")}
+      {preIcon && renderIcon(preIcon, 'eidos-chip--pre-icon')}
 
       <span className="eidos-chip--copy">{children}</span>
 
-      {posIcon && renderIcon(posIcon, "eidos-chip--pos-icon")}
+      {posIcon && renderIcon(posIcon, 'eidos-chip--pos-icon')}
 
       {isRemovable && (
         <button
@@ -90,9 +90,5 @@ export const Chip: React.FC<ChipProps> = ({
     </ChipElement>
   );
 
-  return tooltip ? (
-    <Tooltip message={tooltip}>{chipContent}</Tooltip>
-  ) : (
-    chipContent
-  );
+  return tooltip ? <Tooltip message={tooltip}>{chipContent}</Tooltip> : chipContent;
 };

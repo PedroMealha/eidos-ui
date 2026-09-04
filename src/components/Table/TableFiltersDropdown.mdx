@@ -17,11 +17,7 @@ import type { TableColumn, TableFilters } from '@pmealha/eidos-ui';
 
 const [filters, setFilters] = useState<TableFilters>({});
 
-<TableFiltersDropdown
-  columns={columns}
-  filters={filters}
-  onFiltersChange={setFilters}
-/>
+<TableFiltersDropdown columns={columns} filters={filters} onFiltersChange={setFilters} />;
 ```
 
 ## Default

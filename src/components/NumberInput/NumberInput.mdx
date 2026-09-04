@@ -18,15 +18,7 @@ import { useState } from 'react';
 function MyComponent() {
   const [value, setValue] = useState(0);
 
-  return (
-    <NumberInput
-      value={value}
-      onChange={setValue}
-      min={0}
-      max={100}
-      label="Quantity"
-    />
-  );
+  return <NumberInput value={value} onChange={setValue} min={0} max={100} label="Quantity" />;
 }
 ```
 

@@ -162,10 +162,10 @@ export const Colors = {
 export const NoNumbers: Story = {
   args: {
     steps: [
-      { label: 'Start',   icon: <Star   size={14} /> },
-      { label: 'Process', icon: <Zap    size={14} /> },
-      { label: 'Review',  icon: <Circle size={14} /> },
-      { label: 'Done',    icon: <Star   size={14} /> },
+      { label: 'Start', icon: <Star size={14} /> },
+      { label: 'Process', icon: <Zap size={14} /> },
+      { label: 'Review', icon: <Circle size={14} /> },
+      { label: 'Done', icon: <Star size={14} /> },
     ],
     activeStep: 1,
     showNumbers: false,
@@ -199,7 +199,10 @@ export const Interactive: Story = {
             type="button"
             onClick={() => setActiveStep((s) => Math.min(totalSteps, s + 1))}
             disabled={activeStep === totalSteps}
-            style={{ padding: '0.5rem 1rem', cursor: activeStep === totalSteps ? 'not-allowed' : 'pointer' }}
+            style={{
+              padding: '0.5rem 1rem',
+              cursor: activeStep === totalSteps ? 'not-allowed' : 'pointer',
+            }}
           >
             Next
           </button>

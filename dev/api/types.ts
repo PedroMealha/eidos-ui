@@ -97,9 +97,10 @@ export const STATUS_COLORS: Record<TicketStatus, 'info' | 'primary' | 'warning' 
   resolved: 'success',
 };
 
-export const PRIORITY_COLORS: Record<TicketPriority, 'secondary' | 'info' | 'warning' | 'danger'> = {
-  low: 'secondary',
-  medium: 'info',
-  high: 'warning',
-  urgent: 'danger',
-};
+export const PRIORITY_COLORS: Record<TicketPriority, 'secondary' | 'info' | 'warning' | 'danger'> =
+  {
+    low: 'secondary',
+    medium: 'info',
+    high: 'warning',
+    urgent: 'danger',
+  };

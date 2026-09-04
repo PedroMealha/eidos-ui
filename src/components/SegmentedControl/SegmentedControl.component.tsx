@@ -36,71 +36,72 @@ import type { SegmentedControlProps } from './SegmentedControl.types';
  * ```
  */
 export const SegmentedControl: React.FC<SegmentedControlProps> = ({
-	options,
-	value,
-	defaultValue,
-	onChange,
-	size = 'md',
-	color = 'primary',
-	disabled = false,
-	fullWidth = false,
-	className = '',
+  options,
+  value,
+  defaultValue,
+  onChange,
+  size = 'md',
+  color = 'primary',
+  disabled = false,
+  fullWidth = false,
+  className = '',
 }) => {
-	const isControlled = value !== undefined;
-	const [internalValue, setInternalValue] = useState<string>(
-		defaultValue ?? options[0]?.value ?? ''
-	);
+  const isControlled = value !== undefined;
+  const [internalValue, setInternalValue] = useState<string>(
+    defaultValue ?? options[0]?.value ?? '',
+  );
 
-	const activeValue = isControlled ? value : internalValue;
+  const activeValue = isControlled ? value : internalValue;
 
-	const handleSelect = (optValue: string) => {
-		if (disabled) return;
-		if (optValue === activeValue) return; // already selected
-		if (!isControlled) setInternalValue(optValue);
-		onChange?.(optValue);
-	};
+  const handleSelect = (optValue: string) => {
+    if (disabled) return;
+    if (optValue === activeValue) return; // already selected
+    if (!isControlled) setInternalValue(optValue);
+    onChange?.(optValue);
+  };
 
-	const containerClasses = [
-		'eidos-segmented',
-		`eidos-segmented--${size}`,
-		`eidos-segmented--${color}`,
-		disabled && 'eidos-segmented--disabled',
-		fullWidth && 'eidos-segmented--full-width',
-		className,
-	].filter(Boolean).join(' ');
+  const containerClasses = [
+    'eidos-segmented',
+    `eidos-segmented--${size}`,
+    `eidos-segmented--${color}`,
+    disabled && 'eidos-segmented--disabled',
+    fullWidth && 'eidos-segmented--full-width',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
-	return (
-		<div className={containerClasses} role="radiogroup">
-			{options.map(opt => {
-				const isActive = activeValue === opt.value;
-				const isDisabled = disabled || !!opt.disabled;
+  return (
+    <div className={containerClasses} role="radiogroup">
+      {options.map((opt) => {
+        const isActive = activeValue === opt.value;
+        const isDisabled = disabled || !!opt.disabled;
 
-				const segment = (
-					<button
-						key={opt.value}
-						type="button"
-						role="radio"
-						aria-checked={isActive}
-						disabled={isDisabled}
-						className={[
-							'eidos-segmented-item',
-							isActive && 'eidos-segmented-item--active',
-						].filter(Boolean).join(' ')}
-						onClick={() => !isDisabled && handleSelect(opt.value)}
-					>
-						{opt.icon && renderIcon(opt.icon, 'eidos-segmented-icon')}
-						{opt.label && <span className="eidos-segmented-label">{opt.label}</span>}
-					</button>
-				);
+        const segment = (
+          <button
+            key={opt.value}
+            type="button"
+            role="radio"
+            aria-checked={isActive}
+            disabled={isDisabled}
+            className={['eidos-segmented-item', isActive && 'eidos-segmented-item--active']
+              .filter(Boolean)
+              .join(' ')}
+            onClick={() => !isDisabled && handleSelect(opt.value)}
+          >
+            {opt.icon && renderIcon(opt.icon, 'eidos-segmented-icon')}
+            {opt.label && <span className="eidos-segmented-label">{opt.label}</span>}
+          </button>
+        );
 
-				return opt.tooltip ? (
-					<Tooltip key={opt.value} message={opt.tooltip}>
-						{segment}
-					</Tooltip>
-				) : (
-					React.cloneElement(segment, { key: opt.value })
-				);
-			})}
-		</div>
-	);
+        return opt.tooltip ? (
+          <Tooltip key={opt.value} message={opt.tooltip}>
+            {segment}
+          </Tooltip>
+        ) : (
+          React.cloneElement(segment, { key: opt.value })
+        );
+      })}
+    </div>
+  );
 };

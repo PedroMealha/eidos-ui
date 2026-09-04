@@ -3,37 +3,37 @@
 // Uses the monospace font stack so glyph alignment is always predictable.
 
 .eidos-kbd {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	font-family: var(--font-family-mono);
-	font-weight: var(--font-weight-medium);
-	line-height: 1;
-	white-space: nowrap;
-	color: var(--gray-600);
-	background: var(--gray-50);
-	border: 1px solid var(--gray-300);
-	border-bottom-width: 2px; // "raised key" depth illusion
-	border-radius: var(--border-radius-xs);
-	user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--gray-600);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-bottom-width: 2px; // "raised key" depth illusion
+  border-radius: var(--border-radius-xs);
+  user-select: none;
 
-	// ── Sizes ─────────────────────────────────────────────────────────────────
+  // ── Sizes ─────────────────────────────────────────────────────────────────
 
-	&--sm {
-		font-size: 10px;
-		padding: 1px 4px;
-		min-width: 18px;
-	}
+  &--sm {
+    font-size: 10px;
+    padding: 1px 4px;
+    min-width: 18px;
+  }
 
-	&--md {
-		font-size: 12px;
-		padding: 2px 6px;
-		min-width: 22px;
-	}
+  &--md {
+    font-size: 12px;
+    padding: 2px 6px;
+    min-width: 22px;
+  }
 
-	&--lg {
-		font-size: 14px;
-		padding: 4px 8px;
-		min-width: 28px;
-	}
+  &--lg {
+    font-size: 14px;
+    padding: 4px 8px;
+    min-width: 28px;
+  }
 }

@@ -19,29 +19,27 @@ import type { ButtonGroupProps } from './ButtonGroup.types';
  * ```
  */
 export const ButtonGroup: React.FC<ButtonGroupProps> = ({
-	children,
-	size,
-	variant,
-	color,
-	orientation = 'horizontal',
-	className = '',
+  children,
+  size,
+  variant,
+  color,
+  orientation = 'horizontal',
+  className = '',
 }) => {
-	const clampedChildren = React.Children.map(children, child => {
-		if (!React.isValidElement(child)) return child;
-		// Child's own explicitly-set props win; group-level props are fallbacks.
-		const childProps = child.props as Record<string, unknown>;
-		return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
-			...(size     !== undefined && childProps.size     === undefined && { size }),
-			...(variant  !== undefined && childProps.variant  === undefined && { variant }),
-			...(color    !== undefined && childProps.color    === undefined && { color }),
-		});
-	});
+  const clampedChildren = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return child;
+    // Child's own explicitly-set props win; group-level props are fallbacks.
+    const childProps = child.props as Record<string, unknown>;
+    return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, {
+      ...(size !== undefined && childProps.size === undefined && { size }),
+      ...(variant !== undefined && childProps.variant === undefined && { variant }),
+      ...(color !== undefined && childProps.color === undefined && { color }),
+    });
+  });
 
-	const classes = [
-		'eidos-button-group',
-		`eidos-button-group--${orientation}`,
-		className,
-	].filter(Boolean).join(' ');
+  const classes = ['eidos-button-group', `eidos-button-group--${orientation}`, className]
+    .filter(Boolean)
+    .join(' ');
 
-	return <div className={classes}>{clampedChildren}</div>;
+  return <div className={classes}>{clampedChildren}</div>;
 };

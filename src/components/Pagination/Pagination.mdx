@@ -18,13 +18,7 @@ import { useState } from 'react';
 function MyComponent() {
   const [page, setPage] = useState(1);
 
-  return (
-    <Pagination
-      page={page}
-      totalPages={20}
-      onChange={setPage}
-    />
-  );
+  return <Pagination page={page} totalPages={20} onChange={setPage} />;
 }
 ```
 

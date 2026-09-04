@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
 interface BaseTooltipProps {
   children: React.ReactElement;
-  placement?: "top" | "bottom" | "left" | "right";
+  placement?: 'top' | 'bottom' | 'left' | 'right';
   delay?: number;
   disabled?: boolean;
   className?: string;
-  triggerType?: "hover" | "click" | "focus";
+  triggerType?: 'hover' | 'click' | 'focus';
   closeOnClickOutside?: boolean;
   closeOnEscape?: boolean;
 }
@@ -26,7 +26,7 @@ interface TooltipState {
   position: {
     top: number;
     left: number;
-    placement: "top" | "bottom" | "left" | "right";
+    placement: 'top' | 'bottom' | 'left' | 'right';
   };
   isPositioned: boolean;
 }

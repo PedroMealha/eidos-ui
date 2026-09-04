@@ -37,8 +37,7 @@ const sleep = (ms: number): Promise<void> =>
     setTimeout(resolve, ms);
   });
 
-const latency = (): number =>
-  MIN_LATENCY_MS + Math.random() * (MAX_LATENCY_MS - MIN_LATENCY_MS);
+const latency = (): number => MIN_LATENCY_MS + Math.random() * (MAX_LATENCY_MS - MIN_LATENCY_MS);
 
 /**
  * Wraps a resolver in simulated network latency and the forced-failure switch.

@@ -1,8 +1,8 @@
-import type { Dayjs } from "dayjs";
-import type { InputProps } from "../Input/Input.types";
+import type { Dayjs } from 'dayjs';
+import type { InputProps } from '../Input/Input.types';
 
 // Date selection modes
-type DateSelectionMode = "single" | "multiple" | "range";
+type DateSelectionMode = 'single' | 'multiple' | 'range';
 
 // Time configuration
 interface TimeConfig {
@@ -20,13 +20,13 @@ type RangeDateValue = {
 };
 
 // Union type for date values
-type DateValue<T extends DateSelectionMode> = T extends "single"
+type DateValue<T extends DateSelectionMode> = T extends 'single'
   ? SingleDateValue
-  : T extends "multiple"
-  ? MultipleDateValue
-  : T extends "range"
-  ? RangeDateValue
-  : never;
+  : T extends 'multiple'
+    ? MultipleDateValue
+    : T extends 'range'
+      ? RangeDateValue
+      : never;
 
 // Time value types
 interface TimeValue {
@@ -43,7 +43,7 @@ interface RangeTimeValue {
 // Combined date and time value
 interface DateTimeValue<T extends DateSelectionMode> {
   date: DateValue<T>;
-  time?: T extends "range" ? RangeTimeValue : TimeValue;
+  time?: T extends 'range' ? RangeTimeValue : TimeValue;
 }
 
 // Calendar configuration
@@ -69,7 +69,7 @@ interface DateFormatConfig {
 }
 
 // Main DatePicker props
-interface DatePickerProps<T extends DateSelectionMode = "single"> {
+interface DatePickerProps<T extends DateSelectionMode = 'single'> {
   // Core functionality
   mode: T;
   value?: DateTimeValue<T>;

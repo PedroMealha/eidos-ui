@@ -24,16 +24,13 @@ export const Stepper: React.FC<StepperProps> = ({
   // once that step is actually completed. `extendEnd`'s connector *does*
   // have a real preceding step (the last one) and colors via the adjacent-
   // sibling rule in Stepper.scss, same as a between-step connector.
-  const isFirstStepCompleted =
-    steps.length > 0 && getStatus(0, steps[0].status) === 'completed';
+  const isFirstStepCompleted = steps.length > 0 && getStatus(0, steps[0].status) === 'completed';
 
   return (
     <div
-      className={[
-        'eidos-stepper',
-        `eidos-stepper--${orientation}`,
-        className,
-      ].filter(Boolean).join(' ')}
+      className={['eidos-stepper', `eidos-stepper--${orientation}`, className]
+        .filter(Boolean)
+        .join(' ')}
       aria-label="Progress steps"
     >
       {/*
@@ -52,7 +49,9 @@ export const Stepper: React.FC<StepperProps> = ({
             'eidos-stepper-connector',
             'eidos-stepper-connector--extend',
             isFirstStepCompleted && `eidos-stepper-connector--${color}`,
-          ].filter(Boolean).join(' ')}
+          ]
+            .filter(Boolean)
+            .join(' ')}
           aria-hidden="true"
         />
       )}
@@ -88,7 +87,9 @@ export const Stepper: React.FC<StepperProps> = ({
               `eidos-stepper-step--${status}`,
               `eidos-stepper-step--${color}`,
               !isLast && 'eidos-stepper-step--has-connector',
-            ].filter(Boolean).join(' ')}
+            ]
+              .filter(Boolean)
+              .join(' ')}
             aria-current={status === 'active' ? 'step' : undefined}
           >
             {/* Dot + connector wrapper */}
@@ -101,7 +102,9 @@ export const Stepper: React.FC<StepperProps> = ({
                   className={[
                     'eidos-stepper-connector',
                     joinsExtendEnd && 'eidos-stepper-connector--joins-extend',
-                  ].filter(Boolean).join(' ')}
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   aria-hidden="true"
                 />
               )}
@@ -118,7 +121,10 @@ export const Stepper: React.FC<StepperProps> = ({
         );
       })}
       {extendEnd && (
-        <div className="eidos-stepper-connector eidos-stepper-connector--extend" aria-hidden="true" />
+        <div
+          className="eidos-stepper-connector eidos-stepper-connector--extend"
+          aria-hidden="true"
+        />
       )}
     </div>
   );

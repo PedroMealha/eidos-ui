@@ -29,7 +29,9 @@
       // `extendEnd` (see component) adds a connector as a *sibling* after
       // this step, so it's no longer actually `:last-child` once that
       // happens, and reverts to the plain flex: 1 rule above automatically.
-      &:last-child { flex: 1 0 auto; }
+      &:last-child {
+        flex: 1 0 auto;
+      }
     }
 
     .eidos-stepper-dot-row {
@@ -150,7 +152,10 @@
   border: 2px solid var(--gray-300);
   background: var(--white);
   color: var(--gray-400);
-  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 
   svg {
     width: 14px;
@@ -164,30 +169,70 @@
 
 // Active
 .eidos-stepper-step--active {
-  &.eidos-stepper-step--primary   .eidos-stepper-dot { background: var(--primary-color);   border-color: var(--primary-color);   color: var(--white); }
-  &.eidos-stepper-step--secondary .eidos-stepper-dot { background: var(--secondary-color); border-color: var(--secondary-color); color: var(--white); }
-  &.eidos-stepper-step--success   .eidos-stepper-dot { background: var(--success-color);   border-color: var(--success-color);   color: var(--white); }
-  &.eidos-stepper-step--danger    .eidos-stepper-dot { background: var(--danger-color);    border-color: var(--danger-color);    color: var(--white); }
+  &.eidos-stepper-step--primary .eidos-stepper-dot {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--secondary .eidos-stepper-dot {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--success .eidos-stepper-dot {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--danger .eidos-stepper-dot {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--white);
+  }
 }
 
 // Completed - lighter tint background, colored border and icon
 .eidos-stepper-step--completed {
-  &.eidos-stepper-step--primary   .eidos-stepper-dot { background: var(--primary-color);   border-color: var(--primary-color);   color: var(--white); }
-  &.eidos-stepper-step--secondary .eidos-stepper-dot { background: var(--secondary-color); border-color: var(--secondary-color); color: var(--white); }
-  &.eidos-stepper-step--success   .eidos-stepper-dot { background: var(--success-color);   border-color: var(--success-color);   color: var(--white); }
-  &.eidos-stepper-step--danger    .eidos-stepper-dot { background: var(--danger-color);    border-color: var(--danger-color);    color: var(--white); }
+  &.eidos-stepper-step--primary .eidos-stepper-dot {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--secondary .eidos-stepper-dot {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--success .eidos-stepper-dot {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--danger .eidos-stepper-dot {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--white);
+  }
 
   // Connector after completed step is also colored. `extendEnd`'s connector
   // (see component) is a sibling of the last step rather than nested inside
   // it like a between-step connector, hence the extra `+` rules.
-  &.eidos-stepper-step--primary   .eidos-stepper-connector,
-  &.eidos-stepper-step--primary   + .eidos-stepper-connector--extend { background: var(--primary-color); }
+  &.eidos-stepper-step--primary .eidos-stepper-connector,
+  &.eidos-stepper-step--primary + .eidos-stepper-connector--extend {
+    background: var(--primary-color);
+  }
   &.eidos-stepper-step--secondary .eidos-stepper-connector,
-  &.eidos-stepper-step--secondary + .eidos-stepper-connector--extend { background: var(--secondary-color); }
-  &.eidos-stepper-step--success   .eidos-stepper-connector,
-  &.eidos-stepper-step--success   + .eidos-stepper-connector--extend { background: var(--success-color); }
-  &.eidos-stepper-step--danger    .eidos-stepper-connector,
-  &.eidos-stepper-step--danger    + .eidos-stepper-connector--extend { background: var(--danger-color); }
+  &.eidos-stepper-step--secondary + .eidos-stepper-connector--extend {
+    background: var(--secondary-color);
+  }
+  &.eidos-stepper-step--success .eidos-stepper-connector,
+  &.eidos-stepper-step--success + .eidos-stepper-connector--extend {
+    background: var(--success-color);
+  }
+  &.eidos-stepper-step--danger .eidos-stepper-connector,
+  &.eidos-stepper-step--danger + .eidos-stepper-connector--extend {
+    background: var(--danger-color);
+  }
 }
 
 // `extendStart`'s connector (see component) has no preceding step to color
@@ -198,14 +243,26 @@
 // / `.eidos-stepper--vertical .eidos-stepper-connector` gray-background
 // rules above are two classes deep themselves, so a single-class override
 // here would always lose that specificity fight regardless of source order.
-.eidos-stepper-connector.eidos-stepper-connector--primary   { background: var(--primary-color); }
-.eidos-stepper-connector.eidos-stepper-connector--secondary { background: var(--secondary-color); }
-.eidos-stepper-connector.eidos-stepper-connector--success   { background: var(--success-color); }
-.eidos-stepper-connector.eidos-stepper-connector--danger    { background: var(--danger-color); }
+.eidos-stepper-connector.eidos-stepper-connector--primary {
+  background: var(--primary-color);
+}
+.eidos-stepper-connector.eidos-stepper-connector--secondary {
+  background: var(--secondary-color);
+}
+.eidos-stepper-connector.eidos-stepper-connector--success {
+  background: var(--success-color);
+}
+.eidos-stepper-connector.eidos-stepper-connector--danger {
+  background: var(--danger-color);
+}
 
 // Error
 .eidos-stepper-step--error {
-  .eidos-stepper-dot { background: var(--danger-color); border-color: var(--danger-color); color: var(--white); }
+  .eidos-stepper-dot {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--white);
+  }
 }
 
 // ============================================================================
@@ -217,7 +274,9 @@
   @include font-weight(medium);
   color: var(--dark-color);
 
-  .eidos-stepper-step--pending & { color: var(--gray-400); }
+  .eidos-stepper-step--pending & {
+    color: var(--gray-400);
+  }
 }
 
 .eidos-stepper-description {

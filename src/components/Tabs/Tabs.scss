@@ -238,7 +238,9 @@
   border-radius: 9999px;
   // left + width are animated; transition is temporarily disabled on first
   // render via inline style to avoid the indicator sliding from 0,0.
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }
 

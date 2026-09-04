@@ -13,7 +13,8 @@ import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { checkBarrelExports } from './check-barrel-exports.js';
 
-const run = (command) => execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+const run = (command) =>
+  execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 
 const fail = (title, ...lines) => {
   console.error(`\n✖ ${title}\n`);
@@ -50,7 +51,10 @@ try {
 }
 
 if (status) {
-  const files = status.split('\n').slice(0, 10).map((l) => l.trim());
+  const files = status
+    .split('\n')
+    .slice(0, 10)
+    .map((l) => l.trim());
   fail(
     'Working tree is not clean.',
     'Commit or stash these before releasing:',
@@ -72,7 +76,10 @@ if (missingExports.length > 0) {
     `Root barrel is missing ${missingExports.length} export(s).`,
     'Add these to src/index.ts:',
     '',
-    ...missingExports.map(({ component, kind, name }) => `  ${name} (${kind}) — from src/components/${component}/index.ts`),
+    ...missingExports.map(
+      ({ component, kind, name }) =>
+        `  ${name} (${kind}) — from src/components/${component}/index.ts`,
+    ),
   );
 }
 

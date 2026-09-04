@@ -1,5 +1,5 @@
-import React from "react";
-import type { IconType } from "../../utils";
+import React from 'react';
+import type { IconType } from '../../utils';
 
 export interface BaseMenuItem {
   id: string;
@@ -7,7 +7,7 @@ export interface BaseMenuItem {
 }
 
 export interface MenuItem extends BaseMenuItem {
-  type: "item";
+  type: 'item';
   label: string;
   icon?: IconType;
   onClick?: () => void;
@@ -17,26 +17,22 @@ export interface MenuItem extends BaseMenuItem {
 }
 
 export interface MenuComponentItem extends BaseMenuItem {
-  type: "component";
+  type: 'component';
   component: React.ReactNode;
 }
 
 export interface MenuSeparator extends BaseMenuItem {
-  type: "separator";
+  type: 'separator';
 }
 
 export interface MenuNestedItem extends BaseMenuItem {
-  type: "nested";
+  type: 'nested';
   label: string;
   icon?: IconType;
   items: MenuItemType[];
 }
 
-export type MenuItemType =
-  | MenuItem
-  | MenuComponentItem
-  | MenuSeparator
-  | MenuNestedItem;
+export type MenuItemType = MenuItem | MenuComponentItem | MenuSeparator | MenuNestedItem;
 
 export interface MenuProps {
   items: MenuItemType[];

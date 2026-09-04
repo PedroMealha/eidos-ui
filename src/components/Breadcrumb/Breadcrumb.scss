@@ -5,7 +5,7 @@
 // ============================================================================
 
 .eidos-breadcrumb-nav {
-	display: block;
+  display: block;
 }
 
 // ============================================================================
@@ -13,12 +13,12 @@
 // ============================================================================
 
 .eidos-breadcrumb {
-	@include flex-center-y;
-	flex-wrap: wrap;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	gap: 0;
+  @include flex-center-y;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
 }
 
 // ============================================================================
@@ -26,8 +26,8 @@
 // ============================================================================
 
 .eidos-breadcrumb-item {
-	@include flex-center-y;
-	gap: var(--spacing-xs);
+  @include flex-center-y;
+  gap: var(--spacing-xs);
   will-change: transform;
 }
 
@@ -36,48 +36,48 @@
 // ============================================================================
 
 .eidos-breadcrumb-link {
-	@include flex-center-y;
-	gap: var(--spacing-xs);
-	@include font-size(sm);
-	color: var(--gray-500);
-	text-decoration: none;
-	padding: 2px 4px;
-	@include border-radius(xs);
-	transition: color 0.15s ease;
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  @include font-size(sm);
+  color: var(--gray-500);
+  text-decoration: none;
+  padding: 2px 4px;
+  @include border-radius(xs);
+  transition: color 0.15s ease;
 
-	&:hover {
-		color: var(--primary-color);
-		text-decoration: underline;
-	}
+  &:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
 
-	&:focus-visible {
-		outline: none;
-		@include focus-ring(primary, 3px);
-	}
+  &:focus-visible {
+    outline: none;
+    @include focus-ring(primary, 3px);
+  }
 
-	// Button variant - remove native button appearance
-	&--button {
-		@include button-reset;
-		@include flex-center-y;
-		gap: var(--spacing-xs);
-		@include font-size(sm);
-		color: var(--gray-500);
-		text-decoration: none;
-		cursor: pointer;
-		padding: 2px 4px;
-		@include border-radius(xs);
-		transition: color 0.15s ease;
+  // Button variant - remove native button appearance
+  &--button {
+    @include button-reset;
+    @include flex-center-y;
+    gap: var(--spacing-xs);
+    @include font-size(sm);
+    color: var(--gray-500);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    @include border-radius(xs);
+    transition: color 0.15s ease;
 
-		&:hover {
-			color: var(--primary-color);
-			text-decoration: underline;
-		}
+    &:hover {
+      color: var(--primary-color);
+      text-decoration: underline;
+    }
 
-		&:focus-visible {
-			outline: none;
-			@include focus-ring(primary, 3px);
-		}
-	}
+    &:focus-visible {
+      outline: none;
+      @include focus-ring(primary, 3px);
+    }
+  }
 }
 
 // ============================================================================
@@ -85,12 +85,12 @@
 // ============================================================================
 
 .eidos-breadcrumb-current {
-	@include flex-center-y;
-	gap: var(--spacing-xs);
-	@include font-size(sm);
-	@include font-weight(medium);
-	color: var(--dark-color);
-	padding: 2px 4px;
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  @include font-size(sm);
+  @include font-weight(medium);
+  color: var(--dark-color);
+  padding: 2px 4px;
 }
 
 // ============================================================================
@@ -98,11 +98,11 @@
 // ============================================================================
 
 .eidos-breadcrumb-separator {
-	@include font-size(sm);
-	color: var(--gray-300);
-	padding: 0 var(--spacing-xs);
-	user-select: none;
-	flex-shrink: 0;
+  @include font-size(sm);
+  color: var(--gray-300);
+  padding: 0 var(--spacing-xs);
+  user-select: none;
+  flex-shrink: 0;
 }
 
 // ============================================================================
@@ -110,12 +110,12 @@
 // ============================================================================
 
 .eidos-breadcrumb-icon {
-	@include flex-center;
-	flex-shrink: 0;
-	margin-right: 2px;
+  @include flex-center;
+  flex-shrink: 0;
+  margin-right: 2px;
 
-	svg {
-		width: 0.875em;
-		height: 0.875em;
-	}
+  svg {
+    width: 0.875em;
+    height: 0.875em;
+  }
 }

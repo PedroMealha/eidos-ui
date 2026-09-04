@@ -5,119 +5,119 @@
 // ============================================================================
 
 .eidos-radio-wrapper {
-	@include flex-center-y;
-	cursor: pointer;
-	width: fit-content;
+  @include flex-center-y;
+  cursor: pointer;
+  width: fit-content;
 
-	&--disabled {
-		cursor: not-allowed;
-		pointer-events: none;
-	}
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 
-	// ── Size variants ──────────────────────────────────────────────────────
+  // ── Size variants ──────────────────────────────────────────────────────
 
-	&--sm {
-		gap: var(--spacing-xs);
-		@include font-size(xs);
+  &--sm {
+    gap: var(--spacing-xs);
+    @include font-size(xs);
 
-		.eidos-radio-control {
-			width: 14px;
-			height: 14px;
-		}
+    .eidos-radio-control {
+      width: 14px;
+      height: 14px;
+    }
 
-		.eidos-radio-dot {
-			width: 6px;
-			height: 6px;
-		}
-	}
+    .eidos-radio-dot {
+      width: 6px;
+      height: 6px;
+    }
+  }
 
-	&--md {
-		gap: var(--spacing-sm);
-		@include font-size(sm);
+  &--md {
+    gap: var(--spacing-sm);
+    @include font-size(sm);
 
-		.eidos-radio-control {
-			width: 18px;
-			height: 18px;
-		}
+    .eidos-radio-control {
+      width: 18px;
+      height: 18px;
+    }
 
-		.eidos-radio-dot {
-			width: 8px;
-			height: 8px;
-		}
-	}
+    .eidos-radio-dot {
+      width: 8px;
+      height: 8px;
+    }
+  }
 
-	&--lg {
-		gap: var(--spacing-sm);
-		font-size: var(--font-size-base);
+  &--lg {
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-base);
 
-		.eidos-radio-control {
-			width: 22px;
-			height: 22px;
-		}
+    .eidos-radio-control {
+      width: 22px;
+      height: 22px;
+    }
 
-		.eidos-radio-dot {
-			width: 10px;
-			height: 10px;
-		}
-	}
+    .eidos-radio-dot {
+      width: 10px;
+      height: 10px;
+    }
+  }
 
-	// ── Color variants – focus ring + checked fill ─────────────────────────
+  // ── Color variants – focus ring + checked fill ─────────────────────────
 
-	&--primary {
-		.eidos-radio-input:focus-visible + .eidos-radio-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
-		}
+  &--primary {
+    .eidos-radio-input:focus-visible + .eidos-radio-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+    }
 
-		.eidos-radio-control--checked {
-			background: var(--primary-color);
-			border-color: var(--primary-color);
-		}
-	}
+    .eidos-radio-control--checked {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+  }
 
-	&--secondary {
-		.eidos-radio-input:focus-visible + .eidos-radio-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
-		}
+  &--secondary {
+    .eidos-radio-input:focus-visible + .eidos-radio-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
+    }
 
-		.eidos-radio-control--checked {
-			background: var(--secondary-color);
-			border-color: var(--secondary-color);
-		}
-	}
+    .eidos-radio-control--checked {
+      background: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+  }
 
-	&--success {
-		.eidos-radio-input:focus-visible + .eidos-radio-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
-		}
+  &--success {
+    .eidos-radio-input:focus-visible + .eidos-radio-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
+    }
 
-		.eidos-radio-control--checked {
-			background: var(--success-color);
-			border-color: var(--success-color);
-		}
-	}
+    .eidos-radio-control--checked {
+      background: var(--success-color);
+      border-color: var(--success-color);
+    }
+  }
 
-	&--danger {
-		.eidos-radio-input:focus-visible + .eidos-radio-control {
-			outline: none;
-			box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
-		}
+  &--danger {
+    .eidos-radio-input:focus-visible + .eidos-radio-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
+    }
 
-		.eidos-radio-control--checked {
-			background: var(--danger-color);
-			border-color: var(--danger-color);
-		}
-	}
+    .eidos-radio-control--checked {
+      background: var(--danger-color);
+      border-color: var(--danger-color);
+    }
+  }
 
-	// ── Hover: darken border on unchecked controls ─────────────────────────
+  // ── Hover: darken border on unchecked controls ─────────────────────────
 
-	&:hover:not(&--disabled) {
-		.eidos-radio-control:not(.eidos-radio-control--checked):not(.eidos-radio-control--disabled) {
-			border-color: var(--gray-500);
-		}
-	}
+  &:hover:not(&--disabled) {
+    .eidos-radio-control:not(.eidos-radio-control--checked):not(.eidos-radio-control--disabled) {
+      border-color: var(--gray-500);
+    }
+  }
 }
 
 // ============================================================================
@@ -125,7 +125,7 @@
 // ============================================================================
 
 .eidos-radio-input {
-	@include visually-hidden;
+  @include visually-hidden;
 }
 
 // ============================================================================
@@ -133,20 +133,20 @@
 // ============================================================================
 
 .eidos-radio-control {
-	@include flex-center;
-	flex-shrink: 0;
-	border: 2px solid var(--gray-400);
-	border-radius: 50%;
-	background: var(--white);
-	will-change: transform;
-	transition: all 0.2s ease;
+  @include flex-center;
+  flex-shrink: 0;
+  border: 2px solid var(--gray-400);
+  border-radius: 50%;
+  background: var(--white);
+  will-change: transform;
+  transition: all 0.2s ease;
 
-	// Size is injected by wrapper size modifier (see above)
+  // Size is injected by wrapper size modifier (see above)
 
-	&--disabled {
-		background: var(--gray-100);
-		border-color: var(--gray-300);
-	}
+  &--disabled {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+  }
 }
 
 // ============================================================================
@@ -154,17 +154,17 @@
 // ============================================================================
 
 .eidos-radio-dot {
-	border-radius: 50%;
-	background: var(--white);
-	flex-shrink: 0;
-	transform: scale(0);
-	transition: transform 0.2s ease;
+  border-radius: 50%;
+  background: var(--white);
+  flex-shrink: 0;
+  transform: scale(0);
+  transition: transform 0.2s ease;
 
-	// Size is injected by wrapper size modifier (see above)
+  // Size is injected by wrapper size modifier (see above)
 
-	.eidos-radio-control--checked & {
-		transform: scale(1);
-	}
+  .eidos-radio-control--checked & {
+    transform: scale(1);
+  }
 }
 
 // ============================================================================
@@ -172,13 +172,13 @@
 // ============================================================================
 
 .eidos-radio-label {
-	color: var(--dark-color);
-	line-height: 1;
-	user-select: none;
+  color: var(--dark-color);
+  line-height: 1;
+  user-select: none;
 
-	.eidos-radio-wrapper--disabled & {
-		color: var(--gray-400);
-	}
+  .eidos-radio-wrapper--disabled & {
+    color: var(--gray-400);
+  }
 }
 
 // ============================================================================
@@ -186,17 +186,17 @@
 // ============================================================================
 
 .eidos-radio-error-message {
-	@include flex-center-y;
-	gap: var(--spacing-xs);
-	color: var(--danger-color);
-	@include font-size(sm);
-	margin-top: var(--spacing-xs);
+  @include flex-center-y;
+  gap: var(--spacing-xs);
+  color: var(--danger-color);
+  @include font-size(sm);
+  margin-top: var(--spacing-xs);
 
-	svg {
-		width: 1em;
-		height: 1em;
-		flex-shrink: 0;
-	}
+  svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
 }
 
 // ============================================================================
@@ -204,15 +204,15 @@
 // ============================================================================
 
 .eidos-radio-group {
-	&--horizontal {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--spacing-md);
-	}
+  &--horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
 
-	&--vertical {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-sm);
-	}
+  &--vertical {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
 }

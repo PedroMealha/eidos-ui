@@ -128,8 +128,7 @@ export const WithValidation: Story = {
   args: {
     label: 'Tags (min 2 chars)',
     hint: 'Each tag must be at least 2 characters long.',
-    validate: (tag: string) =>
-      tag.length >= 2 || 'Tag must be at least 2 characters.',
+    validate: (tag: string) => tag.length >= 2 || 'Tag must be at least 2 characters.',
   },
 };
 

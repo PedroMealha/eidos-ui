@@ -92,12 +92,12 @@ const labelStyle: React.CSSProperties = {
 const drawerBody = (
   <>
     <p>
-      This is the drawer body. It can contain any content - forms, navigation
-      links, settings panels, or rich layouts.
+      This is the drawer body. It can contain any content - forms, navigation links, settings
+      panels, or rich layouts.
     </p>
     <p>
-      The body scrolls independently when content overflows, keeping the header
-      and footer always visible.
+      The body scrolls independently when content overflows, keeping the header and footer always
+      visible.
     </p>
   </>
 );
@@ -136,11 +136,7 @@ export const WithTitle = {
     return (
       <>
         <Button onClick={() => setIsOpen(true)}>Open Drawer</Button>
-        <Drawer
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          title="Panel Title"
-        >
+        <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)} title="Panel Title">
           {drawerBody}
         </Drawer>
       </>
@@ -218,7 +214,9 @@ export const Placements = {
           placement={placement}
           title={`${placement.charAt(0).toUpperCase() + placement.slice(1)} Drawer`}
         >
-          <p>Drawer opens from the <strong>{placement}</strong>.</p>
+          <p>
+            Drawer opens from the <strong>{placement}</strong>.
+          </p>
         </Drawer>
       </>
     );
@@ -257,8 +255,7 @@ export const Sizes = {
         >
           {activeSize && (
             <p>
-              This is the <strong>{activeSize}</strong> variant -{' '}
-              {sizeDescriptions[activeSize]}.
+              This is the <strong>{activeSize}</strong> variant - {sizeDescriptions[activeSize]}.
             </p>
           )}
         </Drawer>
@@ -296,8 +293,8 @@ export const BottomSheet = {
           ]}
         >
           <p>
-            This bottom sheet slides up from the bottom of the screen, common
-            in mobile UI patterns for contextual menus and action sheets.
+            This bottom sheet slides up from the bottom of the screen, common in mobile UI patterns
+            for contextual menus and action sheets.
           </p>
         </Drawer>
       </>

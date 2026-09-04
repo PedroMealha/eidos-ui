@@ -62,9 +62,7 @@ export const SignInPage: React.FC = () => {
       <Card className="mrd-auth__card" variant="elevated" padding="lg">
         <div className="mrd-auth__head">
           <h1 className="mrd-auth__title">Sign in to Meridian</h1>
-          <p className="mrd-auth__subtitle">
-            We use a one-time code instead of a password.
-          </p>
+          <p className="mrd-auth__subtitle">We use a one-time code instead of a password.</p>
         </div>
 
         <Stepper steps={STEPS} activeStep={step} />
@@ -104,7 +102,13 @@ export const SignInPage: React.FC = () => {
               </span>
             </div>
 
-            <Button type="submit" loading={pending} loadingText="Sending code" posIcon="arrow-right" className="mrd-block">
+            <Button
+              type="submit"
+              loading={pending}
+              loadingText="Sending code"
+              posIcon="arrow-right"
+              className="mrd-block"
+            >
               Send code
             </Button>
           </form>

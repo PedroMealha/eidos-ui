@@ -27,8 +27,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   const isControlled = value !== undefined;
 
   // Split a string into an array of `length` single characters, padding with ''
-  const splitToSlots = (src: string): string[] =>
-    Array.from({ length }, (_v, i) => src[i] ?? '');
+  const splitToSlots = (src: string): string[] => Array.from({ length }, (_v, i) => src[i] ?? '');
 
   const [slots, setSlots] = useState<string[]>(() =>
     splitToSlots(isControlled ? (value ?? '') : defaultValue),
@@ -85,10 +84,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
 
   // ── Event handlers ─────────────────────────────────────────────────────────
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const rawValue = e.target.value;
     // When maxLength=1 is enforced, rawValue is 0–1 chars.
     // When the browser transiently allows 2 chars (typed over existing), we
@@ -112,10 +108,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     }
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number,
-  ) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     // ── Numeric mode: block non-digit, non-control key presses ──────────────
     if (type === 'numeric') {
       const controlKeys = [
@@ -166,10 +159,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     }
   };
 
-  const handlePaste = (
-    e: React.ClipboardEvent<HTMLInputElement>,
-    index: number,
-  ) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
     e.preventDefault();
     const pasted = e.clipboardData.getData('text/plain');
     // Strip non-digits in numeric mode

@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # full history required for Chromatic TurboSnap
+          fetch-depth: 0 # full history required for Chromatic TurboSnap
 
       - uses: actions/setup-node@v4
         with:

@@ -1,14 +1,8 @@
-import React from "react";
+import React from 'react';
 
-export type AvatarSize = "sm" | "md" | "lg";
+export type AvatarSize = 'sm' | 'md' | 'lg';
 export type AvatarColor =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "danger"
-  | "warning"
-  | "info"
-  | "gray";
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'gray';
 
 export interface AvatarProps {
   src?: string;
@@ -16,7 +10,7 @@ export interface AvatarProps {
   name?: string;
   size?: AvatarSize;
   color?: AvatarColor;
-  shape?: "circle" | "square";
+  shape?: 'circle' | 'square';
   fallback?: React.ReactNode;
   className?: string;
   onClick?: () => void;

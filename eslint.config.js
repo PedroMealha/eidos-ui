@@ -5,6 +5,7 @@ import tsParser from '@typescript-eslint/parser';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   { ignores: ['dist/**', 'eslint.config.js', 'storybook-static/**'] },
@@ -73,4 +74,7 @@ export default [
       'storybook/no-redundant-story-name': 'off',
     },
   },
+
+  // Disable ESLint formatting rules that conflict with Prettier (must stay last)
+  prettierConfig,
 ];

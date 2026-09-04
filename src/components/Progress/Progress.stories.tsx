@@ -1,68 +1,68 @@
-import React from "react";
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Progress } from "./Progress.component";
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Progress } from './Progress.component';
 
 const meta = {
-  title: "Feedback/Progress",
+  title: 'Feedback/Progress',
   component: Progress,
   parameters: {
-    layout: "padded",
+    layout: 'padded',
   },
   argTypes: {
     value: {
-      control: { type: "range", min: 0, max: 100, step: 1 },
-      description: "Progress value (0–100). Omit to show the indeterminate animation.",
+      control: { type: 'range', min: 0, max: 100, step: 1 },
+      description: 'Progress value (0–100). Omit to show the indeterminate animation.',
       table: {
-        type: { summary: "number" },
+        type: { summary: 'number' },
       },
     },
     max: {
-      control: "number",
-      description: "Denominator for percentage calculation.",
+      control: 'number',
+      description: 'Denominator for percentage calculation.',
       table: {
-        type: { summary: "number" },
-        defaultValue: { summary: "100" },
+        type: { summary: 'number' },
+        defaultValue: { summary: '100' },
       },
     },
     color: {
-      control: "select",
-      options: ["primary", "secondary", "success", "danger", "warning", "info"],
-      description: "Color theme applied to the fill.",
+      control: 'select',
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      description: 'Color theme applied to the fill.',
       table: {
         type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
-        defaultValue: { summary: "primary" },
+        defaultValue: { summary: 'primary' },
       },
     },
     size: {
-      control: "select",
-      options: ["sm", "md", "lg"],
-      description: "Track height - small (4 px), medium (8 px), large (12 px).",
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Track height - small (4 px), medium (8 px), large (12 px).',
       table: {
         type: { summary: '"sm" | "md" | "lg"' },
-        defaultValue: { summary: "md" },
+        defaultValue: { summary: 'md' },
       },
     },
     showLabel: {
-      control: "boolean",
-      description: "Render the percentage (or custom label) to the right of the track.",
+      control: 'boolean',
+      description: 'Render the percentage (or custom label) to the right of the track.',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     striped: {
-      control: "boolean",
-      description: "Overlay a diagonal stripe texture on the fill.",
+      control: 'boolean',
+      description: 'Overlay a diagonal stripe texture on the fill.',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     label: {
-      control: "text",
-      description: "Custom label text. Overrides the auto-computed percentage string.",
+      control: 'text',
+      description: 'Custom label text. Overrides the auto-computed percentage string.',
       table: {
-        type: { summary: "string" },
+        type: { summary: 'string' },
       },
     },
     className: { table: { disable: true } },
@@ -79,8 +79,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     value: 65,
-    size: "md",
-    color: "primary",
+    size: 'md',
+    color: 'primary',
   },
 };
 
@@ -90,8 +90,8 @@ export const Default: Story = {
 
 export const Indeterminate: Story = {
   args: {
-    size: "md",
-    color: "primary",
+    size: 'md',
+    color: 'primary',
   },
 };
 
@@ -100,19 +100,19 @@ export const Indeterminate: Story = {
 // ============================================================================
 
 const labelStyle: React.CSSProperties = {
-  margin: "0 0 0.25rem",
-  fontSize: "0.7rem",
+  margin: '0 0 0.25rem',
+  fontSize: '0.7rem',
   fontWeight: 600,
-  textTransform: "uppercase",
-  letterSpacing: "0.07em",
-  color: "#94a3b8",
+  textTransform: 'uppercase',
+  letterSpacing: '0.07em',
+  color: '#94a3b8',
 };
 
-const colors = ["primary", "secondary", "success", "danger", "warning", "info"] as const;
+const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const;
 
 export const Colors = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "520px" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '520px' }}>
       {colors.map((color) => (
         <div key={color}>
           <p style={labelStyle}>{color}</p>
@@ -129,8 +129,8 @@ export const Colors = {
 
 export const Sizes = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", maxWidth: "520px" }}>
-      {(["sm", "md", "lg"] as const).map((size) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '520px' }}>
+      {(['sm', 'md', 'lg'] as const).map((size) => (
         <div key={size}>
           <p style={labelStyle}>{size}</p>
           <Progress value={70} size={size} />
@@ -148,8 +148,8 @@ export const WithLabel: Story = {
   args: {
     value: 48,
     showLabel: true,
-    size: "md",
-    color: "primary",
+    size: 'md',
+    color: 'primary',
   },
 };
 
@@ -161,8 +161,8 @@ export const Striped: Story = {
   args: {
     value: 55,
     striped: true,
-    size: "lg",
-    color: "primary",
+    size: 'lg',
+    color: 'primary',
   },
 };
 
@@ -172,7 +172,7 @@ export const Striped: Story = {
 
 export const States = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", maxWidth: "520px" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: '520px' }}>
       {[0, 25, 50, 75, 100].map((value) => (
         <Progress key={value} value={value} showLabel />
       ))}

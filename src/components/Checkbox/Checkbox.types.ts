@@ -1,10 +1,13 @@
 import React from 'react';
 
-export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
-	label?: React.ReactNode;
-	error?: string;
-	indeterminate?: boolean;
-	color?: 'primary' | 'secondary' | 'success' | 'danger';
-	size?: 'sm' | 'md' | 'lg';
-	className?: string;
+export interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'size' | 'type'
+> {
+  label?: React.ReactNode;
+  error?: string;
+  indeterminate?: boolean;
+  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }

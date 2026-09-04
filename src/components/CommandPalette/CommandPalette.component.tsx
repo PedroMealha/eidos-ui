@@ -251,7 +251,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   return createPortal(
     <div
-      className={['eidos-cmd-backdrop', isVisible && 'eidos-cmd-backdrop--visible'].filter(Boolean).join(' ')}
+      className={['eidos-cmd-backdrop', isVisible && 'eidos-cmd-backdrop--visible']
+        .filter(Boolean)
+        .join(' ')}
       onClick={handleBackdropClick}
       aria-hidden={!open}
     >
@@ -260,11 +262,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         aria-modal="true"
         aria-label="Command palette"
         id={dialogId}
-        className={[
-          'eidos-cmd-dialog',
-          isVisible && 'eidos-cmd-dialog--visible',
-          className,
-        ]
+        className={['eidos-cmd-dialog', isVisible && 'eidos-cmd-dialog--visible', className]
           .filter(Boolean)
           .join(' ')}
         onKeyDown={handleKeyDown}

@@ -4,314 +4,323 @@ import { renderIcon } from '../../utils';
 import type { InputProps } from './Input.types';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 
-
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-	(
-		{
-			variant = 'filled',
-			color = 'primary',
-			size = 'md',
-			disabled = false,
-			loading = false,
-			className = '',
-			width,
-			label,
-			error,
-			disclaimerIcon,
-			disclaimerContent,
-			preIcon,
-			posIcon,
-			posIconButton = false,
-			onPosIconClick,
-			type = 'text',
-			id,
-			name,
-			required,
-			isSelect = false,
-			clearable = true,
-			fullWidth = false,
-			...inputProps
-		},
-		ref
-	) => {
-		// Extract defaultValue so it never reaches the native <input> alongside `value`.
-		// Passing both causes React's "controlled/uncontrolled" warning because we always
-		// set value={currentValue} below - defaultValue is only needed to seed local state.
-		const { defaultValue, ...restInputProps } = inputProps;
+  (
+    {
+      variant = 'filled',
+      color = 'primary',
+      size = 'md',
+      disabled = false,
+      loading = false,
+      className = '',
+      width,
+      label,
+      error,
+      disclaimerIcon,
+      disclaimerContent,
+      preIcon,
+      posIcon,
+      posIconButton = false,
+      onPosIconClick,
+      type = 'text',
+      id,
+      name,
+      required,
+      isSelect = false,
+      clearable = true,
+      fullWidth = false,
+      ...inputProps
+    },
+    ref,
+  ) => {
+    // Extract defaultValue so it never reaches the native <input> alongside `value`.
+    // Passing both causes React's "controlled/uncontrolled" warning because we always
+    // set value={currentValue} below - defaultValue is only needed to seed local state.
+    const { defaultValue, ...restInputProps } = inputProps;
 
-		const [showPassword, setShowPassword] = useState(false);
-		const [localValue, setLocalValue] = useState(defaultValue || '');
-		const [isFocused, setIsFocused] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [localValue, setLocalValue] = useState(defaultValue || '');
+    const [isFocused, setIsFocused] = useState(false);
 
-		// Auto-generate id and name if not provided
-		const generatedId = useId();
-		const inputId = id || `input-${generatedId}`;
-		const inputName = name || inputId;
+    // Auto-generate id and name if not provided
+    const generatedId = useId();
+    const inputId = id || `input-${generatedId}`;
+    const inputName = name || inputId;
 
-		// Determine if using controlled or uncontrolled mode
-		const isControlled = restInputProps.value !== undefined;
-		const currentValue = isControlled ? restInputProps.value : localValue;
+    // Determine if using controlled or uncontrolled mode
+    const isControlled = restInputProps.value !== undefined;
+    const currentValue = isControlled ? restInputProps.value : localValue;
 
-		// For select inputs, don't manage localValue - let the select component handle it
-		// This prevents the Input's clear button from showing
+    // For select inputs, don't manage localValue - let the select component handle it
+    // This prevents the Input's clear button from showing
 
-		// Determine if label should float (only when there's content - static behavior)
-		// For select inputs, keep label completely static (never float)
-		const shouldFloatLabel = isSelect ? false : currentValue || defaultValue;
+    // Determine if label should float (only when there's content - static behavior)
+    // For select inputs, keep label completely static (never float)
+    const shouldFloatLabel = isSelect ? false : currentValue || defaultValue;
 
-		// Check if field is required (from props or enhanced register function)
-		const isRequired = required || Boolean('required' in restInputProps && restInputProps.required);
+    // Check if field is required (from props or enhanced register function)
+    const isRequired = required || Boolean('required' in restInputProps && restInputProps.required);
 
-		// Handle number input to allow decimals and negative numbers
-		const handleNumberInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-			if (type === 'number') {
-				const allowedKeys = [
-					'Backspace',
-					'Delete',
-					'Tab',
-					'Escape',
-					'Enter',
-					'ArrowLeft',
-					'ArrowRight',
-					'ArrowUp',
-					'ArrowDown',
-				];
-				const isNumber = /[0-9]/.test(e.key);
-				const isDecimal = /[.,]/.test(e.key);
-				const isMinus = e.key === '-';
-				const isAllowedKey = allowedKeys.includes(e.key);
-				const isControlKey = e.ctrlKey || e.metaKey;
+    // Handle number input to allow decimals and negative numbers
+    const handleNumberInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (type === 'number') {
+        const allowedKeys = [
+          'Backspace',
+          'Delete',
+          'Tab',
+          'Escape',
+          'Enter',
+          'ArrowLeft',
+          'ArrowRight',
+          'ArrowUp',
+          'ArrowDown',
+        ];
+        const isNumber = /[0-9]/.test(e.key);
+        const isDecimal = /[.,]/.test(e.key);
+        const isMinus = e.key === '-';
+        const isAllowedKey = allowedKeys.includes(e.key);
+        const isControlKey = e.ctrlKey || e.metaKey;
 
-				// Allow minus only at the beginning or when no text is selected
-				if (isMinus) {
-					const selectionStart = e.currentTarget.selectionStart || 0;
-					const selectionEnd = e.currentTarget.selectionEnd || 0;
-					const hasSelection = selectionStart !== selectionEnd;
+        // Allow minus only at the beginning or when no text is selected
+        if (isMinus) {
+          const selectionStart = e.currentTarget.selectionStart || 0;
+          const selectionEnd = e.currentTarget.selectionEnd || 0;
+          const hasSelection = selectionStart !== selectionEnd;
 
-					// Allow if at beginning or if replacing selected text
-					if (selectionStart !== 0 && !hasSelection) {
-						e.preventDefault();
-						return;
-					}
-				}
+          // Allow if at beginning or if replacing selected text
+          if (selectionStart !== 0 && !hasSelection) {
+            e.preventDefault();
+            return;
+          }
+        }
 
-				// Allow decimal only once
-				if (isDecimal) {
-					const currentValue = e.currentTarget.value;
-					const hasDecimal = /[.,]/.test(currentValue);
-					if (hasDecimal) {
-						e.preventDefault();
-						return;
-					}
-				}
+        // Allow decimal only once
+        if (isDecimal) {
+          const currentValue = e.currentTarget.value;
+          const hasDecimal = /[.,]/.test(currentValue);
+          if (hasDecimal) {
+            e.preventDefault();
+            return;
+          }
+        }
 
-				if (!isNumber && !isDecimal && !isMinus && !isAllowedKey && !isControlKey) {
-					e.preventDefault();
-				}
-			}
-		};
+        if (!isNumber && !isDecimal && !isMinus && !isAllowedKey && !isControlKey) {
+          e.preventDefault();
+        }
+      }
+    };
 
-	// Handle input change for number inputs
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		// Only update localValue if uncontrolled and not a select input
-		if (!isControlled && !isSelect) {
-			setLocalValue(value);
-		}
-		restInputProps.onChange?.(e);
-	};
+    // Handle input change for number inputs
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      // Only update localValue if uncontrolled and not a select input
+      if (!isControlled && !isSelect) {
+        setLocalValue(value);
+      }
+      restInputProps.onChange?.(e);
+    };
 
-	// Handle clear button
-	const handleClear = () => {
-		// Update localValue if uncontrolled
-		if (!isControlled) {
-			setLocalValue('');
-		}
+    // Handle clear button
+    const handleClear = () => {
+      // Update localValue if uncontrolled
+      if (!isControlled) {
+        setLocalValue('');
+      }
 
-		// Create a proper synthetic event for React Hook Form
-		const syntheticEvent = {
-			target: {
-				value: '',
-				name: inputName,
-				id: inputId,
-				type: actualType,
-			},
-		} as React.ChangeEvent<HTMLInputElement>;
+      // Create a proper synthetic event for React Hook Form
+      const syntheticEvent = {
+        target: {
+          value: '',
+          name: inputName,
+          id: inputId,
+          type: actualType,
+        },
+      } as React.ChangeEvent<HTMLInputElement>;
 
-		// Call the form's onChange handler
-		restInputProps.onChange?.(syntheticEvent);
+      // Call the form's onChange handler
+      restInputProps.onChange?.(syntheticEvent);
 
-		// Also try to update the input element directly
-		if (ref && typeof ref === 'object' && ref.current) {
-			ref.current.value = '';
-		}
-	};
+      // Also try to update the input element directly
+      if (ref && typeof ref === 'object' && ref.current) {
+        ref.current.value = '';
+      }
+    };
 
-		// Handle focus and blur
-		const handleFocus = () => {
-			setIsFocused(true);
-		};
+    // Handle focus and blur
+    const handleFocus = () => {
+      setIsFocused(true);
+    };
 
-		const handleBlur = () => {
-			setIsFocused(false);
-		};
+    const handleBlur = () => {
+      setIsFocused(false);
+    };
 
-		// Determine actual input type (handle password visibility)
-		const actualType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
+    // Determine actual input type (handle password visibility)
+    const actualType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
 
-		// Generate CSS classes
-		const inputClasses = [
-			'eidos-input',
-			`eidos-input--${variant}`,
-			`eidos-input--${color}`,
-			`eidos-input--${size}`,
-			fullWidth && `eidos-input--fullWidth`,
-			loading && `eidos-input--loading`,
-			error && `eidos-input--error`,
-		]
-			.filter(Boolean)
-			.join(' ');
+    // Generate CSS classes
+    const inputClasses = [
+      'eidos-input',
+      `eidos-input--${variant}`,
+      `eidos-input--${color}`,
+      `eidos-input--${size}`,
+      fullWidth && `eidos-input--fullWidth`,
+      loading && `eidos-input--loading`,
+      error && `eidos-input--error`,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-		const wrapperClasses = [
-			'eidos-input-wrapper',
-			`eidos-input-wrapper--${variant}`,
-			`eidos-input-wrapper--${color}`,
-			`eidos-input-wrapper--${size}`,
-			fullWidth && `eidos-input-wrapper--fullWidth`,
-			loading && `eidos-input-wrapper--loading`,
-			isFocused && `eidos-input-wrapper--focused`,
-			error && `eidos-input-wrapper--error`,
-		]
-			.filter(Boolean)
-			.join(' ');
+    const wrapperClasses = [
+      'eidos-input-wrapper',
+      `eidos-input-wrapper--${variant}`,
+      `eidos-input-wrapper--${color}`,
+      `eidos-input-wrapper--${size}`,
+      fullWidth && `eidos-input-wrapper--fullWidth`,
+      loading && `eidos-input-wrapper--loading`,
+      isFocused && `eidos-input-wrapper--focused`,
+      error && `eidos-input-wrapper--error`,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-		const labelClasses = [
-			'eidos-input-label',
-			shouldFloatLabel && `eidos-input-label--floating`,
-			disclaimerIcon && `eidos-input-label--with-icon`,
-			error && `eidos-input-label--error`,
-		]
-			.filter(Boolean)
-			.join(' ');
+    const labelClasses = [
+      'eidos-input-label',
+      shouldFloatLabel && `eidos-input-label--floating`,
+      disclaimerIcon && `eidos-input-label--with-icon`,
+      error && `eidos-input-label--error`,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
-		return (
-			<div className={`eidos-input-container ${fullWidth ? `eidos-input-container--fullWidth` : ''} ${className}`}>
-				{label && (
-					<label htmlFor={inputId} className={labelClasses}>
-						<span className={`eidos-input-label-text`}>{label}</span>
-						{isRequired && <span className={`eidos-input-required-asterisk`}>*</span>}
-						{disclaimerIcon &&
-							(disclaimerContent ? (
-								<Tooltip message={disclaimerContent}>
-									<span className={`eidos-input-disclaimer-icon`}>
-										{renderIcon(disclaimerIcon, `eidos-input-disclaimer-icon-svg`)}
-									</span>
-								</Tooltip>
-							) : (
-								<span className={`eidos-input-disclaimer-icon`}>
-									{renderIcon(disclaimerIcon, `eidos-input-disclaimer-icon-svg`)}
-								</span>
-							))}
-					</label>
-				)}
+    return (
+      <div
+        className={`eidos-input-container ${fullWidth ? `eidos-input-container--fullWidth` : ''} ${className}`}
+      >
+        {label && (
+          <label htmlFor={inputId} className={labelClasses}>
+            <span className={`eidos-input-label-text`}>{label}</span>
+            {isRequired && <span className={`eidos-input-required-asterisk`}>*</span>}
+            {disclaimerIcon &&
+              (disclaimerContent ? (
+                <Tooltip message={disclaimerContent}>
+                  <span className={`eidos-input-disclaimer-icon`}>
+                    {renderIcon(disclaimerIcon, `eidos-input-disclaimer-icon-svg`)}
+                  </span>
+                </Tooltip>
+              ) : (
+                <span className={`eidos-input-disclaimer-icon`}>
+                  {renderIcon(disclaimerIcon, `eidos-input-disclaimer-icon-svg`)}
+                </span>
+              ))}
+          </label>
+        )}
 
-				<div className={wrapperClasses}>
-					{preIcon && (
-						<span className={`eidos-input-pre-icon`}>{renderIcon(preIcon, `eidos-input-pre-icon-svg`)}</span>
-					)}
+        <div className={wrapperClasses}>
+          {preIcon && (
+            <span className={`eidos-input-pre-icon`}>
+              {renderIcon(preIcon, `eidos-input-pre-icon-svg`)}
+            </span>
+          )}
 
-					<input
-						ref={ref}
-						id={inputId}
-						name={inputName}
-						type={actualType}
-						className={inputClasses}
-						style={
-							width
-								? {
-										width: typeof width === 'number' ? `${width}px` : width,
-										minWidth: typeof width === 'number' ? `${width}px` : width,
-										maxWidth: typeof width === 'number' ? `${width}px` : width,
-									}
-								: undefined
-						}
-						disabled={disabled || loading}
-						onKeyDown={handleNumberInput}
-						{...restInputProps}
-						value={currentValue}
-						onFocus={e => {
-							handleFocus();
-							restInputProps.onFocus?.(e);
-						}}
-						onBlur={e => {
-							handleBlur();
-							restInputProps.onBlur?.(e);
-						}}
-						onChange={handleInputChange}
-					/>
+          <input
+            ref={ref}
+            id={inputId}
+            name={inputName}
+            type={actualType}
+            className={inputClasses}
+            style={
+              width
+                ? {
+                    width: typeof width === 'number' ? `${width}px` : width,
+                    minWidth: typeof width === 'number' ? `${width}px` : width,
+                    maxWidth: typeof width === 'number' ? `${width}px` : width,
+                  }
+                : undefined
+            }
+            disabled={disabled || loading}
+            onKeyDown={handleNumberInput}
+            {...restInputProps}
+            value={currentValue}
+            onFocus={(e) => {
+              handleFocus();
+              restInputProps.onFocus?.(e);
+            }}
+            onBlur={(e) => {
+              handleBlur();
+              restInputProps.onBlur?.(e);
+            }}
+            onChange={handleInputChange}
+          />
 
-					{type === 'password' && (
-						<button
-							type="button"
-							className={`eidos-input-password-toggle`}
-							onClick={() => setShowPassword(!showPassword)}
-							disabled={disabled || loading}
-							tabIndex={-1}
-						>
-							{showPassword ? (
-								<EyeOff className={`eidos-input-password-toggle-icon`} />
-							) : (
-								<Eye className={`eidos-input-password-toggle-icon`} />
-							)}
-						</button>
-					)}
+          {type === 'password' && (
+            <button
+              type="button"
+              className={`eidos-input-password-toggle`}
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={disabled || loading}
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeOff className={`eidos-input-password-toggle-icon`} />
+              ) : (
+                <Eye className={`eidos-input-password-toggle-icon`} />
+              )}
+            </button>
+          )}
 
-					{/* Clear button - show when there's content and clearable is enabled (default: true) */}
-					{currentValue && String(currentValue).trim().length > 0 && type !== 'password' && !isSelect && clearable !== false && (
-						<button
-							type="button"
-							className={`eidos-input-clear-button`}
-							onClick={handleClear}
-							disabled={disabled || loading}
-							tabIndex={-1}
-						>
-							<X className={`eidos-input-clear-button-icon`} />
-						</button>
-					)}
+          {/* Clear button - show when there's content and clearable is enabled (default: true) */}
+          {currentValue &&
+            String(currentValue).trim().length > 0 &&
+            type !== 'password' &&
+            !isSelect &&
+            clearable !== false && (
+              <button
+                type="button"
+                className={`eidos-input-clear-button`}
+                onClick={handleClear}
+                disabled={disabled || loading}
+                tabIndex={-1}
+              >
+                <X className={`eidos-input-clear-button-icon`} />
+              </button>
+            )}
 
-					{posIcon && !posIconButton && (
-						<span className={`eidos-input-pos-icon`}>{renderIcon(posIcon, `eidos-input-pos-icon-svg`)}</span>
-					)}
+          {posIcon && !posIconButton && (
+            <span className={`eidos-input-pos-icon`}>
+              {renderIcon(posIcon, `eidos-input-pos-icon-svg`)}
+            </span>
+          )}
 
-					{posIcon && posIconButton && onPosIconClick && (
-						<button
-							type="button"
-							className={`eidos-input-pos-icon-button`}
-							onClick={onPosIconClick}
-							disabled={disabled || loading}
-							tabIndex={-1}
-						>
-							{renderIcon(posIcon, `eidos-input-pos-icon-svg`)}
-						</button>
-					)}
+          {posIcon && posIconButton && onPosIconClick && (
+            <button
+              type="button"
+              className={`eidos-input-pos-icon-button`}
+              onClick={onPosIconClick}
+              disabled={disabled || loading}
+              tabIndex={-1}
+            >
+              {renderIcon(posIcon, `eidos-input-pos-icon-svg`)}
+            </button>
+          )}
 
-					{/* Chevron for select inputs */}
-					{isSelect && (
-						<span className={`eidos-input-select-chevron`}>
-							<ChevronDown className={`eidos-input-pos-icon-svg`} />
-						</span>
-					)}
-				</div>
+          {/* Chevron for select inputs */}
+          {isSelect && (
+            <span className={`eidos-input-select-chevron`}>
+              <ChevronDown className={`eidos-input-pos-icon-svg`} />
+            </span>
+          )}
+        </div>
 
-				{error && (
-					<div className={`eidos-input-error-message`}>
-						<CircleAlert className={`eidos-input-error-icon`} />
-						<span>{error}</span>
-					</div>
-				)}
-			</div>
-		);
-	}
+        {error && (
+          <div className={`eidos-input-error-message`}>
+            <CircleAlert className={`eidos-input-error-icon`} />
+            <span>{error}</span>
+          </div>
+        )}
+      </div>
+    );
+  },
 );
 
 Input.displayName = 'Input';

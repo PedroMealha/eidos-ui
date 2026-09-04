@@ -1,23 +1,23 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import { createPortal } from "react-dom";
-import type { TooltipProps, TooltipState } from "./Tooltip.types";
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import type { TooltipProps, TooltipState } from './Tooltip.types';
 
 export const Tooltip: React.FC<TooltipProps> = ({
   children,
   message,
   component: Component,
   componentProps,
-  placement: preferredPlacement = "top",
+  placement: preferredPlacement = 'top',
   delay = 100,
   disabled = false,
-  className = "",
-  triggerType = "hover",
+  className = '',
+  triggerType = 'hover',
   closeOnClickOutside = true,
   closeOnEscape = true,
 }) => {
   const [tooltipState, setTooltipState] = useState<TooltipState>({
     isVisible: false,
-    position: { top: 0, left: 0, placement: "top" },
+    position: { top: 0, left: 0, placement: 'top' },
     isPositioned: false,
   });
 
@@ -33,78 +33,57 @@ export const Tooltip: React.FC<TooltipProps> = ({
       const viewportHeight = window.innerHeight;
       const gap = 8;
 
-      let placement: "top" | "bottom" | "left" | "right" = preferredPlacement;
+      let placement: 'top' | 'bottom' | 'left' | 'right' = preferredPlacement;
       let top = 0;
       let left = 0;
 
       switch (preferredPlacement) {
-        case "top":
+        case 'top':
           top = triggerRect.top - tooltipRect.height - gap;
-          left =
-            triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
+          left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
           break;
-        case "bottom":
+        case 'bottom':
           top = triggerRect.bottom + gap;
-          left =
-            triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
+          left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
           break;
-        case "left":
-          top =
-            triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
+        case 'left':
+          top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
           left = triggerRect.left - tooltipRect.width - gap;
           break;
-        case "right":
-          top =
-            triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
+        case 'right':
+          top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
           left = triggerRect.right + gap;
           break;
       }
 
-      if (placement === "top" && top < gap) {
-        placement = "bottom";
+      if (placement === 'top' && top < gap) {
+        placement = 'bottom';
         top = triggerRect.bottom + gap;
         left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
-      } else if (
-        placement === "bottom" &&
-        top + tooltipRect.height > viewportHeight - gap
-      ) {
-        placement = "top";
+      } else if (placement === 'bottom' && top + tooltipRect.height > viewportHeight - gap) {
+        placement = 'top';
         top = triggerRect.top - tooltipRect.height - gap;
         left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
-      } else if (placement === "left" && left < gap) {
-        placement = "right";
+      } else if (placement === 'left' && left < gap) {
+        placement = 'right';
         top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
         left = triggerRect.right + gap;
-      } else if (
-        placement === "right" &&
-        left + tooltipRect.width > viewportWidth - gap
-      ) {
-        placement = "left";
+      } else if (placement === 'right' && left + tooltipRect.width > viewportWidth - gap) {
+        placement = 'left';
         top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
         left = triggerRect.left - tooltipRect.width - gap;
       }
 
-      top = Math.max(
-        gap,
-        Math.min(top, viewportHeight - tooltipRect.height - gap)
-      );
-      left = Math.max(
-        gap,
-        Math.min(left, viewportWidth - tooltipRect.width - gap)
-      );
+      top = Math.max(gap, Math.min(top, viewportHeight - tooltipRect.height - gap));
+      left = Math.max(gap, Math.min(left, viewportWidth - tooltipRect.width - gap));
 
       return { top, left, placement };
     },
-    [preferredPlacement]
+    [preferredPlacement],
   );
 
   const handleScroll = useCallback(() => {
-    if (
-      !tooltipState.isVisible ||
-      !tooltipState.isPositioned ||
-      isScrollingRef.current
-    )
-      return;
+    if (!tooltipState.isVisible || !tooltipState.isPositioned || isScrollingRef.current) return;
 
     isScrollingRef.current = true;
 
@@ -113,10 +92,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         const triggerRect = triggerRef.current.getBoundingClientRect();
         const tooltipRect = tooltipRef.current.getBoundingClientRect();
 
-        const { top, left, placement } = calculateOptimalPosition(
-          triggerRect,
-          tooltipRect
-        );
+        const { top, left, placement } = calculateOptimalPosition(triggerRect, tooltipRect);
 
         setTooltipState((prev) => ({
           ...prev,
@@ -126,14 +102,10 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
       isScrollingRef.current = false;
     });
-  }, [
-    tooltipState.isVisible,
-    tooltipState.isPositioned,
-    calculateOptimalPosition,
-  ]);
+  }, [tooltipState.isVisible, tooltipState.isPositioned, calculateOptimalPosition]);
 
   const handleMouseEnter = useCallback(() => {
-    if (disabled || triggerType !== "hover") return;
+    if (disabled || triggerType !== 'hover') return;
 
     timeoutRef.current = setTimeout(() => {
       setTooltipState((prev) => ({
@@ -145,7 +117,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   }, [disabled, delay, triggerType]);
 
   const handleMouseLeave = useCallback(() => {
-    if (triggerType !== "hover") return;
+    if (triggerType !== 'hover') return;
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -158,7 +130,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   }, [triggerType]);
 
   const handleClick = useCallback(() => {
-    if (disabled || triggerType !== "click") return;
+    if (disabled || triggerType !== 'click') return;
 
     if (tooltipState.isVisible) {
       setTooltipState((prev) => ({
@@ -186,7 +158,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   }, [disabled, triggerType, tooltipState.isVisible, delay]);
 
   const handleFocus = useCallback(() => {
-    if (disabled || triggerType !== "focus") return;
+    if (disabled || triggerType !== 'focus') return;
 
     timeoutRef.current = setTimeout(() => {
       setTooltipState((prev) => ({
@@ -198,7 +170,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   }, [disabled, triggerType, delay]);
 
   const handleBlur = useCallback(() => {
-    if (triggerType !== "focus") return;
+    if (triggerType !== 'focus') return;
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -212,19 +184,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
-      if (
-        !closeOnClickOutside ||
-        !tooltipState.isVisible ||
-        triggerType !== "click"
-      )
-        return;
+      if (!closeOnClickOutside || !tooltipState.isVisible || triggerType !== 'click') return;
 
       const target = event.target as Node;
 
-      if (
-        tooltipRef.current?.contains(target) ||
-        triggerRef.current?.contains(target)
-      ) {
+      if (tooltipRef.current?.contains(target) || triggerRef.current?.contains(target)) {
         return;
       }
 
@@ -234,16 +198,16 @@ export const Tooltip: React.FC<TooltipProps> = ({
         isPositioned: false,
       }));
     },
-    [closeOnClickOutside, tooltipState.isVisible, triggerType]
+    [closeOnClickOutside, tooltipState.isVisible, triggerType],
   );
 
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
       if (
         closeOnEscape &&
-        event.key === "Escape" &&
+        event.key === 'Escape' &&
         tooltipState.isVisible &&
-        triggerType === "click"
+        triggerType === 'click'
       ) {
         setTooltipState((prev) => ({
           ...prev,
@@ -252,7 +216,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         }));
       }
     },
-    [closeOnEscape, tooltipState.isVisible, triggerType]
+    [closeOnEscape, tooltipState.isVisible, triggerType],
   );
 
   useEffect(() => {
@@ -265,10 +229,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       const triggerRect = triggerRef.current.getBoundingClientRect();
       const tooltipRect = tooltipRef.current.getBoundingClientRect();
 
-      const { top, left, placement } = calculateOptimalPosition(
-        triggerRect,
-        tooltipRect
-      );
+      const { top, left, placement } = calculateOptimalPosition(triggerRect, tooltipRect);
 
       setTooltipState((prev) => ({
         ...prev,
@@ -276,11 +237,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         isPositioned: true,
       }));
     }
-  }, [
-    tooltipState.isVisible,
-    tooltipState.isPositioned,
-    calculateOptimalPosition,
-  ]);
+  }, [tooltipState.isVisible, tooltipState.isPositioned, calculateOptimalPosition]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -293,10 +250,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         const triggerRect = triggerRef.current.getBoundingClientRect();
         const tooltipRect = tooltipRef.current.getBoundingClientRect();
 
-        const { top, left, placement } = calculateOptimalPosition(
-          triggerRect,
-          tooltipRect
-        );
+        const { top, left, placement } = calculateOptimalPosition(triggerRect, tooltipRect);
 
         setTooltipState((prev) => ({
           ...prev,
@@ -305,36 +259,32 @@ export const Tooltip: React.FC<TooltipProps> = ({
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [
-    tooltipState.isVisible,
-    tooltipState.isPositioned,
-    calculateOptimalPosition,
-  ]);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [tooltipState.isVisible, tooltipState.isPositioned, calculateOptimalPosition]);
 
   useEffect(() => {
     if (tooltipState.isVisible) {
-      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener('scroll', handleScroll, { passive: true });
 
-      document.body.addEventListener("scroll", handleScroll, { passive: true });
+      document.body.addEventListener('scroll', handleScroll, { passive: true });
     }
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.body.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
+      document.body.removeEventListener('scroll', handleScroll);
     };
   }, [tooltipState.isVisible, handleScroll]);
 
   useEffect(() => {
-    if (tooltipState.isVisible && triggerType === "click") {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("keydown", handleEscapeKey);
+    if (tooltipState.isVisible && triggerType === 'click') {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscapeKey);
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [tooltipState.isVisible, triggerType, handleClickOutside, handleEscapeKey]);
 
@@ -351,7 +301,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   const renderTooltipContent = () => {
     if (message) {
-      return <span className='eidos-tooltip-message'>{message}</span>;
+      return <span className="eidos-tooltip-message">{message}</span>;
     }
     if (Component) {
       return <Component {...(componentProps || {})} />;
@@ -366,16 +316,16 @@ export const Tooltip: React.FC<TooltipProps> = ({
     };
 
     switch (triggerType) {
-      case "hover":
+      case 'hover':
         props.onMouseEnter = handleMouseEnter;
         props.onMouseLeave = handleMouseLeave;
         break;
-      case "click":
+      case 'click':
         props.onClick = handleClick;
-        props.role = "button";
+        props.role = 'button';
         props.tabIndex = 0;
         break;
-      case "focus":
+      case 'focus':
         props.onFocus = handleFocus;
         props.onBlur = handleBlur;
         props.tabIndex = 0;
@@ -397,15 +347,15 @@ export const Tooltip: React.FC<TooltipProps> = ({
               top: tooltipState.position.top,
               left: tooltipState.position.left,
             }}
-            data-state={tooltipState.isPositioned ? "entered" : "entering"}
+            data-state={tooltipState.isPositioned ? 'entered' : 'entering'}
             role="tooltip"
           >
             {renderTooltipContent()}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );
 };
 
-Tooltip.displayName = "Tooltip";
+Tooltip.displayName = 'Tooltip';

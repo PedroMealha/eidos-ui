@@ -73,24 +73,35 @@ const meta = {
     },
     onChange: {
       control: false,
-      description: 'Fires on every keystroke while in edit mode. Use this to keep an external value state in sync.',
-      table: { type: { summary: '(value: string) => void' }, defaultValue: { summary: 'undefined' } },
+      description:
+        'Fires on every keystroke while in edit mode. Use this to keep an external value state in sync.',
+      table: {
+        type: { summary: '(value: string) => void' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     onConfirm: {
       control: false,
       description: 'Fires when editing is confirmed (Enter or blur). Receives the committed value.',
-      table: { type: { summary: '(value: string) => void' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: '(value: string) => void' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     onCancel: {
       control: false,
-      description: 'Fires when editing is cancelled (Esc). The value reverts to what it was when editing began.',
+      description:
+        'Fires when editing is cancelled (Esc). The value reverts to what it was when editing began.',
       table: { type: { summary: '() => void' }, defaultValue: { summary: 'undefined' } },
     },
     onEditingChange: {
       control: false,
       description:
         'Called when the component wants to open or close editing. Pair with `editing` for fully controlled mode.',
-      table: { type: { summary: '(editing: boolean) => void' }, defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: '(editing: boolean) => void' },
+        defaultValue: { summary: 'undefined' },
+      },
     },
     renderDisplay: {
       control: false,
@@ -129,7 +140,12 @@ export const Default: Story = {
 
 export const Sizes = {
   render: () => {
-    const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '0.375rem', alignItems: 'flex-start' };
+    const col: React.CSSProperties = {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.375rem',
+      alignItems: 'flex-start',
+    };
     const row: React.CSSProperties = { display: 'flex', gap: '2.5rem', alignItems: 'flex-end' };
     const caption: React.CSSProperties = {
       fontSize: '0.7rem',
@@ -167,7 +183,12 @@ export const Trigger = {
     const [clickValue, setClickValue] = useState('Click to edit');
     const [dblValue, setDblValue] = useState('Double-click to edit');
 
-    const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-start' };
+    const col: React.CSSProperties = {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.5rem',
+      alignItems: 'flex-start',
+    };
     const row: React.CSSProperties = { display: 'flex', gap: '2.5rem', alignItems: 'flex-start' };
     const caption: React.CSSProperties = { fontSize: '0.75rem', color: '#94a3b8' };
 
@@ -231,9 +252,7 @@ export const CustomDisplay = {
         value={value}
         onChange={setValue}
         onConfirm={setValue}
-        renderDisplay={(v) => (
-          <span style={{ fontWeight: 700, fontStyle: 'italic' }}>{v}</span>
-        )}
+        renderDisplay={(v) => <span style={{ fontWeight: 700, fontStyle: 'italic' }}>{v}</span>}
       />
     );
   },

@@ -76,8 +76,8 @@ const labelStyle: React.CSSProperties = {
 
 const itemContent = (topic: string) => (
   <p style={{ margin: 0 }}>
-    <strong style={{ color: 'var(--dark-color)' }}>{topic}</strong> - This panel contains
-    detailed information about the selected topic. Toggle the trigger above to collapse it.
+    <strong style={{ color: 'var(--dark-color)' }}>{topic}</strong> - This panel contains detailed
+    information about the selected topic. Toggle the trigger above to collapse it.
   </p>
 );
 
@@ -279,46 +279,22 @@ export const Colors = {
 export const WithIcons = {
   render: () => (
     <Accordion variant="bordered" defaultValue="profile">
-      <AccordionItem
-        value="profile"
-        label="Profile"
-        icon={<User size={16} />}
-      >
+      <AccordionItem value="profile" label="Profile" icon={<User size={16} />}>
         {itemContent('Profile')}
       </AccordionItem>
-      <AccordionItem
-        value="settings"
-        label="Settings"
-        icon={<Settings size={16} />}
-      >
+      <AccordionItem value="settings" label="Settings" icon={<Settings size={16} />}>
         {itemContent('Settings')}
       </AccordionItem>
-      <AccordionItem
-        value="notifications"
-        label="Notifications"
-        icon={<Bell size={16} />}
-      >
+      <AccordionItem value="notifications" label="Notifications" icon={<Bell size={16} />}>
         {itemContent('Notifications')}
       </AccordionItem>
-      <AccordionItem
-        value="security"
-        label="Security"
-        icon={<Lock size={16} />}
-      >
+      <AccordionItem value="security" label="Security" icon={<Lock size={16} />}>
         {itemContent('Security')}
       </AccordionItem>
-      <AccordionItem
-        value="plans"
-        label="Plans & billing"
-        icon={<Star size={16} />}
-      >
+      <AccordionItem value="plans" label="Plans & billing" icon={<Star size={16} />}>
         {itemContent('Plans & billing')}
       </AccordionItem>
-      <AccordionItem
-        value="advanced"
-        label="Advanced"
-        icon={<ChevronRight size={16} />}
-      >
+      <AccordionItem value="advanced" label="Advanced" icon={<ChevronRight size={16} />}>
         {itemContent('Advanced')}
       </AccordionItem>
     </Accordion>
@@ -373,10 +349,7 @@ export const Controlled = {
         </Accordion>
 
         <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', margin: 0 }}>
-          Open item:{' '}
-          <strong style={{ color: 'var(--dark-color)' }}>
-            {openItem || '(none)'}
-          </strong>
+          Open item: <strong style={{ color: 'var(--dark-color)' }}>{openItem || '(none)'}</strong>
         </p>
 
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>

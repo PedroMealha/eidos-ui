@@ -208,7 +208,9 @@ export const Controlled = {
       };
 
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}
+        >
           <OTPInput
             length={6}
             label="Verification code"

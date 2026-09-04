@@ -9,21 +9,17 @@ import type { PaginationProps } from './Pagination.types';
 const ELLIPSIS = 'ellipsis' as const;
 type PageItem = number | typeof ELLIPSIS;
 
-function usePaginationRange(
-  page: number,
-  totalPages: number,
-  siblingCount: number,
-): PageItem[] {
+function usePaginationRange(page: number, totalPages: number, siblingCount: number): PageItem[] {
   const totalShown = siblingCount * 2 + 5;
 
   if (totalPages <= totalShown) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
-  const leftSibling  = Math.max(page - siblingCount, 1);
+  const leftSibling = Math.max(page - siblingCount, 1);
   const rightSibling = Math.min(page + siblingCount, totalPages);
 
-  const showLeftEllipsis  = leftSibling > 2;
+  const showLeftEllipsis = leftSibling > 2;
   const showRightEllipsis = rightSibling < totalPages - 1;
 
   const items: PageItem[] = [1];
@@ -55,23 +51,25 @@ export const Pagination: React.FC<PaginationProps> = ({
   page,
   totalPages,
   onChange,
-  siblingCount       = 1,
-  showFirstLast      = false,
-  color              = 'primary',
-  size               = 'sm',
-  disabled           = false,
-  className          = '',
+  siblingCount = 1,
+  showFirstLast = false,
+  color = 'primary',
+  size = 'sm',
+  disabled = false,
+  className = '',
   // Table-footer mode
   totalItems,
   pageSize,
   onPageSizeChange,
-  pageSizeOptions    = [10, 25, 50, 100],
+  pageSizeOptions = [10, 25, 50, 100],
 }) => {
   const items = usePaginationRange(page, totalPages, siblingCount);
 
   // ── Active-page editable input ─────────────────────────────────────────────
   const [inputValue, setInputValue] = useState(String(page));
-  useEffect(() => { setInputValue(String(page)); }, [page]);
+  useEffect(() => {
+    setInputValue(String(page));
+  }, [page]);
 
   const commitInput = (raw: string) => {
     const val = parseInt(raw, 10);
@@ -83,13 +81,11 @@ export const Pagination: React.FC<PaginationProps> = ({
   };
 
   // ── Layout flags ───────────────────────────────────────────────────────────
-  const hasResults  = totalItems !== undefined && pageSize !== undefined;
+  const hasResults = totalItems !== undefined && pageSize !== undefined;
   const hasPageSize = !!onPageSizeChange && pageSize !== undefined;
-  const tableMode   = hasResults || hasPageSize;
+  const tableMode = hasResults || hasPageSize;
 
-  const startItem = hasResults
-    ? totalItems === 0 ? 0 : (page - 1) * pageSize! + 1
-    : undefined;
+  const startItem = hasResults ? (totalItems === 0 ? 0 : (page - 1) * pageSize! + 1) : undefined;
   const endItem = hasResults ? Math.min(page * pageSize!, totalItems!) : undefined;
 
   const rootClasses = [
@@ -97,14 +93,17 @@ export const Pagination: React.FC<PaginationProps> = ({
     `eidos-pagination--${size}`,
     tableMode && 'eidos-pagination--table',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   // ── Navigation block ───────────────────────────────────────────────────────
   const nav = (
     <nav aria-label="Pagination" className="eidos-pagination-nav">
       {showFirstLast && (
         <Button
-          variant="text" size={size}
+          variant="text"
+          size={size}
           icon={ChevronsLeft}
           disabled={page === 1 || disabled}
           onClick={() => onChange(1)}
@@ -113,7 +112,8 @@ export const Pagination: React.FC<PaginationProps> = ({
       )}
 
       <Button
-        variant="text" size={size}
+        variant="text"
+        size={size}
         icon={ChevronLeft}
         disabled={page === 1 || disabled}
         onClick={() => onChange(page - 1)}
@@ -122,14 +122,9 @@ export const Pagination: React.FC<PaginationProps> = ({
 
       {items.map((item, i) =>
         item === ELLIPSIS ? (
-          <span
-            key={`ellipsis-${i}`}
-            className="eidos-pagination-ellipsis"
-            aria-hidden="true"
-          >
+          <span key={`ellipsis-${i}`} className="eidos-pagination-ellipsis" aria-hidden="true">
             …
           </span>
-
         ) : item === page ? (
           // Active page - styled as filled chip, editable via keyboard/click
           <input
@@ -142,10 +137,10 @@ export const Pagination: React.FC<PaginationProps> = ({
               `eidos-pagination-page--${color}`,
             ].join(' ')}
             value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            onFocus={e => e.target.select()}
+            onChange={(e) => setInputValue(e.target.value)}
+            onFocus={(e) => e.target.select()}
             onBlur={() => commitInput(inputValue)}
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 commitInput(inputValue);
                 e.currentTarget.blur();
@@ -158,7 +153,6 @@ export const Pagination: React.FC<PaginationProps> = ({
             aria-current="page"
             disabled={disabled}
           />
-
         ) : (
           <button
             key={item}
@@ -170,11 +164,12 @@ export const Pagination: React.FC<PaginationProps> = ({
           >
             {item}
           </button>
-        )
+        ),
       )}
 
       <Button
-        variant="text" size={size}
+        variant="text"
+        size={size}
         icon={ChevronRight}
         disabled={page === totalPages || disabled}
         onClick={() => onChange(page + 1)}
@@ -183,7 +178,8 @@ export const Pagination: React.FC<PaginationProps> = ({
 
       {showFirstLast && (
         <Button
-          variant="text" size={size}
+          variant="text"
+          size={size}
           icon={ChevronsRight}
           disabled={page === totalPages || disabled}
           onClick={() => onChange(totalPages)}

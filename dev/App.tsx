@@ -35,7 +35,9 @@ export const App: React.FC = () => {
   if (isAppRoute) {
     // The redirect above is already queued; render nothing for that one frame.
     if (!session) return null;
-    return <AdminLayout>{APP_ROUTES[path] ?? <NotFoundPage homePath="/app/dashboard" />}</AdminLayout>;
+    return (
+      <AdminLayout>{APP_ROUTES[path] ?? <NotFoundPage homePath="/app/dashboard" />}</AdminLayout>
+    );
   }
 
   return (

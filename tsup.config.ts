@@ -10,8 +10,8 @@ const toKebab = (name: string) =>
 // One entry per component folder, output as dist/<kebab-name>/index.*
 const componentEntries = Object.fromEntries(
   readdirSync('./src/components', { withFileTypes: true })
-    .filter(d => d.isDirectory())
-    .map(d => [`${toKebab(d.name)}/index`, `src/components/${d.name}/index.ts`]),
+    .filter((d) => d.isDirectory())
+    .map((d) => [`${toKebab(d.name)}/index`, `src/components/${d.name}/index.ts`]),
 );
 
 export default defineConfig({
@@ -37,7 +37,7 @@ export default defineConfig({
       // single pre-compiled dist/index.css that consumers import separately.
       name: 'ignore-scss',
       setup(build) {
-        build.onResolve({ filter: /\.scss$|\.css$/ }, args => ({
+        build.onResolve({ filter: /\.scss$|\.css$/ }, (args) => ({
           path: args.path,
           namespace: 'scss-ignore',
         }));

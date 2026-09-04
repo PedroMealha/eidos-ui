@@ -1,147 +1,147 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Select } from "./Select.component";
-import { User, Mail, Phone, MapPin, Calendar } from "lucide-react";
-import { useState } from "react";
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Select } from './Select.component';
+import { User, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { useState } from 'react';
 
 const meta: Meta<typeof Select> = {
-  title: "Forms/Select",
+  title: 'Forms/Select',
   component: Select,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
   argTypes: {
     options: {
-      control: "object",
-      description: "Array of options to display in the select dropdown",
+      control: 'object',
+      description: 'Array of options to display in the select dropdown',
       table: {
-        type: { summary: "SelectOption[]" },
+        type: { summary: 'SelectOption[]' },
       },
     },
     value: {
-      control: "text",
-      description: "Selected value(s). Can be a string or array of strings for multiple selection",
+      control: 'text',
+      description: 'Selected value(s). Can be a string or array of strings for multiple selection',
       table: {
-        type: { summary: "string | string[]" },
+        type: { summary: 'string | string[]' },
       },
     },
     onChange: {
-      action: "changed",
-      description: "Callback fired when the selection changes",
+      action: 'changed',
+      description: 'Callback fired when the selection changes',
       table: {
-        type: { summary: "(value: string | string[]) => void" },
+        type: { summary: '(value: string | string[]) => void' },
       },
     },
     multiple: {
-      control: "boolean",
-      description: "Enable multiple selection",
+      control: 'boolean',
+      description: 'Enable multiple selection',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     placeholder: {
-      control: "text",
-      description: "Placeholder text when no value is selected",
+      control: 'text',
+      description: 'Placeholder text when no value is selected',
       table: {
-        type: { summary: "string" },
-        defaultValue: { summary: "Select an option..." },
+        type: { summary: 'string' },
+        defaultValue: { summary: 'Select an option...' },
       },
     },
     disabled: {
-      control: "boolean",
-      description: "Disable the select input",
+      control: 'boolean',
+      description: 'Disable the select input',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     clearable: {
-      control: "boolean",
-      description: "Show a clear button when a value is selected",
+      control: 'boolean',
+      description: 'Show a clear button when a value is selected',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "true" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
     },
     fullWidth: {
-      control: "boolean",
-      description: "Make the select take full width of its container",
+      control: 'boolean',
+      description: 'Make the select take full width of its container',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     autoWidth: {
-      control: "boolean",
-      description: "Automatically match dropdown width to trigger width",
+      control: 'boolean',
+      description: 'Automatically match dropdown width to trigger width',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "true" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
     },
     className: {
-      control: "text",
-      description: "Additional CSS classes",
+      control: 'text',
+      description: 'Additional CSS classes',
       table: {
-        type: { summary: "string" },
+        type: { summary: 'string' },
       },
     },
     name: {
-      control: "text",
-      description: "Name attribute for form submission",
+      control: 'text',
+      description: 'Name attribute for form submission',
       table: {
-        type: { summary: "string" },
+        type: { summary: 'string' },
       },
     },
     id: {
-      control: "text",
-      description: "ID attribute for the select",
+      control: 'text',
+      description: 'ID attribute for the select',
       table: {
-        type: { summary: "string" },
+        type: { summary: 'string' },
       },
     },
     required: {
-      control: "boolean",
-      description: "Mark the select as required in a form",
+      control: 'boolean',
+      description: 'Mark the select as required in a form',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     minWidth: {
-      control: "text",
-      description: "Minimum width of the dropdown",
+      control: 'text',
+      description: 'Minimum width of the dropdown',
       table: {
-        type: { summary: "number | string" },
+        type: { summary: 'number | string' },
       },
     },
     maxWidth: {
-      control: "text",
-      description: "Maximum width of the dropdown",
+      control: 'text',
+      description: 'Maximum width of the dropdown',
       table: {
-        type: { summary: "number | string" },
+        type: { summary: 'number | string' },
       },
     },
     maxHeight: {
-      control: "text",
-      description: "Maximum height of the dropdown (enables scrolling)",
+      control: 'text',
+      description: 'Maximum height of the dropdown (enables scrolling)',
       table: {
-        type: { summary: "number | string" },
-        defaultValue: { summary: "300px" },
+        type: { summary: 'number | string' },
+        defaultValue: { summary: '300px' },
       },
     },
     inputProps: {
-      control: "object",
-      description: "Additional props to pass to the underlying Input component",
+      control: 'object',
+      description: 'Additional props to pass to the underlying Input component',
       table: {
-        type: { summary: "Partial<InputProps>" },
+        type: { summary: 'Partial<InputProps>' },
       },
     },
     dropdownProps: {
-      control: "object",
-      description: "Additional props to pass to the underlying Dropdown component",
+      control: 'object',
+      description: 'Additional props to pass to the underlying Dropdown component',
       table: {
-        type: { summary: "object" },
+        type: { summary: 'object' },
       },
     },
   },
@@ -152,49 +152,48 @@ type Story = StoryObj<typeof meta>;
 
 // Basic options without icons
 const basicOptions = [
-  { id: "1", label: "Apple", value: "apple" },
-  { id: "2", label: "Banana", value: "banana" },
-  { id: "3", label: "Cherry", value: "cherry" },
-  { id: "4", label: "Date", value: "date" },
-  { id: "5", label: "Elderberry", value: "elderberry" },
+  { id: '1', label: 'Apple', value: 'apple' },
+  { id: '2', label: 'Banana', value: 'banana' },
+  { id: '3', label: 'Cherry', value: 'cherry' },
+  { id: '4', label: 'Date', value: 'date' },
+  { id: '5', label: 'Elderberry', value: 'elderberry' },
 ];
 
 // Options with component-based icons
 const optionsWithComponentIcons = [
-  { id: "1", label: "John Doe", value: "john", icon: User },
-  { id: "2", label: "jane@example.com", value: "jane", icon: Mail },
-  { id: "3", label: "+1 234 567 890", value: "phone", icon: Phone },
-  { id: "4", label: "New York, USA", value: "ny", icon: MapPin },
-  { id: "5", label: "2025-10-12", value: "date", icon: Calendar },
+  { id: '1', label: 'John Doe', value: 'john', icon: User },
+  { id: '2', label: 'jane@example.com', value: 'jane', icon: Mail },
+  { id: '3', label: '+1 234 567 890', value: 'phone', icon: Phone },
+  { id: '4', label: 'New York, USA', value: 'ny', icon: MapPin },
+  { id: '5', label: '2025-10-12', value: 'date', icon: Calendar },
 ];
-
 
 // Options with disabled state
 const optionsWithDisabled = [
-  { id: "1", label: "Available Option", value: "available" },
-  { id: "2", label: "Disabled Option", value: "disabled", disabled: true },
-  { id: "3", label: "Another Available", value: "available2" },
-  { id: "4", label: "Also Disabled", value: "disabled2", disabled: true },
+  { id: '1', label: 'Available Option', value: 'available' },
+  { id: '2', label: 'Disabled Option', value: 'disabled', disabled: true },
+  { id: '3', label: 'Another Available', value: 'available2' },
+  { id: '4', label: 'Also Disabled', value: 'disabled2', disabled: true },
 ];
 
 export const Default: Story = {
   args: {
     options: basicOptions,
-    placeholder: "Select a fruit...",
+    placeholder: 'Select a fruit...',
   },
 };
 
 export const SingleSelect: Story = {
   args: {
     options: basicOptions,
-    placeholder: "Select a fruit...",
+    placeholder: 'Select a fruit...',
   },
 };
 
 export const WithComponentIcons: Story = {
   args: {
     options: optionsWithComponentIcons,
-    placeholder: "Select an option...",
+    placeholder: 'Select an option...',
   },
 };
 
@@ -202,17 +201,17 @@ export const MultipleSelect: Story = {
   args: {
     options: basicOptions,
     multiple: true,
-    placeholder: "Select multiple fruits...",
+    placeholder: 'Select multiple fruits...',
   },
 };
 
 export const MultipleSelectCompactLabel: Story = {
-  name: "Multiple select (compact label)",
+  name: 'Multiple select (compact label)',
   args: {
     options: basicOptions,
     multiple: true,
-    defaultValue: ["apple", "banana", "cherry"],
-    placeholder: "Select multiple fruits...",
+    defaultValue: ['apple', 'banana', 'cherry'],
+    placeholder: 'Select multiple fruits...',
   },
   parameters: {
     docs: {
@@ -228,7 +227,7 @@ export const MultipleSelectCompactLabel: Story = {
 export const WithDisabledOptions: Story = {
   args: {
     options: optionsWithDisabled,
-    placeholder: "Some options are disabled...",
+    placeholder: 'Some options are disabled...',
   },
 };
 
@@ -236,7 +235,7 @@ export const Disabled: Story = {
   args: {
     options: basicOptions,
     disabled: true,
-    placeholder: "This select is disabled...",
+    placeholder: 'This select is disabled...',
   },
 };
 
@@ -244,7 +243,7 @@ export const NotClearable: Story = {
   args: {
     options: basicOptions,
     clearable: false,
-    placeholder: "Select without clear button...",
+    placeholder: 'Select without clear button...',
   },
 };
 
@@ -252,11 +251,11 @@ export const FullWidth: Story = {
   args: {
     options: basicOptions,
     fullWidth: true,
-    placeholder: "Full width select...",
+    placeholder: 'Full width select...',
   },
   decorators: [
     (Story) => (
-      <div style={{ width: "400px" }}>
+      <div style={{ width: '400px' }}>
         <Story />
       </div>
     ),
@@ -265,10 +264,10 @@ export const FullWidth: Story = {
 
 export const ControlledExample: Story = {
   render: (args) => {
-    const [value, setValue] = useState<string>("");
+    const [value, setValue] = useState<string>('');
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <Select
           {...args}
           options={basicOptions}
@@ -276,8 +275,8 @@ export const ControlledExample: Story = {
           onChange={(newValue) => setValue(newValue as string)}
           placeholder="Select a fruit..."
         />
-        <div style={{ fontSize: "14px", color: "#666" }}>
-          Selected value: <strong>{value || "None"}</strong>
+        <div style={{ fontSize: '14px', color: '#666' }}>
+          Selected value: <strong>{value || 'None'}</strong>
         </div>
       </div>
     );
@@ -289,7 +288,7 @@ export const MultipleControlled: Story = {
     const [values, setValues] = useState<string[]>([]);
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <Select
           {...args}
           options={basicOptions}
@@ -298,8 +297,8 @@ export const MultipleControlled: Story = {
           onChange={(newValues) => setValues(newValues as string[])}
           placeholder="Select multiple fruits..."
         />
-        <div style={{ fontSize: "14px", color: "#666" }}>
-          Selected values: <strong>{values.length > 0 ? values.join(", ") : "None"}</strong>
+        <div style={{ fontSize: '14px', color: '#666' }}>
+          Selected values: <strong>{values.length > 0 ? values.join(', ') : 'None'}</strong>
         </div>
       </div>
     );
@@ -309,21 +308,23 @@ export const MultipleControlled: Story = {
 export const Examples: Story = {
   render: () => {
     const label: React.CSSProperties = {
-      marginBottom: "0.625rem",
-      fontSize: "0.7rem",
+      marginBottom: '0.625rem',
+      fontSize: '0.7rem',
       fontWeight: 600,
-      textTransform: "uppercase",
-      letterSpacing: "0.07em",
-      color: "#94a3b8",
+      textTransform: 'uppercase',
+      letterSpacing: '0.07em',
+      color: '#94a3b8',
     };
 
     return (
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-        gap: "2rem 3rem",
-        padding: "1.5rem",
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: '2rem 3rem',
+          padding: '1.5rem',
+        }}
+      >
         <div>
           <p style={label}>Single Select</p>
           <Select options={basicOptions} placeholder="Select a fruit..." />
@@ -364,11 +365,10 @@ export const Examples: Story = {
           <Select
             options={optionsWithComponentIcons}
             placeholder="Success variant..."
-            inputProps={{ variant: "filled", color: "success" }}
+            inputProps={{ variant: 'filled', color: 'success' }}
           />
         </div>
       </div>
     );
   },
 };
-

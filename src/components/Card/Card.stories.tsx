@@ -16,7 +16,10 @@ const meta = {
       control: 'select',
       options: ['outlined', 'elevated', 'flat'],
       description: 'Visual style of the card.',
-      table: { type: { summary: '"outlined" | "elevated" | "flat"' }, defaultValue: { summary: 'outlined' } },
+      table: {
+        type: { summary: '"outlined" | "elevated" | "flat"' },
+        defaultValue: { summary: 'outlined' },
+      },
     },
     padding: {
       control: 'select',
@@ -94,8 +97,8 @@ export const WithContent: Story = {
     <Card style={{ width: 320 }}>
       <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 600 }}>Card title</h3>
       <p style={{ margin: 0, fontSize: '0.875rem', color: '#71717a', lineHeight: 1.6 }}>
-        Cards are surface-level containers that group related content. Use them to
-        establish visual hierarchy without adding page-level sections.
+        Cards are surface-level containers that group related content. Use them to establish visual
+        hierarchy without adding page-level sections.
       </p>
     </Card>
   ),

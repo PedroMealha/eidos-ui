@@ -44,10 +44,7 @@ export const TeamPage: React.FC = () => {
     setRows(data ?? []);
   }, [data]);
 
-  const dirty = useMemo(
-    () => JSON.stringify(rows) !== JSON.stringify(data ?? []),
-    [rows, data],
-  );
+  const dirty = useMemo(() => JSON.stringify(rows) !== JSON.stringify(data ?? []), [rows, data]);
 
   const columns = useMemo(
     () => [
@@ -157,7 +154,12 @@ export const TeamPage: React.FC = () => {
           >
             Discard
           </Button>
-          <Button loading={saving} loadingText="Saving" disabled={!dirty} onClick={() => void saveChanges()}>
+          <Button
+            loading={saving}
+            loadingText="Saving"
+            disabled={!dirty}
+            onClick={() => void saveChanges()}
+          >
             Save changes
           </Button>
           <Button preIcon="user-plus" onClick={() => setInviteOpen(true)}>
@@ -167,7 +169,11 @@ export const TeamPage: React.FC = () => {
       </div>
 
       {error && (
-        <Alert variant="danger" title="Could not load the team" action={{ label: 'Retry', onClick: reload }}>
+        <Alert
+          variant="danger"
+          title="Could not load the team"
+          action={{ label: 'Retry', onClick: reload }}
+        >
           {error}
         </Alert>
       )}

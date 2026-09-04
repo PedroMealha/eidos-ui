@@ -80,8 +80,8 @@ export const Default: Story = {
     placement: 'bottom',
     children: (
       <p style={{ margin: 0 }}>
-        This is a simple popover with plain text content. Click outside or press{' '}
-        <kbd>Esc</kbd> to close it.
+        This is a simple popover with plain text content. Click outside or press <kbd>Esc</kbd> to
+        close it.
       </p>
     ),
   },
@@ -104,8 +104,8 @@ export const WithTitle: Story = {
     placement: 'bottom',
     children: (
       <p style={{ margin: 0 }}>
-        This popover has a title and a close button in the header. Click the ×
-        button or outside to dismiss.
+        This popover has a title and a close button in the header. Click the × button or outside to
+        dismiss.
       </p>
     ),
   },
@@ -219,8 +219,7 @@ export const Controlled = {
         >
           <p style={{ margin: 0 }}>
             This popover is controlled externally via <code>isOpen</code> and{' '}
-            <code>onOpenChange</code>. Use the button on the right to force-close
-            it from outside.
+            <code>onOpenChange</code>. Use the button on the right to force-close it from outside.
           </p>
         </Popover>
         <Button variant="outlined" color="danger" onClick={() => setIsOpen(false)}>

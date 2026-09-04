@@ -102,7 +102,7 @@ export const TagInput: React.FC<TagInputProps> = ({
   const filteredSuggestions = useMemo<string[]>(() => {
     if (!suggestions) return [];
     const query = inputValue.trim().toLowerCase();
-    return suggestions.filter(suggestion => {
+    return suggestions.filter((suggestion) => {
       if (!allowDuplicates && tags.includes(suggestion)) return false;
       if (!query) return true;
       return suggestion.toLowerCase().includes(query);
@@ -124,7 +124,7 @@ export const TagInput: React.FC<TagInputProps> = ({
     isSuggestionsOpenRef.current = false;
     setIsSuggestionsOpen(false);
     setFocusedSuggestionIndex(-1);
-    setSuggestionsMenuKey(prev => prev + 1);
+    setSuggestionsMenuKey((prev) => prev + 1);
   }, []);
 
   const selectSuggestion = useCallback(
@@ -155,12 +155,12 @@ export const TagInput: React.FC<TagInputProps> = ({
     if (hasSuggestions && isSuggestionsOpenRef.current && filteredSuggestions.length > 0) {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setFocusedSuggestionIndex(prev => (prev + 1 < filteredSuggestions.length ? prev + 1 : 0));
+        setFocusedSuggestionIndex((prev) => (prev + 1 < filteredSuggestions.length ? prev + 1 : 0));
         return;
       }
       if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setFocusedSuggestionIndex(prev => (prev > 0 ? prev - 1 : filteredSuggestions.length - 1));
+        setFocusedSuggestionIndex((prev) => (prev > 0 ? prev - 1 : filteredSuggestions.length - 1));
         return;
       }
       if (e.key === 'Enter' && focusedSuggestionIndex >= 0) {
@@ -250,11 +250,7 @@ export const TagInput: React.FC<TagInputProps> = ({
         </label>
       )}
 
-      <div
-        className={fieldClasses}
-        onClick={handleFieldClick}
-        ref={fieldRef}
-      >
+      <div className={fieldClasses} onClick={handleFieldClick} ref={fieldRef}>
         {tags.map((tag, index) => (
           <Chip
             key={`${tag}-${index}`}
@@ -280,9 +276,7 @@ export const TagInput: React.FC<TagInputProps> = ({
           onFocus={handleInputFocus}
           onBlur={() => setIsFocused(false)}
           aria-label={label ? undefined : 'Tag input'}
-          aria-describedby={
-            hasError ? errorId : hint ? hintId : undefined
-          }
+          aria-describedby={hasError ? errorId : hint ? hintId : undefined}
           aria-autocomplete={hasSuggestions ? 'list' : undefined}
           aria-controls={hasSuggestions ? `${uid}-tag-suggestions` : undefined}
           aria-activedescendant={
@@ -308,7 +302,7 @@ export const TagInput: React.FC<TagInputProps> = ({
                 className="eidos-tag-input-suggestions"
                 role="listbox"
                 aria-label={label ?? 'Suggestions'}
-                onMouseDown={e => e.preventDefault()}
+                onMouseDown={(e) => e.preventDefault()}
               >
                 {filteredSuggestions.length === 0 ? (
                   <div className="eidos-tag-input-suggestions-empty">{suggestionsEmptyText}</div>
@@ -349,11 +343,7 @@ export const TagInput: React.FC<TagInputProps> = ({
       )}
 
       {hasError && (
-        <p
-          className="eidos-tag-input-error-message"
-          id={errorId}
-          role="alert"
-        >
+        <p className="eidos-tag-input-error-message" id={errorId} role="alert">
           <CircleAlert />
           {displayError}
         </p>

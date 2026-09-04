@@ -235,7 +235,9 @@ body {
   font-weight: var(--font-weight-medium);
   color: var(--gray-600);
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
 
   &:hover {
     background: var(--gray-100);

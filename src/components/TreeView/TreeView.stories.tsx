@@ -24,9 +24,7 @@ const FILE_TREE: TreeNode[] = [
       {
         id: 'utils',
         label: 'utils',
-        children: [
-          { id: 'helpers', label: 'helpers.ts' },
-        ],
+        children: [{ id: 'helpers', label: 'helpers.ts' }],
       },
       { id: 'index', label: 'index.ts' },
     ],
@@ -52,9 +50,7 @@ const DISABLED_TREE: TreeNode[] = [
       {
         id: 'utils',
         label: 'utils',
-        children: [
-          { id: 'helpers', label: 'helpers.ts', disabled: true },
-        ],
+        children: [{ id: 'helpers', label: 'helpers.ts', disabled: true }],
       },
       { id: 'index', label: 'index.ts' },
     ],
@@ -74,8 +70,7 @@ const ControlledSelectionDemo: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--gray-500)' }}>
-        Selected node:{' '}
-        <strong style={{ color: 'var(--primary-700)' }}>{selectedId || '-'}</strong>
+        Selected node: <strong style={{ color: 'var(--primary-700)' }}>{selectedId || '-'}</strong>
       </p>
       <TreeView
         data={FILE_TREE}
@@ -200,8 +195,7 @@ const meta = {
       description: 'Custom label renderer for each node',
       table: {
         type: {
-          summary:
-            '(node: TreeNode, isSelected: boolean, isExpanded: boolean) => React.ReactNode',
+          summary: '(node: TreeNode, isSelected: boolean, isExpanded: boolean) => React.ReactNode',
         },
       },
     },
@@ -330,9 +324,7 @@ export const CustomRenderLabel: Story = {
                 padding: '2px 6px',
                 borderRadius: '10px',
                 flexShrink: 0,
-                backgroundColor: isSelected
-                  ? 'var(--primary-100)'
-                  : 'var(--gray-100)',
+                backgroundColor: isSelected ? 'var(--primary-100)' : 'var(--gray-100)',
                 color: isSelected ? 'var(--primary-700)' : 'var(--gray-500)',
               }}
             >
@@ -360,7 +352,7 @@ export const InlineRename = {
     const [editingId, setEditingId] = React.useState<string | null>(null);
 
     const renameNode = (nodes: TreeNode[], id: string, newLabel: string): TreeNode[] =>
-      nodes.map(n => ({
+      nodes.map((n) => ({
         ...n,
         label: n.id === id ? newLabel : n.label,
         children: n.children ? renameNode(n.children, id, newLabel) : undefined,
@@ -380,7 +372,7 @@ export const InlineRename = {
               editing={editingId === node.id}
               onEditingChange={(open) => setEditingId(open ? node.id : null)}
               onConfirm={(v) => {
-                setData(prev => renameNode(prev, node.id, v));
+                setData((prev) => renameNode(prev, node.id, v));
                 setEditingId(null);
               }}
               onCancel={() => setEditingId(null)}
@@ -388,7 +380,9 @@ export const InlineRename = {
               inputVariant="outlined"
               showEditIcon={false}
               renderDisplay={(v) => (
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span
+                  style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                >
                   {v}
                 </span>
               )}
@@ -414,9 +408,16 @@ export const InlineRename = {
                 }}
                 className="treeview-rename-btn"
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
               </button>
             )}

@@ -98,9 +98,7 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
   // ------------------------------------------------------------------
 
   const displayTriggerProps =
-    trigger === 'doubleClick'
-      ? { onDoubleClick: openEdit }
-      : { onClick: openEdit };
+    trigger === 'doubleClick' ? { onDoubleClick: openEdit } : { onClick: openEdit };
 
   // ------------------------------------------------------------------
   // Render: edit mode
@@ -161,9 +159,7 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
       <span className="eidos-inline-edit__text">
         {renderDisplay
           ? renderDisplay(value)
-          : value || (
-              <span className="eidos-inline-edit__placeholder">{placeholder}</span>
-            )}
+          : value || <span className="eidos-inline-edit__placeholder">{placeholder}</span>}
       </span>
       {!disabled && showEditIcon && (
         <span className="eidos-inline-edit__icon" aria-hidden>

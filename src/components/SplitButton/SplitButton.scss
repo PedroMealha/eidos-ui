@@ -6,81 +6,83 @@
 // override that wrapper's display so it stretches to match the button height.
 
 .eidos-split-button {
-	display: inline-flex;
-	align-items: stretch;
-	will-change: transform;
+  display: inline-flex;
+  align-items: stretch;
+  will-change: transform;
 
-	// Make the Dropdown's wrapper div participate in the flex layout correctly.
-	> .eidos-dropdown-trigger {
-		display: flex;
-		align-items: stretch;
-	}
+  // Make the Dropdown's wrapper div participate in the flex layout correctly.
+  > .eidos-dropdown-trigger {
+    display: flex;
+    align-items: stretch;
+  }
 
-	// ── Primary button ────────────────────────────────────────────────────────
-	// Removes the right border-radii so it visually joins the chevron.
-	// The 1.5 px right border is kept visible; the chevron's left border is
-	// collapsed via a -1.5 px margin-left so there's a single dividing line.
+  // ── Primary button ────────────────────────────────────────────────────────
+  // Removes the right border-radii so it visually joins the chevron.
+  // The 1.5 px right border is kept visible; the chevron's left border is
+  // collapsed via a -1.5 px margin-left so there's a single dividing line.
 
-	&__primary {
-		border-top-right-radius: 0 !important;
-		border-bottom-right-radius: 0 !important;
-	}
+  &__primary {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
 
-	// ── Chevron button ────────────────────────────────────────────────────────
+  // ── Chevron button ────────────────────────────────────────────────────────
 
-	&__chevron {
-		border-top-left-radius: 0 !important;
-		border-bottom-left-radius: 0 !important;
-		margin-left: -1.5px;
-		padding-left: var(--spacing-sm);
-		padding-right: var(--spacing-sm);
-		min-width: unset;
-		align-self: stretch;
-		align-items: center;
-		justify-content: center;
+  &__chevron {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    margin-left: -1.5px;
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+    min-width: unset;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
 
-		// Slightly narrower on small size
-		.eidos-split-button--sm & {
-			padding-left: var(--spacing-xs);
-			padding-right: var(--spacing-xs);
-		}
+    // Slightly narrower on small size
+    .eidos-split-button--sm & {
+      padding-left: var(--spacing-xs);
+      padding-right: var(--spacing-xs);
+    }
 
-		&-icon {
-			width: 14px;
-			height: 14px;
-			flex-shrink: 0;
-		}
-	}
+    &-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+  }
 
-	// ── Loading spinner ───────────────────────────────────────────────────────
+  // ── Loading spinner ───────────────────────────────────────────────────────
 
-	&__spinner {
-		width: 16px;
-		height: 16px;
-		animation: eidos-split-button-spin 0.8s linear infinite;
-		flex-shrink: 0;
-	}
+  &__spinner {
+    width: 16px;
+    height: 16px;
+    animation: eidos-split-button-spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
 
-	&__pre-icon {
-		flex-shrink: 0;
-	}
+  &__pre-icon {
+    flex-shrink: 0;
+  }
 
-	&__label {
-		// Keep the text from wrapping when the button is narrower than expected.
-		white-space: nowrap;
-	}
+  &__label {
+    // Keep the text from wrapping when the button is narrower than expected.
+    white-space: nowrap;
+  }
 
-	// ── Disabled state ────────────────────────────────────────────────────────
+  // ── Disabled state ────────────────────────────────────────────────────────
 
-	&--disabled {
-		opacity: 0.5;
-		pointer-events: none;
-	}
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 // Prefixed (not just `spin`) because @keyframes names are global across the
 // whole compiled stylesheet, not scoped to this file - see Button.scss,
 // which had this exact name collision until fixed alongside this one.
 @keyframes eidos-split-button-spin {
-	to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

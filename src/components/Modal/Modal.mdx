@@ -19,11 +19,7 @@ function MyComponent() {
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Open</button>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title="Confirm Action"
-      >
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Confirm Action">
         <p>Are you sure you want to proceed?</p>
       </Modal>
     </>

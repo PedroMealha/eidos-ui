@@ -17,12 +17,7 @@ function PageHeader() {
   const [title, setTitle] = useState('Untitled page');
 
   return (
-    <InlineEdit
-      value={title}
-      onChange={setTitle}
-      onConfirm={setTitle}
-      placeholder="Add a title…"
-    />
+    <InlineEdit value={title} onChange={setTitle} onConfirm={setTitle} placeholder="Add a title…" />
   );
 }
 ```

@@ -1,5 +1,5 @@
-@use "./variables.scss";
-@use "./mixins.scss" as *;
+@use './variables.scss';
+@use './mixins.scss' as *;
 
 * {
   margin: 0;
@@ -13,7 +13,7 @@ body {
   font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   font-size: 14px;
   line-height: 1.4;
   margin-bottom: var(--spacing-sm);
@@ -88,6 +88,6 @@ pre {
 }
 
 svg.lucide {
-	width: 1em;
-	height: 1em;
+  width: 1em;
+  height: 1em;
 }

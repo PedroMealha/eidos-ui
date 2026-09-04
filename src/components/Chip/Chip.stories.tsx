@@ -21,13 +21,19 @@ const meta = {
       control: 'select',
       options: ['filled', 'outlined', 'text'],
       description: 'Visual style variant',
-      table: { type: { summary: '"filled" | "outlined" | "text"' }, defaultValue: { summary: 'filled' } },
+      table: {
+        type: { summary: '"filled" | "outlined" | "text"' },
+        defaultValue: { summary: 'filled' },
+      },
     },
     color: {
       control: 'select',
       options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
       description: 'Color theme',
-      table: { type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' }, defaultValue: { summary: 'primary' } },
+      table: {
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
+        defaultValue: { summary: 'primary' },
+      },
     },
     size: {
       control: 'select',
@@ -48,12 +54,20 @@ const meta = {
     preIcon: {
       control: 'text',
       description: 'Icon to display before text. Pass Lucide component (Tag) or string ("tag").',
-      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'React.ComponentType | string' },
+        category: 'Icons',
+        defaultValue: { summary: 'undefined' },
+      },
     },
     posIcon: {
       control: 'text',
       description: 'Icon to display after text. Pass Lucide component (Check) or string ("check").',
-      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'React.ComponentType | string' },
+        category: 'Icons',
+        defaultValue: { summary: 'undefined' },
+      },
     },
     onClick: {
       control: false,
@@ -93,15 +107,22 @@ export const Examples = {
       letterSpacing: '0.07em',
       color: '#94a3b8',
     };
-    const row: React.CSSProperties = { display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' };
+    const row: React.CSSProperties = {
+      display: 'flex',
+      gap: '0.5rem',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+    };
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-        gap: '2rem 2.5rem',
-        padding: '1.5rem',
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          gap: '2rem 2.5rem',
+          padding: '1.5rem',
+        }}
+      >
         <div>
           <p style={label}>Variants</p>
           <div style={row}>
@@ -146,7 +167,9 @@ export const Examples = {
           <div style={row}>
             <Chip preIcon={Tag}>Tagged</Chip>
             <Chip posIcon={Check}>Verified</Chip>
-            <Chip preIcon={Star} posIcon={Check}>Featured</Chip>
+            <Chip preIcon={Star} posIcon={Check}>
+              Featured
+            </Chip>
           </div>
         </div>
 
@@ -155,21 +178,27 @@ export const Examples = {
           <div style={row}>
             <Chip onClick={() => alert('Clicked!')}>Clickable</Chip>
             <Chip onRemove={() => alert('Removed!')}>Removable</Chip>
-            <Chip onClick={() => alert('Clicked!')} onRemove={() => alert('Removed!')}>Both</Chip>
+            <Chip onClick={() => alert('Clicked!')} onRemove={() => alert('Removed!')}>
+              Both
+            </Chip>
           </div>
         </div>
 
         <div>
           <p style={label}>Combined</p>
           <div style={row}>
-            <Chip variant="outlined" color="success" preIcon={Check} size="sm">Verified</Chip>
-            <Chip variant="text" color="warning" posIcon={Star}>Premium</Chip>
-            <Chip variant="filled" color="danger" onRemove={() => {}}>Error</Chip>
+            <Chip variant="outlined" color="success" preIcon={Check} size="sm">
+              Verified
+            </Chip>
+            <Chip variant="text" color="warning" posIcon={Star}>
+              Premium
+            </Chip>
+            <Chip variant="filled" color="danger" onRemove={() => {}}>
+              Error
+            </Chip>
           </div>
         </div>
       </div>
     );
   },
 };
-
-

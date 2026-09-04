@@ -17,13 +17,19 @@ const meta = {
       control: 'select',
       options: ['filled', 'outlined', 'text'],
       description: 'Visual style variant',
-      table: { type: { summary: '"filled" | "outlined" | "text"' }, defaultValue: { summary: 'filled' } },
+      table: {
+        type: { summary: '"filled" | "outlined" | "text"' },
+        defaultValue: { summary: 'filled' },
+      },
     },
     color: {
       control: 'select',
       options: ['primary', 'secondary', 'success', 'danger'],
       description: 'Color theme',
-      table: { type: { summary: '"primary" | "secondary" | "success" | "danger"' }, defaultValue: { summary: 'primary' } },
+      table: {
+        type: { summary: '"primary" | "secondary" | "success" | "danger"' },
+        defaultValue: { summary: 'primary' },
+      },
     },
     size: {
       control: 'select',
@@ -80,17 +86,31 @@ const meta = {
     preIcon: {
       control: 'text',
       description: 'Icon to display before input. Pass Lucide component (Mail) or string ("mail")',
-      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      table: {
+        type: { summary: 'React.ComponentType | string' },
+        category: 'Icons',
+        defaultValue: { summary: 'undefined' },
+      },
     },
     posIcon: {
       control: 'text',
-      description: 'Icon to display after input. Pass Lucide component (Search) or string ("search")',
-      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      description:
+        'Icon to display after input. Pass Lucide component (Search) or string ("search")',
+      table: {
+        type: { summary: 'React.ComponentType | string' },
+        category: 'Icons',
+        defaultValue: { summary: 'undefined' },
+      },
     },
     disclaimerIcon: {
       control: 'text',
-      description: 'Icon to display next to label. Pass Lucide component (HelpCircle) or string ("help-circle")',
-      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons', defaultValue: { summary: 'undefined' } },
+      description:
+        'Icon to display next to label. Pass Lucide component (HelpCircle) or string ("help-circle")',
+      table: {
+        type: { summary: 'React.ComponentType | string' },
+        category: 'Icons',
+        defaultValue: { summary: 'undefined' },
+      },
     },
     disclaimerContent: {
       control: 'text',
@@ -141,12 +161,14 @@ export const Examples = {
     const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '0.75rem' };
 
     return (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-        gap: '2rem 2.5rem',
-        padding: '1.5rem',
-      }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+          gap: '2rem 2.5rem',
+          padding: '1.5rem',
+        }}
+      >
         {/* ── Row 1 ── */}
         <div>
           <p style={label}>Basic</p>
@@ -244,10 +266,13 @@ export const Examples = {
         {/* ── Full Width - spans all columns ── */}
         <div style={{ gridColumn: '1 / -1' }}>
           <p style={label}>Full Width</p>
-          <Input label="Full Width Input" placeholder="This input spans the full container width" fullWidth />
+          <Input
+            label="Full Width Input"
+            placeholder="This input spans the full container width"
+            fullWidth
+          />
         </div>
       </div>
     );
   },
 };
-

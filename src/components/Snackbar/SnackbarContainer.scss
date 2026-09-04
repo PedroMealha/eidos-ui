@@ -1,32 +1,32 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-snackbar-container {
-	position: fixed;
-	top: var(--spacing-lg);
-	right: var(--spacing-lg);
-	z-index: var(--z-index-snackbar);
-	display: flex;
-	flex-direction: column;
-	// Newest snackbar is prepended first in the list (see Snackbar.context.tsx),
-	// so normal document order already stacks newest-on-top - no absolute
-	// positioning, computed `top` offsets, or `z-index` math needed. This also
-	// fixes a latent bug where a fixed 70px-per-item assumption would overlap
-	// toasts whose message wrapped to more than one line.
-	gap: var(--spacing-sm);
-	pointer-events: none;
-	max-width: 500px;
-	width: 100%;
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: var(--z-index-snackbar);
+  display: flex;
+  flex-direction: column;
+  // Newest snackbar is prepended first in the list (see Snackbar.context.tsx),
+  // so normal document order already stacks newest-on-top - no absolute
+  // positioning, computed `top` offsets, or `z-index` math needed. This also
+  // fixes a latent bug where a fixed 70px-per-item assumption would overlap
+  // toasts whose message wrapped to more than one line.
+  gap: var(--spacing-sm);
+  pointer-events: none;
+  max-width: 500px;
+  width: 100%;
 
-	// Responsive adjustments
-	@media (max-width: 640px) {
-		top: var(--spacing-md);
-		right: var(--spacing-md);
-		left: var(--spacing-md);
-		max-width: none;
-	}
+  // Responsive adjustments
+  @media (max-width: 640px) {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    max-width: none;
+  }
 }
 
 .eidos-snackbar-wrapper {
-	width: 100%;
-	pointer-events: auto;
+  width: 100%;
+  pointer-events: auto;
 }

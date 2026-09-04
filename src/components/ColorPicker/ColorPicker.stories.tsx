@@ -147,17 +147,13 @@ export const Disabled: Story = {
 
 export const Controlled: Story = {
   render: () => {
-     
     const [colour, setColour] = useState('#6366f1');
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
-        <ColorPicker
-          value={colour}
-          onChange={setColour}
-          inline
-          label="Controlled colour picker"
-        />
+      <div
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}
+      >
+        <ColorPicker value={colour} onChange={setColour} inline label="Controlled colour picker" />
         <p style={{ fontFamily: 'monospace', fontSize: '0.875rem', color: '#475569' }}>
           Current value: <strong>{colour}</strong>
         </p>
@@ -192,9 +188,9 @@ export const Controlled: Story = {
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <ColorPicker defaultValue="#6366f1" size="sm"  label="Small" />
+      <ColorPicker defaultValue="#6366f1" size="sm" label="Small" />
       <ColorPicker defaultValue="#6366f1" size="md" label="Medium" />
-      <ColorPicker defaultValue="#6366f1" size="lg"  label="Large" />
+      <ColorPicker defaultValue="#6366f1" size="lg" label="Large" />
     </div>
   ),
 };

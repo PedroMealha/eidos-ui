@@ -32,11 +32,11 @@ const meta: Meta<typeof TableFiltersDropdown<StoryRow>> = {
     },
   },
   argTypes: {
-    columns:        { control: false },
-    filters:        { control: false },
+    columns: { control: false },
+    filters: { control: false },
     onFiltersChange: { control: false },
-    defaultFilters:  { control: false },
-    className:       { table: { disable: true } },
+    defaultFilters: { control: false },
+    className: { table: { disable: true } },
   },
 };
 
@@ -58,7 +58,7 @@ const textAndSelectColumns: TableColumn<StoryRow>[] = [
     filterable: true,
     filterType: 'select',
     filterOptions: [
-      { id: 'admin',  value: 'Admin',  label: 'Admin' },
+      { id: 'admin', value: 'Admin', label: 'Admin' },
       { id: 'editor', value: 'Editor', label: 'Editor' },
       { id: 'viewer', value: 'Viewer', label: 'Viewer' },
     ],
@@ -70,9 +70,9 @@ const textAndSelectColumns: TableColumn<StoryRow>[] = [
     filterType: 'select',
     filterOptions: [
       { id: 'engineering', value: 'Engineering', label: 'Engineering' },
-      { id: 'design',      value: 'Design',      label: 'Design' },
-      { id: 'product',     value: 'Product',     label: 'Product' },
-      { id: 'marketing',   value: 'Marketing',   label: 'Marketing' },
+      { id: 'design', value: 'Design', label: 'Design' },
+      { id: 'product', value: 'Product', label: 'Product' },
+      { id: 'marketing', value: 'Marketing', label: 'Marketing' },
     ],
   },
 ];
@@ -103,9 +103,9 @@ const richColumns: TableColumn<StoryRow>[] = [
     filterable: true,
     filterType: 'select',
     filterOptions: [
-      { id: 'active',   value: 'active',   label: 'Active' },
+      { id: 'active', value: 'active', label: 'Active' },
       { id: 'inactive', value: 'inactive', label: 'Inactive' },
-      { id: 'pending',  value: 'pending',  label: 'Pending' },
+      { id: 'pending', value: 'pending', label: 'Pending' },
     ],
   },
 ];
@@ -128,11 +128,12 @@ const AppliedBadge = ({ filters }: { filters: TableFilters }) => {
 
 export const Default: Story = {
   render: () => {
-
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+      <div
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
+      >
         <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
           Click the funnel icon to open the filter panel
         </p>
@@ -166,11 +167,12 @@ const [filters, setFilters] = useState<TableFilters>({});
 
 export const MultipleFilters: Story = {
   render: () => {
-
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+      <div
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
+      >
         <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
           Columns include text, date-range, boolean, and select filter types
         </p>
@@ -206,16 +208,17 @@ const [filters, setFilters] = useState<TableFilters>({});
 
 export const PreFilledFilters: Story = {
   render: () => {
-
     const [filters, setFilters] = useState<TableFilters>({});
 
     const defaultFilters: TableFilters = {
-      name:   'Alice',
-      role:   'Admin',
+      name: 'Alice',
+      role: 'Admin',
     };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+      <div
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
+      >
         <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
           Dropdown opens with pre-staged filters (name = "Alice", role = "Admin")
         </p>
