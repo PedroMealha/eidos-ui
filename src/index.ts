@@ -112,6 +112,7 @@ export type {
 export type {
   DatePickerProps,
   DateSelectionMode,
+  DateGranularity,
   TimeConfig,
   DateTimeValue,
   TimeValue,

@@ -3,6 +3,7 @@ export { Calendar } from './Calendar.component';
 export { TimeInput } from './TimeInput.component';
 export type {
   DateSelectionMode,
+  DateGranularity,
   TimeConfig,
   SingleDateValue,
   MultipleDateValue,

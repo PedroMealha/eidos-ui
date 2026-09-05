@@ -15,6 +15,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   rangeStart,
   rangeEnd,
   // mode, // TODO: Use this for different selection behaviors
+  granularity = 'day',
   onDateSelect,
   onMonthChange,
   minDate,
@@ -78,6 +79,45 @@ export const Calendar: React.FC<CalendarProps> = ({
   const handleNextMonth = useCallback(() => {
     onMonthChange(currentDate.add(1, 'month'));
   }, [currentDate, onMonthChange]);
+
+  const handlePrevYear = useCallback(() => {
+    onMonthChange(currentDate.subtract(1, 'year'));
+  }, [currentDate, onMonthChange]);
+
+  const handleNextYear = useCallback(() => {
+    onMonthChange(currentDate.add(1, 'year'));
+  }, [currentDate, onMonthChange]);
+
+  // Generate the 12 months of `currentDate`'s year - used instead of
+  // `calendarDays` when `granularity === 'month'`.
+  const monthCells = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const monthDate = currentDate.month(i).startOf('month');
+      const isToday = monthDate.isSame(dayjs(), 'month');
+      const isSelected = selectedDates.some((date) => date.isSame(monthDate, 'month'));
+      const isDisabled =
+        (minDate && monthDate.endOf('month').isBefore(minDate, 'month')) ||
+        (maxDate && monthDate.isAfter(maxDate, 'month'));
+
+      const isRangeStart = rangeStart?.isSame(monthDate, 'month') || false;
+      const isRangeEnd = rangeEnd?.isSame(monthDate, 'month') || false;
+      const isInRange =
+        rangeStart &&
+        rangeEnd &&
+        monthDate.isAfter(rangeStart, 'month') &&
+        monthDate.isBefore(rangeEnd, 'month');
+
+      return {
+        date: monthDate,
+        isToday,
+        isSelected,
+        isDisabled,
+        isRangeStart,
+        isRangeEnd,
+        isInRange,
+      };
+    });
+  }, [currentDate, selectedDates, rangeStart, rangeEnd, minDate, maxDate]);
 
   // Generate calendar days
   const calendarDays = useMemo(() => {
@@ -173,81 +213,119 @@ export const Calendar: React.FC<CalendarProps> = ({
 			    is meant to avoid; a plain label is honest about what will happen. */}
       <div className={'eidos-calendar-header'}>
         {showNavigation ? (
-          <>
-            <Button variant="text" icon={ChevronLeft} onClick={handlePrevMonth} />
+          granularity === 'month' ? (
+            <>
+              <Button variant="text" icon={ChevronLeft} onClick={handlePrevYear} />
 
-            <div className={'eidos-calendar-selectors'}>
-              <Select
-                options={monthOptions}
-                value={currentDate.month().toString()}
-                onChange={handleMonthSelect}
-                clearable={false}
-                dropdownProps={{
-                  dropdownGroup: 'calendar-navigation',
-                }}
-              />
-              <Select
-                options={yearOptions}
-                value={currentDate.year().toString()}
-                onChange={handleYearSelect}
-                clearable={false}
-                dropdownProps={{
-                  dropdownGroup: 'calendar-navigation',
-                }}
-              />
-            </div>
+              <div className={'eidos-calendar-selectors'}>
+                <Select
+                  options={yearOptions}
+                  value={currentDate.year().toString()}
+                  onChange={handleYearSelect}
+                  clearable={false}
+                  dropdownProps={{
+                    dropdownGroup: 'calendar-navigation',
+                  }}
+                />
+              </div>
 
-            <Button variant="text" icon={ChevronRight} onClick={handleNextMonth} />
-          </>
+              <Button variant="text" icon={ChevronRight} onClick={handleNextYear} />
+            </>
+          ) : (
+            <>
+              <Button variant="text" icon={ChevronLeft} onClick={handlePrevMonth} />
+
+              <div className={'eidos-calendar-selectors'}>
+                <Select
+                  options={monthOptions}
+                  value={currentDate.month().toString()}
+                  onChange={handleMonthSelect}
+                  clearable={false}
+                  dropdownProps={{
+                    dropdownGroup: 'calendar-navigation',
+                  }}
+                />
+                <Select
+                  options={yearOptions}
+                  value={currentDate.year().toString()}
+                  onChange={handleYearSelect}
+                  clearable={false}
+                  dropdownProps={{
+                    dropdownGroup: 'calendar-navigation',
+                  }}
+                />
+              </div>
+
+              <Button variant="text" icon={ChevronRight} onClick={handleNextMonth} />
+            </>
+          )
         ) : (
-          <div className={'eidos-calendar-label'}>{currentDate.format('MMMM YYYY')}</div>
+          <div className={'eidos-calendar-label'}>
+            {currentDate.format(granularity === 'month' ? 'YYYY' : 'MMMM YYYY')}
+          </div>
         )}
       </div>
 
       {/* Calendar grid */}
-      <div className={'eidos-calendar-grid'}>
-        {/* Week numbers column (optional) */}
-        {showWeekNumbers && (
-          <div className={'eidos-calendar-week-numbers-column'}>
-            <div className={'eidos-calendar-week-number-header'}></div>
-            {Array.from({ length: 6 }, (_, weekIndex) => {
-              const weekStart = calendarDays[weekIndex * 7].date;
-              return (
-                <div key={weekIndex} className={'eidos-calendar-week-number'}>
-                  {weekStart.format('W')}
+      {granularity === 'month' ? (
+        <div className={'eidos-calendar-month-cells'}>
+          {monthCells.map((month, index) => (
+            <button
+              key={index}
+              type="button"
+              className={`eidos-calendar-date-cell eidos-calendar-month-cell ${month.isToday ? 'eidos-calendar-today' : ''} ${month.isSelected ? 'eidos-calendar-selected' : ''} ${month.isDisabled ? 'eidos-calendar-disabled' : ''} ${month.isRangeStart ? 'eidos-calendar-range-start' : ''} ${month.isRangeEnd ? 'eidos-calendar-range-end' : ''} ${month.isInRange ? 'eidos-calendar-in-range' : ''}`.trim()}
+              onClick={() => !month.isDisabled && handleDateClick(month.date)}
+              disabled={month.isDisabled}
+            >
+              {month.date.format('MMM')}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className={'eidos-calendar-grid'}>
+          {/* Week numbers column (optional) */}
+          {showWeekNumbers && (
+            <div className={'eidos-calendar-week-numbers-column'}>
+              <div className={'eidos-calendar-week-number-header'}></div>
+              {Array.from({ length: 6 }, (_, weekIndex) => {
+                const weekStart = calendarDays[weekIndex * 7].date;
+                return (
+                  <div key={weekIndex} className={'eidos-calendar-week-number'}>
+                    {weekStart.format('W')}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Main calendar content */}
+          <div className={'eidos-calendar-content'}>
+            {/* Weekday headers */}
+            <div className={'eidos-calendar-week-days'}>
+              {weekDays.map((day, index) => (
+                <div key={index} className={'eidos-calendar-week-day'}>
+                  {day}
                 </div>
-              );
-            })}
-          </div>
-        )}
+              ))}
+            </div>
 
-        {/* Main calendar content */}
-        <div className={'eidos-calendar-content'}>
-          {/* Weekday headers */}
-          <div className={'eidos-calendar-week-days'}>
-            {weekDays.map((day, index) => (
-              <div key={index} className={'eidos-calendar-week-day'}>
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Date cells */}
-          <div className={'eidos-calendar-date-cells'}>
-            {calendarDays.map((day, index) => (
-              <button
-                key={index}
-                type="button"
-                className={`eidos-calendar-date-cell ${!day.isCurrentMonth ? 'eidos-calendar-other-month' : ''} ${day.isToday ? 'eidos-calendar-today' : ''} ${day.isSelected ? 'eidos-calendar-selected' : ''} ${day.isDisabled ? 'eidos-calendar-disabled' : ''} ${day.isRangeStart ? 'eidos-calendar-range-start' : ''} ${day.isRangeEnd ? 'eidos-calendar-range-end' : ''} ${day.isInRange ? 'eidos-calendar-in-range' : ''}`.trim()}
-                onClick={() => !day.isDisabled && handleDateClick(day.date)}
-                disabled={day.isDisabled}
-              >
-                {day.date.date()}
-              </button>
-            ))}
+            {/* Date cells */}
+            <div className={'eidos-calendar-date-cells'}>
+              {calendarDays.map((day, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`eidos-calendar-date-cell ${!day.isCurrentMonth ? 'eidos-calendar-other-month' : ''} ${day.isToday ? 'eidos-calendar-today' : ''} ${day.isSelected ? 'eidos-calendar-selected' : ''} ${day.isDisabled ? 'eidos-calendar-disabled' : ''} ${day.isRangeStart ? 'eidos-calendar-range-start' : ''} ${day.isRangeEnd ? 'eidos-calendar-range-end' : ''} ${day.isInRange ? 'eidos-calendar-in-range' : ''}`.trim()}
+                  onClick={() => !day.isDisabled && handleDateClick(day.date)}
+                  disabled={day.isDisabled}
+                >
+                  {day.date.date()}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

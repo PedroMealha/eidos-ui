@@ -93,6 +93,16 @@
   }
 }
 
+// Selection checkmark - always trails the label on the far right (the
+// label's flex: 1 below pushes it there), separate from `option.icon`
+// which stays in its usual leading position.
+.eidos-select-option-check-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--primary-600);
+  flex-shrink: 0;
+}
+
 // Select option label
 .eidos-select-option-label {
   flex: 1;

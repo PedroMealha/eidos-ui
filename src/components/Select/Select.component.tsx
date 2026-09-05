@@ -42,7 +42,6 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       }
       return new Set();
     });
-    const [searchQuery, setSearchQuery] = useState('');
     const [menuKey, setMenuKey] = useState(0);
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [isOpen, setIsOpen] = useState(false);
@@ -50,6 +49,14 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const inputRef = useRef<HTMLInputElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    // Kept in sync every render so the mount-only callback ref below can
+    // read the latest values without needing them in its dependency array
+    // (see `handleOptionsMount`).
+    const optionsRef = useRef(options);
+    optionsRef.current = options;
+    const selectedValuesRef = useRef(selectedValues);
+    selectedValuesRef.current = selectedValues;
 
     useEffect(() => {
       if (value !== undefined) {
@@ -60,19 +67,13 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       }
     }, [value]);
 
-    const filteredOptions = useMemo(() => {
-      return options.filter((option) =>
-        option.label.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-    }, [options, searchQuery]);
-
     useEffect(() => {
       setFocusedIndex(-1);
-    }, [filteredOptions]);
+    }, [options]);
 
     useEffect(() => {
-      optionRefs.current = optionRefs.current.slice(0, filteredOptions.length);
-    }, [filteredOptions.length]);
+      optionRefs.current = optionRefs.current.slice(0, options.length);
+    }, [options.length]);
 
     const handleOptionSelect = useCallback(
       (option: SelectOption) => {
@@ -134,10 +135,6 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       [multiple, onChange, isControlled],
     );
 
-    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-    }, []);
-
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
         if (disabled) return;
@@ -150,7 +147,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
               setFocusedIndex(0);
             } else {
               setFocusedIndex((prev) => {
-                const nextIndex = prev < filteredOptions.length - 1 ? prev + 1 : 0;
+                const nextIndex = prev < options.length - 1 ? prev + 1 : 0;
 
                 setTimeout(() => {
                   optionRefs.current[nextIndex]?.scrollIntoView({
@@ -167,10 +164,10 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             e.preventDefault();
             if (!isOpen) {
               setIsOpen(true);
-              setFocusedIndex(filteredOptions.length - 1);
+              setFocusedIndex(options.length - 1);
             } else {
               setFocusedIndex((prev) => {
-                const nextIndex = prev > 0 ? prev - 1 : filteredOptions.length - 1;
+                const nextIndex = prev > 0 ? prev - 1 : options.length - 1;
 
                 setTimeout(() => {
                   optionRefs.current[nextIndex]?.scrollIntoView({
@@ -189,8 +186,8 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             if (!isOpen) {
               setIsOpen(true);
               setFocusedIndex(0);
-            } else if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
-              const focusedOption = filteredOptions[focusedIndex];
+            } else if (focusedIndex >= 0 && focusedIndex < options.length) {
+              const focusedOption = options[focusedIndex];
               handleOptionSelect(focusedOption);
             }
             break;
@@ -218,7 +215,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           case 'End':
             e.preventDefault();
             if (isOpen) {
-              const lastIndex = filteredOptions.length - 1;
+              const lastIndex = options.length - 1;
               setFocusedIndex(lastIndex);
               optionRefs.current[lastIndex]?.scrollIntoView({
                 block: 'nearest',
@@ -230,7 +227,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           default:
             if (isOpen && e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
               const searchChar = e.key.toLowerCase();
-              const foundIndex = filteredOptions.findIndex(
+              const foundIndex = options.findIndex(
                 (option, index) =>
                   index > focusedIndex && option.label.toLowerCase().startsWith(searchChar),
               );
@@ -242,7 +239,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                   behavior: 'smooth',
                 });
               } else {
-                const foundFromStart = filteredOptions.findIndex((option) =>
+                const foundFromStart = options.findIndex((option) =>
                   option.label.toLowerCase().startsWith(searchChar),
                 );
                 if (foundFromStart !== -1) {
@@ -257,8 +254,22 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             break;
         }
       },
-      [disabled, isOpen, filteredOptions, focusedIndex, handleOptionSelect],
+      [disabled, isOpen, options, focusedIndex, handleOptionSelect],
     );
+
+    // Scrolls the first selected option into view. Attached as the options
+    // list's own ref below with an empty dependency array, so its identity
+    // never changes and React only invokes it on genuine DOM mount/unmount -
+    // i.e. exactly when the dropdown opens/closes (Dropdown unmounts its
+    // `content` entirely while closed), not on every re-render while open.
+    const handleOptionsMount = useCallback((el: HTMLDivElement | null) => {
+      if (!el) return;
+      const idx = optionsRef.current.findIndex((option) =>
+        selectedValuesRef.current.has(option.value),
+      );
+      if (idx === -1) return;
+      optionRefs.current[idx]?.scrollIntoView({ block: 'nearest' });
+    }, []);
 
     // Past this many selections the full comma-joined label list becomes
     // unreadable in the trigger, so we switch to a compact "N selected" label.
@@ -278,8 +289,8 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
 
     const selectContent = useMemo(
       () => (
-        <div className={'eidos-select-options'}>
-          {filteredOptions.map((option, index) => {
+        <div className={'eidos-select-options'} ref={handleOptionsMount}>
+          {options.map((option, index) => {
             const isSelected = selectedValues.has(option.value);
             const isFocused = index === focusedIndex;
             return (
@@ -300,15 +311,15 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 aria-selected={isSelected}
                 aria-disabled={option.disabled}
               >
-                {isSelected && <Check className={'eidos-select-option-icon'} />}
-                {!isSelected && option.icon && renderIcon(option.icon, 'eidos-select-option-icon')}
+                {option.icon && renderIcon(option.icon, 'eidos-select-option-icon')}
                 <span className={'eidos-select-option-label'}>{option.label}</span>
+                {isSelected && <Check className={'eidos-select-option-check-icon'} />}
               </div>
             );
           })}
         </div>
       ),
-      [filteredOptions, selectedValues, focusedIndex, handleOptionSelect],
+      [options, selectedValues, focusedIndex, handleOptionSelect, handleOptionsMount],
     );
 
     const triggerElement = (
@@ -328,7 +339,6 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         <Input
           ref={inputRef}
           value={selectedValues.size > 0 ? displayValue : ''}
-          onChange={handleSearchChange}
           placeholder={selectedValues.size === 0 ? placeholder : ''}
           posIcon={selectedValues.size > 0 && clearable ? X : undefined}
           posIconButton={selectedValues.size > 0 && clearable}

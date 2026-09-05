@@ -68,12 +68,22 @@ interface DateFormatConfig {
   timezone?: string; // Default: 'UTC'
 }
 
+// How precisely a value is picked, orthogonal to `mode` (which governs
+// single/multiple/range cardinality). 'month' swaps the day grid for a
+// month/year grid - the value returned is always the last day of the
+// picked month (see `DatePicker.component.tsx`), and the trigger displays
+// only the month and year.
+type DateGranularity = 'day' | 'month';
+
 // Main DatePicker props
 interface DatePickerProps<T extends DateSelectionMode = 'single'> {
   // Core functionality
   mode: T;
   value?: DateTimeValue<T>;
   onChange?: (value: DateTimeValue<T>) => void;
+
+  // Selection precision. Default: 'day'.
+  granularity?: DateGranularity;
 
   // Time configuration
   time?: TimeConfig;
@@ -117,6 +127,7 @@ interface CalendarProps {
   rangeStart?: Dayjs | null;
   rangeEnd?: Dayjs | null;
   mode: DateSelectionMode;
+  granularity?: DateGranularity;
   onDateSelect: (date: Dayjs) => void;
   onMonthChange: (date: Dayjs) => void;
   minDate?: Dayjs;
@@ -130,6 +141,7 @@ interface CalendarProps {
 
 export type {
   DateSelectionMode,
+  DateGranularity,
   TimeConfig,
   SingleDateValue,
   MultipleDateValue,

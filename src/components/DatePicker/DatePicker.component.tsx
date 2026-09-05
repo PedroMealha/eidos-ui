@@ -23,6 +23,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   mode,
   value,
   onChange,
+  granularity = 'day',
   time = { enabled: false },
   calendar = { numberOfCalendars: 2 },
   format = {
@@ -107,7 +108,9 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         .toISOString(),
     [],
   );
-  const numberOfCalendars = calendar.numberOfCalendars || 2;
+  // Month granularity always shows a single year/month grid - side-by-side
+  // "next month" calendars don't make sense once there are no day cells.
+  const numberOfCalendars = granularity === 'month' ? 1 : calendar.numberOfCalendars || 2;
   const independentCalendars = calendar.independent ?? false;
   // One entry per visible calendar. In the default (non-independent) mode
   // these always stay consecutive months, kept in sync from a single shared
@@ -228,6 +231,14 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   // the note above `pickerTimezone` for why these need to differ.
   const handleDateSelect = useCallback(
     (selectedDate: Dayjs) => {
+      // `granularity === 'month'` means the calendar only ever hands us a
+      // day *within* the picked month (see Calendar's month grid) - the
+      // stored/returned value is always that month's last day, while the
+      // day-of-week boundary semantics below ('start' of day vs 'end' of
+      // day) are unaffected.
+      const effectiveDate = granularity === 'month' ? selectedDate.endOf('month') : selectedDate;
+      const compareUnit = granularity === 'month' ? 'month' : 'day';
+
       switch (mode) {
         case 'single': {
           let dateWithTime: Dayjs;
@@ -236,9 +247,9 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           // different date is picked.
           const activeTime = (value?.time as TimeValue) ?? defaultStartTime;
           if (time.enabled) {
-            dateWithTime = composeLocalDateTime(selectedDate, activeTime);
+            dateWithTime = composeLocalDateTime(effectiveDate, activeTime);
           } else {
-            dateWithTime = composeDateOnly(selectedDate, 'start');
+            dateWithTime = composeDateOnly(effectiveDate, 'start');
           }
 
           const newValue: DateTimeValue<T> = {
@@ -256,7 +267,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           const currentDayjs = currentDates.map((d) => dayjs(d));
 
           // Check if date is already selected
-          const existingIndex = currentDayjs.findIndex((d) => d.isSame(selectedDate, 'day'));
+          const existingIndex = currentDayjs.findIndex((d) => d.isSame(effectiveDate, compareUnit));
           let newDates: Dayjs[];
 
           if (existingIndex >= 0) {
@@ -266,8 +277,8 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
             // Add new date, preserving the shared time already configured.
             const activeTime = (value?.time as TimeValue) ?? defaultStartTime;
             const dateWithTime = time.enabled
-              ? composeLocalDateTime(selectedDate, activeTime)
-              : composeDateOnly(selectedDate, 'start');
+              ? composeLocalDateTime(effectiveDate, activeTime)
+              : composeDateOnly(effectiveDate, 'start');
             newDates = [...currentDayjs, dateWithTime];
           }
 
@@ -296,8 +307,8 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           if (!currentRange.start || (currentRange.start && currentRange.end)) {
             // Start new range, preserving the already-configured start time.
             const startWithTime = time.enabled
-              ? composeLocalDateTime(selectedDate, currentRangeTime.start)
-              : composeDateOnly(selectedDate, 'start');
+              ? composeLocalDateTime(effectiveDate, currentRangeTime.start)
+              : composeDateOnly(effectiveDate, 'start');
 
             // Always return ISO string
             const newValue: DateTimeValue<T> = {
@@ -317,10 +328,10 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
             const start = time.enabled
               ? dayjs(currentRange.start)
               : dayjs(currentRange.start).tz(pickerTimezone);
-            let end = selectedDate;
+            let end = effectiveDate;
 
             // Ensure end is after start
-            if (end.isBefore(start, 'day')) {
+            if (end.isBefore(start, compareUnit)) {
               end = start;
             }
 
@@ -354,6 +365,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       composeDateOnly,
       composeLocalDateTime,
       pickerTimezone,
+      granularity,
     ],
   );
 
@@ -361,7 +373,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   const displayValue = useMemo(() => {
     if (!value?.date) return '';
 
-    const displayFmt = format.displayFormat || 'MMM DD, YYYY';
+    const displayFmt = format.displayFormat || (granularity === 'month' ? 'MMM YYYY' : 'MMM DD, YYYY');
     // Date-only values were anchored to `pickerTimezone` when stored (see
     // `composeDateOnly`) - display them in that same timezone rather than
     // the viewer's ambient one, so the trigger shows the actual calendar
@@ -434,7 +446,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       default:
         return '';
     }
-  }, [value, mode, time, format, pickerTimezone]);
+  }, [value, mode, time, format, pickerTimezone, granularity]);
 
   // Handle clear
   const handleClear = useCallback(
@@ -516,6 +528,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
               rangeStart={rangeStart}
               rangeEnd={rangeEnd}
               mode={mode}
+              granularity={granularity}
               onDateSelect={handleDateSelect}
               onMonthChange={(newDate) => handleCalendarMonthChange(index, newDate)}
               minDate={minDateObj}

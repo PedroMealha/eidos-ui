@@ -98,6 +98,19 @@
   gap: 1px;
 }
 
+// Month cells grid - used instead of `.eidos-calendar-date-cells` when
+// `granularity === 'month'`. Cells share `.eidos-calendar-date-cell`'s
+// state styling (today/selected/disabled/range) via that class.
+.eidos-calendar-month-cells {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xs);
+}
+
+.eidos-calendar-month-cell {
+  height: 48px;
+}
+
 .eidos-calendar-date-cell {
   display: flex;
   align-items: center;

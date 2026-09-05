@@ -362,10 +362,19 @@ function DataGridInner<T extends Record<string, unknown>>({
   const totalItemCount = totalRowsProp ?? sortedData.length;
   const totalPages = Math.max(1, Math.ceil(totalItemCount / currentPageSize));
 
-  // Reset to page 1 when filters change (client-side)
+  // Reset to page 1 when filters change (client-side and server-side).
+  // Depend on the serialized *value* of activeFilters, not the object
+  // reference: in server-side mode activeFilters is derived straight from
+  // the caller's `filters` prop, and callers commonly build that object
+  // inline in render (a new reference every render) whether or not its
+  // contents actually changed. Comparing by reference made this effect -
+  // and the page reset it causes - fire on every unrelated parent
+  // re-render (e.g. new page data arriving), not just on real filter
+  // changes.
+  const activeFiltersKey = useMemo(() => JSON.stringify(activeFilters), [activeFilters]);
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeFilters]);
+  }, [activeFiltersKey]);
 
   // Reset to page 1 when client-side sort changes
   useEffect(() => {
