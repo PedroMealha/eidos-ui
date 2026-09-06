@@ -148,8 +148,6 @@ function DataGridInner<T extends Record<string, unknown>>({
 
   const [editError, setEditError] = useState<string | null>(null);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
   // ── Validation error tooltip (portaled) ─────────────────────────────────────
   // Positioned via a portal into document.body rather than `position: absolute`
   // inside the cell - a cell on the last visible row would otherwise place the
@@ -226,17 +224,37 @@ function DataGridInner<T extends Record<string, unknown>>({
   // Starts `null` (unmeasured) rather than 0, so the table is what renders
   // for one frame on mount instead of briefly flashing cards.
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
-  useLayoutEffect(() => {
-    if (!hasCardView || !containerRef.current) return;
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  // A callback ref (not `useRef` + a `useLayoutEffect` keyed on `hasCardView`)
+  // so this fires whenever the container DOM node actually becomes
+  // available, not just when `hasCardView` changes. A plain effect only
+  // reruns on its own dependency changing - it does NOT rerun just because
+  // a *different* conditional branch attaches the ref for the first time.
+  // The `loading` early-return below renders its own container div; any
+  // consumer whose `loading` prop starts `true` on mount (e.g. fetching
+  // data asynchronously, so it can never resolve before the first render)
+  // would mount that div first, find `containerRef.current` still null, and
+  // then never re-run the effect once `loading` flips to `false` and the
+  // real container mounts - `hasCardView` itself never changed, so nothing
+  // triggered a re-run, leaving `containerWidth` (and therefore card view)
+  // permanently stuck. A callback ref sidesteps that entirely: whichever
+  // container div actually mounts, this runs for it.
+  const setContainerRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
 
-    const el = containerRef.current;
-    const observer = new ResizeObserver((entries) => {
-      const width = entries[0]?.contentRect.width;
-      if (width != null) setContainerWidth(width);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasCardView]);
+      if (!el || !hasCardView) return;
+
+      const observer = new ResizeObserver((entries) => {
+        const width = entries[0]?.contentRect.width;
+        if (width != null) setContainerWidth(width);
+      });
+      observer.observe(el);
+      resizeObserverRef.current = observer;
+    },
+    [hasCardView],
+  );
   const isCardView = hasCardView && containerWidth !== null && containerWidth < cardViewBreakpoint;
 
   // Card view header/subheader: only the first matching column is honored
@@ -1127,9 +1145,17 @@ function DataGridInner<T extends Record<string, unknown>>({
   }, [pageSizeOptions, pageSize]);
 
   // ── Loading state (preserved) ───────────────────────────────────────────────
+  // `ref={setContainerRef}` here too (not just the main return below) - a
+  // consumer whose `loading` prop starts `true` on mount renders this
+  // branch first, and without it `hasCardView` would never get a container
+  // to measure until some unrelated re-render happened to remount it - see
+  // `setContainerRef`'s comment above for the full explanation.
   if (loading) {
     return (
-      <div className={['eidos-data-grid-container', className].filter(Boolean).join(' ')}>
+      <div
+        ref={setContainerRef}
+        className={['eidos-data-grid-container', className].filter(Boolean).join(' ')}
+      >
         <div className="eidos-data-grid-loading">
           <Spinner size="md" />
           <p>Loading…</p>
@@ -1150,7 +1176,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
   return (
     <div
-      ref={containerRef}
+      ref={setContainerRef}
       className={[
         'eidos-data-grid-container',
         stickyHeader && 'eidos-data-grid-container--sticky-header',

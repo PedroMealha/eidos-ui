@@ -915,7 +915,12 @@ const CARD_VIEW_COLUMNS: DataGridColumn<Person>[] = [
 ];
 
 export const ResponsiveCardView: Story = {
+  args: {
+    cardViewBreakpoint: 360,
+  },
+
   name: 'Responsive card view',
+
   parameters: {
     docs: {
       description: {
@@ -925,8 +930,8 @@ export const ResponsiveCardView: Story = {
           'drops to/below `cardViewBreakpoint` (1000px here). Cards lay out with CSS ' +
           '`repeat(auto-fill, minmax(cardMinWidth, 1fr))`, so as many fit per row as the ' +
           'container allows instead of one per row regardless of available width - drag ' +
-          "the resize handle at the bottom-right of the box below to see both the " +
-          "table/card swap and the per-row card count respond live. `name` is marked " +
+          'the resize handle at the bottom-right of the box below to see both the ' +
+          'table/card swap and the per-row card count respond live. `name` is marked ' +
           '`cardHeader` and `role` `cardSubheader`, so they become the card title / ' +
           'subtitle instead of a label:value row like every other column. Pagination, ' +
           'filtering, sorting, selection, and inline cell editing all keep working exactly ' +
@@ -934,6 +939,7 @@ export const ResponsiveCardView: Story = {
       },
     },
   },
+
   render: function ResponsiveCardViewStory() {
     return (
       <div
