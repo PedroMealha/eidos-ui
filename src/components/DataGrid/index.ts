@@ -4,6 +4,7 @@ export type {
   DataGridColumn,
   DataGridCellType,
   DataGridSelectOption,
+  DataGridRowAction,
   EditingCell,
 } from './DataGrid.types';
 export type { BulkAction } from '../Table/Table.types';

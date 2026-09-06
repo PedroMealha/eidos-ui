@@ -820,6 +820,15 @@ export const Table = <T extends Record<string, unknown>>({
                             .filter(Boolean)
                             .join(' ')}
                           style={{ width: columnWidth, ...pinnedStyle }}
+                          // `type: 'action'` cells exist specifically to hold
+                          // interactive controls (a row-actions Menu/button,
+                          // typically) - without this, clicking them bubbles
+                          // straight into `onRowClick` on the <tr> below,
+                          // e.g. opening a details drawer at the same time as
+                          // (or instead of) the action itself. Mirrors the
+                          // selectable checkbox cell's own stopPropagation
+                          // above, for the same reason.
+                          onClick={columnType === 'action' ? (e) => e.stopPropagation() : undefined}
                         >
                           {column.render ? column.render(value, item) : String(value ?? '')}
                         </td>

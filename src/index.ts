@@ -140,6 +140,7 @@ export type {
   DataGridColumn,
   DataGridCellType,
   DataGridSelectOption,
+  DataGridRowAction,
   EditingCell,
 } from './components/DataGrid';
 export type { OTPInputProps } from './components/OTPInput';

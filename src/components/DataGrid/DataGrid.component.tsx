@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  Trash2,
   GripVertical,
   ArrowUp,
   ArrowDown,
@@ -12,6 +11,7 @@ import {
   Check,
   FolderOpen,
   SearchX,
+  MoreVertical,
 } from 'lucide-react';
 import {
   DndContext,
@@ -37,9 +37,12 @@ import { Spinner } from '../Spinner/Spinner.component';
 import { Pagination } from '../Pagination';
 import { EmptyState } from '../EmptyState';
 import { Dropdown } from '../Dropdown';
+import { Menu } from '../Menu';
+import type { MenuItemType } from '../Menu';
 import { TableFiltersDropdown } from '../Table/TableFiltersDropdown.component';
 import type { TableColumn, TableFilters } from '../Table/Table.types';
 import type { DataGridProps, DataGridColumn, EditingCell } from './DataGrid.types';
+import { renderIcon } from '../../utils';
 import './DataGrid.scss';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -95,7 +98,6 @@ function DataGridInner<T extends Record<string, unknown>>({
   rowKey = 'id',
   onChange,
   onRowAdd,
-  onRowDelete,
   editable = true,
   loading = false,
   emptyText = 'No data available',
@@ -261,10 +263,22 @@ function DataGridInner<T extends Record<string, unknown>>({
   // (see DataGridColumn.cardHeader/cardSubheader).
   const cardHeaderColumn = useMemo(() => columns.find((c) => c.cardHeader), [columns]);
   const cardSubheaderColumn = useMemo(() => columns.find((c) => c.cardSubheader), [columns]);
+  // The row-actions column, if any - only the first `type: 'actions'` column
+  // is honored (see DataGridColumn.actions). Rendered in its own dedicated
+  // slot (far right in table mode, top-right of the card in card view),
+  // never as a normal data column.
+  const actionsColumn = useMemo(() => columns.find((c) => c.type === 'actions'), [columns]);
+  // Every column that actually renders as data - excludes the actions
+  // column entirely (it's never a normal cell) from both table columns and
+  // pinning/filtering/validation logic.
+  const dataColumns = useMemo(
+    () => columns.filter((c) => c !== actionsColumn),
+    [columns, actionsColumn],
+  );
   // Remaining columns render as label:value field rows, in declaration order.
   const cardFieldColumns = useMemo(
-    () => columns.filter((c) => c !== cardHeaderColumn && c !== cardSubheaderColumn),
-    [columns, cardHeaderColumn, cardSubheaderColumn],
+    () => dataColumns.filter((c) => c !== cardHeaderColumn && c !== cardSubheaderColumn),
+    [dataColumns, cardHeaderColumn, cardSubheaderColumn],
   );
 
   // Pinned columns offset map (computed in useLayoutEffect)
@@ -330,7 +344,7 @@ function DataGridInner<T extends Record<string, unknown>>({
   // ── Filter dropdown adapter: DataGridColumn → TableColumn ─────────────────
   // TableFiltersDropdown expects TableColumn<T>[]; we project our columns down.
   const filterDropdownColumns = useMemo((): TableColumn<T>[] => {
-    return columns
+    return dataColumns
       .filter((col) => col.filterable)
       .map(
         (col) =>
@@ -343,7 +357,7 @@ function DataGridInner<T extends Record<string, unknown>>({
             dateFilterMode: col.dateFilterMode,
           }) as TableColumn<T>,
       );
-  }, [columns]);
+  }, [dataColumns]);
 
   // ── Client-side filtering ──────────────────────────────────────────────────
   const filteredData = useMemo(() => {
@@ -490,7 +504,7 @@ function DataGridInner<T extends Record<string, unknown>>({
     }
 
     setPinnedOffsets(newOffsets);
-  }, [columns, selectable, draggableRows, showRowNumbers, onRowDelete]);
+  }, [columns, selectable, draggableRows, showRowNumbers]);
 
   // ── Sticky-column helpers ──────────────────────────────────────────────────
   const getCellPinnedProps = useCallback(
@@ -528,7 +542,7 @@ function DataGridInner<T extends Record<string, unknown>>({
   const isCellEditable = useCallback(
     (col: DataGridColumn<T>): boolean => {
       if (!editable) return false;
-      if (col.type === 'readonly') return false;
+      if (col.type === 'readonly' || col.type === 'actions') return false;
       if (col.editable === false) return false;
       return true;
     },
@@ -766,17 +780,6 @@ function DataGridInner<T extends Record<string, unknown>>({
       setEditingCell,
       setEditValue,
     ],
-  );
-
-  // ── Row actions (preserved) ─────────────────────────────────────────────────
-  const handleRowDelete = useCallback(
-    (row: T, index: number) => {
-      onRowDelete?.(row, index);
-      const newData = localDataRef.current.filter((_, i) => i !== index);
-      setLocalData(newData);
-      onChange?.(newData);
-    },
-    [onRowDelete, onChange, setLocalData],
   );
 
   const handleRowAdd = useCallback(() => {
@@ -1099,26 +1102,66 @@ function DataGridInner<T extends Record<string, unknown>>({
     </div>
   );
 
-  // ── Derived display values ─────────────────────────────────────────────────
-  const hasDeleteCol = Boolean(onRowDelete);
+  // ── Row-actions menu (type: 'actions' column) ──────────────────────────────
+  // Shared between the table's dedicated actions <td> and the card's
+  // top-right toolbar slot - see `actionsColumn`/`DataGridColumn.actions`.
+  // Renders nothing if there's no actions column, or it has no actions.
+  const renderActionsMenu = (row: T, localIndex: number): React.ReactNode => {
+    if (!actionsColumn?.actions?.length) return null;
 
-  // Columns sorted for rendering: pin:left → unpinned → pin:right.
+    const items: MenuItemType[] = actionsColumn.actions.flatMap((action, index) => {
+      const id = action.id ?? `${action.label}-${index}`;
+      const isDisabled =
+        typeof action.disabled === 'function' ? action.disabled(row) : Boolean(action.disabled);
+
+      const item: MenuItemType = {
+        id,
+        type: 'item',
+        label: action.label,
+        icon: action.icon,
+        disabled: isDisabled,
+        color: action.danger ? 'danger' : undefined,
+        onClick: () => action.onClick(row, localIndex),
+      };
+
+      return action.divider ? [{ id: `${id}-divider`, type: 'separator' as const }, item] : [item];
+    });
+
+    return (
+      <Menu
+        trigger={
+          <button type="button" className="eidos-datagrid-actions-trigger" aria-label="Row actions">
+            {actionsColumn.actionsIcon ? (
+              renderIcon(actionsColumn.actionsIcon, 'eidos-datagrid-actions-trigger-icon')
+            ) : (
+              <MoreVertical size={16} />
+            )}
+          </button>
+        }
+        items={items}
+      />
+    );
+  };
+
+  // Columns sorted for rendering: pin:left → unpinned → pin:right. Excludes
+  // the actions column (see `dataColumns`) - it's never a normal, sortable/
+  // pinnable data column, always rendered in its own dedicated slot instead.
   // This ensures a pinned column defined in the middle of the columns array
   // is always displayed at the correct edge regardless of its original position.
   // The original `columns` prop is still used for key-based lookups above.
   const sortedColumns = useMemo(
     () => [
-      ...columns.filter((c) => c.pin === 'left'),
-      ...columns.filter((c) => !c.pin),
-      ...columns.filter((c) => c.pin === 'right'),
+      ...dataColumns.filter((c) => c.pin === 'left'),
+      ...dataColumns.filter((c) => !c.pin),
+      ...dataColumns.filter((c) => c.pin === 'right'),
     ],
-    [columns],
+    [dataColumns],
   );
 
   const totalCols =
-    columns.length +
+    dataColumns.length +
     (showRowNumbers ? 1 : 0) +
-    (hasDeleteCol ? 1 : 0) +
+    (actionsColumn ? 1 : 0) +
     (draggableRows ? 1 : 0) +
     (selectable ? 1 : 0);
 
@@ -1313,7 +1356,11 @@ function DataGridInner<T extends Record<string, unknown>>({
                     .filter(Boolean)
                     .join(' ')}
                 >
-                  <div className="eidos-datagrid-card-toolbar">
+                  {/* stopPropagation so the checkbox/actions menu never bubble
+                      into a consumer's own row-click handler (e.g. opening a
+                      details drawer) - mirrors the selection/drag-handle <td>s'
+                      own `onClick={(e) => e.stopPropagation()}` in table mode. */}
+                  <div className="eidos-datagrid-card-toolbar" onClick={(e) => e.stopPropagation()}>
                     <div className="eidos-datagrid-card-toolbar-left">
                       {selectable && (
                         <Checkbox
@@ -1349,16 +1396,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                     </div>
 
                     <div className="eidos-datagrid-card-toolbar-right">
-                      {hasDeleteCol && (
-                        <button
-                          type="button"
-                          className="eidos-data-grid-delete-btn"
-                          onClick={() => handleRowDelete(row, localIndex)}
-                          aria-label="Delete row"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      )}
+                      {renderActionsMenu(row, localIndex)}
                     </div>
                   </div>
 
@@ -1516,7 +1554,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                   );
                 })}
 
-                {hasDeleteCol && (
+                {actionsColumn && (
                   <th
                     className="eidos-data-grid-header-cell eidos-data-grid-actions-col"
                     data-col-key="__actions__"
@@ -1667,16 +1705,15 @@ function DataGridInner<T extends Record<string, unknown>>({
                               );
                             })}
 
-                            {hasDeleteCol && (
-                              <td className="eidos-data-grid-cell eidos-data-grid-actions-col">
-                                <button
-                                  type="button"
-                                  className="eidos-data-grid-delete-btn"
-                                  onClick={() => handleRowDelete(row, localIndex)}
-                                  aria-label="Delete row"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
+                            {actionsColumn && (
+                              <td
+                                className="eidos-data-grid-cell eidos-data-grid-actions-col"
+                                // Prevent a click on the actions menu from bubbling into a
+                                // consumer's own row-click handler (e.g. opening a details
+                                // drawer) - mirrors the selection/drag-handle <td>s above.
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                {renderActionsMenu(row, localIndex)}
                               </td>
                             )}
                           </>

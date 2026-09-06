@@ -11,7 +11,7 @@ import {
   Select,
   useSnackbar,
 } from '@pmealha/eidos-ui';
-import { ShieldOff } from 'lucide-react';
+import { ShieldOff, Trash2 } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { teamApi } from '../api/team';
 import type { Role, TeamMember } from '../api/types';
@@ -46,6 +46,20 @@ export const TeamPage: React.FC = () => {
 
   const dirty = useMemo(() => JSON.stringify(rows) !== JSON.stringify(data ?? []), [rows, data]);
 
+  const removeMember = useCallback(
+    async (member: TeamMember) => {
+      try {
+        const result = await teamApi.remove(member.id);
+        showSuccess(`${result.name} was removed from the team.`);
+        reload();
+      } catch (removeError) {
+        showError(errorMessage(removeError));
+        reload();
+      }
+    },
+    [showSuccess, showError, reload],
+  );
+
   const columns = useMemo(
     () => [
       { key: 'name', header: 'Name', type: 'text' as const, required: true, sortable: true },
@@ -71,8 +85,21 @@ export const TeamPage: React.FC = () => {
         filterType: 'date' as const,
         dateFilterMode: 'range' as const,
       },
+      {
+        key: 'actions',
+        header: 'Actions',
+        type: 'actions' as const,
+        actions: [
+          {
+            label: 'Remove',
+            icon: Trash2,
+            danger: true,
+            onClick: (member: TeamMember) => void removeMember(member),
+          },
+        ],
+      },
     ],
-    [],
+    [removeMember],
   );
 
   const saveChanges = async () => {
@@ -85,17 +112,6 @@ export const TeamPage: React.FC = () => {
       showError(errorMessage(saveError));
     } finally {
       setSaving(false);
-    }
-  };
-
-  const removeMember = async (member: TeamMember) => {
-    try {
-      const result = await teamApi.remove(member.id);
-      showSuccess(`${result.name} was removed from the team.`);
-      reload();
-    } catch (removeError) {
-      showError(errorMessage(removeError));
-      reload();
     }
   };
 
@@ -185,7 +201,6 @@ export const TeamPage: React.FC = () => {
           rowKey="id"
           loading={loading}
           onChange={setRows}
-          onRowDelete={(member) => void removeMember(member)}
           emptyText="Nobody on the team yet."
           showFilters
           stickyHeader

@@ -1,15 +1,37 @@
 import type React from 'react';
+import type { IconType } from '../../utils';
 import type { BulkAction, TableFilters } from '../Table/Table.types';
 
-export type DataGridCellType = 'text' | 'number' | 'select' | 'checkbox' | 'date' | 'readonly';
+export type DataGridCellType =
+  | 'text'
+  | 'number'
+  | 'select'
+  | 'checkbox'
+  | 'date'
+  | 'readonly'
+  | 'actions';
 
 export interface DataGridSelectOption {
   value: string;
   label: string;
 }
 
+/** A single entry in a `type: 'actions'` column's menu - see `DataGridColumn.actions`. */
+export interface DataGridRowAction<T = Record<string, unknown>> {
+  /** Defaults to `label` if omitted - only needs to be unique within this column's `actions`. */
+  id?: string;
+  label: string;
+  icon?: IconType;
+  onClick: (row: T, index: number) => void;
+  disabled?: boolean | ((row: T) => boolean);
+  /** Styles the item (and its icon) in the danger colour, e.g. for a destructive action. */
+  danger?: boolean;
+  /** Renders a separator directly above this item. */
+  divider?: boolean;
+}
+
 export interface DataGridColumn<T = Record<string, unknown>> {
-  /** Matches the key in the data row object */
+  /** Matches the key in the data row object. Unused when `type: 'actions'`, but still required - any placeholder string works. */
   key: string;
   header: string;
   /** @default 'text' */
@@ -41,6 +63,19 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   /** Lock this column to the left or right edge on horizontal scroll */
   pin?: 'left' | 'right';
 
+  // ── Actions column (type: 'actions') ───────────────────────────────────────
+  /**
+   * The menu items shown for this row. Required for the column to render
+   * anything - a `type: 'actions'` column with no `actions` renders nothing.
+   * Only one column may set `type: 'actions'`; if several do, only the
+   * first is honored. Always rendered at the far right in table mode
+   * (regardless of the column's position in `columns` or any `pin`), and
+   * in the card's top-right corner in card view, regardless of position.
+   */
+  actions?: DataGridRowAction<T>[];
+  /** Overrides the default vertical "more" (⋮) trigger icon. */
+  actionsIcon?: IconType;
+
   // ── Card view (see DataGridProps.hasCardView) ──────────────────────────────
   /**
    * Render this column's value as the card's title instead of a label:value
@@ -65,7 +100,6 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   onChange?: (data: T[]) => void;
   /** Returns a blank row object; if omitted, no Add-row button is shown */
   onRowAdd?: () => T;
-  onRowDelete?: (row: T, index: number) => void;
   /** Master editable switch. @default true */
   editable?: boolean;
   loading?: boolean;

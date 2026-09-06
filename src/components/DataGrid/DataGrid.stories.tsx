@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Pencil, ShieldOff } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
 import type { DataGridColumn } from './DataGrid.types';
 import type { BulkAction } from '../Table/Table.types';
@@ -440,7 +440,6 @@ const meta: Meta<typeof DataGrid<Person>> = {
     rowKey: { control: false },
     onChange: { control: false },
     onRowAdd: { control: false },
-    onRowDelete: { control: false },
     currentSort: { control: false },
     onSortChange: { control: false },
     filters: { control: false },
@@ -912,6 +911,21 @@ const CARD_VIEW_COLUMNS: DataGridColumn<Person>[] = [
   },
   { key: 'salary', header: 'Salary', type: 'number', sortable: true },
   { key: 'active', header: 'Active', type: 'checkbox' },
+  {
+    key: 'actions',
+    header: 'Actions',
+    type: 'actions',
+    actions: [
+      { label: 'Edit', icon: Pencil, onClick: (person) => window.alert(`Edit ${person.name}`) },
+      {
+        label: 'Delete',
+        icon: Trash2,
+        danger: true,
+        divider: true,
+        onClick: (person) => window.alert(`Delete ${person.name}`),
+      },
+    ],
+  },
 ];
 
 export const ResponsiveCardView: Story = {
@@ -933,7 +947,9 @@ export const ResponsiveCardView: Story = {
           'the resize handle at the bottom-right of the box below to see both the ' +
           'table/card swap and the per-row card count respond live. `name` is marked ' +
           '`cardHeader` and `role` `cardSubheader`, so they become the card title / ' +
-          'subtitle instead of a label:value row like every other column. Pagination, ' +
+          'subtitle instead of a label:value row like every other column. `actions` is a ' +
+          "`type: 'actions'` column, always rendered top-right of the card (see the " +
+          "\"Row actions menu\" story below for more on that column type). Pagination, " +
           'filtering, sorting, selection, and inline cell editing all keep working exactly ' +
           'as in table mode.',
       },
@@ -957,7 +973,6 @@ export const ResponsiveCardView: Story = {
           data={makePeople()}
           rowKey="id"
           onChange={() => {}}
-          onRowDelete={() => {}}
           hasCardView
           cardViewBreakpoint={1000}
           cardMinWidth={240}
@@ -967,6 +982,68 @@ export const ResponsiveCardView: Story = {
           pageSize={5}
         />
       </div>
+    );
+  },
+};
+
+// ─── 17. Row actions menu ─────────────────────────────────────────────────────
+
+const ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'role', header: 'Role', type: 'select', options: ROLE_OPTIONS },
+  {
+    key: 'department',
+    header: 'Department',
+    type: 'select',
+    options: DEPARTMENT_OPTIONS,
+  },
+  { key: 'salary', header: 'Salary', type: 'number', sortable: true },
+  {
+    key: 'actions',
+    header: 'Actions',
+    type: 'actions',
+    actions: [
+      { label: 'Edit', icon: Pencil, onClick: (person) => window.alert(`Edit ${person.name}`) },
+      {
+        label: 'Deactivate',
+        icon: ShieldOff,
+        disabled: (person) => !person.active,
+        onClick: (person) => window.alert(`Deactivate ${person.name}`),
+      },
+      {
+        label: 'Delete',
+        icon: Trash2,
+        danger: true,
+        divider: true,
+        onClick: (person) => window.alert(`Delete ${person.name}`),
+      },
+    ],
+  },
+];
+
+export const RowActionsMenu: Story = {
+  name: 'Row actions menu',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "A `type: 'actions'` column renders a \"more\" (⋮) trigger instead of any data " +
+          "value - clicking it opens a menu built from that column's `actions` array " +
+          '(label, `icon`, `onClick(row, index)`, and optionally `disabled` - a boolean or ' +
+          "a `(row) => boolean` predicate, `danger` for destructive styling, and `divider` " +
+          'to place a separator directly above that item). Only one column may set ' +
+          "`type: 'actions'`; it's always rendered at the far right in table mode " +
+          "regardless of its position in `columns`, and (see the \"Responsive card view\" " +
+          "story) top-right of the card in card view. The trigger icon itself is " +
+          '`actionsIcon`-overridable, defaulting to the vertical 3-dot icon shown here. ' +
+          "\"Deactivate\" is conditionally disabled per row via its `disabled` predicate - " +
+          'try it on an inactive person.',
+      },
+    },
+  },
+  render: function RowActionsMenuStory() {
+    return (
+      <DataGrid<Person> columns={ACTIONS_COLUMNS} data={makePeople()} rowKey="id" showRowNumbers />
     );
   },
 };

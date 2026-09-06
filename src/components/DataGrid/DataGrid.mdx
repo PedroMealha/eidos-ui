@@ -5,7 +5,7 @@ import * as DataGridStories from './DataGrid.stories';
 
 # DataGrid
 
-A feature-rich, spreadsheet-like grid for editing structured data inline. Columns are typed (`text`, `number`, `select`, `checkbox`, `readonly`), and the grid supports sorting, filtering, pagination, row selection, drag-and-drop reordering, column pinning, and per-cell validation - all opt-in via props.
+A feature-rich, spreadsheet-like grid for editing structured data inline. Columns are typed (`text`, `number`, `select`, `checkbox`, `readonly`, `actions`), and the grid supports sorting, filtering, pagination, row selection, drag-and-drop reordering, column pinning, per-cell validation, a row-actions menu, and a responsive card view for narrow containers - all opt-in via props.
 
 > **Note**: `DataGrid` is generic over your row type (`T extends Record<string, unknown>`). Pass the type parameter explicitly - e.g. `<DataGrid<Person> … />` - to get full type safety on `columns`, `onChange`, and callbacks.
 
@@ -130,3 +130,21 @@ Columns with `pin: 'left'` or `pin: 'right'` stay frozen during horizontal scrol
 Kitchen-sink example combining sortable columns, column filters, client-side pagination, row selection with a bulk-delete action, row numbers, and a density picker - mirroring a real-world admin table.
 
 <Canvas of={DataGridStories.FullFeatured} />
+
+## Row actions menu
+
+Give a column `type: 'actions'` and an `actions` array to render a "more" (⋮) trigger instead of a data value - clicking it opens a menu built from that array (`label`, `icon`, `onClick(row, index)`, and optionally `disabled` - a boolean or a `(row) => boolean` predicate, `danger` for destructive styling, and `divider` to place a separator directly above that item). Only one column may set `type: 'actions'`; it's always rendered at the far right in table mode regardless of its position in `columns`, and top-right of the card in card view (see below). The trigger icon defaults to a vertical 3-dot icon, overridable via `actionsIcon`.
+
+> **Note**: there's no `onRowDelete` prop - deleting a row (or any other destructive action) is just an `actions` entry whose `onClick` updates your own data/state, same as any other action.
+
+<Canvas of={DataGridStories.RowActionsMenu} />
+
+## Responsive card view
+
+Set `hasCardView` to swap the table for a grid of cards once the grid's own measured width (via `ResizeObserver` - not the viewport, so it responds correctly inside a narrow sidebar on an otherwise wide screen) drops to/below `cardViewBreakpoint` (default `640`). Cards themselves lay out responsively with `cardMinWidth` (default `280`) controlling how many fit per row.
+
+Mark one column `cardHeader` and, optionally, another `cardSubheader` to use their values as the card's title/subtitle - every other column renders as a label-above-value field. The row-actions column (see above) always renders top-right of the card, and selection checkboxes top-left, regardless of where either sits in `columns`.
+
+Only the row rendering changes - pagination, filtering, sorting, selection, and inline cell editing all keep working exactly as in table mode. `draggableRows` is not available in card view.
+
+<Canvas of={DataGridStories.ResponsiveCardView} />

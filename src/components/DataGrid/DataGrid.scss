@@ -337,7 +337,7 @@
   }
 }
 
-// ─── Actions column (delete button) ──────────────────────────────────────────
+// ─── Actions column (type: 'actions', see DataGridColumn.actions) ────────────
 
 .eidos-data-grid-actions-col {
   width: 48px;
@@ -345,7 +345,12 @@
   padding: 0;
 }
 
-.eidos-data-grid-delete-btn {
+// The "more" (⋮) trigger button - opens the row's actions Menu. Deliberately
+// neutral (not danger-coloured on hover like a dedicated delete button
+// would be) since the menu can hold any mix of actions, not just
+// destructive ones - individual items are colored via `danger` instead
+// (see `.eidos-menu-item--danger`, owned by the Menu component itself).
+.eidos-datagrid-actions-trigger {
   @include button-reset;
 
   display: inline-flex;
@@ -359,8 +364,8 @@
     background-color 0.15s ease;
 
   &:hover {
-    color: var(--danger-color);
-    background: rgba(var(--danger-rgb), 0.08);
+    color: var(--gray-700);
+    background: var(--gray-100);
   }
 }
 
