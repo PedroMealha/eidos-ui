@@ -4,6 +4,10 @@
   display: inline-block;
   user-select: none;
   cursor: pointer;
+
+  &--fullWidth {
+    width: 100%;
+  }
 }
 
 .eidos-dropdown-content {

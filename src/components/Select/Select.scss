@@ -23,6 +23,10 @@
   input {
     cursor: pointer;
   }
+
+  &--fullWidth {
+    width: 100%;
+  }
 }
 
 // Select options container

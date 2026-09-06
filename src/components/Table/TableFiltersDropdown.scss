@@ -28,10 +28,10 @@
   display: flex;
   gap: var(--spacing-md);
   align-items: center;
-  padding: var(--spacing-md);
-  background: var(--gray-50);
-  border-radius: var(--border-radius-sm);
-  border: 1px solid var(--gray-200);
+  // padding: var(--spacing-md);
+  // background: var(--gray-50);
+  // border-radius: var(--border-radius-sm);
+  // border: 1px solid var(--gray-200);
 }
 
 .eidos-table-column-select {
@@ -136,16 +136,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-// Hover effects
-.eidos-table-filter-row:hover {
-  background: var(--gray-100);
-  border-color: var(--gray-300);
-}
-
-// Focus states
-.eidos-table-filter-row:focus-within {
-  background: var(--primary-50);
-  border-color: var(--primary-200);
 }

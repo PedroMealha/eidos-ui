@@ -382,6 +382,7 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
                     placeholder="Select column"
                     clearable={false}
                     inputProps={{ size: 'sm' }}
+                    fullWidth
                   />
                 </div>
 

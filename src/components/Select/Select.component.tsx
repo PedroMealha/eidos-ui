@@ -325,7 +325,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const triggerElement = (
       <div
         ref={triggerRef}
-        className={'eidos-select-trigger'}
+        className={`eidos-select-trigger ${fullWidth ? 'eidos-select-trigger--fullWidth' : ''}`}
         onKeyDown={handleKeyDown}
         tabIndex={disabled ? -1 : undefined}
         role="combobox"
@@ -376,6 +376,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           minHeight={minHeight}
           maxHeight={maxHeight}
           autoWidth={autoWidth}
+          fullWidth={fullWidth}
           triggerRef={triggerRef as React.RefObject<HTMLElement | null>}
           {...dropdownProps}
         />

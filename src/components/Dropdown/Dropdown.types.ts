@@ -38,6 +38,7 @@ export interface DropdownProps {
   minHeight?: number | string;
   maxHeight?: number | string;
   autoWidth?: boolean;
+  fullWidth?: boolean;
   triggerRef?: React.RefObject<HTMLElement | null>;
 }
 

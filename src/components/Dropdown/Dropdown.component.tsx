@@ -21,6 +21,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   minHeight,
   maxHeight,
   autoWidth = true,
+  fullWidth = false,
   triggerRef: externalTriggerRef,
   isNested = false,
   dropdownLevel,
@@ -417,7 +418,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       <div
         ref={triggerRef}
         onClick={handleTriggerClick}
-        className={`eidos-dropdown-trigger ${triggerClassName}`}
+        className={`eidos-dropdown-trigger ${fullWidth ? 'eidos-dropdown-trigger--fullWidth' : ''} ${triggerClassName}`}
         role="button"
         tabIndex={-1}
       >
