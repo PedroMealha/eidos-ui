@@ -127,6 +127,10 @@ function DataGridInner<T extends Record<string, unknown>>({
   // ── Display ────────────────────────────────────────────────────────────────
   density = 'comfortable',
   showDensity = false,
+  // ── Card view ────────────────────────────────────────────────────────────────
+  hasCardView = false,
+  cardViewBreakpoint = 640,
+  cardMinWidth = 280,
 }: DataGridProps<T>): React.ReactElement {
   // ── State + paired refs (editing - preserved exactly) ─────────────────────
   // We keep a ref alongside each piece of mutable state so that event
@@ -153,7 +157,10 @@ function DataGridInner<T extends Record<string, unknown>>({
   // that container's scrollable content size and forces an unwanted scrollbar
   // just to reveal a tooltip nobody asked to scroll to. Portaling escapes the
   // scroll container's box entirely, the same way Dropdown's own content does.
-  const errorTooltipAnchorRef = useRef<HTMLTableCellElement | null>(null);
+  // HTMLElement (not HTMLTableCellElement) so the same ref can anchor either
+  // a <td> in table mode or a card field <div> in card view - only
+  // `getBoundingClientRect()` is ever called on it.
+  const errorTooltipAnchorRef = useRef<HTMLElement | null>(null);
   const [errorTooltipPosition, setErrorTooltipPosition] = useState<{
     top: number;
     left: number;
@@ -211,6 +218,35 @@ function DataGridInner<T extends Record<string, unknown>>({
   const isControlledSelection = controlledSelectedRows !== undefined;
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<Set<string>>(
     () => new Set(defaultSelectedRows ?? []),
+  );
+
+  // Card view: measured off the grid's own container width (not the
+  // viewport) via ResizeObserver, so it responds correctly even when the
+  // grid sits in a narrow sidebar/split-pane on an otherwise wide screen.
+  // Starts `null` (unmeasured) rather than 0, so the table is what renders
+  // for one frame on mount instead of briefly flashing cards.
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    if (!hasCardView || !containerRef.current) return;
+
+    const el = containerRef.current;
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width;
+      if (width != null) setContainerWidth(width);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasCardView]);
+  const isCardView = hasCardView && containerWidth !== null && containerWidth < cardViewBreakpoint;
+
+  // Card view header/subheader: only the first matching column is honored
+  // (see DataGridColumn.cardHeader/cardSubheader).
+  const cardHeaderColumn = useMemo(() => columns.find((c) => c.cardHeader), [columns]);
+  const cardSubheaderColumn = useMemo(() => columns.find((c) => c.cardSubheader), [columns]);
+  // Remaining columns render as label:value field rows, in declaration order.
+  const cardFieldColumns = useMemo(
+    () => columns.filter((c) => c !== cardHeaderColumn && c !== cardSubheaderColumn),
+    [columns, cardHeaderColumn, cardSubheaderColumn],
   );
 
   // Pinned columns offset map (computed in useLayoutEffect)
@@ -575,22 +611,37 @@ function DataGridInner<T extends Record<string, unknown>>({
     commitEditRef.current = commitEdit;
   }, [commitEdit]);
 
-  // ── Global mousedown: commit when clicking outside the grid ─────────────────
-  // Using mousedown (fires before blur/click) lets us finalize the active cell
-  // before a click on another cell starts a new edit.  We explicitly allow
-  // clicks inside portaled dropdowns (eidos-dropdown-content) so the Select
-  // editor doesn't accidentally commit when the user opens its dropdown.
+  // ── Global mousedown: commit on blur - i.e. any click that isn't on the
+  // active editor itself ──────────────────────────────────────────────────
+  // Using mousedown (fires before blur/click) lets us finalize the active
+  // cell before a click elsewhere starts a new edit or does anything else.
+  //
+  // Deliberately NOT scoped to "outside the grid container" - a click on
+  // another cell already commits via that cell's own `handleCellClick`
+  // (which commits any in-flight edit before starting its own), but a grid
+  // has plenty of space that isn't a cell at all: toolbar buttons, sort
+  // headers, pagination, row actions, and - especially in card view - the
+  // card's own padding, gaps, and labels. None of those have a handler that
+  // commits the edit, so scoping this to "outside the grid" left the editor
+  // stuck open for any click that landed inside the grid but outside an
+  // actual cell. The only clicks that should NOT commit are ones still
+  // interacting with the editor being edited (identified by its own
+  // `--editing` class, shared by both the <td> and card versions) or its
+  // portaled dropdown content (eidos-dropdown-content) - e.g. opening a
+  // Select's own options list.
   useEffect(() => {
     if (!editingCell) return;
 
     const handleMouseDown = (e: MouseEvent) => {
       const target = e.target as Element;
 
-      // Still inside the grid container - let per-cell handlers take over
-      if (containerRef.current?.contains(target)) return;
-
-      // Inside a portaled dropdown - don't commit yet
-      if (target.closest?.('.eidos-dropdown-content')) return;
+      if (
+        target.closest?.(
+          '.eidos-data-grid-cell--editing, .eidos-datagrid-card-value--editing, .eidos-dropdown-content',
+        )
+      ) {
+        return;
+      }
 
       commitEditRef.current();
     };
@@ -867,26 +918,38 @@ function DataGridInner<T extends Record<string, unknown>>({
     }
   };
 
+  // `variant`/`size` default to the table cell's look: 'bare' has no border/
+  // background/radius of its own so the surrounding <td>'s own inset ring
+  // (`.eidos-data-grid-cell--editing`) reads as the field's border, and
+  // 'sm' keeps the editor from growing the row's height. A card field isn't
+  // sitting inside that ring - it's a standalone field in a stack, so it
+  // should just look like any other standalone Input/Select in the design
+  // system (their own component defaults), not the table's cell-shaped
+  // variant. Passing `undefined` here (rather than omitting the prop) is
+  // equivalent to omitting it - falls back to each component's own default.
   const renderEditCell = (
     col: DataGridColumn<T>,
     value: unknown,
     row: T,
     rowIndex: number,
+    context: 'table' | 'card' = 'table',
   ): React.ReactNode => {
     if (col.renderEditor) {
       return col.renderEditor(value, (v) => setEditValue(v), row);
     }
+
+    const variant = context === 'table' ? 'bare' : undefined;
+    const size = context === 'table' ? 'sm' : undefined;
 
     switch (col.type) {
       case 'number':
         return (
           <Input
             type="number"
-            variant="bare"
-            size="sm"
+            variant={variant}
+            size={size}
             value={String(value ?? '')}
             onChange={(e) => setEditValue(e.target.value)}
-
             autoFocus
             fullWidth
             clearable={false}
@@ -897,11 +960,10 @@ function DataGridInner<T extends Record<string, unknown>>({
         return (
           <Input
             type="date"
-            variant="bare"
-            size="sm"
+            variant={variant}
+            size={size}
             value={String(value ?? '')}
             onChange={(e) => setEditValue(e.target.value)}
-
             autoFocus
             fullWidth
             clearable={false}
@@ -924,7 +986,8 @@ function DataGridInner<T extends Record<string, unknown>>({
             options={selectOptions}
             value={String(value ?? '')}
             autoOpen
-            inputProps={{ variant: 'bare', size: 'sm' }}
+            fullWidth
+            inputProps={{ variant, size }}
             onChange={(v) => {
               const selected = Array.isArray(v) ? (v[0] ?? '') : v;
               const newData = localDataRef.current.map<T>((r, i) =>
@@ -943,11 +1006,10 @@ function DataGridInner<T extends Record<string, unknown>>({
         return (
           <Input
             type="text"
-            variant="bare"
-            size="sm"
+            variant={variant}
+            size={size}
             value={String(value ?? '')}
             onChange={(e) => setEditValue(e.target.value)}
-
             autoFocus
             fullWidth
             clearable={false}
@@ -955,6 +1017,69 @@ function DataGridInner<T extends Record<string, unknown>>({
         );
     }
   };
+
+  // ── Card view cell value ─────────────────────────────────────────────────
+  // Mirrors the <td> cell's click/edit/error-state wiring in `renderViewCell`/
+  // `renderEditCell` above, just wrapped in a plain <div> so it can sit
+  // either in a card's label:value field row or its header/subheader - both
+  // stay just as editable as any table cell.
+  const renderCardValue = (
+    col: DataGridColumn<T>,
+    row: T,
+    localIndex: number,
+    baseClassName: string,
+  ): React.ReactNode => {
+    const value = row[col.key];
+    const isEditing = editingCell?.rowIndex === localIndex && editingCell?.colKey === col.key;
+    const canEdit = isCellEditable(col);
+    const isFlagged = cellErrorKey(localIndex, col.key) in cellErrors;
+    const hasError = isEditing && Boolean(editError);
+
+    const valueCls = [
+      baseClassName,
+      // Deliberately NOT `eidos-data-grid-cell--editing` (unlike the <td>
+      // version of this same state) - that class's whole job is forcing the
+      // editor into `position: absolute; inset: 0` so it fills a <td>
+      // without changing the table row's height. A card field has no row
+      // to preserve the height of, so it just needs its own "is editing"
+      // hook for spacing - the editor itself renders normally, with each
+      // component's own default (non-`bare`) look (see `renderEditCell`).
+      isEditing && 'eidos-datagrid-card-value--editing',
+      hasError && 'eidos-data-grid-cell--error',
+      isFlagged && !hasError && 'eidos-data-grid-cell--has-error',
+      canEdit && !isEditing && 'eidos-data-grid-cell--editable',
+      col.type === 'readonly' && 'eidos-data-grid-cell--readonly',
+      // Checkbox glyph is intrinsically narrow - without this the value
+      // wrapper stretches to the card's full width (block layout), making
+      // the whole row clickable/toggleable instead of just the checkbox.
+      col.type === 'checkbox' && 'eidos-datagrid-card-value--checkbox',
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    return (
+      <div
+        ref={hasError ? (errorTooltipAnchorRef as React.RefObject<HTMLDivElement | null>) : undefined}
+        className={valueCls}
+        onClick={() => handleCellClick(localIndex, col)}
+        onKeyDown={isEditing ? (e) => handleKeyDown(e, localIndex, col.key) : undefined}
+        tabIndex={isEditing ? -1 : undefined}
+      >
+        {isEditing
+          ? renderEditCell(col, editValue, row, localIndex, 'card')
+          : renderViewCell(col, value, row, localIndex)}
+      </div>
+    );
+  };
+
+  // Label-above-value field, stacked - used for every column that isn't the
+  // card's header/subheader.
+  const renderCardField = (col: DataGridColumn<T>, row: T, localIndex: number): React.ReactNode => (
+    <div key={col.key} className="eidos-datagrid-card-field">
+      <span className="eidos-datagrid-card-field-label">{col.header}</span>
+      {renderCardValue(col, row, localIndex, 'eidos-datagrid-card-field-value')}
+    </div>
+  );
 
   // ── Derived display values ─────────────────────────────────────────────────
   const hasDeleteCol = Boolean(onRowDelete);
@@ -1140,11 +1265,126 @@ function DataGridInner<T extends Record<string, unknown>>({
         </div>
       )}
 
-      {/* ── Table (wrapped for horizontal scroll) ───────────────────────── */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleRowDragEnd}>
-        <div className="eidos-data-grid-scroll">
-          <table className={['eidos-data-grid', densityClass].filter(Boolean).join(' ')}>
-            <thead ref={theadRef}>
+      {isCardView ? (
+        /* ── Card view ────────────────────────────────────────────────── */
+        <div
+          className="eidos-datagrid-cards"
+          style={{ '--eidos-datagrid-card-min-width': `${cardMinWidth}px` } as React.CSSProperties}
+        >
+          {displayData.length > 0 ? (
+            displayData.map((row, displayIndex) => {
+              const localIndex = localData.indexOf(row);
+              const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
+              const isRowSelected = selectable && selectedSet.has(rowKeyValue);
+
+              return (
+                <div
+                  key={rowKeyValue}
+                  className={[
+                    'eidos-datagrid-card',
+                    isRowSelected && 'eidos-datagrid-card--selected',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <div className="eidos-datagrid-card-toolbar">
+                    <div className="eidos-datagrid-card-toolbar-left">
+                      {selectable && (
+                        <Checkbox
+                          checked={isRowSelected}
+                          onChange={() => toggleRow(rowKeyValue)}
+                          size="sm"
+                        />
+                      )}
+                      {showRowNumbers && (
+                        <span className="eidos-datagrid-card-row-number">#{localIndex + 1}</span>
+                      )}
+                    </div>
+
+                    {/* Always rendered (even empty) so it occupies the toolbar's
+                        middle grid column - conditionally omitting the element
+                        itself would shift `eidos-datagrid-card-toolbar-right`
+                        into this column instead of the third one. */}
+                    <div className="eidos-datagrid-card-heading">
+                      {cardHeaderColumn &&
+                        renderCardValue(
+                          cardHeaderColumn,
+                          row,
+                          localIndex,
+                          'eidos-datagrid-card-heading-title',
+                        )}
+                      {cardSubheaderColumn &&
+                        renderCardValue(
+                          cardSubheaderColumn,
+                          row,
+                          localIndex,
+                          'eidos-datagrid-card-heading-subtitle',
+                        )}
+                    </div>
+
+                    <div className="eidos-datagrid-card-toolbar-right">
+                      {hasDeleteCol && (
+                        <button
+                          type="button"
+                          className="eidos-data-grid-delete-btn"
+                          onClick={() => handleRowDelete(row, localIndex)}
+                          aria-label="Delete row"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="eidos-datagrid-card-fields">
+                    {cardFieldColumns.map((col) => renderCardField(col, row, localIndex))}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="eidos-datagrid-card-empty">
+              {Object.keys(activeFilters).length > 0 ? (
+                <EmptyState
+                  icon={<SearchX />}
+                  title="No results found"
+                  description="Try adjusting your filters or search terms."
+                  action={
+                    <Button
+                      size="sm"
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleFiltersChange({})}
+                    >
+                      Clear filters
+                    </Button>
+                  }
+                  size="sm"
+                />
+              ) : (
+                <EmptyState
+                  icon={<FolderOpen />}
+                  title={emptyText}
+                  description={
+                    onRowAdd ? 'Add a row to get started.' : 'There are no records to display.'
+                  }
+                  size="sm"
+                />
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* ── Table (wrapped for horizontal scroll) ───────────────────────── */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleRowDragEnd}
+          >
+            <div className="eidos-data-grid-scroll">
+              <table className={['eidos-data-grid', densityClass].filter(Boolean).join(' ')}>
+                <thead ref={theadRef}>
               <tr>
                 {/* Selection checkbox column */}
                 {selectable && (
@@ -1378,7 +1618,11 @@ function DataGridInner<T extends Record<string, unknown>>({
                               return (
                                 <td
                                   key={col.key}
-                                  ref={hasError ? errorTooltipAnchorRef : undefined}
+                                  ref={
+                                    hasError
+                                      ? (errorTooltipAnchorRef as React.RefObject<HTMLTableDataCellElement | null>)
+                                      : undefined
+                                  }
                                   className={cellCls}
                                   style={pinnedStyle}
                                   onClick={() => handleCellClick(localIndex, col)}
@@ -1454,9 +1698,11 @@ function DataGridInner<T extends Record<string, unknown>>({
                 )}
               </SortableContext>
             </tbody>
-          </table>
-        </div>
-      </DndContext>
+              </table>
+            </div>
+          </DndContext>
+        </>
+      )}
 
       {/* ── Pagination footer ────────────────────────────────────────────── */}
       {showPagination && (

@@ -543,3 +543,169 @@
   border-top: 1px solid var(--gray-200);
   padding: var(--spacing-md);
 }
+
+// ─── Card view (DataGridProps.hasCardView) ───────────────────────────────────
+// Swaps in for the <table> below `cardViewBreakpoint` - see DataGrid.component.tsx.
+// Only the row layout changes; toolbar/pagination markup is untouched.
+
+// `--eidos-datagrid-card-min-width` is set inline per-instance from
+// `cardMinWidth` (genuinely dynamic, so a CSS custom property rather than a
+// static class - see DataGrid.component.tsx). `auto-fill` + `minmax` fits as
+// many cards per row as the container allows instead of forcing one per row
+// regardless of how much width is actually available; `align-items: start`
+// keeps a shorter card from being stretched to match a taller neighbour in
+// the same row.
+.eidos-datagrid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--eidos-datagrid-card-min-width, 280px), 1fr));
+  align-items: start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+}
+
+.eidos-datagrid-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background: var(--white);
+  transition: background-color 0.1s ease;
+
+  &--selected {
+    background: var(--primary-50);
+    border-color: var(--primary-200);
+  }
+}
+
+// Top bar: checkbox/row-number (left) - header/subheader (centered) - delete
+// action (right), 3 zones on a single line, then a divider before the field
+// list. `grid-template-columns` (rather than flex `space-between`) is what
+// keeps the heading genuinely centered on the card regardless of how wide
+// the left/right zones end up.
+.eidos-datagrid-card-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.eidos-datagrid-card-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-self: start;
+}
+
+.eidos-datagrid-card-toolbar-right {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+}
+
+.eidos-datagrid-card-row-number {
+  color: var(--gray-400);
+  font-size: var(--font-size-xs);
+  user-select: none;
+}
+
+// Header/subheader - the two columns opted into `cardHeader`/`cardSubheader`.
+// Centered in the toolbar's middle column; falls back to an empty column
+// (still keeping the checkbox/delete button apart) when neither is set.
+.eidos-datagrid-card-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.eidos-datagrid-card-heading-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--dark-color);
+  border-radius: var(--border-radius-sm);
+}
+
+.eidos-datagrid-card-heading-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  border-radius: var(--border-radius-sm);
+}
+
+// Remaining columns, each a label-above-value stack.
+.eidos-datagrid-card-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.eidos-datagrid-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eidos-datagrid-card-field-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-500);
+}
+
+.eidos-datagrid-card-field-value,
+.eidos-datagrid-card-heading-title,
+.eidos-datagrid-card-heading-subtitle {
+  color: var(--gray-700);
+  min-width: 0;
+  position: relative;
+
+  // Same editable/error/readonly affordances as a table cell - see
+  // `.eidos-data-grid-cell` above, whose state modifier classes are shared.
+  &.eidos-data-grid-cell--has-error {
+    background: rgba(var(--danger-rgb), 0.12);
+  }
+
+  &.eidos-data-grid-cell--editable {
+    cursor: pointer;
+    border-radius: var(--border-radius-sm);
+
+    &:hover {
+      background: var(--gray-50);
+    }
+  }
+
+  // No positioning/display overrides needed here (unlike the <td> version
+  // of "editing") - the editor renders in normal flow with each
+  // component's own default look (see `renderEditCell`'s `context` param),
+  // exactly as it would standalone anywhere else in the library.
+
+  &.eidos-data-grid-cell--error {
+    // The editor's own border already reads as a boundary (see above) - a
+    // danger-coloured ring around it is enough to flag the error without
+    // also needing the table cell's background/padding treatment. `!important`
+    // matches the base rule's own specifier - without it here, the base
+    // rule's `!important` would win regardless of this selector's higher
+    // specificity.
+    box-shadow: 0 0 0 2px var(--danger-color) !important;
+    border-radius: var(--border-radius-sm);
+  }
+
+  &.eidos-data-grid-cell--readonly {
+    color: var(--gray-500);
+    cursor: default;
+  }
+}
+
+// The checkbox glyph is intrinsically narrow - without this, the value
+// wrapper's default block width stretches across the whole card, making the
+// entire row clickable/toggleable instead of just the checkbox itself.
+.eidos-datagrid-card-value--checkbox {
+  width: fit-content;
+}
+
+.eidos-datagrid-card-empty {
+  padding: var(--spacing-xl) var(--spacing-md);
+}

@@ -40,6 +40,20 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   dateFilterMode?: 'single' | 'multiple' | 'range';
   /** Lock this column to the left or right edge on horizontal scroll */
   pin?: 'left' | 'right';
+
+  // ── Card view (see DataGridProps.hasCardView) ──────────────────────────────
+  /**
+   * Render this column's value as the card's title instead of a label:value
+   * field row. Only the first column with `cardHeader` set is used - if
+   * several are marked, the rest are silently ignored.
+   */
+  cardHeader?: boolean;
+  /**
+   * Render this column's value as the card's subtitle, directly under the
+   * `cardHeader` value. Only the first column with `cardSubheader` set is
+   * used. Has no effect without a `cardHeader` column also being set.
+   */
+  cardSubheader?: boolean;
 }
 
 export interface DataGridProps<T extends Record<string, unknown> = Record<string, unknown>> {
@@ -103,6 +117,28 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   density?: 'compact' | 'comfortable' | 'spacious';
   /** Show a density picker dropdown in the toolbar. @default false */
   showDensity?: boolean;
+
+  // ── Card view ──────────────────────────────────────────────────────────────
+  /**
+   * Below `cardViewBreakpoint`, swap the table for a stacked list of cards -
+   * one per row. Only the row rendering changes: pagination, filtering,
+   * sorting, selection, and cell editing all keep working exactly as in
+   * table mode, driven off the grid's own measured width (not the viewport),
+   * so it responds correctly even inside a narrow sidebar on a wide screen.
+   * Row drag-reordering (`draggableRows`) is not available in card view.
+   * @default false
+   */
+  hasCardView?: boolean;
+  /** Container width (px) at/below which card view kicks in. @default 640 */
+  cardViewBreakpoint?: number;
+  /**
+   * Cards lay out in a responsive grid (CSS `repeat(auto-fill, minmax(...))`)
+   * rather than one per row - this sets the minimum width (px) a card can
+   * shrink to before the next one wraps to a new row, so as many fit per row
+   * as the container allows.
+   * @default 280
+   */
+  cardMinWidth?: number;
 }
 
 export type EditingCell = { rowIndex: number; colKey: string } | null;

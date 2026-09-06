@@ -416,6 +416,24 @@ const meta: Meta<typeof DataGrid<Person>> = {
       description: 'Message shown when the `data` array is empty.',
       table: { defaultValue: { summary: 'No data available' } },
     },
+    hasCardView: {
+      control: 'boolean',
+      description:
+        'Below `cardViewBreakpoint`, swap the table for one card per row - measured off ' +
+        "the grid's own container width, not the viewport.",
+      table: { defaultValue: { summary: 'false' } },
+    },
+    cardViewBreakpoint: {
+      control: { type: 'number', min: 200, max: 1200, step: 20 },
+      description: 'Container width (px) at/below which card view kicks in.',
+      table: { defaultValue: { summary: '640' } },
+    },
+    cardMinWidth: {
+      control: { type: 'number', min: 160, max: 600, step: 20 },
+      description:
+        'Minimum width (px) a card can shrink to before the next one wraps to a new row.',
+      table: { defaultValue: { summary: '280' } },
+    },
     // ── Non-controllable props - hide from the controls panel ──────────────────
     columns: { control: false },
     data: { control: false },
@@ -874,6 +892,73 @@ export const PinnedFromMiddle: Story = {
           rowKey="id"
           onChange={() => {}}
           showRowNumbers
+        />
+      </div>
+    );
+  },
+};
+
+// ─── 16. Responsive card view ────────────────────────────────────────────────
+
+const CARD_VIEW_COLUMNS: DataGridColumn<Person>[] = [
+  { key: 'name', header: 'Name', cardHeader: true },
+  { key: 'role', header: 'Role', type: 'select', options: ROLE_OPTIONS, cardSubheader: true },
+  {
+    key: 'department',
+    header: 'Department',
+    type: 'select',
+    options: DEPARTMENT_OPTIONS,
+    sortable: true,
+  },
+  { key: 'salary', header: 'Salary', type: 'number', sortable: true },
+  { key: 'active', header: 'Active', type: 'checkbox' },
+];
+
+export const ResponsiveCardView: Story = {
+  name: 'Responsive card view',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'With `hasCardView`, the grid measures its own container width (via ' +
+          'ResizeObserver, not the viewport) and swaps the table for a card grid once it ' +
+          'drops to/below `cardViewBreakpoint` (1000px here). Cards lay out with CSS ' +
+          '`repeat(auto-fill, minmax(cardMinWidth, 1fr))`, so as many fit per row as the ' +
+          'container allows instead of one per row regardless of available width - drag ' +
+          "the resize handle at the bottom-right of the box below to see both the " +
+          "table/card swap and the per-row card count respond live. `name` is marked " +
+          '`cardHeader` and `role` `cardSubheader`, so they become the card title / ' +
+          'subtitle instead of a label:value row like every other column. Pagination, ' +
+          'filtering, sorting, selection, and inline cell editing all keep working exactly ' +
+          'as in table mode.',
+      },
+    },
+  },
+  render: function ResponsiveCardViewStory() {
+    return (
+      <div
+        style={{
+          resize: 'horizontal',
+          overflow: 'auto',
+          width: 1000,
+          maxWidth: '100%',
+          border: '1px dashed var(--gray-300)',
+          padding: 8,
+        }}
+      >
+        <DataGrid<Person>
+          columns={CARD_VIEW_COLUMNS}
+          data={makePeople()}
+          rowKey="id"
+          onChange={() => {}}
+          onRowDelete={() => {}}
+          hasCardView
+          cardViewBreakpoint={1000}
+          cardMinWidth={240}
+          selectable
+          showRowNumbers
+          showPagination
+          pageSize={5}
         />
       </div>
     );
