@@ -27,7 +27,7 @@ export const LandingPage: React.FC = () => {
   return (
     <div className="mrd-landing">
       <section className="mrd-hero">
-        <Badge color="primary" variant="outlined" size="sm">
+        <Badge color="primary" variant="outlined" size="md">
           eidos-ui example app
         </Badge>
         <h1 className="mrd-hero__title">The support desk your team stops fighting</h1>

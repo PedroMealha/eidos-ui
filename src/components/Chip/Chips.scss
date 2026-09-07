@@ -11,23 +11,23 @@
   cursor: default;
   text-decoration: none;
   border: 1px solid transparent;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   white-space: nowrap;
   max-width: 100%;
 
   // Sizes
   &--sm {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-sm);
     font-size: var(--font-size-xs);
   }
 
   &--md {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-sm);
     font-size: var(--font-size-sm);
   }
 
   &--lg {
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-sm);
     font-size: var(--font-size-base);
   }
 
