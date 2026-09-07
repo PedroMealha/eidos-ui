@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Avatar,
-  Badge,
   Divider,
   Drawer,
   InlineEdit,
+  Pill,
   Select,
   TagInput,
   useSnackbar,
@@ -189,9 +189,9 @@ export const TicketDetailDrawer: React.FC<Props> = ({
           <div className="mrd-detail__thread">
             <div className="mrd-card__head">
               <h3 className="mrd-card__title">Conversation</h3>
-              <Badge color={STATUS_COLORS[ticket.status]} variant="outlined" size="sm">
+              <Pill color={STATUS_COLORS[ticket.status]} variant="outlined" size="sm">
                 {STATUS_LABELS[ticket.status]}
-              </Badge>
+              </Pill>
             </div>
 
             {ticket.messages.map((message) => (

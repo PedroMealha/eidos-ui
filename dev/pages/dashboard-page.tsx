@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Alert, Badge, Button, Card, Progress, Skeleton, Timeline } from '@pmealha/eidos-ui';
+import { Alert, Button, Card, Pill, Progress, Skeleton, Timeline } from '@pmealha/eidos-ui';
 import { ArrowUpRight, CircleCheck, CirclePlus, TriangleAlert, UserCheck } from 'lucide-react';
 import { ticketsApi } from '../api/tickets';
 import type { ActivityEntry, DashboardStats } from '../api/types';
@@ -123,9 +123,9 @@ export const DashboardPage: React.FC = () => {
           <div className="mrd-card__head">
             <h2 className="mrd-card__title">SLA attainment</h2>
             {!stats.loading && !statsUnavailable && (
-              <Badge color={slaPercent >= 80 ? 'success' : 'warning'} variant="outlined" size="sm">
+              <Pill color={slaPercent >= 80 ? 'success' : 'warning'} variant="outlined" size="sm">
                 {slaPercent >= 80 ? 'On track' : 'At risk'}
-              </Badge>
+              </Pill>
             )}
           </div>
 

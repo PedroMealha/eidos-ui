@@ -1,6 +1,7 @@
 // Components
 export { Card } from './components/Card';
 export { Badge } from './components/Badge';
+export { Pill } from './components/Pill';
 export { Alert } from './components/Alert';
 export { Tabs, Tab, TabPanel } from './components/Tabs';
 export { Accordion, AccordionItem } from './components/Accordion';
@@ -56,6 +57,7 @@ export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 // Types
 export type { CardProps } from './components/Card';
 export type { BadgeProps } from './components/Badge';
+export type { PillProps } from './components/Pill';
 export type { AlertProps, AlertAction } from './components/Alert';
 export type { TabsProps, TabProps, TabPanelProps } from './components/Tabs';
 export type { AccordionProps, AccordionItemProps } from './components/Accordion';

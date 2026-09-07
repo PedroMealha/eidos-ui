@@ -5,21 +5,29 @@ import * as BadgeStories from './Badge.stories';
 
 # Badge
 
-A compact label for surfacing status, category, or count information. Comes in three variants - `filled`, `outlined`, and `text` - and supports a dot mode for minimal status indicators.
+A small counter or dot pinned to a corner of another element - a notification count on a bell icon, a presence dot on an avatar. Badge always wraps `children` (the element it attaches to) and positions itself absolutely over one of its corners.
+
+> **Note**: Looking for a standalone, fully-rounded status label like "Active" or a count that isn't attached to anything else? That's `Pill`, not `Badge`.
 
 ## Usage
 
 ```tsx
 import { Badge } from '@pmealha/eidos-ui';
 
-// Status label
-<Badge color="success" variant="outlined">Active</Badge>
+// Notification count
+<Badge content={4} color="danger">
+  <IconButton icon={Bell} aria-label="Notifications" />
+</Badge>
 
-// Numeric count clamped at 99
-<Badge color="danger" max={99}>{120}</Badge>
+// Count clamped at 99
+<Badge content={150} max={99} color="danger">
+  <IconButton icon={ShoppingCart} aria-label="Cart" />
+</Badge>
 
-// Dot indicator
-<Badge dot color="warning" />
+// Presence dot, pulled in to follow a circular child
+<Badge dot color="success" overlap="circular">
+  <Avatar name="Jane Doe" />
+</Badge>
 ```
 
 ## Default
@@ -28,34 +36,26 @@ import { Badge } from '@pmealha/eidos-ui';
 
 <Controls of={BadgeStories.Default} />
 
-## Variants
+## Counts
 
-The three visual variants - `filled`, `outlined`, and `text` - work across all color options.
+`content` accepts a number (or any node). Set `max` to cap the displayed value at `max+`. A badge with no `content` (and `dot` unset) or `content={0}` (unless `showZero`) renders nothing, but stays mounted.
 
-<Canvas of={BadgeStories.Variants} />
-
-## Colors
-
-<Canvas of={BadgeStories.Colors} />
+<Canvas of={BadgeStories.Counts} />
 
 ## Dot
 
-Use `dot` to render a small colored circle with no text - ideal for compact status indicators.
+Use `dot` for a minimal presence/status indicator with no count.
 
 <Canvas of={BadgeStories.Dot} />
 
-## Sizes
+## Overlap
 
-<Canvas of={BadgeStories.Sizes} />
+Position the badge relative to the corner of the wrapped element. `circular` pulls it in slightly to sit on the edge of a round child like `Avatar`; `rectangular` (default) suits square/rectangular children like icons and buttons.
 
-## Numbers with max
+<Canvas of={BadgeStories.Overlap} />
 
-When `children` is a number, set `max` to cap the displayed value at `max+`.
+## Alignment
 
-<Canvas of={BadgeStories.Numbers} />
+Move the badge to any corner of the wrapped element with `placement`.
 
-## With chip
-
-Common composition pattern pairing Badge with the Chip component for status labels and count indicators.
-
-<Canvas of={BadgeStories.WithChip} />
+<Canvas of={BadgeStories.Alignment} />

@@ -1,0 +1,72 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as PillStories from './Pill.stories';
+
+<Meta of={PillStories} />
+
+# Pill
+
+A compact, fully-rounded label for surfacing status, category, or count information. Comes in three variants - `filled`, `outlined`, and `text` - and supports a `dot` indicator either on its own or alongside a label.
+
+> **Note**: Looking for a small counter/dot pinned to the corner of another element (a notification count on a bell icon, an online indicator on an avatar)? That's `Badge`, not `Pill` - see the Badge docs.
+
+## Usage
+
+```tsx
+import { Pill } from '@pmealha/eidos-ui';
+
+// Status label
+<Pill color="success" variant="outlined">Active</Pill>
+
+// Numeric count clamped at 99
+<Pill color="danger" max={99}>{120}</Pill>
+
+// Dot-only indicator
+<Pill dot color="warning" />
+
+// Dot + label, e.g. a status pill
+<Pill dot variant="text" color="success">Active</Pill>
+```
+
+## Default
+
+<Canvas of={PillStories.Default} />
+
+<Controls of={PillStories.Default} />
+
+## Variants
+
+The three visual variants - `filled`, `outlined`, and `text` - work across all color options.
+
+<Canvas of={PillStories.Variants} />
+
+## Colors
+
+<Canvas of={PillStories.Colors} />
+
+## Dot
+
+Use `dot` with no children to render a small colored circle with no text - ideal for compact status indicators.
+
+<Canvas of={PillStories.Dot} />
+
+## Dot with label
+
+Use `dot` alongside children to render the dot next to the label inside the same pill.
+
+<Canvas of={PillStories.DotWithLabel} />
+
+## Sizes
+
+<Canvas of={PillStories.Sizes} />
+
+## Numbers with max
+
+When `children` is a number, set `max` to cap the displayed value at `max+`.
+
+<Canvas of={PillStories.Numbers} />
+
+## With chip
+
+Common composition pattern pairing Pill with the Chip component for status labels and count indicators.
+
+<Canvas of={PillStories.WithChip} />

@@ -1,158 +1,141 @@
 @use '../../styles/mixins.scss' as *;
 
+// ============================================================================
+// Wrapper - establishes the positioning context for the attached badge
+// ============================================================================
+
+.eidos-badge-wrapper {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+// ============================================================================
+// Badge - the small dot/counter pinned to a corner of the wrapped element
+// ============================================================================
+
 .eidos-badge {
   @include flex-center;
   @include font-weight(bold);
-  // Override flex-center's block flex to inline so badges flow within text/layouts
-  display: inline-flex;
+  position: absolute;
+  box-sizing: content-box;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--spacing-xs);
+  border-radius: 9999px;
+  border: 2px solid var(--white);
+  font-size: var(--font-size-xs);
   line-height: 1;
   white-space: nowrap;
-  border-radius: 9999px;
-  border: 1px solid transparent;
+  color: var(--white);
+  pointer-events: none;
+  transform: var(--eidos-badge-translate, translate(50%, -50%))
+    scale(var(--eidos-badge-scale, 1));
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 
-  // ========================================================================
-  // Sizes
-  // ========================================================================
-
-  &--sm {
-    min-width: 16px;
-    height: 2.2em;
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: var(--font-size-xs);
-  }
-
-  &--md {
-    min-width: 20px;
-    height: 2.2em;
-    padding: var(--spacing-md) ;
-    font-size: var(--font-size-sm);
+  &--hidden {
+    --eidos-badge-scale: 0;
+    opacity: 0;
   }
 
   // ========================================================================
-  // Dot modifier - overrides size dimensions, keeps colour from variant+color
+  // Dot modifier - overrides dimensions, keeps colour and placement
   // ========================================================================
 
   &--dot {
+    min-width: 8px;
+    width: 8px;
+    height: 8px;
     padding: 0;
-    border-radius: 50%;
-
-    &.eidos-badge--sm {
-      width: 6px;
-      height: 6px;
-      min-width: 6px;
-    }
-
-    &.eidos-badge--md {
-      width: 8px;
-      height: 8px;
-      min-width: 8px;
-    }
+    border-width: 1px;
   }
 
   // ========================================================================
-  // Filled variant
+  // Colors
   // ========================================================================
 
-  &--filled {
-    &.eidos-badge--primary {
-      background-color: var(--primary-color);
-      color: var(--white);
-    }
+  &--primary {
+    background-color: var(--primary-color);
+  }
 
-    &.eidos-badge--secondary {
-      background-color: var(--secondary-color);
-      color: var(--white);
-    }
+  &--secondary {
+    background-color: var(--secondary-color);
+  }
 
-    &.eidos-badge--success {
-      background-color: var(--success-color);
-      color: var(--white);
-    }
+  &--success {
+    background-color: var(--success-color);
+  }
 
-    &.eidos-badge--danger {
-      background-color: var(--danger-color);
-      color: var(--white);
-    }
+  &--danger {
+    background-color: var(--danger-color);
+  }
 
-    &.eidos-badge--warning {
-      background-color: var(--warning-color);
-      color: var(--white);
-    }
+  &--warning {
+    background-color: var(--warning-color);
+    color: var(--dark-color);
+  }
 
-    &.eidos-badge--info {
-      background-color: var(--info-color);
-      color: var(--white);
-    }
+  &--info {
+    background-color: var(--info-color);
   }
 
   // ========================================================================
-  // Outlined variant
+  // Placement - rectangular overlap (default): badge sits just outside the
+  // wrapped element's corner, e.g. an icon or button.
   // ========================================================================
 
-  &--outlined {
-    background-color: transparent;
+  &--top-right.eidos-badge--rectangular {
+    top: 0;
+    right: 0;
+    --eidos-badge-translate: translate(50%, -50%);
+  }
 
-    &.eidos-badge--primary {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-    }
+  &--top-left.eidos-badge--rectangular {
+    top: 0;
+    left: 0;
+    --eidos-badge-translate: translate(-50%, -50%);
+  }
 
-    &.eidos-badge--secondary {
-      border-color: var(--secondary-color);
-      color: var(--secondary-color);
-    }
+  &--bottom-right.eidos-badge--rectangular {
+    bottom: 0;
+    right: 0;
+    --eidos-badge-translate: translate(50%, 50%);
+  }
 
-    &.eidos-badge--success {
-      border-color: var(--success-color);
-      color: var(--success-color);
-    }
-
-    &.eidos-badge--danger {
-      border-color: var(--danger-color);
-      color: var(--danger-color);
-    }
-
-    &.eidos-badge--warning {
-      border-color: var(--warning-color);
-      color: var(--warning-color);
-    }
-
-    &.eidos-badge--info {
-      border-color: var(--info-color);
-      color: var(--info-color);
-    }
+  &--bottom-left.eidos-badge--rectangular {
+    bottom: 0;
+    left: 0;
+    --eidos-badge-translate: translate(-50%, 50%);
   }
 
   // ========================================================================
-  // Text variant - no background; the colour is carried by the label alone,
-  // matching Button and Chip so `text` means the same thing library-wide.
+  // Placement - circular overlap: pulled in slightly to follow the curve of
+  // a circular wrapped element, e.g. Avatar.
   // ========================================================================
 
-  &--text {
-    background-color: transparent;
+  &--top-right.eidos-badge--circular {
+    top: 8%;
+    right: 8%;
+    --eidos-badge-translate: translate(50%, -50%);
+  }
 
-    &.eidos-badge--primary {
-      color: var(--primary-color);
-    }
+  &--top-left.eidos-badge--circular {
+    top: 8%;
+    left: 8%;
+    --eidos-badge-translate: translate(-50%, -50%);
+  }
 
-    &.eidos-badge--secondary {
-      color: var(--secondary-color);
-    }
+  &--bottom-right.eidos-badge--circular {
+    bottom: 8%;
+    right: 8%;
+    --eidos-badge-translate: translate(50%, 50%);
+  }
 
-    &.eidos-badge--success {
-      color: var(--success-color);
-    }
-
-    &.eidos-badge--danger {
-      color: var(--danger-color);
-    }
-
-    &.eidos-badge--warning {
-      color: var(--warning-color);
-    }
-
-    &.eidos-badge--info {
-      color: var(--info-color);
-    }
+  &--bottom-left.eidos-badge--circular {
+    bottom: 8%;
+    left: 8%;
+    --eidos-badge-translate: translate(-50%, 50%);
   }
 }

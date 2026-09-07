@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Avatar,
-  Badge,
   Breadcrumb,
   CommandPalette,
   Divider,
   Kbd,
   Menu,
+  Pill,
   Switch,
   Tooltip,
   useSnackbar,
@@ -170,9 +170,9 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
           <Divider />
           <div className="mrd-sidebar__role">
             <span>Signed in as</span>
-            <Badge color={isAdmin ? 'primary' : 'secondary'} variant="outlined" size="sm">
+            <Pill color={isAdmin ? 'primary' : 'secondary'} variant="outlined" size="sm">
               {isAdmin ? 'Admin' : 'Member'}
-            </Badge>
+            </Pill>
           </div>
         </div>
       </aside>

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
-  Badge,
   Button,
   Card,
   Chip,
   Input,
   Menu,
   Modal,
+  Pill,
   Table,
   useSnackbar,
 } from '@pmealha/eidos-ui';
@@ -156,9 +156,9 @@ export const TicketsPage: React.FC = () => {
         filterType: 'select',
         filterOptions: STATUS_FILTER_OPTIONS,
         render: (_value, ticket) => (
-          <Badge color={STATUS_COLORS[ticket.status]} variant="outlined" size="sm">
+          <Pill color={STATUS_COLORS[ticket.status]} variant="outlined" size="sm">
             {STATUS_LABELS[ticket.status]}
-          </Badge>
+          </Pill>
         ),
       },
       {

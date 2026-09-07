@@ -4,32 +4,41 @@ import './Badge.scss';
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
+  content,
   color = 'primary',
-  variant = 'filled',
-  size = 'md',
-  dot = false,
   max,
+  dot = false,
+  showZero = false,
+  overlap = 'rectangular',
+  placement = 'top-right',
+  invisible = false,
   className = '',
 }) => {
-  const classes = [
+  const hasContent = content !== undefined && content !== null && content !== '';
+  const isZero = content === 0;
+  const isHidden = invisible || (!dot && !hasContent) || (!dot && isZero && !showZero);
+
+  let displayContent: React.ReactNode = content;
+  if (typeof content === 'number' && max !== undefined && content > max) {
+    displayContent = `${max}+`;
+  }
+
+  const badgeClasses = [
     'eidos-badge',
-    `eidos-badge--${variant}`,
     `eidos-badge--${color}`,
-    `eidos-badge--${size}`,
+    `eidos-badge--${overlap}`,
+    `eidos-badge--${placement}`,
     dot && 'eidos-badge--dot',
+    isHidden && 'eidos-badge--hidden',
     className,
   ]
     .filter(Boolean)
     .join(' ');
 
-  if (dot) {
-    return <span className={classes} />;
-  }
-
-  let content: React.ReactNode = children;
-  if (typeof children === 'number' && max !== undefined) {
-    content = children > max ? `${max}+` : children;
-  }
-
-  return <span className={classes}>{content}</span>;
+  return (
+    <span className="eidos-badge-wrapper">
+      {children}
+      <span className={badgeClasses}>{!dot && displayContent}</span>
+    </span>
+  );
 };

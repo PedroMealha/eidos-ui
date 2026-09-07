@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Button, Card, Chip } from '@pmealha/eidos-ui';
+import { Button, Card, Chip, Pill } from '@pmealha/eidos-ui';
 import { Gauge, Inbox, ShieldCheck } from 'lucide-react';
 import { useRouter } from '../routes/router';
 
@@ -27,9 +27,9 @@ export const LandingPage: React.FC = () => {
   return (
     <div className="mrd-landing">
       <section className="mrd-hero">
-        <Badge color="primary" variant="outlined" size="md">
+        <Pill color="primary" variant="outlined" size="md">
           eidos-ui example app
-        </Badge>
+        </Pill>
         <h1 className="mrd-hero__title">The support desk your team stops fighting</h1>
         <p className="mrd-hero__body">
           Meridian is a fictional B2B support desk built to exercise this component library the way

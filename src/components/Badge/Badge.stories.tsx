@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Bell, Mail, ShoppingCart } from 'lucide-react';
 import { Badge } from './Badge.component';
-import { Chip } from '../Chip/Chip.component';
+import { IconButton } from '../Button/Button.component';
+import { Avatar } from '../Avatar/Avatar.component';
 
 const meta = {
   title: 'Elements/Badge',
@@ -11,8 +13,13 @@ const meta = {
   },
   argTypes: {
     children: {
+      control: false,
+      description: 'The element the badge is attached to',
+      table: { type: { summary: 'React.ReactNode' } },
+    },
+    content: {
       control: 'text',
-      description: 'Badge content. When a number and `max` is set, shows `max+` if exceeded.',
+      description: 'Content shown inside the badge, e.g. a notification count',
       table: { type: { summary: 'React.ReactNode' } },
     },
     color: {
@@ -24,27 +31,9 @@ const meta = {
         defaultValue: { summary: 'primary' },
       },
     },
-    variant: {
-      control: 'select',
-      options: ['filled', 'outlined', 'text'],
-      description: 'Visual style variant',
-      table: {
-        type: { summary: '"filled" | "outlined" | "text"' },
-        defaultValue: { summary: 'filled' },
-      },
-    },
-    size: {
-      control: 'select',
-      options: ['small', 'medium'],
-      description: 'Badge size',
-      table: {
-        type: { summary: '"small" | "medium"' },
-        defaultValue: { summary: 'md' },
-      },
-    },
     dot: {
       control: 'boolean',
-      description: 'Render a coloured dot with no text content',
+      description: 'Render a small dot instead of `content`',
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
@@ -52,8 +41,42 @@ const meta = {
     },
     max: {
       control: 'number',
-      description: 'When children is a number, display `max+` if the value exceeds this threshold',
+      description: 'When content is a number, display `max+` if the value exceeds this threshold',
       table: { type: { summary: 'number' } },
+    },
+    showZero: {
+      control: 'boolean',
+      description: 'Show the badge when `content` is `0`',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    overlap: {
+      control: 'select',
+      options: ['circular', 'rectangular'],
+      description: "Pull the badge in to follow a circular child's curve (e.g. Avatar)",
+      table: {
+        type: { summary: '"circular" | "rectangular"' },
+        defaultValue: { summary: 'rectangular' },
+      },
+    },
+    placement: {
+      control: 'select',
+      options: ['top-right', 'top-left', 'bottom-right', 'bottom-left'],
+      description: 'Corner of the wrapped element the badge is anchored to',
+      table: {
+        type: { summary: '"top-right" | "top-left" | "bottom-right" | "bottom-left"' },
+        defaultValue: { summary: 'top-right' },
+      },
+    },
+    invisible: {
+      control: 'boolean',
+      description: 'Force-hide the badge without unmounting it',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
     },
     className: { table: { disable: true } },
   },
@@ -68,100 +91,35 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    children: 'New',
-    color: 'primary',
-    variant: 'filled',
-    size: 'md',
+    content: 4,
+    color: 'danger',
+    children: <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />,
   },
 };
 
 // ============================================================================
-// VARIANTS
+// COUNTS - notification-style counters, with max clamping
 // ============================================================================
 
-export const Variants = {
+export const Counts = {
   render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.5rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const row: React.CSSProperties = { display: 'flex', gap: '0.5rem', alignItems: 'center' };
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem' }}>
-        <div>
-          <p style={label}>Filled</p>
-          <div style={row}>
-            <Badge variant="filled" color="primary">
-              Filled
-            </Badge>
-            <Badge variant="filled" color="success">
-              Filled
-            </Badge>
-            <Badge variant="filled" color="danger">
-              Filled
-            </Badge>
-          </div>
-        </div>
-        <div>
-          <p style={label}>Outlined</p>
-          <div style={row}>
-            <Badge variant="outlined" color="primary">
-              Outlined
-            </Badge>
-            <Badge variant="outlined" color="success">
-              Outlined
-            </Badge>
-            <Badge variant="outlined" color="danger">
-              Outlined
-            </Badge>
-          </div>
-        </div>
-        <div>
-          <p style={label}>Text</p>
-          <div style={row}>
-            <Badge variant="text" color="primary">
-              Text
-            </Badge>
-            <Badge variant="text" color="success">
-              Text
-            </Badge>
-            <Badge variant="text" color="danger">
-              Text
-            </Badge>
-          </div>
-        </div>
-      </div>
-    );
-  },
-};
-
-// ============================================================================
-// COLORS
-// ============================================================================
-
-export const Colors = {
-  render: () => {
-    const row: React.CSSProperties = {
-      display: 'flex',
-      gap: '0.5rem',
-      alignItems: 'center',
-      flexWrap: 'wrap',
-    };
+    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
 
     return (
       <div style={{ padding: '1rem' }}>
         <div style={row}>
-          <Badge color="primary">Primary</Badge>
-          <Badge color="secondary">Secondary</Badge>
-          <Badge color="success">Success</Badge>
-          <Badge color="danger">Danger</Badge>
-          <Badge color="warning">Warning</Badge>
-          <Badge color="info">Info</Badge>
+          <Badge content={3} color="primary">
+            <IconButton icon={Mail} variant="text" color="secondary" aria-label="Messages" />
+          </Badge>
+          <Badge content={99} max={99} color="danger">
+            <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
+          </Badge>
+          <Badge content={150} max={99} color="danger">
+            <IconButton icon={ShoppingCart} variant="text" color="secondary" aria-label="Cart" />
+          </Badge>
+          <Badge content={0} color="primary">
+            <IconButton icon={Bell} variant="text" color="secondary" aria-label="No notifications" />
+          </Badge>
         </div>
       </div>
     );
@@ -169,27 +127,25 @@ export const Colors = {
 };
 
 // ============================================================================
-// DOT
+// DOT - minimal presence/status indicator, no count
 // ============================================================================
 
 export const Dot = {
   render: () => {
-    const row: React.CSSProperties = {
-      display: 'flex',
-      gap: '0.75rem',
-      alignItems: 'center',
-      flexWrap: 'wrap',
-    };
+    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
 
     return (
       <div style={{ padding: '1rem' }}>
         <div style={row}>
-          <Badge dot color="primary" />
-          <Badge dot color="secondary" />
-          <Badge dot color="success" />
-          <Badge dot color="danger" />
-          <Badge dot color="warning" />
-          <Badge dot color="info" />
+          <Badge dot color="success" overlap="circular">
+            <Avatar name="Jane Doe" />
+          </Badge>
+          <Badge dot color="danger" overlap="circular">
+            <Avatar name="John Smith" />
+          </Badge>
+          <Badge dot color="warning" overlap="circular">
+            <Avatar name="Ana Silva" />
+          </Badge>
         </div>
       </div>
     );
@@ -197,10 +153,10 @@ export const Dot = {
 };
 
 // ============================================================================
-// SIZES
+// OVERLAP - rectangular (default) vs circular children
 // ============================================================================
 
-export const Sizes = {
+export const Overlap = {
   render: () => {
     const label: React.CSSProperties = {
       marginBottom: '0.5rem',
@@ -210,34 +166,24 @@ export const Sizes = {
       letterSpacing: '0.07em',
       color: '#94a3b8',
     };
-    const row: React.CSSProperties = { display: 'flex', gap: '0.75rem', alignItems: 'center' };
+    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem' }}>
         <div>
-          <p style={label}>Small</p>
+          <p style={label}>Rectangular - square/rectangular children (default)</p>
           <div style={row}>
-            <Badge size="sm">Small</Badge>
-            <Badge size="sm" variant="outlined">
-              Small
+            <Badge content={2} color="primary" overlap="rectangular">
+              <IconButton icon={Bell} variant="outlined" color="secondary" aria-label="Notifications" />
             </Badge>
-            <Badge size="sm" variant="text">
-              Small
-            </Badge>
-            <Badge size="sm" dot color="success" />
           </div>
         </div>
         <div>
-          <p style={label}>Medium</p>
+          <p style={label}>Circular - pulled in to follow the child&apos;s curve</p>
           <div style={row}>
-            <Badge size="md">Medium</Badge>
-            <Badge size="md" variant="outlined">
-              Medium
+            <Badge content={2} color="primary" overlap="circular">
+              <Avatar name="Jane Doe" />
             </Badge>
-            <Badge size="md" variant="text">
-              Medium
-            </Badge>
-            <Badge size="md" dot color="success" />
           </div>
         </div>
       </div>
@@ -246,112 +192,28 @@ export const Sizes = {
 };
 
 // ============================================================================
-// NUMBERS - with max clamping
+// ALIGNMENT - anchor to any corner
 // ============================================================================
 
-export const Numbers = {
+export const Alignment = {
   render: () => {
-    const label: React.CSSProperties = {
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-      marginBottom: '0.5rem',
-    };
+    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
-        <p style={label}>With max=99 - value 150 is clamped to &ldquo;99+&rdquo;</p>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <Badge color="primary" max={99}>
-            {1}
+      <div style={{ padding: '1rem' }}>
+        <div style={row}>
+          <Badge content={10} color="primary" placement="top-right">
+            <Avatar shape="square" name="TR" />
           </Badge>
-          <Badge color="primary" max={99}>
-            {5}
+          <Badge content={10} color="primary" placement="top-left">
+            <Avatar shape="square" name="TL" />
           </Badge>
-          <Badge color="primary" max={99}>
-            {99}
+          <Badge content={10} color="primary" placement="bottom-right">
+            <Avatar shape="square" name="BR" />
           </Badge>
-          <Badge color="danger" max={99}>
-            {150}
+          <Badge content={10} color="primary" placement="bottom-left">
+            <Avatar shape="square" name="BL" />
           </Badge>
-        </div>
-      </div>
-    );
-  },
-};
-
-// ============================================================================
-// WITH CHIP - common UI composition pattern
-// ============================================================================
-
-export const WithChip = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.5rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const row: React.CSSProperties = {
-      display: 'flex',
-      gap: '0.75rem',
-      alignItems: 'center',
-      flexWrap: 'wrap',
-    };
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '1rem' }}>
-        <div>
-          <p style={label}>Status label + badge count</p>
-          <div style={row}>
-            <Chip color="primary" variant="text">
-              In Progress
-            </Chip>
-            <Badge color="primary">4</Badge>
-          </div>
-        </div>
-        <div>
-          <p style={label}>Category chip + text badge</p>
-          <div style={row}>
-            <Chip color="success" variant="text">
-              Completed
-            </Chip>
-            <Badge color="success" variant="text">
-              12
-            </Badge>
-          </div>
-        </div>
-        <div>
-          <p style={label}>Alert chip + danger badge</p>
-          <div style={row}>
-            <Chip color="danger" variant="text">
-              Errors
-            </Chip>
-            <Badge color="danger" max={9}>
-              {15}
-            </Badge>
-          </div>
-        </div>
-        <div>
-          <p style={label}>Dot indicator alongside chip</p>
-          <div style={row}>
-            <Badge dot color="success" />
-            <Chip color="success" variant="outlined">
-              Online
-            </Chip>
-            <Badge dot color="danger" />
-            <Chip color="danger" variant="outlined">
-              Offline
-            </Chip>
-            <Badge dot color="warning" />
-            <Chip color="warning" variant="outlined">
-              Away
-            </Chip>
-          </div>
         </div>
       </div>
     );

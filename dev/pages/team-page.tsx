@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
-  Badge,
   Button,
   Card,
   DataGrid,
   EmptyState,
   Input,
   Modal,
+  Pill,
   Select,
   useSnackbar,
 } from '@pmealha/eidos-ui';
@@ -159,9 +159,9 @@ export const TeamPage: React.FC = () => {
         </div>
         <div className="mrd-page__actions">
           {dirty && (
-            <Badge color="warning" variant="outlined" size="sm">
+            <Pill color="warning" variant="outlined" size="sm">
               Unsaved changes
-            </Badge>
+            </Pill>
           )}
           <Button
             variant="outlined"
