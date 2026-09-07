@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { Trash2, Pencil, ShieldOff } from 'lucide-react';
+import { Trash2, Pencil, ShieldOff, FolderInput, Mail, MessageSquare } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
 import type { DataGridColumn } from './DataGrid.types';
 import type { BulkAction } from '../Table/Table.types';
+import type { MenuItemType } from '../Menu';
+import { Chip } from '@pmealha/eidos-ui';
 
 // ─── Data model ───────────────────────────────────────────────────────────────
 // `extends Record<string, unknown>` is required so that Person satisfies the
@@ -1044,6 +1046,124 @@ export const RowActionsMenu: Story = {
   render: function RowActionsMenuStory() {
     return (
       <DataGrid<Person> columns={ACTIONS_COLUMNS} data={makePeople()} rowKey="id" showRowNumbers />
+    );
+  },
+};
+
+// ─── 18. Row actions menu (renderActions escape hatch) ────────────────────────
+
+const ADVANCED_ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'role', header: 'Role', type: 'select', options: ROLE_OPTIONS },
+  {
+    key: 'department',
+    header: 'Department',
+    type: 'select',
+    options: DEPARTMENT_OPTIONS,
+  },
+  { key: 'salary', header: 'Salary', type: 'number', sortable: true },
+  {
+    key: 'actions',
+    header: 'Actions',
+    type: 'actions',
+    // `renderActions` is an escape hatch for menu capabilities the simpler
+    // `actions` array can't express - it hands you the row/index and expects
+    // a full `MenuItemType[]` back, so you get everything `Menu` itself
+    // supports: nested submenus, custom `component` items, and `shortcut`
+    // labels. `actions` is ignored on this column since `renderActions` is set.
+    renderActions: (person, index): MenuItemType[] => [
+      {
+        id: 'edit',
+        type: 'item',
+        label: 'Edit',
+        icon: Pencil,
+        shortcut: '⌘E',
+        onClick: () => window.alert(`Edit ${person.name} (row ${index})`),
+      },
+      {
+        id: 'move',
+        type: 'nested',
+        label: 'Move to department',
+        icon: FolderInput,
+        items: DEPARTMENT_OPTIONS.map((dept) => ({
+          id: `move-${dept.value}`,
+          type: 'item',
+          label: dept.label,
+          disabled: dept.value === person.department,
+          onClick: () => window.alert(`Move ${person.name} to ${dept.label}`),
+        })),
+      },
+      {
+        id: 'contact',
+        type: 'nested',
+        label: 'Contact',
+        items: [
+          {
+            id: 'contact-email',
+            type: 'item',
+            label: 'Send email',
+            icon: Mail,
+            onClick: () => window.alert(`Email ${person.name}`),
+          },
+          {
+            id: 'contact-message',
+            type: 'item',
+            label: 'Send message',
+            icon: MessageSquare,
+            onClick: () => window.alert(`Message ${person.name}`),
+          },
+        ],
+      },
+      { id: 'status-separator', type: 'separator' },
+      {
+        id: 'status',
+        type: 'component',
+        component: (
+          <Chip
+           color={person.active ? 'success' : 'secondary'} variant="outlined" size="md">
+            {person.active ? 'Active' : 'Inactive'}
+          </Chip
+          >
+        ),
+      },
+      {
+        id: 'delete',
+        type: 'item',
+        label: 'Delete',
+        icon: Trash2,
+        color: 'danger',
+        onClick: () => window.alert(`Delete ${person.name}`),
+      },
+    ],
+  },
+];
+
+export const RowActionsMenuAdvanced: Story = {
+  name: 'Row actions menu (renderActions escape hatch)',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "For menu capabilities the simple `actions` array can't express - " +
+          'nested submenus, custom `component` content, or keyboard `shortcut` labels - ' +
+          "set `renderActions: (row, index) => MenuItemType[]` on the `type: 'actions'` " +
+          'column instead of `actions`. You build the full `MenuItemType[]` yourself (same ' +
+          'type the standalone `Menu` component takes), so anything `Menu` supports works ' +
+          'here too. This example shows "Move to department" and "Contact" as nested ' +
+          'submenus, an `⌘E` shortcut on "Edit", a `type: \'component\'` item rendering a ' +
+          'status `Badge`, and a `type: \'separator\'` above it. `actions` is ignored on a ' +
+          'column that sets `renderActions`.',
+      },
+    },
+  },
+  render: function RowActionsMenuAdvancedStory() {
+    return (
+      <DataGrid<Person>
+        columns={ADVANCED_ACTIONS_COLUMNS}
+        data={makePeople()}
+        rowKey="id"
+        showRowNumbers
+      />
     );
   },
 };

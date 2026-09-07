@@ -139,6 +139,10 @@ Give a column `type: 'actions'` and an `actions` array to render a "more" (⋮) 
 
 <Canvas of={DataGridStories.RowActionsMenu} />
 
+For menu capabilities `actions` can't express - nested submenus, custom `component` content, or keyboard `shortcut` labels - set `renderActions: (row, index) => MenuItemType[]` on the same column instead of `actions` (it takes precedence when both are set). `MenuItemType` is the exact type the standalone `Menu` component takes, so anything `Menu` supports is available here too.
+
+<Canvas of={DataGridStories.RowActionsMenuAdvanced} />
+
 ## Responsive card view
 
 Set `hasCardView` to swap the table for a grid of cards once the grid's own measured width (via `ResizeObserver` - not the viewport, so it responds correctly inside a narrow sidebar on an otherwise wide screen) drops to/below `cardViewBreakpoint` (default `640`). Cards themselves lay out responsively with `cardMinWidth` (default `280`) controlling how many fit per row.

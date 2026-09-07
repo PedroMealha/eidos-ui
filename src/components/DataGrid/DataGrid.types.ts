@@ -1,5 +1,6 @@
 import type React from 'react';
 import type { IconType } from '../../utils';
+import type { MenuItemType } from '../Menu';
 import type { BulkAction, TableFilters } from '../Table/Table.types';
 
 export type DataGridCellType =
@@ -75,6 +76,15 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   actions?: DataGridRowAction<T>[];
   /** Overrides the default vertical "more" (⋮) trigger icon. */
   actionsIcon?: IconType;
+  /**
+   * Escape hatch for menu capabilities `actions` can't express - nested
+   * submenus (`type: 'nested'`), custom content (`type: 'component'`), or
+   * keyboard `shortcut` labels. When set, this completely replaces `actions`
+   * for this column: you build the full `MenuItemType[]` yourself (including
+   * `id`s and `onClick` callbacks bound to `row`/`index`), and `actions` is
+   * ignored.
+   */
+  renderActions?: (row: T, index: number) => MenuItemType[];
 
   // ── Card view (see DataGridProps.hasCardView) ──────────────────────────────
   /**

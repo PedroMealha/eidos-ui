@@ -1107,25 +1107,31 @@ function DataGridInner<T extends Record<string, unknown>>({
   // top-right toolbar slot - see `actionsColumn`/`DataGridColumn.actions`.
   // Renders nothing if there's no actions column, or it has no actions.
   const renderActionsMenu = (row: T, localIndex: number): React.ReactNode => {
-    if (!actionsColumn?.actions?.length) return null;
+    if (!actionsColumn) return null;
 
-    const items: MenuItemType[] = actionsColumn.actions.flatMap((action, index) => {
-      const id = action.id ?? `${action.label}-${index}`;
-      const isDisabled =
-        typeof action.disabled === 'function' ? action.disabled(row) : Boolean(action.disabled);
+    const items: MenuItemType[] = actionsColumn.renderActions
+      ? actionsColumn.renderActions(row, localIndex)
+      : (actionsColumn.actions ?? []).flatMap((action, index) => {
+          const id = action.id ?? `${action.label}-${index}`;
+          const isDisabled =
+            typeof action.disabled === 'function' ? action.disabled(row) : Boolean(action.disabled);
 
-      const item: MenuItemType = {
-        id,
-        type: 'item',
-        label: action.label,
-        icon: action.icon,
-        disabled: isDisabled,
-        color: action.danger ? 'danger' : undefined,
-        onClick: () => action.onClick(row, localIndex),
-      };
+          const item: MenuItemType = {
+            id,
+            type: 'item',
+            label: action.label,
+            icon: action.icon,
+            disabled: isDisabled,
+            color: action.danger ? 'danger' : undefined,
+            onClick: () => action.onClick(row, localIndex),
+          };
 
-      return action.divider ? [{ id: `${id}-divider`, type: 'separator' as const }, item] : [item];
-    });
+          return action.divider
+            ? [{ id: `${id}-divider`, type: 'separator' as const }, item]
+            : [item];
+        });
+
+    if (!items.length) return null;
 
     return (
       <Menu

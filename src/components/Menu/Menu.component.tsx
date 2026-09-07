@@ -82,6 +82,7 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
               content={<MenuPanel items={item.items} onItemClick={onItemClick} />}
               placement="right"
               isNested={true}
+              fullWidth
             />
           </li>
         );
