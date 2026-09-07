@@ -91,8 +91,13 @@ function SortableTableRow({
 
 // ─────────────────────────────────────────────────────────────────────────────
 // useExpandAnimation - drives a row's expanded-content open/close transition.
-// Mirrors the exact max-height/scrollHeight technique AccordionItem uses, so
-// row expansion animates consistently with Accordion elsewhere in the library.
+// Mirrors the max-height technique AccordionItem uses, so row expansion
+// animates consistently with Accordion elsewhere in the library - but also
+// keeps tracking the content's height for as long as the panel stays open
+// (via ResizeObserver on the unclipped inner node), not just once at the
+// moment it opens. Content whose height changes after opening - e.g. an
+// async fetch resolving into more/less content than a loading placeholder -
+// would otherwise stay clipped at whatever height was measured on open.
 //
 // Content stays mounted through the close animation (so it can transition
 // shut instead of vanishing instantly), but is never mounted before the row
@@ -106,10 +111,19 @@ function SortableTableRow({
 function useExpandAnimation(isOpen: boolean): {
   mounted: boolean;
   maxHeight: number;
-  contentRef: React.RefObject<HTMLDivElement | null>;
+  outerRef: React.RefObject<HTMLDivElement | null>;
+  innerRef: React.RefObject<HTMLDivElement | null>;
   handleTransitionEnd: () => void;
 } {
-  const contentRef = useRef<HTMLDivElement>(null);
+  // outerRef: the clipped, max-height/overflow-hidden wrapper actually
+  // animated - its own rendered height is pinned by `maxHeight` below, so it
+  // can't be the thing observed for size changes (see innerRef).
+  const outerRef = useRef<HTMLDivElement>(null);
+  // innerRef: the unconstrained content itself - always laid out at its
+  // natural height regardless of the outer wrapper's clipping, so its size
+  // genuinely changes when its content does. That's what ResizeObserver
+  // needs to be watching.
+  const innerRef = useRef<HTMLDivElement>(null);
   const [maxHeight, setMaxHeight] = useState(0);
   const [mounted, setMounted] = useState(isOpen);
 
@@ -119,20 +133,28 @@ function useExpandAnimation(isOpen: boolean): {
 
   useEffect(() => {
     if (!mounted) return;
-    // Deferred a frame so the just-mounted content has a real scrollHeight
-    // to measure (mounting and measuring in the same tick would still read
-    // its pre-layout size).
-    const raf = requestAnimationFrame(() => {
-      if (contentRef.current) setMaxHeight(isOpen ? contentRef.current.scrollHeight : 0);
-    });
-    return () => cancelAnimationFrame(raf);
+
+    if (!isOpen) {
+      setMaxHeight(0);
+      return;
+    }
+
+    const node = innerRef.current;
+    if (!node) return;
+
+    const update = () => setMaxHeight(node.scrollHeight);
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
   }, [isOpen, mounted]);
 
   const handleTransitionEnd = useCallback(() => {
     if (!isOpen) setMounted(false);
   }, [isOpen]);
 
-  return { mounted, maxHeight, contentRef, handleTransitionEnd };
+  return { mounted, maxHeight, outerRef, innerRef, handleTransitionEnd };
 }
 
 // Table mode: one extra full-width <tr> rendered directly after an expanded
@@ -146,19 +168,22 @@ function ExpandedTableRow({
   colSpan: number;
   render: () => React.ReactNode;
 }): React.ReactElement | null {
-  const { mounted, maxHeight, contentRef, handleTransitionEnd } = useExpandAnimation(isOpen);
+  const { mounted, maxHeight, outerRef, innerRef, handleTransitionEnd } =
+    useExpandAnimation(isOpen);
   if (!mounted) return null;
 
   return (
     <tr className="eidos-datagrid-expanded-row">
       <td colSpan={colSpan} className="eidos-datagrid-expanded-cell">
         <div
-          ref={contentRef}
+          ref={outerRef}
           className="eidos-datagrid-expand-panel"
           style={{ maxHeight: `${maxHeight}px` }}
           onTransitionEnd={handleTransitionEnd}
         >
-          <div className="eidos-datagrid-expand-panel-inner">{render()}</div>
+          <div ref={innerRef} className="eidos-datagrid-expand-panel-inner">
+            {render()}
+          </div>
         </div>
       </td>
     </tr>
@@ -174,17 +199,20 @@ function ExpandedCardPanel({
   isOpen: boolean;
   render: () => React.ReactNode;
 }): React.ReactElement | null {
-  const { mounted, maxHeight, contentRef, handleTransitionEnd } = useExpandAnimation(isOpen);
+  const { mounted, maxHeight, outerRef, innerRef, handleTransitionEnd } =
+    useExpandAnimation(isOpen);
   if (!mounted) return null;
 
   return (
     <div
-      ref={contentRef}
+      ref={outerRef}
       className="eidos-datagrid-expand-panel"
       style={{ maxHeight: `${maxHeight}px` }}
       onTransitionEnd={handleTransitionEnd}
     >
-      <div className="eidos-datagrid-expand-panel-inner">{render()}</div>
+      <div ref={innerRef} className="eidos-datagrid-expand-panel-inner">
+        {render()}
+      </div>
     </div>
   );
 }

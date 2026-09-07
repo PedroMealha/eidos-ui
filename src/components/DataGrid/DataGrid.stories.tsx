@@ -1198,6 +1198,9 @@ function PersonDetails({ person }: { person: Person }) {
       <div>
         <strong>Status:</strong> {person.active ? 'Active' : 'Inactive'}
       </div>
+      <div>
+        <strong>Notes:</strong> This is a sample note for {person.name}.
+      </div>
     </div>
   );
 }
