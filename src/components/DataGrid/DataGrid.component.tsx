@@ -5,6 +5,7 @@ import {
   ArrowUp,
   ArrowDown,
   ChevronsUpDown,
+  ChevronRight,
   X,
   Plus,
   AlignJustify,
@@ -89,6 +90,106 @@ function SortableTableRow({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// useExpandAnimation - drives a row's expanded-content open/close transition.
+// Mirrors the exact max-height/scrollHeight technique AccordionItem uses, so
+// row expansion animates consistently with Accordion elsewhere in the library.
+//
+// Content stays mounted through the close animation (so it can transition
+// shut instead of vanishing instantly), but is never mounted before the row
+// is actually opened for the first time - so `renderExpandedContent` (which
+// may kick off a data fetch) never runs for a row nobody has expanded.
+//
+// Must be called from its own per-row component (not inline in a .map()
+// callback) so the number of hook calls stays constant across renders
+// regardless of how many rows are currently displayed.
+// ─────────────────────────────────────────────────────────────────────────────
+function useExpandAnimation(isOpen: boolean): {
+  mounted: boolean;
+  maxHeight: number;
+  contentRef: React.RefObject<HTMLDivElement | null>;
+  handleTransitionEnd: () => void;
+} {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState(0);
+  const [mounted, setMounted] = useState(isOpen);
+
+  useEffect(() => {
+    if (isOpen) setMounted(true);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    // Deferred a frame so the just-mounted content has a real scrollHeight
+    // to measure (mounting and measuring in the same tick would still read
+    // its pre-layout size).
+    const raf = requestAnimationFrame(() => {
+      if (contentRef.current) setMaxHeight(isOpen ? contentRef.current.scrollHeight : 0);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [isOpen, mounted]);
+
+  const handleTransitionEnd = useCallback(() => {
+    if (!isOpen) setMounted(false);
+  }, [isOpen]);
+
+  return { mounted, maxHeight, contentRef, handleTransitionEnd };
+}
+
+// Table mode: one extra full-width <tr> rendered directly after an expanded
+// row - see `expandable`/`renderExpandedContent` on DataGridProps.
+function ExpandedTableRow({
+  isOpen,
+  colSpan,
+  render,
+}: {
+  isOpen: boolean;
+  colSpan: number;
+  render: () => React.ReactNode;
+}): React.ReactElement | null {
+  const { mounted, maxHeight, contentRef, handleTransitionEnd } = useExpandAnimation(isOpen);
+  if (!mounted) return null;
+
+  return (
+    <tr className="eidos-datagrid-expanded-row">
+      <td colSpan={colSpan} className="eidos-datagrid-expanded-cell">
+        <div
+          ref={contentRef}
+          className="eidos-datagrid-expand-panel"
+          style={{ maxHeight: `${maxHeight}px` }}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          <div className="eidos-datagrid-expand-panel-inner">{render()}</div>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+// Card mode: the same animated panel, appended inside the card itself below
+// its fields.
+function ExpandedCardPanel({
+  isOpen,
+  render,
+}: {
+  isOpen: boolean;
+  render: () => React.ReactNode;
+}): React.ReactElement | null {
+  const { mounted, maxHeight, contentRef, handleTransitionEnd } = useExpandAnimation(isOpen);
+  if (!mounted) return null;
+
+  return (
+    <div
+      ref={contentRef}
+      className="eidos-datagrid-expand-panel"
+      style={{ maxHeight: `${maxHeight}px` }}
+      onTransitionEnd={handleTransitionEnd}
+    >
+      <div className="eidos-datagrid-expand-panel-inner">{render()}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Inner implementation (generic function so we can assign .displayName cleanly)
 // ─────────────────────────────────────────────────────────────────────────────
 function DataGridInner<T extends Record<string, unknown>>({
@@ -126,6 +227,14 @@ function DataGridInner<T extends Record<string, unknown>>({
   defaultSelectedRows,
   onSelectionChange,
   bulkActions,
+  // ── Row expansion ────────────────────────────────────────────────────────────
+  expandable = false,
+  renderExpandedContent,
+  isRowExpandable,
+  expandMultiple = true,
+  expandedRows: controlledExpandedRows,
+  defaultExpandedRows,
+  onExpandedRowsChange,
   // ── Display ────────────────────────────────────────────────────────────────
   density = 'comfortable',
   showDensity = false,
@@ -218,6 +327,12 @@ function DataGridInner<T extends Record<string, unknown>>({
   const isControlledSelection = controlledSelectedRows !== undefined;
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<Set<string>>(
     () => new Set(defaultSelectedRows ?? []),
+  );
+
+  // Row expansion
+  const isControlledExpansion = controlledExpandedRows !== undefined;
+  const [internalExpandedKeys, setInternalExpandedKeys] = useState<Set<string>>(
+    () => new Set(defaultExpandedRows ?? []),
   );
 
   // Card view: measured off the grid's own container width (not the
@@ -339,6 +454,13 @@ function DataGridInner<T extends Record<string, unknown>>({
   const selectedItems = useMemo(
     () => localData.filter((row, idx) => selectedSet.has(String(row[rowKey as keyof T] ?? idx))),
     [localData, selectedSet, rowKey],
+  );
+
+  // ── Row expansion derived state ─────────────────────────────────────────────
+  const expandedSet = useMemo(
+    () =>
+      new Set(isControlledExpansion ? (controlledExpandedRows ?? []) : [...internalExpandedKeys]),
+    [isControlledExpansion, controlledExpandedRows, internalExpandedKeys],
   );
 
   // ── Filter dropdown adapter: DataGridColumn → TableColumn ─────────────────
@@ -473,7 +595,7 @@ function DataGridInner<T extends Record<string, unknown>>({
     let leftAccum = 0;
     for (const cell of cells) {
       const key = cell.dataset.colKey!;
-      if (key === '__sel__' || key === '__drag__' || key === '__rownum__') {
+      if (key === '__expand__' || key === '__sel__' || key === '__drag__' || key === '__rownum__') {
         if (hasLeftPin) {
           newOffsets.set(key, { side: 'left', offset: leftAccum });
         }
@@ -504,7 +626,7 @@ function DataGridInner<T extends Record<string, unknown>>({
     }
 
     setPinnedOffsets(newOffsets);
-  }, [columns, selectable, draggableRows, showRowNumbers]);
+  }, [columns, selectable, draggableRows, showRowNumbers, expandable]);
 
   // ── Sticky-column helpers ──────────────────────────────────────────────────
   const getCellPinnedProps = useCallback(
@@ -818,6 +940,30 @@ function DataGridInner<T extends Record<string, unknown>>({
   }, [allSelected, allKeys, commitSelection]);
 
   const clearSelection = useCallback(() => commitSelection([]), [commitSelection]);
+
+  // ── Row expansion handlers ───────────────────────────────────────────────────
+  const commitExpanded = useCallback(
+    (keys: string[]) => {
+      if (!isControlledExpansion) setInternalExpandedKeys(new Set(keys));
+      onExpandedRowsChange?.(keys);
+    },
+    [isControlledExpansion, onExpandedRowsChange],
+  );
+
+  const toggleExpanded = useCallback(
+    (key: string) => {
+      const isOpen = expandedSet.has(key);
+      const next = expandMultiple
+        ? isOpen
+          ? [...expandedSet].filter((k) => k !== key)
+          : [...expandedSet, key]
+        : isOpen
+          ? []
+          : [key];
+      commitExpanded(next);
+    },
+    [expandedSet, expandMultiple, commitExpanded],
+  );
 
   // ── Sort handler ────────────────────────────────────────────────────────────
   const handleSortClick = useCallback(
@@ -1169,7 +1315,8 @@ function DataGridInner<T extends Record<string, unknown>>({
     (showRowNumbers ? 1 : 0) +
     (actionsColumn ? 1 : 0) +
     (draggableRows ? 1 : 0) +
-    (selectable ? 1 : 0);
+    (selectable ? 1 : 0) +
+    (expandable ? 1 : 0);
 
   // Row IDs for SortableContext - must be the displayed rows (not full dataset)
   // so dnd-kit knows which items are currently rendered.
@@ -1216,9 +1363,11 @@ function DataGridInner<T extends Record<string, unknown>>({
   // ── Render ─────────────────────────────────────────────────────────────────
   // Pre-compute sticky props for system columns so we can spread them on
   // header <th>s and body <td>s without calling the helpers multiple times.
+  const expandHeaderPin = getHeaderPinnedProps('__expand__');
   const selHeaderPin = getHeaderPinnedProps('__sel__');
   const dragHeaderPin = getHeaderPinnedProps('__drag__');
   const rownumHeaderPin = getHeaderPinnedProps('__rownum__');
+  const expandCellPin = getCellPinnedProps('__expand__');
   const selCellPin = getCellPinnedProps('__sel__');
   const dragCellPin = getCellPinnedProps('__drag__');
   const rownumCellPin = getCellPinnedProps('__rownum__');
@@ -1351,6 +1500,8 @@ function DataGridInner<T extends Record<string, unknown>>({
               const localIndex = localData.indexOf(row);
               const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
               const isRowSelected = selectable && selectedSet.has(rowKeyValue);
+              const isRowExpanded = expandable && expandedSet.has(rowKeyValue);
+              const canExpandRow = !isRowExpandable || isRowExpandable(row);
 
               return (
                 <div
@@ -1368,6 +1519,22 @@ function DataGridInner<T extends Record<string, unknown>>({
                       own `onClick={(e) => e.stopPropagation()}` in table mode. */}
                   <div className="eidos-datagrid-card-toolbar" onClick={(e) => e.stopPropagation()}>
                     <div className="eidos-datagrid-card-toolbar-left">
+                      {expandable && canExpandRow && (
+                        <button
+                          type="button"
+                          className={[
+                            'eidos-datagrid-expand-toggle',
+                            isRowExpanded && 'eidos-datagrid-expand-toggle--open',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          onClick={() => toggleExpanded(rowKeyValue)}
+                          aria-expanded={isRowExpanded}
+                          aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
+                        >
+                          <ChevronRight size={14} />
+                        </button>
+                      )}
                       {selectable && (
                         <Checkbox
                           checked={isRowSelected}
@@ -1409,6 +1576,13 @@ function DataGridInner<T extends Record<string, unknown>>({
                   <div className="eidos-datagrid-card-fields">
                     {cardFieldColumns.map((col) => renderCardField(col, row, localIndex))}
                   </div>
+
+                  {expandable && renderExpandedContent && (
+                    <ExpandedCardPanel
+                      isOpen={isRowExpanded}
+                      render={() => renderExpandedContent(row, localIndex)}
+                    />
+                  )}
                 </div>
               );
             })
@@ -1456,6 +1630,21 @@ function DataGridInner<T extends Record<string, unknown>>({
               <table className={['eidos-data-grid', densityClass].filter(Boolean).join(' ')}>
                 <thead ref={theadRef}>
               <tr>
+                {/* Expand-toggle column - must come before every other system column */}
+                {expandable && (
+                  <th
+                    className={[
+                      'eidos-data-grid-header-cell',
+                      'eidos-datagrid-expand-cell',
+                      expandHeaderPin.className,
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    style={expandHeaderPin.style}
+                    data-col-key="__expand__"
+                  />
+                )}
+
                 {/* Selection checkbox column */}
                 {selectable && (
                   <th
@@ -1580,24 +1769,62 @@ function DataGridInner<T extends Record<string, unknown>>({
                     const localIndex = localData.indexOf(row);
                     const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
                     const isRowSelected = selectable && selectedSet.has(rowKeyValue);
+                    const isRowExpanded = expandable && expandedSet.has(rowKeyValue);
+                    const canExpandRow = !isRowExpandable || isRowExpandable(row);
 
                     return (
-                      // SortableTableRow is always rendered (hooks unconditional);
-                      // disabled={true} when draggableRows is off so dnd-kit is a no-op.
-                      <SortableTableRow
-                        key={rowKeyValue}
-                        id={rowKeyValue}
-                        disabled={!draggableRows}
-                        className={[
-                          'eidos-data-grid-row',
-                          isRowSelected && 'eidos-datagrid-row--selected',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {(dragHandleProps, isDragging) => (
-                          <>
-                            {selectable && (
+                      // React.Fragment (rather than SortableTableRow taking the
+                      // `key` directly) so an expanded row's detail <tr> - see
+                      // ExpandedTableRow below - can sit right underneath it as
+                      // a sibling, keyed together as one reconciliation unit.
+                      <React.Fragment key={rowKeyValue}>
+                        {/* SortableTableRow is always rendered (hooks unconditional);
+                            disabled={true} when draggableRows is off so dnd-kit is a no-op. */}
+                        <SortableTableRow
+                          id={rowKeyValue}
+                          disabled={!draggableRows}
+                          className={[
+                            'eidos-data-grid-row',
+                            isRowSelected && 'eidos-datagrid-row--selected',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                        >
+                          {(dragHandleProps, isDragging) => (
+                            <>
+                              {expandable && (
+                                <td
+                                  className={[
+                                    'eidos-data-grid-cell',
+                                    'eidos-datagrid-expand-cell',
+                                    expandCellPin.className,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(' ')}
+                                  style={expandCellPin.style}
+                                  // Prevent a click on the toggle from triggering cell editing
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {canExpandRow && (
+                                    <button
+                                      type="button"
+                                      className={[
+                                        'eidos-datagrid-expand-toggle',
+                                        isRowExpanded && 'eidos-datagrid-expand-toggle--open',
+                                      ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                      onClick={() => toggleExpanded(rowKeyValue)}
+                                      aria-expanded={isRowExpanded}
+                                      aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
+                                    >
+                                      <ChevronRight size={14} />
+                                    </button>
+                                  )}
+                                </td>
+                              )}
+
+                              {selectable && (
                               <td
                                 className={[
                                   'eidos-data-grid-cell',
@@ -1724,7 +1951,16 @@ function DataGridInner<T extends Record<string, unknown>>({
                             )}
                           </>
                         )}
-                      </SortableTableRow>
+                        </SortableTableRow>
+
+                        {expandable && renderExpandedContent && (
+                          <ExpandedTableRow
+                            isOpen={isRowExpanded}
+                            colSpan={totalCols}
+                            render={() => renderExpandedContent(row, localIndex)}
+                          />
+                        )}
+                      </React.Fragment>
                     );
                   })
                 ) : (

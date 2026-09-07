@@ -152,3 +152,11 @@ Mark one column `cardHeader` and, optionally, another `cardSubheader` to use the
 Only the row rendering changes - pagination, filtering, sorting, selection, and inline cell editing all keep working exactly as in table mode. `draggableRows` is not available in card view.
 
 <Canvas of={DataGridStories.ResponsiveCardView} />
+
+## Expandable rows
+
+Set `expandable` and `renderExpandedContent: (row, index) => ReactNode` to add a chevron that reveals extra per-row content - a dedicated column in table mode, a toolbar toggle in card mode. `renderExpandedContent` is genuinely lazy: it only runs the first time a given row is actually opened, so it's safe to kick off a data fetch from it without worrying about firing for every row up front. The open/close transition mirrors `Accordion`'s own max-height animation for a consistent feel.
+
+By default (`expandMultiple`, default `true`) any number of rows can be open at once; set it to `false` for accordion behaviour, where opening a row auto-collapses whichever other row was open. Use `isRowExpandable: (row) => boolean` to omit the chevron/toggle entirely for rows that shouldn't be expandable. Expansion state works exactly like selection - uncontrolled by default, or controlled via `expandedRows`/`onExpandedRowsChange` (with `defaultExpandedRows` for an uncontrolled initial value).
+
+<Canvas of={DataGridStories.ExpandableRows} />

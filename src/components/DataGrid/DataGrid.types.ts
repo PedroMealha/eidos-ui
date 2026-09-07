@@ -156,6 +156,30 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   onSelectionChange?: (selectedKeys: string[], selectedRows: T[]) => void;
   bulkActions?: BulkAction<T>[];
 
+  // ── Row expansion ──────────────────────────────────────────────────────────
+  /**
+   * Renders a chevron column (table mode) / toolbar toggle (card mode) that
+   * expands the row to show `renderExpandedContent`. Rendering nothing for a
+   * `renderExpandedContent`-less grid, since there'd be nothing to expand into.
+   * @default false
+   */
+  expandable?: boolean;
+  /** Content shown below a row once it's expanded. Required for `expandable` to do anything. */
+  renderExpandedContent?: (row: T, index: number) => React.ReactNode;
+  /** Per-row opt-out - rows this returns `false` for render no chevron/toggle and can't be expanded. */
+  isRowExpandable?: (row: T) => boolean;
+  /**
+   * Allow more than one row expanded at once. When `false`, expanding a row
+   * collapses whichever other row was open (accordion behaviour).
+   * @default true
+   */
+  expandMultiple?: boolean;
+  /** Controlled expanded row keys. */
+  expandedRows?: string[];
+  /** Uncontrolled initial expanded row keys. */
+  defaultExpandedRows?: string[];
+  onExpandedRowsChange?: (expandedKeys: string[]) => void;
+
   // ── Display ────────────────────────────────────────────────────────────────
   /** @default 'comfortable' */
   density?: 'compact' | 'comfortable' | 'spacious';

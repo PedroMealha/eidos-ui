@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Pencil, ShieldOff, FolderInput, Mail, MessageSquare } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
 import type { DataGridColumn } from './DataGrid.types';
@@ -1163,6 +1163,97 @@ export const RowActionsMenuAdvanced: Story = {
         data={makePeople()}
         rowKey="id"
         showRowNumbers
+      />
+    );
+  },
+};
+
+// ─── 19. Expandable rows ──────────────────────────────────────────────────────
+
+// Simulates fetching extra detail for a row on first expand - the point being
+// that `renderExpandedContent` isn't called at all until a row is actually
+// opened (see `useExpandAnimation` in DataGrid.component.tsx), so this
+// "request" never fires for rows nobody expanded.
+function PersonDetails({ person }: { person: Person }) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, [person.id]);
+
+  if (loading) {
+    return <div style={{ padding: '4px 0', color: 'var(--gray-500)' }}>Loading details…</div>;
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+      <div>
+        <strong>Email:</strong> {person.name.toLowerCase().replace(' ', '.')}@company.com
+      </div>
+      <div>
+        <strong>Joined:</strong> {person.joinDate ?? 'Unknown'}
+      </div>
+      <div>
+        <strong>Status:</strong> {person.active ? 'Active' : 'Inactive'}
+      </div>
+    </div>
+  );
+}
+
+const EXPANDABLE_COLUMNS: DataGridColumn<Person>[] = [
+  { key: 'name', header: 'Name', sortable: true, cardHeader: true },
+  { key: 'role', header: 'Role', type: 'select', options: ROLE_OPTIONS, cardSubheader: true },
+  {
+    key: 'department',
+    header: 'Department',
+    type: 'select',
+    options: DEPARTMENT_OPTIONS,
+  },
+  { key: 'salary', header: 'Salary', type: 'number', sortable: true },
+  {
+    key: 'actions',
+    header: 'Actions',
+    type: 'actions',
+    actions: [
+      { label: 'Edit', icon: Pencil, onClick: (person) => window.alert(`Edit ${person.name}`) },
+    ],
+  },
+];
+
+export const ExpandableRows: Story = {
+  name: 'Expandable rows',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Set `expandable` plus `renderExpandedContent: (row, index) => ReactNode` to add a ' +
+          'chevron that reveals extra per-row content - a dedicated column in table mode, a ' +
+          'toolbar toggle in card mode (try shrinking this preview below the breakpoint here, ' +
+          'since `hasCardView` is also on). Content is genuinely lazy: `renderExpandedContent` ' +
+          "only runs the first time a given row is opened - see \"Bob Martinez\" (inactive) " +
+          'below, whose row has no chevron at all via `isRowExpandable`, and any other row for ' +
+          'the ~600ms simulated fetch on first expand. `expandMultiple` (default `true`) allows ' +
+          'any number of rows open at once; set it to `false` for accordion behaviour - opening ' +
+          'one row auto-collapses whichever other row was open. Expansion state can also be ' +
+          'controlled via `expandedRows`/`onExpandedRowsChange`, same pattern as `selectedRows`.',
+      },
+    },
+  },
+  render: function ExpandableRowsStory() {
+    return (
+      <DataGrid<Person>
+        columns={EXPANDABLE_COLUMNS}
+        data={makePeople()}
+        rowKey="id"
+        showRowNumbers
+        expandable
+        expandMultiple={false}
+        isRowExpandable={(person) => person.active}
+        renderExpandedContent={(person) => <PersonDetails person={person} />}
+        hasCardView
+        cardViewBreakpoint={480}
       />
     );
   },

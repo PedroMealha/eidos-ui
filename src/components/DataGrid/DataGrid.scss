@@ -270,6 +270,75 @@
   }
 }
 
+// ─── Row expansion (DataGridProps.expandable) ────────────────────────────────
+
+.eidos-datagrid-expand-cell {
+  width: 32px;
+  min-width: 32px;
+  padding: 0 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.eidos-datagrid-expand-toggle {
+  @include button-reset;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: var(--border-radius-sm);
+  color: var(--gray-400);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    color: var(--gray-700);
+    background: var(--gray-100);
+  }
+
+  // The chevron itself rotates 90deg when open - same duration/easing as
+  // Accordion's own chevron, so expand affordances feel consistent
+  // wherever they appear in the library.
+  svg {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &--open svg {
+    transform: rotate(90deg);
+  }
+}
+
+// The extra full-width <tr> rendered directly under an expanded row.
+.eidos-datagrid-expanded-row {
+  border-bottom: 1px solid var(--gray-100);
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+.eidos-datagrid-expanded-cell {
+  padding: 0;
+  background: var(--gray-50);
+}
+
+// max-height is driven by an inline style set in JS (useExpandAnimation) -
+// this transition is what actually animates the height change smoothly.
+// Shared between table mode (inside `.eidos-datagrid-expanded-cell`) and
+// card mode (appended directly under `.eidos-datagrid-card-fields`) -
+// mirrors `.eidos-accordion-content-wrapper`'s own technique exactly, for
+// a consistent open/close feel with Accordion elsewhere in the library.
+.eidos-datagrid-expand-panel {
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eidos-datagrid-expand-panel-inner {
+  padding: var(--spacing-md);
+}
+
 // ─── Checkbox column (selection) ──────────────────────────────────────────────
 
 .eidos-datagrid-checkbox-cell {
