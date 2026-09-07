@@ -5,7 +5,7 @@ import { DataGrid } from './DataGrid.component';
 import type { DataGridColumn } from './DataGrid.types';
 import type { BulkAction } from '../Table/Table.types';
 import type { MenuItemType } from '../Menu';
-import { Chip } from '@pmealha/eidos-ui';
+import { Chip } from '../Chip/Chip.component';
 
 // ─── Data model ───────────────────────────────────────────────────────────────
 // `extends Record<string, unknown>` is required so that Person satisfies the
