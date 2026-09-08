@@ -114,7 +114,7 @@ export type {
   MenuSeparator,
   MenuNestedItem,
 } from './components/Menu';
-export type { ModalProps, ModalAction } from './components/Modal';
+export type { ModalProps, ModalAction, ModalSize } from './components/Modal';
 export type { SelectProps, SelectOption } from './components/Select';
 export type {
   SnackbarProps,
@@ -169,8 +169,8 @@ export type { TagInputProps } from './components/TagInput';
 export type { TreeViewProps, TreeNode } from './components/TreeView';
 export type { VirtualListProps } from './components/VirtualList';
 
-// Shared type (all IconTypes are the same)
-export type { IconType } from './utils';
+// Shared types (used across many components)
+export type { IconType, ComponentSizeProps } from './utils';
 export type { ButtonGroupProps } from './components/ButtonGroup';
 export type {
   SegmentedControlProps,

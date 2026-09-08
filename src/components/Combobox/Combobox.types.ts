@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export interface ComboboxOption {
   id: string;
@@ -22,7 +23,7 @@ export interface ComboboxProps {
   allowFreeText?: boolean;
   clearable?: boolean;
   disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   label?: string;
   error?: string;
   hint?: string;

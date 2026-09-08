@@ -1,3 +1,5 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export type SliderColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 
 export interface SliderProps {
@@ -8,7 +10,7 @@ export interface SliderProps {
   step?: number;
   onChange?: (value: number) => void;
   color?: SliderColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   /** Display current value label above the thumb. */
   showValue?: boolean;

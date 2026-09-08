@@ -1,3 +1,5 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export interface OTPInputProps {
   /** Number of individual slots. Default: 6 */
   length?: number;
@@ -14,7 +16,7 @@ export interface OTPInputProps {
   /** Mask filled slots as password dots. Default: false */
   mask?: boolean;
   /** Visual size of each slot. Default: 'md' */
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   /** Error message - turns all slots red and renders the message below */
   error?: string;

@@ -49,7 +49,7 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large', 'full'],
+      options: ['sm', 'md', 'lg', 'full'],
       description: 'Size of the modal',
       table: { type: { summary: '"sm" | "md" | "lg" | "full"' }, defaultValue: { summary: 'md' } },
     },

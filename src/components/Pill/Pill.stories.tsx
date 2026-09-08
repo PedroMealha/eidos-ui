@@ -35,10 +35,10 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['sm', 'md'],
+      options: ['sm', 'md', 'lg'],
       description: 'Pill size',
       table: {
-        type: { summary: '"sm" | "md"' },
+        type: { summary: '"sm" | "md" | "lg"' },
         defaultValue: { summary: 'md' },
       },
     },
@@ -273,6 +273,19 @@ export const Sizes = {
               Medium
             </Pill>
             <Pill size="md" dot color="success" />
+          </div>
+        </div>
+        <div>
+          <p style={label}>Large</p>
+          <div style={row}>
+            <Pill size="lg">Large</Pill>
+            <Pill size="lg" variant="outlined">
+              Large
+            </Pill>
+            <Pill size="lg" variant="text">
+              Large
+            </Pill>
+            <Pill size="lg" dot color="success" />
           </div>
         </div>
       </div>

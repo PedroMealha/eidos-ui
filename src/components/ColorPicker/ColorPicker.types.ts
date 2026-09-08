@@ -1,3 +1,5 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export type ColorFormat = 'hex' | 'rgb' | 'hsl';
 
 export interface RGBColor {
@@ -34,7 +36,7 @@ export interface ColorPickerProps {
   /** Override the default swatch palette with custom hex strings */
   swatches?: string[];
   disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   /** Render the picker panel inline - no popover trigger. Default: false */
   inline?: boolean;
   label?: string;

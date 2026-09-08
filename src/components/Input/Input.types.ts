@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 
 export type InputVariantProps = 'filled' | 'outlined' | 'text' | 'bare';
 export type InputColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
@@ -7,7 +7,7 @@ export type InputColorProps = 'primary' | 'secondary' | 'success' | 'danger' | '
 interface BaseInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: InputVariantProps;
   color?: InputColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   loading?: boolean;
   className?: string;

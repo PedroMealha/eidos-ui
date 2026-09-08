@@ -1,10 +1,11 @@
 import React from 'react';
 import { LoaderCircle } from 'lucide-react';
+import type { ComponentSizeProps } from '../../utils';
 
 export type SpinnerColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 
 export interface SpinnerProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   color?: SpinnerColorProps;
   className?: string;
 }

@@ -1,4 +1,5 @@
 import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
+import type { ComponentSizeProps } from '../../utils';
 
 export interface ButtonGroupProps {
   /** Buttons (or other elements) to group. */
@@ -7,7 +8,7 @@ export interface ButtonGroupProps {
    * Fallback size applied to children that don't specify their own size.
    * Each child can still override this individually.
    */
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   /**
    * Fallback variant applied to children that don't specify their own variant.
    */

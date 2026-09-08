@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 
 export type TextareaVariantProps = 'filled' | 'outlined' | 'text';
 export type TextareaColorProps =
@@ -11,7 +11,7 @@ export interface TextareaProps extends Omit<
 > {
   variant?: TextareaVariantProps;
   color?: TextareaColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   loading?: boolean;
   className?: string;

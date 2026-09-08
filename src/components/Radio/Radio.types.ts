@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export type RadioColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 
@@ -8,7 +9,7 @@ export interface RadioProps extends Omit<
 > {
   label?: React.ReactNode;
   color?: RadioColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   className?: string;
 }
 
@@ -26,7 +27,7 @@ export interface RadioGroupProps {
   options: RadioOption[];
   direction?: 'horizontal' | 'vertical';
   color?: RadioColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   error?: string;
   className?: string;

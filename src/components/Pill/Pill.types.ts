@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export type PillColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 export type PillVariantProps = 'filled' | 'outlined' | 'text';
@@ -7,7 +8,7 @@ export interface PillProps {
   children?: React.ReactNode;
   color?: PillColorProps;
   variant?: PillVariantProps;
-  size?: 'sm' | 'md';
+  size?: ComponentSizeProps;
   /** Render a small coloured dot alongside the content. With no `children`, renders dot-only. */
   dot?: boolean;
   /** When children is a number, clamp display to `max+` if exceeded */

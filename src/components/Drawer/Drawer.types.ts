@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
+import type { ComponentSizeProps } from '../../utils';
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
-export type DrawerSize = 'sm' | 'md' | 'lg' | 'full';
+export type DrawerSize = ComponentSizeProps | 'full';
 
 export interface DrawerAction {
   id: string;

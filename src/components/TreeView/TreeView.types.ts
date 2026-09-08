@@ -1,4 +1,5 @@
 import type React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export interface TreeNode {
   id: string;
@@ -26,7 +27,7 @@ export interface TreeViewProps {
   onExpand?: (id: string, expanded: boolean) => void;
   defaultExpandAll?: boolean;
   // Appearance
-  size?: 'sm' | 'md' | 'lg'; // default: 'md'
+  size?: ComponentSizeProps; // default: 'md'
   showLines?: boolean; // indent guide lines, default: false
   className?: string;
   // Rendering

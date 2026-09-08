@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export type CheckboxColorProps =
   'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
@@ -11,6 +12,6 @@ export interface CheckboxProps extends Omit<
   error?: string;
   indeterminate?: boolean;
   color?: CheckboxColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   className?: string;
 }

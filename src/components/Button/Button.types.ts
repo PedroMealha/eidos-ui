@@ -1,4 +1,4 @@
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 
 /** Shared across every Button-family component (Button, ButtonGroup, SplitButton, bulk actions, ...). */
 export type ButtonVariantProps = 'filled' | 'outlined' | 'text';
@@ -8,7 +8,7 @@ export type ButtonColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 
 interface BaseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariantProps;
   color?: ButtonColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   loading?: boolean;
   className?: string;

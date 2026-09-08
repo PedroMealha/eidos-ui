@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export type AccordionColorProps =
   'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
@@ -15,7 +16,7 @@ export interface AccordionProps {
   /** Visual variant. Default: 'default'. */
   variant?: 'default' | 'bordered' | 'separated';
   /** Size affecting padding and font size. Default: 'md'. */
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   /** Color applied to the active trigger label. Default: 'primary'. */
   color?: AccordionColorProps;
   className?: string;

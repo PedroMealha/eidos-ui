@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 
 export type TabsColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 
@@ -8,7 +8,7 @@ export interface TabsProps {
   defaultValue?: string;
   onChange?: (value: string) => void;
   variant?: 'line' | 'enclosed' | 'pills';
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   color?: TabsColorProps;
   fullWidth?: boolean;
   className?: string;
@@ -33,7 +33,7 @@ export interface TabsContextValue {
   activeValue: string;
   onSelect: (value: string) => void;
   variant: 'line' | 'enclosed' | 'pills';
-  size: 'sm' | 'md' | 'lg';
+  size: ComponentSizeProps;
   color: TabsColorProps;
   fullWidth: boolean;
   listRef: React.RefObject<HTMLDivElement | null>;

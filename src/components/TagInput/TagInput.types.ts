@@ -1,9 +1,11 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export interface TagInputProps {
   value?: string[];
   defaultValue?: string[];
   onChange?: (tags: string[]) => void;
   placeholder?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   label?: string;
   error?: string;

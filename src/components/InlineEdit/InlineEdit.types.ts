@@ -1,3 +1,5 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export type InlineEditVariantProps = 'filled' | 'outlined' | 'text' | 'bare';
 
 export interface InlineEditProps {
@@ -34,7 +36,7 @@ export interface InlineEditProps {
   trigger?: 'click' | 'doubleClick';
 
   // ── Layout ────────────────────────────────────────────────────────────────
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   fullWidth?: boolean;
   disabled?: boolean;
 

@@ -1,3 +1,5 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export type PaginationColorProps =
   'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 
@@ -15,7 +17,7 @@ export interface PaginationProps {
   /** Color of the active page button. Default: 'primary'. */
   color?: PaginationColorProps;
   /** Size of page buttons. Default: 'sm'. */
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   className?: string;
 

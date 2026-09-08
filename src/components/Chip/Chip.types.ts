@@ -1,4 +1,4 @@
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 
 export type ChipVariantProps = 'filled' | 'outlined' | 'text';
 export type ChipColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
@@ -6,7 +6,7 @@ export type ChipColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'w
 interface BaseChipProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onClick'> {
   variant?: ChipVariantProps;
   color?: ChipColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   fullWidth?: boolean;
   disabled?: boolean;
   tooltip?: string;

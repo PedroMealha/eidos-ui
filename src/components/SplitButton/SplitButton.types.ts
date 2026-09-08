@@ -1,4 +1,4 @@
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
 
 export interface SplitButtonOption {
@@ -20,7 +20,7 @@ export interface SplitButtonProps {
   /** SplitButton has no `text` variant - a transparent-background split control has no visible boundary between its two halves. */
   variant?: Exclude<ButtonVariantProps, 'text'>;
   color?: ButtonColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   disabled?: boolean;
   loading?: boolean;
   /** Icon shown before the primary label. */

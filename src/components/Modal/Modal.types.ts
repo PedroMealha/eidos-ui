@@ -1,12 +1,15 @@
 import type { ReactNode } from 'react';
-import type { IconType } from '../../utils';
+import type { IconType, ComponentSizeProps } from '../../utils';
 import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
+
+/** Modal's own dialog size supports 'full' in addition to the shared scale. */
+export type ModalSize = ComponentSizeProps | 'full';
 
 export interface ModalAction {
   id: string;
   label: string;
   variant?: ButtonVariantProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   color?: ButtonColorProps;
   disabled?: boolean;
   loading?: boolean;
@@ -23,6 +26,6 @@ export interface ModalProps {
   actions?: ModalAction[];
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
-  size?: 'sm' | 'md' | 'lg' | 'full';
+  size?: ModalSize;
   className?: string;
 }

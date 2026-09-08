@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export interface EmptyStateProps {
   /** Large icon or illustration rendered at the top. Any ReactNode. */
@@ -10,6 +11,6 @@ export interface EmptyStateProps {
   /** Optional CTA - typically a Button. Any ReactNode. */
   action?: React.ReactNode;
   /** Controls overall size (icon size, text size, padding). Default: 'md'. */
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   className?: string;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentSizeProps } from '../../utils';
 
 export type SwitchColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 
@@ -9,6 +10,6 @@ export interface SwitchProps extends Omit<
   label?: React.ReactNode;
   labelPosition?: 'left' | 'right';
   color?: SwitchColorProps;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   className?: string;
 }

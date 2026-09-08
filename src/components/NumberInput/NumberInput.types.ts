@@ -1,3 +1,5 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export interface NumberInputProps {
   value?: number;
   defaultValue?: number;
@@ -14,7 +16,7 @@ export interface NumberInputProps {
   helperText?: string;
   error?: boolean;
   errorMessage?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   fullWidth?: boolean;
   /** Allow the user to type directly in the input field. Default: true. */
   allowTyping?: boolean;

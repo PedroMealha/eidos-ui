@@ -1,6 +1,8 @@
+import type { ComponentSizeProps } from '../../utils';
+
 export interface KbdProps {
   /** The key name or symbol to display. */
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: ComponentSizeProps;
   className?: string;
 }

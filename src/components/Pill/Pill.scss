@@ -28,6 +28,13 @@
     font-size: var(--font-size-sm);
   }
 
+  &--lg {
+    min-width: 24px;
+    height: 2.2em;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-base);
+  }
+
   // ========================================================================
   // Dot modifier - overrides size dimensions, keeps colour from variant+color
   // ========================================================================
@@ -46,6 +53,12 @@
       width: 8px;
       height: 8px;
       min-width: 8px;
+    }
+
+    &.eidos-pill--lg {
+      width: 10px;
+      height: 10px;
+      min-width: 10px;
     }
   }
 
