@@ -31,6 +31,7 @@ import { Checkbox } from '../Checkbox';
 import { Dropdown } from '../Dropdown';
 import { EmptyState } from '../EmptyState';
 import { Pagination } from '../Pagination';
+import { SplitButton } from '../SplitButton';
 import { Spinner } from '../Spinner';
 import { TableFiltersDropdown } from './TableFiltersDropdown.component';
 
@@ -545,19 +546,53 @@ export const Table = <T extends Record<string, unknown>>({
                         typeof action.disabled === 'function'
                           ? action.disabled(selectedItems)
                           : (action.disabled ?? false);
-                      return (
+
+                      if (action.type === 'split-button') {
+                        return (
+                          <SplitButton
+                            key={action.id}
+                            size="sm"
+                            variant={action.variant ?? 'outlined'}
+                            color={action.color ?? 'secondary'}
+                            preIcon={action.icon}
+                            disabled={isDisabled}
+                            label={action.label}
+                            onClick={() => action.onClick(selectedItems)}
+                            options={action.options.map((option) => ({
+                              id: option.id,
+                              label: option.label,
+                              icon: option.icon,
+                              disabled: option.disabled,
+                              onClick: () => option.onClick(selectedItems),
+                            }))}
+                          />
+                        );
+                      }
+
+                      return action.label ? (
                         <Button
                           key={action.id}
                           size="sm"
                           variant={action.variant ?? 'outlined'}
                           color={action.color ?? 'secondary'}
                           preIcon={action.icon}
+                          posIcon={action.posIcon}
                           disabled={isDisabled}
                           onClick={() => action.onClick(selectedItems)}
                         >
                           {action.label}
                         </Button>
-                      );
+                      ) : action.icon ? (
+                        <Button
+                          key={action.id}
+                          size="sm"
+                          variant={action.variant ?? 'outlined'}
+                          color={action.color ?? 'secondary'}
+                          icon={action.icon}
+                          disabled={isDisabled}
+                          onClick={() => action.onClick(selectedItems)}
+                        />
+                      ) : null;
                     })}
                   </div>
                 )}

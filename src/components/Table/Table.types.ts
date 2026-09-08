@@ -1,14 +1,48 @@
-import type { ComponentType, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import type { IconType } from '../../utils';
+import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
 
-export interface BulkAction<T> {
+/** A secondary action inside a `type: 'split-button'` bulk action's dropdown. */
+export interface BulkActionSplitOption<T> {
   id: string;
   label: string;
-  icon?: ComponentType<{ size?: number; className?: string }>;
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
-  variant?: 'filled' | 'outlined' | 'text';
+  icon?: IconType;
+  disabled?: boolean;
+  /** Receives the full array of currently selected row objects. */
   onClick: (selectedRows: T[]) => void;
-  disabled?: boolean | ((selectedRows: T[]) => boolean);
 }
+
+interface BulkActionCommon<T> {
+  /** Only needs to be unique within this `bulkActions` array. */
+  id: string;
+  color?: ButtonColorProps;
+  disabled?: boolean | ((selectedRows: T[]) => boolean);
+  /** Primary action - fired on click for `'button'`, or on the primary (left) segment for `'split-button'`. */
+  onClick: (selectedRows: T[]) => void;
+}
+
+export interface BulkActionButton<T> extends BulkActionCommon<T> {
+  /** @default 'button' */
+  type?: 'button';
+  /** Omit to render an icon-only button - `icon` becomes the sole icon in that case. */
+  label?: string;
+  icon?: IconType;
+  posIcon?: IconType;
+  variant?: ButtonVariantProps;
+}
+
+export interface BulkActionSplitButton<T> extends BulkActionCommon<T> {
+  type: 'split-button';
+  /** Required - SplitButton always renders a primary label. */
+  label: string;
+  icon?: IconType;
+  /** SplitButton has no `text` variant. */
+  variant?: Exclude<ButtonVariantProps, 'text'>;
+  /** Secondary actions shown in the split-button's dropdown. */
+  options: BulkActionSplitOption<T>[];
+}
+
+export type BulkAction<T> = BulkActionButton<T> | BulkActionSplitButton<T>;
 
 interface TableColumn<T> {
   key: keyof T | string;

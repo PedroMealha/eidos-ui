@@ -78,7 +78,13 @@ export type { CheckboxProps } from './components/Checkbox';
 export type { RadioProps, RadioGroupProps, RadioOption } from './components/Radio';
 export type { SwitchProps } from './components/Switch';
 export type { TextareaProps } from './components/Textarea';
-export type { ButtonProps, IconButtonProps, TextButtonProps } from './components/Button';
+export type {
+  ButtonProps,
+  IconButtonProps,
+  TextButtonProps,
+  ButtonVariantProps,
+  ButtonColorProps,
+} from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
 export type { ChipProps, TextChipProps } from './components/Chip';
 export type { DividerProps } from './components/Divider';
@@ -132,6 +138,9 @@ export type {
   TableFilters,
   FilterValue,
   BulkAction,
+  BulkActionButton,
+  BulkActionSplitButton,
+  BulkActionSplitOption,
 } from './components/Table';
 
 export type { ColorPickerProps, ColorFormat, RGBColor, HSLColor } from './components/ColorPicker';

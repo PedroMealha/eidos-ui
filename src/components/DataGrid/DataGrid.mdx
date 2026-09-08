@@ -79,7 +79,9 @@ Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `
 
 ## With selection
 
-Enable `selectable={true}` to add row checkboxes. Pass a `bulkActions` array to expose actions - each action's `onClick` receives the full array of selected row objects.
+Enable `selectable={true}` to add row checkboxes. Nothing is rendered by default - pass a `bulkActions` array to expose actions, each fully under your control (`id`, `label`, `icon`, `color`, `variant`, `disabled`). Each action's `onClick` receives the full array of selected row objects.
+
+Set `type: 'split-button'` (default is `'button'`) to render a primary action plus a dropdown of secondary `options`, instead of a plain button. Omit `label` on a `'button'` action to render an icon-only button.
 
 <Canvas of={DataGridStories.WithSelection} />
 

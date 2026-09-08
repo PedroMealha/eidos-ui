@@ -1,3 +1,5 @@
+import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
+
 export interface ButtonGroupProps {
   /** Buttons (or other elements) to group. */
   children: React.ReactNode;
@@ -9,11 +11,11 @@ export interface ButtonGroupProps {
   /**
    * Fallback variant applied to children that don't specify their own variant.
    */
-  variant?: 'filled' | 'outlined' | 'text';
+  variant?: ButtonVariantProps;
   /**
    * Fallback color applied to children that don't specify their own color.
    */
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: ButtonColorProps;
   /** Stack buttons vertically instead of horizontally. */
   orientation?: 'horizontal' | 'vertical';
   className?: string;

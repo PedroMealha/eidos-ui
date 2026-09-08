@@ -622,9 +622,10 @@ export const WithSelection: Story = {
     docs: {
       description: {
         story:
-          'Row checkboxes enable multi-selection. The "Delete selected" bulk action ' +
-          'removes all selected rows from the dataset. Use `selectable={true}` and ' +
-          'pass a `bulkActions` array - each action receives the full selected row objects.',
+          '`bulkActions` accepts any mix of plain buttons (`type: \'button\'`, the default) ' +
+          'and split-buttons (`type: \'split-button\'`, a primary action plus a dropdown of ' +
+          '`options`) - nothing is rendered by default, and every action, icon, and color is ' +
+          'entirely up to the consumer. Each action receives the full array of selected row objects.',
       },
     },
   },
@@ -634,6 +635,7 @@ export const WithSelection: Story = {
     const bulkActions: BulkAction<Person>[] = [
       {
         id: 'delete-selected',
+        type: 'button',
         label: 'Delete selected',
         icon: Trash2,
         color: 'danger',
@@ -641,6 +643,41 @@ export const WithSelection: Story = {
           const selectedIds = new Set(selectedRows.map((r) => r.id));
           setData((prev) => prev.filter((r) => !selectedIds.has(r.id)));
         },
+      },
+      {
+        id: 'move-to',
+        type: 'split-button',
+        label: 'Move to Engineering',
+        icon: FolderInput,
+        variant: 'outlined',
+        onClick: (selectedRows) => {
+          const selectedIds = new Set(selectedRows.map((r) => r.id));
+          setData((prev) =>
+            prev.map((r) => (selectedIds.has(r.id) ? { ...r, department: 'engineering' } : r)),
+          );
+        },
+        options: [
+          {
+            id: 'move-to-design',
+            label: 'Move to Design',
+            onClick: (selectedRows) => {
+              const selectedIds = new Set(selectedRows.map((r) => r.id));
+              setData((prev) =>
+                prev.map((r) => (selectedIds.has(r.id) ? { ...r, department: 'design' } : r)),
+              );
+            },
+          },
+          {
+            id: 'move-to-product',
+            label: 'Move to Product',
+            onClick: (selectedRows) => {
+              const selectedIds = new Set(selectedRows.map((r) => r.id));
+              setData((prev) =>
+                prev.map((r) => (selectedIds.has(r.id) ? { ...r, department: 'product' } : r)),
+              );
+            },
+          },
+        ],
       },
     ];
 

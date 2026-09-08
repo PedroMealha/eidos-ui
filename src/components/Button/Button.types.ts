@@ -1,8 +1,13 @@
 import type { IconType } from '../../utils';
 
+/** Shared across every Button-family component (Button, ButtonGroup, SplitButton, bulk actions, ...). */
+export type ButtonVariantProps = 'filled' | 'outlined' | 'text';
+/** Shared across every Button-family component (Button, ButtonGroup, SplitButton, bulk actions, ...). */
+export type ButtonColorProps = 'primary' | 'secondary' | 'success' | 'danger';
+
 interface BaseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'filled' | 'outlined' | 'text';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: ButtonVariantProps;
+  color?: ButtonColorProps;
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;

@@ -31,6 +31,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '../Button';
+import { SplitButton } from '../SplitButton';
 import { Input } from '../Input/Input.component';
 import { Select } from '../Select/Select.component';
 import { Checkbox } from '../Checkbox/Checkbox.component';
@@ -227,7 +228,7 @@ function DataGridInner<T extends Record<string, unknown>>({
   rowKey = 'id',
   onChange,
   onRowAdd,
-  editable = true,
+  editable = false,
   loading = false,
   emptyText = 'No data available',
   className,
@@ -1429,19 +1430,53 @@ function DataGridInner<T extends Record<string, unknown>>({
                         typeof action.disabled === 'function'
                           ? action.disabled(selectedItems)
                           : (action.disabled ?? false);
-                      return (
+
+                      if (action.type === 'split-button') {
+                        return (
+                          <SplitButton
+                            key={action.id}
+                            size="sm"
+                            variant={action.variant ?? 'outlined'}
+                            color={action.color ?? 'secondary'}
+                            preIcon={action.icon}
+                            disabled={isDisabled}
+                            label={action.label}
+                            onClick={() => action.onClick(selectedItems)}
+                            options={action.options.map((option) => ({
+                              id: option.id,
+                              label: option.label,
+                              icon: option.icon,
+                              disabled: option.disabled,
+                              onClick: () => option.onClick(selectedItems),
+                            }))}
+                          />
+                        );
+                      }
+
+                      return action.label ? (
                         <Button
                           key={action.id}
                           size="sm"
                           variant={action.variant ?? 'outlined'}
                           color={action.color ?? 'secondary'}
                           preIcon={action.icon}
+                          posIcon={action.posIcon}
                           disabled={isDisabled}
                           onClick={() => action.onClick(selectedItems)}
                         >
                           {action.label}
                         </Button>
-                      );
+                      ) : action.icon ? (
+                        <Button
+                          key={action.id}
+                          size="sm"
+                          variant={action.variant ?? 'outlined'}
+                          color={action.color ?? 'secondary'}
+                          icon={action.icon}
+                          disabled={isDisabled}
+                          onClick={() => action.onClick(selectedItems)}
+                        />
+                      ) : null;
                     })}
                   </div>
                 )}
@@ -1658,7 +1693,22 @@ function DataGridInner<T extends Record<string, unknown>>({
               <table className={['eidos-data-grid', densityClass].filter(Boolean).join(' ')}>
                 <thead ref={theadRef}>
               <tr>
-                {/* Expand-toggle column - must come before every other system column */}
+                {/* Drag-handle column - must come before every other system column */}
+                {draggableRows && (
+                  <th
+                    className={[
+                      'eidos-data-grid-header-cell',
+                      'eidos-datagrid-drag-handle-cell',
+                      dragHeaderPin.className,
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    style={dragHeaderPin.style}
+                    data-col-key="__drag__"
+                  />
+                )}
+
+                {/* Expand-toggle column */}
                 {expandable && (
                   <th
                     className={[
@@ -1673,7 +1723,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                   />
                 )}
 
-                {/* Selection checkbox column */}
+                {/* Selection checkbox column - must come before row numbers */}
                 {selectable && (
                   <th
                     className={[
@@ -1693,21 +1743,6 @@ function DataGridInner<T extends Record<string, unknown>>({
                       size="sm"
                     />
                   </th>
-                )}
-
-                {/* Drag-handle column - must come before row numbers */}
-                {draggableRows && (
-                  <th
-                    className={[
-                      'eidos-data-grid-header-cell',
-                      'eidos-datagrid-drag-handle-cell',
-                      dragHeaderPin.className,
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    style={dragHeaderPin.style}
-                    data-col-key="__drag__"
-                  />
                 )}
 
                 {showRowNumbers && (
@@ -1820,6 +1855,33 @@ function DataGridInner<T extends Record<string, unknown>>({
                         >
                           {(dragHandleProps, isDragging) => (
                             <>
+                              {draggableRows && (
+                                <td
+                                  className={[
+                                    'eidos-datagrid-drag-handle-cell',
+                                    dragCellPin.className,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(' ')}
+                                  style={dragCellPin.style}
+                                  // Prevent a click on the handle from triggering cell editing
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <span
+                                    {...(dragHandleProps as React.HTMLAttributes<HTMLSpanElement>)}
+                                    className={[
+                                      'eidos-datagrid-drag-handle',
+                                      isDragging && 'eidos-datagrid-drag-handle--dragging',
+                                    ]
+                                      .filter(Boolean)
+                                      .join(' ')}
+                                    title="Drag to reorder"
+                                  >
+                                    <GripVertical size={14} />
+                                  </span>
+                                </td>
+                              )}
+
                               {expandable && (
                                 <td
                                   className={[
@@ -1869,33 +1931,6 @@ function DataGridInner<T extends Record<string, unknown>>({
                                   onChange={() => toggleRow(rowKeyValue)}
                                   size="sm"
                                 />
-                              </td>
-                            )}
-
-                            {draggableRows && (
-                              <td
-                                className={[
-                                  'eidos-datagrid-drag-handle-cell',
-                                  dragCellPin.className,
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')}
-                                style={dragCellPin.style}
-                                // Prevent a click on the handle from triggering cell editing
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <span
-                                  {...(dragHandleProps as React.HTMLAttributes<HTMLSpanElement>)}
-                                  className={[
-                                    'eidos-datagrid-drag-handle',
-                                    isDragging && 'eidos-datagrid-drag-handle--dragging',
-                                  ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                  title="Drag to reorder"
-                                >
-                                  <GripVertical size={14} />
-                                </span>
                               </td>
                             )}
 

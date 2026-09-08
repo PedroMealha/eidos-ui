@@ -110,7 +110,7 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   onChange?: (data: T[]) => void;
   /** Returns a blank row object; if omitted, no Add-row button is shown */
   onRowAdd?: () => T;
-  /** Master editable switch. @default true */
+  /** Master editable switch. @default false */
   editable?: boolean;
   loading?: boolean;
   emptyText?: string;
