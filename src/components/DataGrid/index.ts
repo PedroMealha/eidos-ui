@@ -5,6 +5,7 @@ export type {
   DataGridCellType,
   DataGridSelectOption,
   DataGridRowAction,
+  DataGridFilterField,
   EditingCell,
 } from './DataGrid.types';
 export type {

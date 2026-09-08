@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   DataGrid,
+  type DataGridFilterField,
   EmptyState,
   Input,
   Modal,
@@ -70,9 +71,6 @@ export const TeamPage: React.FC = () => {
         type: 'select' as const,
         width: 140,
         options: ROLE_OPTIONS,
-        filterable: true,
-        filterType: 'select' as const,
-        filterOptions: ROLE_OPTIONS.map((option) => ({ id: option.value, ...option })),
       },
       { key: 'active', header: 'Active', type: 'checkbox' as const, width: 100 },
       {
@@ -81,9 +79,6 @@ export const TeamPage: React.FC = () => {
         type: 'readonly' as const,
         width: 130,
         renderCell: (value: unknown) => new Date(String(value)).toLocaleDateString(),
-        filterable: true,
-        filterType: 'date' as const,
-        dateFilterMode: 'range' as const,
       },
       {
         key: 'actions',
@@ -100,6 +95,19 @@ export const TeamPage: React.FC = () => {
       },
     ],
     [removeMember],
+  );
+
+  const filterConfig: DataGridFilterField[] = useMemo(
+    () => [
+      {
+        key: 'role',
+        label: 'Role',
+        filterType: 'select',
+        filterOptions: ROLE_OPTIONS.map((option) => ({ id: option.value, ...option })),
+      },
+      { key: 'joinedAt', label: 'Joined', filterType: 'date', dateFilterMode: 'range' },
+    ],
+    [],
   );
 
   const saveChanges = async () => {
@@ -203,6 +211,7 @@ export const TeamPage: React.FC = () => {
           onChange={setRows}
           emptyText="Nobody on the team yet."
           showFilters
+          filterConfig={filterConfig}
           stickyHeader
         />
       </Card>

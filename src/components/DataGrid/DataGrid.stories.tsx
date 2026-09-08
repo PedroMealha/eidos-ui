@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, useEffect } from 'react';
 import { Trash2, Pencil, ShieldOff, FolderInput, Mail, MessageSquare } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
-import type { DataGridColumn } from './DataGrid.types';
+import type { DataGridColumn, DataGridFilterField } from './DataGrid.types';
 import type { BulkAction } from '../Table/Table.types';
 import type { MenuItemType } from '../Menu';
 import { Chip } from '../Chip/Chip.component';
@@ -195,21 +195,28 @@ const SORTABLE_COLUMNS: DataGridColumn<Person>[] = [
 
 const FILTERABLE_COLUMNS: DataGridColumn<Person>[] = [
   { key: 'id', header: 'ID', type: 'readonly', width: 60 },
+  { key: 'name', header: 'Name', type: 'text', minWidth: 160 },
+  { key: 'role', header: 'Role', type: 'select', width: 130, options: ROLE_OPTIONS },
   {
-    key: 'name',
-    header: 'Name',
-    type: 'text',
-    minWidth: 160,
-    filterable: true,
-    filterType: 'text',
+    key: 'department',
+    header: 'Department',
+    type: 'select',
+    width: 150,
+    options: DEPARTMENT_OPTIONS,
   },
+  { key: 'salary', header: 'Salary', type: 'number', width: 110 },
+  { key: 'active', header: 'Active', type: 'checkbox', width: 80 },
+  { key: 'joinDate', header: 'Join Date', type: 'text', width: 130 },
+];
+
+// Filter schema is fully decoupled from `columns` - it lives in its own
+// dedicated array, so every filterable field is visible in one place instead
+// of scattered across each column's definition.
+const FILTER_CONFIG: DataGridFilterField[] = [
+  { key: 'name', label: 'Name', filterType: 'text' },
   {
     key: 'role',
-    header: 'Role',
-    type: 'select',
-    width: 130,
-    options: ROLE_OPTIONS,
-    filterable: true,
+    label: 'Role',
     filterType: 'select',
     filterOptions: [
       { id: 'lead', value: 'lead', label: 'Lead' },
@@ -220,11 +227,7 @@ const FILTERABLE_COLUMNS: DataGridColumn<Person>[] = [
   },
   {
     key: 'department',
-    header: 'Department',
-    type: 'select',
-    width: 150,
-    options: DEPARTMENT_OPTIONS,
-    filterable: true,
+    label: 'Department',
     filterType: 'select',
     filterOptions: [
       { id: 'engineering', value: 'engineering', label: 'Engineering' },
@@ -234,17 +237,7 @@ const FILTERABLE_COLUMNS: DataGridColumn<Person>[] = [
       { id: 'ops', value: 'ops', label: 'Operations' },
     ],
   },
-  { key: 'salary', header: 'Salary', type: 'number', width: 110 },
-  { key: 'active', header: 'Active', type: 'checkbox', width: 80 },
-  {
-    key: 'joinDate',
-    header: 'Join Date',
-    type: 'text',
-    width: 130,
-    filterable: true,
-    filterType: 'date',
-    dateFilterMode: 'range',
-  },
+  { key: 'joinDate', label: 'Join Date', filterType: 'date', dateFilterMode: 'range' },
 ];
 
 // Pinned-from-middle demo columns.
@@ -303,8 +296,6 @@ const FULL_FEATURED_COLUMNS: DataGridColumn<Person>[] = [
     minWidth: 160,
     required: true,
     sortable: true,
-    filterable: true,
-    filterType: 'text',
   },
   {
     key: 'role',
@@ -313,14 +304,6 @@ const FULL_FEATURED_COLUMNS: DataGridColumn<Person>[] = [
     width: 130,
     options: ROLE_OPTIONS,
     sortable: true,
-    filterable: true,
-    filterType: 'select',
-    filterOptions: [
-      { id: 'lead', value: 'lead', label: 'Lead' },
-      { id: 'senior', value: 'senior', label: 'Senior' },
-      { id: 'mid', value: 'mid', label: 'Mid-level' },
-      { id: 'junior', value: 'junior', label: 'Junior' },
-    ],
   },
   {
     key: 'department',
@@ -329,15 +312,6 @@ const FULL_FEATURED_COLUMNS: DataGridColumn<Person>[] = [
     width: 150,
     options: DEPARTMENT_OPTIONS,
     sortable: true,
-    filterable: true,
-    filterType: 'select',
-    filterOptions: [
-      { id: 'engineering', value: 'engineering', label: 'Engineering' },
-      { id: 'design', value: 'design', label: 'Design' },
-      { id: 'product', value: 'product', label: 'Product' },
-      { id: 'marketing', value: 'marketing', label: 'Marketing' },
-      { id: 'ops', value: 'ops', label: 'Operations' },
-    ],
   },
   { key: 'salary', header: 'Salary', type: 'number', width: 110, sortable: true },
   { key: 'active', header: 'Active', type: 'checkbox', width: 80 },
@@ -564,9 +538,10 @@ export const WithFiltering: Story = {
         story:
           'Client-side filtering. Open the filter panel via the toolbar button and ' +
           'try filtering by Name (text), Role / Department (select), or Join Date ' +
-          '(date range). Column-level options are set with `filterable: true`, ' +
-          "`filterType`, `filterOptions`, and - for `filterType: 'date'` - " +
-          "`dateFilterMode` (`'single' | 'multiple' | 'range'`). " +
+          '(date range). Filterable fields live in their own dedicated `filterConfig` ' +
+          "array - `key`, `label`, `filterType`, `filterOptions`, and - for `filterType: 'date'` - " +
+          "`dateFilterMode` (`'single' | 'multiple' | 'range'`) - entirely decoupled from " +
+          '`columns`, so a `key` can target any row-data field, not just a rendered column. ' +
           'No `onFiltersChange` callback means the grid manages filter state internally.',
       },
     },
@@ -580,6 +555,7 @@ export const WithFiltering: Story = {
         rowKey="id"
         onChange={setData}
         showFilters={true}
+        filterConfig={FILTER_CONFIG}
       />
     );
   },
@@ -899,6 +875,7 @@ export const FullFeatured: Story = {
         pageSize={5}
         pageSizeOptions={[5, 10, 12]}
         showFilters={true}
+        filterConfig={FILTER_CONFIG}
       />
     );
   },

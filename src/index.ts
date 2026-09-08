@@ -152,6 +152,7 @@ export type {
   DataGridCellType,
   DataGridSelectOption,
   DataGridRowAction,
+  DataGridFilterField,
   EditingCell,
 } from './components/DataGrid';
 export type { OTPInputProps } from './components/OTPInput';

@@ -17,6 +17,25 @@ export interface DataGridSelectOption {
   label: string;
 }
 
+/**
+ * Defines one filterable field for the grid's filter dropdown - see
+ * `DataGridProps.filterConfig`. Deliberately decoupled from `columns`: `key`
+ * doesn't need to match a rendered column, so you can filter on any row-data
+ * field (including ones you don't display), without hunting through column
+ * definitions to find which ones set a filter flag.
+ */
+export interface DataGridFilterField {
+  /** Row data key this filter reads/writes. Does not need to match a `columns` entry. */
+  key: string;
+  label: string;
+  /** Filter UI type. @default 'text' */
+  filterType?: 'text' | 'select' | 'date' | 'boolean';
+  /** Options for filterType='select'. */
+  filterOptions?: Array<{ id: string; value: string; label: string }>;
+  /** UI mode for filterType='date'. @default 'single' */
+  dateFilterMode?: 'single' | 'multiple' | 'range';
+}
+
 /** A single entry in a `type: 'actions'` column's menu - see `DataGridColumn.actions`. */
 export interface DataGridRowAction<T = Record<string, unknown>> {
   /** Defaults to `label` if omitted - only needs to be unique within this column's `actions`. */
@@ -53,14 +72,6 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   // ── Read/display features ──────────────────────────────────────────────────
   /** Enable click-to-sort on this column */
   sortable?: boolean;
-  /** Enable the filter dropdown to filter on this column */
-  filterable?: boolean;
-  /** Filter UI type. @default 'text' */
-  filterType?: 'text' | 'select' | 'date' | 'boolean';
-  /** Options for filterType='select'. Same shape as TableColumn filterOptions. */
-  filterOptions?: Array<{ id: string; value: string; label: string }>;
-  /** UI mode for filterType='date'. Same as TableColumn dateFilterMode. @default 'single' */
-  dateFilterMode?: 'single' | 'multiple' | 'range';
   /** Lock this column to the left or right edge on horizontal scroll */
   pin?: 'left' | 'right';
 
@@ -133,7 +144,14 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   // ── Filtering ──────────────────────────────────────────────────────────────
   /** Show the filter button in the toolbar. */
   showFilters?: boolean;
-  /** Controlled filter state. When provided with onFiltersChange → server-side mode. */
+  /**
+   * Which fields can be filtered, and how - a dedicated schema array, kept
+   * separate from `columns` so it's one place to see every filterable field
+   * (including ones that aren't rendered as a column at all), rather than
+   * columns each carrying their own filter flag.
+   */
+  filterConfig?: DataGridFilterField[];
+  /** Controlled filter state (the current values, keyed by `filterConfig[].key`). When provided with onFiltersChange → server-side mode. */
   filters?: TableFilters;
   /** Filter change callback. When omitted, filtering is handled client-side. */
   onFiltersChange?: (filters: TableFilters) => void;

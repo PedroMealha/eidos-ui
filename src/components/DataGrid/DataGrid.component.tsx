@@ -43,7 +43,12 @@ import { Menu } from '../Menu';
 import type { MenuItemType } from '../Menu';
 import { TableFiltersDropdown } from '../Table/TableFiltersDropdown.component';
 import type { TableColumn, TableFilters } from '../Table/Table.types';
-import type { DataGridProps, DataGridColumn, EditingCell } from './DataGrid.types';
+import type {
+  DataGridProps,
+  DataGridColumn,
+  DataGridFilterField,
+  EditingCell,
+} from './DataGrid.types';
 import { renderIcon } from '../../utils';
 import './DataGrid.scss';
 
@@ -242,6 +247,7 @@ function DataGridInner<T extends Record<string, unknown>>({
   onSortChange,
   // ── Filtering ──────────────────────────────────────────────────────────────
   showFilters = false,
+  filterConfig = [],
   filters,
   onFiltersChange,
   // ── Pagination ─────────────────────────────────────────────────────────────
@@ -492,23 +498,22 @@ function DataGridInner<T extends Record<string, unknown>>({
     [isControlledExpansion, controlledExpandedRows, internalExpandedKeys],
   );
 
-  // ── Filter dropdown adapter: DataGridColumn → TableColumn ─────────────────
-  // TableFiltersDropdown expects TableColumn<T>[]; we project our columns down.
+  // ── Filter dropdown adapter: DataGridFilterField → TableColumn ─────────────
+  // TableFiltersDropdown expects TableColumn<T>[]; we project our (decoupled,
+  // column-independent) filter schema onto that shape.
   const filterDropdownColumns = useMemo((): TableColumn<T>[] => {
-    return dataColumns
-      .filter((col) => col.filterable)
-      .map(
-        (col) =>
-          ({
-            key: col.key,
-            label: col.header,
-            filterable: true,
-            filterType: col.filterType,
-            filterOptions: col.filterOptions,
-            dateFilterMode: col.dateFilterMode,
-          }) as TableColumn<T>,
-      );
-  }, [dataColumns]);
+    return filterConfig.map(
+      (field: DataGridFilterField) =>
+        ({
+          key: field.key,
+          label: field.label,
+          filterable: true,
+          filterType: field.filterType,
+          filterOptions: field.filterOptions,
+          dateFilterMode: field.dateFilterMode,
+        }) as TableColumn<T>,
+    );
+  }, [filterConfig]);
 
   // ── Client-side filtering ──────────────────────────────────────────────────
   const filteredData = useMemo(() => {

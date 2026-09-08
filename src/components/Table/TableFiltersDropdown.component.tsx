@@ -428,15 +428,6 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
           {hasChanges && (
             <div className="eidos-table-filters-apply-actions">
               <Button
-                variant="filled"
-                size="sm"
-                color="primary"
-                preIcon={Check}
-                onClick={applyFilters}
-              >
-                Apply Filters
-              </Button>
-              <Button
                 variant="outlined"
                 size="sm"
                 color="secondary"
@@ -444,6 +435,15 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
                 onClick={resetFilters}
               >
                 Discard Changes
+              </Button>
+              <Button
+                variant="filled"
+                size="sm"
+                color="primary"
+                preIcon={Check}
+                onClick={applyFilters}
+              >
+                Apply Filters
               </Button>
             </div>
           )}
