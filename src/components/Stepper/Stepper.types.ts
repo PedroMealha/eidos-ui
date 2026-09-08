@@ -2,6 +2,8 @@ import React from 'react';
 
 export type StepStatus = 'completed' | 'active' | 'pending' | 'error';
 
+export type StepperColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface StepItem {
   label: string;
   description?: string;
@@ -18,7 +20,7 @@ export interface StepperProps {
   /** Layout direction. Default: 'horizontal'. */
   orientation?: 'horizontal' | 'vertical';
   /** Color of the active/completed steps. Default: 'primary'. */
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: StepperColorProps;
   /** Whether to show step numbers inside the dot. Default: true. */
   showNumbers?: boolean;
   /**

@@ -1,9 +1,12 @@
 import React from 'react';
 
+export type PillColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+export type PillVariantProps = 'filled' | 'outlined' | 'text';
+
 export interface PillProps {
   children?: React.ReactNode;
-  color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
-  variant?: 'filled' | 'outlined' | 'text';
+  color?: PillColorProps;
+  variant?: PillVariantProps;
   size?: 'sm' | 'md';
   /** Render a small coloured dot alongside the content. With no `children`, renders dot-only. */
   dot?: boolean;

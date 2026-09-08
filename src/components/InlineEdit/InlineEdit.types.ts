@@ -1,3 +1,5 @@
+export type InlineEditVariantProps = 'filled' | 'outlined' | 'text' | 'bare';
+
 export interface InlineEditProps {
   /** The current value. Always required - this component is always controlled. */
   value: string;
@@ -59,7 +61,7 @@ export interface InlineEditProps {
    * Variant applied to the underlying `<Input>` while in edit mode.
    * Default: `'outlined'`.
    */
-  inputVariant?: 'filled' | 'outlined' | 'text' | 'bare';
+  inputVariant?: InlineEditVariantProps;
 
   className?: string;
 }

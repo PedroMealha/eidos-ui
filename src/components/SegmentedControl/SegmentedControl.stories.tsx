@@ -154,7 +154,7 @@ export const Colors: Story = {
     <div
       style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-start' }}
     >
-      {(['primary', 'secondary', 'success', 'danger'] as const).map((color) => (
+      {(['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const).map((color) => (
         <SegmentedControl
           key={color}
           color={color}

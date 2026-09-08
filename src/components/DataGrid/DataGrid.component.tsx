@@ -1260,7 +1260,9 @@ function DataGridInner<T extends Record<string, unknown>>({
 
     return (
       <div
-        ref={hasError ? (errorTooltipAnchorRef as React.RefObject<HTMLDivElement | null>) : undefined}
+        ref={
+          hasError ? (errorTooltipAnchorRef as React.RefObject<HTMLDivElement | null>) : undefined
+        }
         className={valueCls}
         onClick={() => handleCellClick(localIndex, col)}
         onKeyDown={isEditing ? (e) => handleKeyDown(e, localIndex, col.key) : undefined}
@@ -1697,380 +1699,381 @@ function DataGridInner<T extends Record<string, unknown>>({
             <div className="eidos-data-grid-scroll">
               <table className={['eidos-data-grid', densityClass].filter(Boolean).join(' ')}>
                 <thead ref={theadRef}>
-              <tr>
-                {/* Drag-handle column - must come before every other system column */}
-                {draggableRows && (
-                  <th
-                    className={[
-                      'eidos-data-grid-header-cell',
-                      'eidos-datagrid-drag-handle-cell',
-                      dragHeaderPin.className,
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    style={dragHeaderPin.style}
-                    data-col-key="__drag__"
-                  />
-                )}
+                  <tr>
+                    {/* Drag-handle column - must come before every other system column */}
+                    {draggableRows && (
+                      <th
+                        className={[
+                          'eidos-data-grid-header-cell',
+                          'eidos-datagrid-drag-handle-cell',
+                          dragHeaderPin.className,
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                        style={dragHeaderPin.style}
+                        data-col-key="__drag__"
+                      />
+                    )}
 
-                {/* Expand-toggle column */}
-                {expandable && (
-                  <th
-                    className={[
-                      'eidos-data-grid-header-cell',
-                      'eidos-datagrid-expand-cell',
-                      expandHeaderPin.className,
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    style={expandHeaderPin.style}
-                    data-col-key="__expand__"
-                  />
-                )}
+                    {/* Expand-toggle column */}
+                    {expandable && (
+                      <th
+                        className={[
+                          'eidos-data-grid-header-cell',
+                          'eidos-datagrid-expand-cell',
+                          expandHeaderPin.className,
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                        style={expandHeaderPin.style}
+                        data-col-key="__expand__"
+                      />
+                    )}
 
-                {/* Selection checkbox column - must come before row numbers */}
-                {selectable && (
-                  <th
-                    className={[
-                      'eidos-data-grid-header-cell',
-                      'eidos-datagrid-checkbox-cell',
-                      selHeaderPin.className,
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    style={selHeaderPin.style}
-                    data-col-key="__sel__"
-                  >
-                    <Checkbox
-                      checked={allSelected}
-                      indeterminate={someSelected}
-                      onChange={toggleAll}
-                      size="sm"
-                    />
-                  </th>
-                )}
+                    {/* Selection checkbox column - must come before row numbers */}
+                    {selectable && (
+                      <th
+                        className={[
+                          'eidos-data-grid-header-cell',
+                          'eidos-datagrid-checkbox-cell',
+                          selHeaderPin.className,
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                        style={selHeaderPin.style}
+                        data-col-key="__sel__"
+                      >
+                        <Checkbox
+                          checked={allSelected}
+                          indeterminate={someSelected}
+                          onChange={toggleAll}
+                          size="sm"
+                        />
+                      </th>
+                    )}
 
-                {showRowNumbers && (
-                  <th
-                    className={[
-                      'eidos-data-grid-header-cell',
-                      'eidos-data-grid-row-number-col',
-                      rownumHeaderPin.className,
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    style={rownumHeaderPin.style}
-                    data-col-key="__rownum__"
-                  >
-                    #
-                  </th>
-                )}
+                    {showRowNumbers && (
+                      <th
+                        className={[
+                          'eidos-data-grid-header-cell',
+                          'eidos-data-grid-row-number-col',
+                          rownumHeaderPin.className,
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                        style={rownumHeaderPin.style}
+                        data-col-key="__rownum__"
+                      >
+                        #
+                      </th>
+                    )}
 
-                {sortedColumns.map((col) => {
-                  const colKey = col.key;
-                  const isSortable = !!col.sortable;
-                  const isCurrentlySorted = activeSort?.key === colKey;
-                  const sortDir = isCurrentlySorted ? activeSort!.direction : null;
-                  const { style: pinnedStyle, className: pinnedClass } =
-                    getHeaderPinnedProps(colKey);
+                    {sortedColumns.map((col) => {
+                      const colKey = col.key;
+                      const isSortable = !!col.sortable;
+                      const isCurrentlySorted = activeSort?.key === colKey;
+                      const sortDir = isCurrentlySorted ? activeSort!.direction : null;
+                      const { style: pinnedStyle, className: pinnedClass } =
+                        getHeaderPinnedProps(colKey);
 
-                  return (
-                    <th
-                      key={colKey}
-                      className={[
-                        'eidos-data-grid-header-cell',
-                        isSortable && 'eidos-datagrid-header-cell--sortable',
-                        isCurrentlySorted && 'eidos-datagrid-header-cell--sorted',
-                        pinnedClass,
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      style={{
-                        width:
-                          col.width != null
-                            ? typeof col.width === 'number'
-                              ? `${col.width}px`
-                              : col.width
-                            : undefined,
-                        minWidth:
-                          col.minWidth != null
-                            ? typeof col.minWidth === 'number'
-                              ? `${col.minWidth}px`
-                              : col.minWidth
-                            : undefined,
-                        ...pinnedStyle,
-                      }}
-                      data-col-key={colKey}
-                      onClick={isSortable ? () => handleSortClick(colKey) : undefined}
-                    >
-                      <div className="eidos-datagrid-header-content">
-                        <span className="eidos-datagrid-header-label">{col.header}</span>
-                        {isSortable && (
-                          <span className="eidos-datagrid-sort-icon">
-                            {sortDir === 'asc' && <ArrowUp size={14} />}
-                            {sortDir === 'desc' && <ArrowDown size={14} />}
-                            {!sortDir && <ChevronsUpDown size={14} />}
-                          </span>
-                        )}
-                      </div>
-                    </th>
-                  );
-                })}
-
-                {actionsColumn && (
-                  <th
-                    className="eidos-data-grid-header-cell eidos-data-grid-actions-col"
-                    data-col-key="__actions__"
-                  />
-                )}
-              </tr>
-            </thead>
-
-            <tbody>
-              <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
-                {displayData.length > 0 ? (
-                  displayData.map((row, displayIndex) => {
-                    // Find this row's position in the full localData array.
-                    // displayData rows are the same object references as in localData
-                    // (filter/sort/slice never clone row objects), so indexOf is O(n)
-                    // but always accurate - even after edits that produce new row objects.
-                    const localIndex = localData.indexOf(row);
-                    const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
-                    const isRowSelected = selectable && selectedSet.has(rowKeyValue);
-                    const isRowExpanded = expandable && expandedSet.has(rowKeyValue);
-                    const canExpandRow = !isRowExpandable || isRowExpandable(row);
-
-                    return (
-                      // React.Fragment (rather than SortableTableRow taking the
-                      // `key` directly) so an expanded row's detail <tr> - see
-                      // ExpandedTableRow below - can sit right underneath it as
-                      // a sibling, keyed together as one reconciliation unit.
-                      <React.Fragment key={rowKeyValue}>
-                        {/* SortableTableRow is always rendered (hooks unconditional);
-                            disabled={true} when draggableRows is off so dnd-kit is a no-op. */}
-                        <SortableTableRow
-                          id={rowKeyValue}
-                          disabled={!draggableRows}
+                      return (
+                        <th
+                          key={colKey}
                           className={[
-                            'eidos-data-grid-row',
-                            isRowSelected && 'eidos-datagrid-row--selected',
+                            'eidos-data-grid-header-cell',
+                            isSortable && 'eidos-datagrid-header-cell--sortable',
+                            isCurrentlySorted && 'eidos-datagrid-header-cell--sorted',
+                            pinnedClass,
                           ]
                             .filter(Boolean)
                             .join(' ')}
+                          style={{
+                            width:
+                              col.width != null
+                                ? typeof col.width === 'number'
+                                  ? `${col.width}px`
+                                  : col.width
+                                : undefined,
+                            minWidth:
+                              col.minWidth != null
+                                ? typeof col.minWidth === 'number'
+                                  ? `${col.minWidth}px`
+                                  : col.minWidth
+                                : undefined,
+                            ...pinnedStyle,
+                          }}
+                          data-col-key={colKey}
+                          onClick={isSortable ? () => handleSortClick(colKey) : undefined}
                         >
-                          {(dragHandleProps, isDragging) => (
-                            <>
-                              {draggableRows && (
-                                <td
-                                  className={[
-                                    'eidos-datagrid-drag-handle-cell',
-                                    dragCellPin.className,
-                                  ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                  style={dragCellPin.style}
-                                  // Prevent a click on the handle from triggering cell editing
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <span
-                                    {...(dragHandleProps as React.HTMLAttributes<HTMLSpanElement>)}
-                                    className={[
-                                      'eidos-datagrid-drag-handle',
-                                      isDragging && 'eidos-datagrid-drag-handle--dragging',
-                                    ]
-                                      .filter(Boolean)
-                                      .join(' ')}
-                                    title="Drag to reorder"
-                                  >
-                                    <GripVertical size={14} />
-                                  </span>
-                                </td>
-                              )}
+                          <div className="eidos-datagrid-header-content">
+                            <span className="eidos-datagrid-header-label">{col.header}</span>
+                            {isSortable && (
+                              <span className="eidos-datagrid-sort-icon">
+                                {sortDir === 'asc' && <ArrowUp size={14} />}
+                                {sortDir === 'desc' && <ArrowDown size={14} />}
+                                {!sortDir && <ChevronsUpDown size={14} />}
+                              </span>
+                            )}
+                          </div>
+                        </th>
+                      );
+                    })}
 
-                              {expandable && (
-                                <td
-                                  className={[
-                                    'eidos-data-grid-cell',
-                                    'eidos-datagrid-expand-cell',
-                                    expandCellPin.className,
-                                  ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                  style={expandCellPin.style}
-                                  // Prevent a click on the toggle from triggering cell editing
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  {canExpandRow && (
-                                    <button
-                                      type="button"
+                    {actionsColumn && (
+                      <th
+                        className="eidos-data-grid-header-cell eidos-data-grid-actions-col"
+                        data-col-key="__actions__"
+                      />
+                    )}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <SortableContext items={rowIds} strategy={verticalListSortingStrategy}>
+                    {displayData.length > 0 ? (
+                      displayData.map((row, displayIndex) => {
+                        // Find this row's position in the full localData array.
+                        // displayData rows are the same object references as in localData
+                        // (filter/sort/slice never clone row objects), so indexOf is O(n)
+                        // but always accurate - even after edits that produce new row objects.
+                        const localIndex = localData.indexOf(row);
+                        const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
+                        const isRowSelected = selectable && selectedSet.has(rowKeyValue);
+                        const isRowExpanded = expandable && expandedSet.has(rowKeyValue);
+                        const canExpandRow = !isRowExpandable || isRowExpandable(row);
+
+                        return (
+                          // React.Fragment (rather than SortableTableRow taking the
+                          // `key` directly) so an expanded row's detail <tr> - see
+                          // ExpandedTableRow below - can sit right underneath it as
+                          // a sibling, keyed together as one reconciliation unit.
+                          <React.Fragment key={rowKeyValue}>
+                            {/* SortableTableRow is always rendered (hooks unconditional);
+                            disabled={true} when draggableRows is off so dnd-kit is a no-op. */}
+                            <SortableTableRow
+                              id={rowKeyValue}
+                              disabled={!draggableRows}
+                              className={[
+                                'eidos-data-grid-row',
+                                isRowSelected && 'eidos-datagrid-row--selected',
+                              ]
+                                .filter(Boolean)
+                                .join(' ')}
+                            >
+                              {(dragHandleProps, isDragging) => (
+                                <>
+                                  {draggableRows && (
+                                    <td
                                       className={[
-                                        'eidos-datagrid-expand-toggle',
-                                        isRowExpanded && 'eidos-datagrid-expand-toggle--open',
+                                        'eidos-datagrid-drag-handle-cell',
+                                        dragCellPin.className,
                                       ]
                                         .filter(Boolean)
                                         .join(' ')}
-                                      onClick={() => toggleExpanded(rowKeyValue)}
-                                      aria-expanded={isRowExpanded}
-                                      aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
+                                      style={dragCellPin.style}
+                                      // Prevent a click on the handle from triggering cell editing
+                                      onClick={(e) => e.stopPropagation()}
                                     >
-                                      <ChevronRight size={14} />
-                                    </button>
+                                      <span
+                                        {...(dragHandleProps as React.HTMLAttributes<HTMLSpanElement>)}
+                                        className={[
+                                          'eidos-datagrid-drag-handle',
+                                          isDragging && 'eidos-datagrid-drag-handle--dragging',
+                                        ]
+                                          .filter(Boolean)
+                                          .join(' ')}
+                                        title="Drag to reorder"
+                                      >
+                                        <GripVertical size={14} />
+                                      </span>
+                                    </td>
                                   )}
-                                </td>
+
+                                  {expandable && (
+                                    <td
+                                      className={[
+                                        'eidos-data-grid-cell',
+                                        'eidos-datagrid-expand-cell',
+                                        expandCellPin.className,
+                                      ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                      style={expandCellPin.style}
+                                      // Prevent a click on the toggle from triggering cell editing
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {canExpandRow && (
+                                        <button
+                                          type="button"
+                                          className={[
+                                            'eidos-datagrid-expand-toggle',
+                                            isRowExpanded && 'eidos-datagrid-expand-toggle--open',
+                                          ]
+                                            .filter(Boolean)
+                                            .join(' ')}
+                                          onClick={() => toggleExpanded(rowKeyValue)}
+                                          aria-expanded={isRowExpanded}
+                                          aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
+                                        >
+                                          <ChevronRight size={14} />
+                                        </button>
+                                      )}
+                                    </td>
+                                  )}
+
+                                  {selectable && (
+                                    <td
+                                      className={[
+                                        'eidos-data-grid-cell',
+                                        'eidos-datagrid-checkbox-cell',
+                                        selCellPin.className,
+                                      ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                      style={selCellPin.style}
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Checkbox
+                                        checked={isRowSelected}
+                                        onChange={() => toggleRow(rowKeyValue)}
+                                        size="sm"
+                                      />
+                                    </td>
+                                  )}
+
+                                  {showRowNumbers && (
+                                    <td
+                                      className={[
+                                        'eidos-data-grid-cell',
+                                        'eidos-data-grid-row-number',
+                                        rownumCellPin.className,
+                                      ]
+                                        .filter(Boolean)
+                                        .join(' ')}
+                                      style={rownumCellPin.style}
+                                    >
+                                      {localIndex + 1}
+                                    </td>
+                                  )}
+
+                                  {sortedColumns.map((col) => {
+                                    const value = row[col.key];
+                                    const isEditing =
+                                      editingCell?.rowIndex === localIndex &&
+                                      editingCell?.colKey === col.key;
+                                    const canEdit = isCellEditable(col);
+                                    // Persists for a cell regardless of focus (background tint only);
+                                    // the border + message only show once this exact cell is
+                                    // focused again, via `hasError` below.
+                                    const isFlagged =
+                                      cellErrorKey(localIndex, col.key) in cellErrors;
+                                    const hasError = isEditing && Boolean(editError);
+                                    const { style: pinnedStyle, className: pinnedClass } =
+                                      getCellPinnedProps(col.key);
+
+                                    const cellCls = [
+                                      'eidos-data-grid-cell',
+                                      isEditing && 'eidos-data-grid-cell--editing',
+                                      hasError && 'eidos-data-grid-cell--error',
+                                      isFlagged && !hasError && 'eidos-data-grid-cell--has-error',
+                                      canEdit && !isEditing && 'eidos-data-grid-cell--editable',
+                                      col.type === 'readonly' && 'eidos-data-grid-cell--readonly',
+                                      pinnedClass,
+                                    ]
+                                      .filter(Boolean)
+                                      .join(' ');
+
+                                    return (
+                                      <td
+                                        key={col.key}
+                                        ref={
+                                          hasError
+                                            ? (errorTooltipAnchorRef as React.RefObject<HTMLTableDataCellElement | null>)
+                                            : undefined
+                                        }
+                                        className={cellCls}
+                                        style={pinnedStyle}
+                                        onClick={() => handleCellClick(localIndex, col)}
+                                        onKeyDown={
+                                          isEditing
+                                            ? (e) => handleKeyDown(e, localIndex, col.key)
+                                            : undefined
+                                        }
+                                        // Make editing cells focusable so keydown events register
+                                        tabIndex={isEditing ? -1 : undefined}
+                                      >
+                                        {isEditing
+                                          ? renderEditCell(col, editValue, row, localIndex)
+                                          : renderViewCell(col, value, row, localIndex)}
+                                      </td>
+                                    );
+                                  })}
+
+                                  {actionsColumn && (
+                                    <td
+                                      className="eidos-data-grid-cell eidos-data-grid-actions-col"
+                                      // Prevent a click on the actions menu from bubbling into a
+                                      // consumer's own row-click handler (e.g. opening a details
+                                      // drawer) - mirrors the selection/drag-handle <td>s above.
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {renderActionsMenu(row, localIndex)}
+                                    </td>
+                                  )}
+                                </>
                               )}
+                            </SortableTableRow>
 
-                              {selectable && (
-                              <td
-                                className={[
-                                  'eidos-data-grid-cell',
-                                  'eidos-datagrid-checkbox-cell',
-                                  selCellPin.className,
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')}
-                                style={selCellPin.style}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Checkbox
-                                  checked={isRowSelected}
-                                  onChange={() => toggleRow(rowKeyValue)}
+                            {expandable && renderExpandedContent && (
+                              <ExpandedTableRow
+                                isOpen={isRowExpanded}
+                                colSpan={totalCols}
+                                render={() => renderExpandedContent(row, localIndex)}
+                              />
+                            )}
+                          </React.Fragment>
+                        );
+                      })
+                    ) : (
+                      <tr className="eidos-data-grid-empty-row">
+                        <td
+                          colSpan={totalCols}
+                          className="eidos-data-grid-cell eidos-data-grid-empty-cell"
+                        >
+                          {Object.keys(activeFilters).length > 0 ? (
+                            <EmptyState
+                              icon={<SearchX />}
+                              title="No results found"
+                              description="Try adjusting your filters or search terms."
+                              action={
+                                <Button
                                   size="sm"
-                                />
-                              </td>
-                            )}
-
-                            {showRowNumbers && (
-                              <td
-                                className={[
-                                  'eidos-data-grid-cell',
-                                  'eidos-data-grid-row-number',
-                                  rownumCellPin.className,
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')}
-                                style={rownumCellPin.style}
-                              >
-                                {localIndex + 1}
-                              </td>
-                            )}
-
-                            {sortedColumns.map((col) => {
-                              const value = row[col.key];
-                              const isEditing =
-                                editingCell?.rowIndex === localIndex &&
-                                editingCell?.colKey === col.key;
-                              const canEdit = isCellEditable(col);
-                              // Persists for a cell regardless of focus (background tint only);
-                              // the border + message only show once this exact cell is
-                              // focused again, via `hasError` below.
-                              const isFlagged = cellErrorKey(localIndex, col.key) in cellErrors;
-                              const hasError = isEditing && Boolean(editError);
-                              const { style: pinnedStyle, className: pinnedClass } =
-                                getCellPinnedProps(col.key);
-
-                              const cellCls = [
-                                'eidos-data-grid-cell',
-                                isEditing && 'eidos-data-grid-cell--editing',
-                                hasError && 'eidos-data-grid-cell--error',
-                                isFlagged && !hasError && 'eidos-data-grid-cell--has-error',
-                                canEdit && !isEditing && 'eidos-data-grid-cell--editable',
-                                col.type === 'readonly' && 'eidos-data-grid-cell--readonly',
-                                pinnedClass,
-                              ]
-                                .filter(Boolean)
-                                .join(' ');
-
-                              return (
-                                <td
-                                  key={col.key}
-                                  ref={
-                                    hasError
-                                      ? (errorTooltipAnchorRef as React.RefObject<HTMLTableDataCellElement | null>)
-                                      : undefined
-                                  }
-                                  className={cellCls}
-                                  style={pinnedStyle}
-                                  onClick={() => handleCellClick(localIndex, col)}
-                                  onKeyDown={
-                                    isEditing
-                                      ? (e) => handleKeyDown(e, localIndex, col.key)
-                                      : undefined
-                                  }
-                                  // Make editing cells focusable so keydown events register
-                                  tabIndex={isEditing ? -1 : undefined}
+                                  variant="outlined"
+                                  color="primary"
+                                  onClick={() => handleFiltersChange({})}
                                 >
-                                  {isEditing
-                                    ? renderEditCell(col, editValue, row, localIndex)
-                                    : renderViewCell(col, value, row, localIndex)}
-                                </td>
-                              );
-                            })}
-
-                            {actionsColumn && (
-                              <td
-                                className="eidos-data-grid-cell eidos-data-grid-actions-col"
-                                // Prevent a click on the actions menu from bubbling into a
-                                // consumer's own row-click handler (e.g. opening a details
-                                // drawer) - mirrors the selection/drag-handle <td>s above.
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {renderActionsMenu(row, localIndex)}
-                              </td>
-                            )}
-                          </>
-                        )}
-                        </SortableTableRow>
-
-                        {expandable && renderExpandedContent && (
-                          <ExpandedTableRow
-                            isOpen={isRowExpanded}
-                            colSpan={totalCols}
-                            render={() => renderExpandedContent(row, localIndex)}
-                          />
-                        )}
-                      </React.Fragment>
-                    );
-                  })
-                ) : (
-                  <tr className="eidos-data-grid-empty-row">
-                    <td
-                      colSpan={totalCols}
-                      className="eidos-data-grid-cell eidos-data-grid-empty-cell"
-                    >
-                      {Object.keys(activeFilters).length > 0 ? (
-                        <EmptyState
-                          icon={<SearchX />}
-                          title="No results found"
-                          description="Try adjusting your filters or search terms."
-                          action={
-                            <Button
+                                  Clear filters
+                                </Button>
+                              }
                               size="sm"
-                              variant="outlined"
-                              color="primary"
-                              onClick={() => handleFiltersChange({})}
-                            >
-                              Clear filters
-                            </Button>
-                          }
-                          size="sm"
-                        />
-                      ) : (
-                        <EmptyState
-                          icon={<FolderOpen />}
-                          title={emptyText}
-                          description={
-                            onRowAdd
-                              ? 'Add a row to get started.'
-                              : 'There are no records to display.'
-                          }
-                          size="sm"
-                        />
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </SortableContext>
-            </tbody>
+                            />
+                          ) : (
+                            <EmptyState
+                              icon={<FolderOpen />}
+                              title={emptyText}
+                              description={
+                                onRowAdd
+                                  ? 'Add a row to get started.'
+                                  : 'There are no records to display.'
+                              }
+                              size="sm"
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </SortableContext>
+                </tbody>
               </table>
             </div>
           </DndContext>

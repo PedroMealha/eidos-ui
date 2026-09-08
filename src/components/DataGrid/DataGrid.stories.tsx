@@ -598,8 +598,8 @@ export const WithSelection: Story = {
     docs: {
       description: {
         story:
-          '`bulkActions` accepts any mix of plain buttons (`type: \'button\'`, the default) ' +
-          'and split-buttons (`type: \'split-button\'`, a primary action plus a dropdown of ' +
+          "`bulkActions` accepts any mix of plain buttons (`type: 'button'`, the default) " +
+          "and split-buttons (`type: 'split-button'`, a primary action plus a dropdown of " +
           '`options`) - nothing is rendered by default, and every action, icon, and color is ' +
           'entirely up to the consumer. Each action receives the full array of selected row objects.',
       },
@@ -965,7 +965,7 @@ export const ResponsiveCardView: Story = {
           '`cardHeader` and `role` `cardSubheader`, so they become the card title / ' +
           'subtitle instead of a label:value row like every other column. `actions` is a ' +
           "`type: 'actions'` column, always rendered top-right of the card (see the " +
-          "\"Row actions menu\" story below for more on that column type). Pagination, " +
+          '"Row actions menu" story below for more on that column type). Pagination, ' +
           'filtering, sorting, selection, and inline cell editing all keep working exactly ' +
           'as in table mode.',
       },
@@ -1043,16 +1043,16 @@ export const RowActionsMenu: Story = {
     docs: {
       description: {
         story:
-          "A `type: 'actions'` column renders a \"more\" (⋮) trigger instead of any data " +
+          'A `type: \'actions\'` column renders a "more" (⋮) trigger instead of any data ' +
           "value - clicking it opens a menu built from that column's `actions` array " +
           '(label, `icon`, `onClick(row, index)`, and optionally `disabled` - a boolean or ' +
-          "a `(row) => boolean` predicate, `danger` for destructive styling, and `divider` " +
+          'a `(row) => boolean` predicate, `danger` for destructive styling, and `divider` ' +
           'to place a separator directly above that item). Only one column may set ' +
           "`type: 'actions'`; it's always rendered at the far right in table mode " +
-          "regardless of its position in `columns`, and (see the \"Responsive card view\" " +
-          "story) top-right of the card in card view. The trigger icon itself is " +
+          'regardless of its position in `columns`, and (see the "Responsive card view" ' +
+          'story) top-right of the card in card view. The trigger icon itself is ' +
           '`actionsIcon`-overridable, defaulting to the vertical 3-dot icon shown here. ' +
-          "\"Deactivate\" is conditionally disabled per row via its `disabled` predicate - " +
+          '"Deactivate" is conditionally disabled per row via its `disabled` predicate - ' +
           'try it on an inactive person.',
       },
     },
@@ -1133,11 +1133,9 @@ const ADVANCED_ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
         id: 'status',
         type: 'component',
         component: (
-          <Chip
-           color={person.active ? 'success' : 'secondary'} variant="outlined" size="md">
+          <Chip color={person.active ? 'success' : 'secondary'} variant="outlined" size="md">
             {person.active ? 'Active' : 'Inactive'}
-          </Chip
-          >
+          </Chip>
         ),
       },
       {
@@ -1165,7 +1163,7 @@ export const RowActionsMenuAdvanced: Story = {
           'type the standalone `Menu` component takes), so anything `Menu` supports works ' +
           'here too. This example shows "Move to department" and "Contact" as nested ' +
           'submenus, an `⌘E` shortcut on "Edit", a `type: \'component\'` item rendering a ' +
-          'status `Badge`, and a `type: \'separator\'` above it. `actions` is ignored on a ' +
+          "status `Badge`, and a `type: 'separator'` above it. `actions` is ignored on a " +
           'column that sets `renderActions`.',
       },
     },
@@ -1249,7 +1247,7 @@ export const ExpandableRows: Story = {
           'chevron that reveals extra per-row content - a dedicated column in table mode, a ' +
           'toolbar toggle in card mode (try shrinking this preview below the breakpoint here, ' +
           'since `hasCardView` is also on). Content is genuinely lazy: `renderExpandedContent` ' +
-          "only runs the first time a given row is opened - see \"Bob Martinez\" (inactive) " +
+          'only runs the first time a given row is opened - see "Bob Martinez" (inactive) ' +
           'below, whose row has no chevron at all via `isRowExpandable`, and any other row for ' +
           'the ~600ms simulated fetch on first expand. `expandMultiple` (default `true`) allows ' +
           'any number of rows open at once; set it to `false` for accordion behaviour - opening ' +

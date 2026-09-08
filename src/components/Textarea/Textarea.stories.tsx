@@ -30,10 +30,10 @@ const meta = {
     },
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'success', 'danger'],
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
       description: 'Color theme applied to borders and focus ring.',
       table: {
-        type: { summary: '"primary" | "secondary" | "success" | "danger"' },
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
         defaultValue: { summary: 'primary' },
       },
     },

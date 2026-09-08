@@ -1,11 +1,13 @@
 import React from 'react';
 
+export type BadgeColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface BadgeProps {
   /** The element the badge is attached to */
   children: React.ReactNode;
   /** Content shown inside the badge, e.g. a notification count. Omit (with `dot`) for a dot-only indicator. */
   content?: React.ReactNode;
-  color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+  color?: BadgeColorProps;
   /** When content is a number, clamp display to `max+` if exceeded */
   max?: number;
   /** Render a small dot instead of `content` */

@@ -1,5 +1,8 @@
 import type { IconType } from '../../utils';
 
+export type SegmentedControlColorProps =
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface SegmentedOption {
   /** Unique value for this segment. */
   value: string;
@@ -23,7 +26,7 @@ export interface SegmentedControlProps {
   /** Called with the newly selected value whenever the selection changes. */
   onChange?: (value: string) => void;
   size?: 'sm' | 'md' | 'lg';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: SegmentedControlColorProps;
   /** Disable all segments. */
   disabled?: boolean;
   /** Stretch to fill the parent's width. */

@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import type { IconType } from '../../utils';
+import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
 
 export interface ModalAction {
   id: string;
   label: string;
-  variant?: 'filled' | 'outlined' | 'text';
+  variant?: ButtonVariantProps;
   size?: 'sm' | 'md' | 'lg';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: ButtonColorProps;
   disabled?: boolean;
   loading?: boolean;
   onClick: () => void;

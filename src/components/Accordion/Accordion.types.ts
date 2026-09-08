@@ -1,5 +1,8 @@
 import React from 'react';
 
+export type AccordionColorProps =
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface AccordionProps {
   /** Allow multiple items open simultaneously. Default: false (only one open at a time). */
   multiple?: boolean;
@@ -14,7 +17,7 @@ export interface AccordionProps {
   /** Size affecting padding and font size. Default: 'md'. */
   size?: 'sm' | 'md' | 'lg';
   /** Color applied to the active trigger label. Default: 'primary'. */
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: AccordionColorProps;
   className?: string;
   children: React.ReactNode;
 }

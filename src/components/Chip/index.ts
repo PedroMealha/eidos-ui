@@ -1,2 +1,2 @@
 export { Chip } from './Chip.component';
-export type { ChipProps, TextChipProps } from './Chip.types';
+export type { ChipProps, TextChipProps, ChipColorProps, ChipVariantProps } from './Chip.types';

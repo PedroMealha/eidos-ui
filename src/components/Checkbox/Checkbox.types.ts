@@ -1,5 +1,8 @@
 import React from 'react';
 
+export type CheckboxColorProps =
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface CheckboxProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'size' | 'type'
@@ -7,7 +10,7 @@ export interface CheckboxProps extends Omit<
   label?: React.ReactNode;
   error?: string;
   indeterminate?: boolean;
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: CheckboxColorProps;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }

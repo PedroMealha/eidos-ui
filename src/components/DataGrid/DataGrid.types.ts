@@ -4,13 +4,7 @@ import type { MenuItemType } from '../Menu';
 import type { BulkAction, TableFilters } from '../Table/Table.types';
 
 export type DataGridCellType =
-  | 'text'
-  | 'number'
-  | 'select'
-  | 'checkbox'
-  | 'date'
-  | 'readonly'
-  | 'actions';
+  'text' | 'number' | 'select' | 'checkbox' | 'date' | 'readonly' | 'actions';
 
 export interface DataGridSelectOption {
   value: string;

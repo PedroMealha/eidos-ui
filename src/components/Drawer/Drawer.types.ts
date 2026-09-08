@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
 export type DrawerSize = 'sm' | 'md' | 'lg' | 'full';
@@ -6,8 +7,8 @@ export type DrawerSize = 'sm' | 'md' | 'lg' | 'full';
 export interface DrawerAction {
   id: string;
   label: string;
-  variant?: 'filled' | 'outlined' | 'text';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: ButtonVariantProps;
+  color?: ButtonColorProps;
   disabled?: boolean;
   loading?: boolean;
   onClick: () => void;

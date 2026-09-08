@@ -1,2 +1,2 @@
 export { Switch } from './Switch.component';
-export type { SwitchProps } from './Switch.types';
+export type { SwitchProps, SwitchColorProps } from './Switch.types';

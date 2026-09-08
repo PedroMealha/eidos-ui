@@ -1,2 +1,2 @@
 export { Pill } from './Pill.component';
-export type { PillProps } from './Pill.types';
+export type { PillProps, PillColorProps, PillVariantProps } from './Pill.types';

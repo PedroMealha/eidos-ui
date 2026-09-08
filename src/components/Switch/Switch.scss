@@ -117,6 +117,26 @@
       box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
     }
   }
+
+  &--warning {
+    .eidos-switch-track--checked {
+      background: var(--warning-color);
+    }
+
+    .eidos-switch-input:focus-visible + .eidos-switch-track {
+      box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+    }
+  }
+
+  &--info {
+    .eidos-switch-track--checked {
+      background: var(--info-color);
+    }
+
+    .eidos-switch-input:focus-visible + .eidos-switch-track {
+      box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+    }
+  }
 }
 
 // ============================================================================

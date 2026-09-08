@@ -1,8 +1,11 @@
 import type { IconType } from '../../utils';
 
+export type ChipVariantProps = 'filled' | 'outlined' | 'text';
+export type ChipColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 interface BaseChipProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onClick'> {
-  variant?: 'filled' | 'outlined' | 'text';
-  color?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+  variant?: ChipVariantProps;
+  color?: ChipColorProps;
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   disabled?: boolean;

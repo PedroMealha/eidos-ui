@@ -189,6 +189,16 @@
     border-color: var(--danger-color);
     color: var(--white);
   }
+  &.eidos-stepper-step--warning .eidos-stepper-dot {
+    background: var(--warning-color);
+    border-color: var(--warning-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--info .eidos-stepper-dot {
+    background: var(--info-color);
+    border-color: var(--info-color);
+    color: var(--white);
+  }
 }
 
 // Completed - lighter tint background, colored border and icon
@@ -213,6 +223,16 @@
     border-color: var(--danger-color);
     color: var(--white);
   }
+  &.eidos-stepper-step--warning .eidos-stepper-dot {
+    background: var(--warning-color);
+    border-color: var(--warning-color);
+    color: var(--white);
+  }
+  &.eidos-stepper-step--info .eidos-stepper-dot {
+    background: var(--info-color);
+    border-color: var(--info-color);
+    color: var(--white);
+  }
 
   // Connector after completed step is also colored. `extendEnd`'s connector
   // (see component) is a sibling of the last step rather than nested inside
@@ -232,6 +252,14 @@
   &.eidos-stepper-step--danger .eidos-stepper-connector,
   &.eidos-stepper-step--danger + .eidos-stepper-connector--extend {
     background: var(--danger-color);
+  }
+  &.eidos-stepper-step--warning .eidos-stepper-connector,
+  &.eidos-stepper-step--warning + .eidos-stepper-connector--extend {
+    background: var(--warning-color);
+  }
+  &.eidos-stepper-step--info .eidos-stepper-connector,
+  &.eidos-stepper-step--info + .eidos-stepper-connector--extend {
+    background: var(--info-color);
   }
 }
 
@@ -254,6 +282,12 @@
 }
 .eidos-stepper-connector.eidos-stepper-connector--danger {
   background: var(--danger-color);
+}
+.eidos-stepper-connector.eidos-stepper-connector--warning {
+  background: var(--warning-color);
+}
+.eidos-stepper-connector.eidos-stepper-connector--info {
+  background: var(--info-color);
 }
 
 // Error

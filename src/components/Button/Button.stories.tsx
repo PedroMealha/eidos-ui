@@ -27,10 +27,10 @@ const meta = {
     },
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'success', 'danger'],
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
       description: 'Color theme',
       table: {
-        type: { summary: '"primary" | "secondary" | "success" | "danger"' },
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
         defaultValue: { summary: 'primary' },
       },
     },
@@ -214,6 +214,8 @@ export const Examples = {
             <Button color="secondary">Secondary</Button>
             <Button color="success">Success</Button>
             <Button color="danger">Danger</Button>
+            <Button color="warning">Warning</Button>
+            <Button color="info">Info</Button>
           </div>
         </div>
 

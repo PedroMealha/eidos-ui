@@ -42,10 +42,10 @@ const meta = {
     },
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'success', 'danger'],
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
       description: 'Color of the active/completed steps.',
       table: {
-        type: { summary: '"primary" | "secondary" | "success" | "danger"' },
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
         defaultValue: { summary: 'primary' },
       },
     },
@@ -127,12 +127,12 @@ export const WithError: Story = {
 };
 
 // ============================================================================
-// COLORS - all four color variants stacked
+// COLORS - all six color variants stacked
 // ============================================================================
 
 export const Colors = {
   render: () => {
-    const colors = ['primary', 'secondary', 'success', 'danger'] as const;
+    const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const;
     const label: React.CSSProperties = {
       margin: '0 0 0.5rem',
       fontSize: '0.75rem',

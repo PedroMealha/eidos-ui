@@ -56,28 +56,36 @@ export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 
 // Types
 export type { CardProps } from './components/Card';
-export type { BadgeProps } from './components/Badge';
-export type { PillProps } from './components/Pill';
+export type { BadgeProps, BadgeColorProps } from './components/Badge';
+export type { PillProps, PillColorProps, PillVariantProps } from './components/Pill';
 export type { AlertProps, AlertAction } from './components/Alert';
-export type { TabsProps, TabProps, TabPanelProps } from './components/Tabs';
-export type { AccordionProps, AccordionItemProps } from './components/Accordion';
+export type { TabsProps, TabProps, TabPanelProps, TabsColorProps } from './components/Tabs';
+export type {
+  AccordionProps,
+  AccordionItemProps,
+  AccordionColorProps,
+} from './components/Accordion';
 export type { PopoverProps } from './components/Popover';
 export type { DrawerProps, DrawerAction, DrawerPlacement, DrawerSize } from './components/Drawer';
-export type { SliderProps } from './components/Slider';
+export type { SliderProps, SliderColorProps } from './components/Slider';
 export type { EmptyStateProps } from './components/EmptyState';
 export type { BreadcrumbProps, BreadcrumbItem } from './components/Breadcrumb';
-export type { StepperProps, StepItem, StepStatus } from './components/Stepper';
-export type { PaginationProps } from './components/Pagination';
+export type { StepperProps, StepItem, StepStatus, StepperColorProps } from './components/Stepper';
+export type { PaginationProps, PaginationColorProps } from './components/Pagination';
 export type { TimelineProps, TimelineItem, TimelineColor } from './components/Timeline';
 export type { NumberInputProps } from './components/NumberInput';
 export type { FileUploadProps } from './components/FileUpload';
-export type { ProgressProps } from './components/Progress';
+export type { ProgressProps, ProgressColorProps } from './components/Progress';
 export type { SkeletonProps } from './components/Skeleton';
 export type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarColor } from './components/Avatar';
-export type { CheckboxProps } from './components/Checkbox';
-export type { RadioProps, RadioGroupProps, RadioOption } from './components/Radio';
-export type { SwitchProps } from './components/Switch';
-export type { TextareaProps } from './components/Textarea';
+export type { CheckboxProps, CheckboxColorProps } from './components/Checkbox';
+export type { RadioProps, RadioGroupProps, RadioOption, RadioColorProps } from './components/Radio';
+export type { SwitchProps, SwitchColorProps } from './components/Switch';
+export type {
+  TextareaProps,
+  TextareaVariantProps,
+  TextareaColorProps,
+} from './components/Textarea';
 export type {
   ButtonProps,
   IconButtonProps,
@@ -86,7 +94,7 @@ export type {
   ButtonColorProps,
 } from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
-export type { ChipProps, TextChipProps } from './components/Chip';
+export type { ChipProps, TextChipProps, ChipColorProps, ChipVariantProps } from './components/Chip';
 export type { DividerProps } from './components/Divider';
 export type {
   DropdownProps,
@@ -94,8 +102,8 @@ export type {
   DropdownPosition,
   NestedDropdownItem,
 } from './components/Dropdown';
-export type { InlineEditProps } from './components/InlineEdit';
-export type { InputProps } from './components/Input';
+export type { InlineEditProps, InlineEditVariantProps } from './components/InlineEdit';
+export type { InputProps, InputVariantProps, InputColorProps } from './components/Input';
 export type { KbdProps } from './components/Kbd';
 export type {
   MenuProps,
@@ -156,7 +164,7 @@ export type {
   EditingCell,
 } from './components/DataGrid';
 export type { OTPInputProps } from './components/OTPInput';
-export type { SpinnerProps } from './components/Spinner';
+export type { SpinnerProps, SpinnerColorProps } from './components/Spinner';
 export type { TagInputProps } from './components/TagInput';
 export type { TreeViewProps, TreeNode } from './components/TreeView';
 export type { VirtualListProps } from './components/VirtualList';
@@ -164,7 +172,11 @@ export type { VirtualListProps } from './components/VirtualList';
 // Shared type (all IconTypes are the same)
 export type { IconType } from './utils';
 export type { ButtonGroupProps } from './components/ButtonGroup';
-export type { SegmentedControlProps, SegmentedOption } from './components/SegmentedControl';
+export type {
+  SegmentedControlProps,
+  SegmentedOption,
+  SegmentedControlColorProps,
+} from './components/SegmentedControl';
 export type { SplitButtonProps, SplitButtonOption } from './components/SplitButton';
 export type { ContextMenuProps } from './components/ContextMenu';
 export type { MenuPanelProps } from './components/Menu';

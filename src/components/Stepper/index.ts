@@ -1,2 +1,2 @@
 export { Stepper } from './Stepper.component';
-export type { StepperProps, StepItem, StepStatus } from './Stepper.types';
+export type { StepperProps, StepItem, StepStatus, StepperColorProps } from './Stepper.types';

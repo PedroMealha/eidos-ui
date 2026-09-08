@@ -1,3 +1,5 @@
+export type SliderColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface SliderProps {
   value?: number;
   defaultValue?: number;
@@ -5,7 +7,7 @@ export interface SliderProps {
   max?: number;
   step?: number;
   onChange?: (value: number) => void;
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: SliderColorProps;
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   /** Display current value label above the thumb. */

@@ -88,6 +88,24 @@
         background-color: var(--danger-dark);
       }
     }
+
+    &.eidos-button--warning {
+      background-color: var(--warning-color);
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--warning-dark);
+      }
+    }
+
+    &.eidos-button--info {
+      background-color: var(--info-color);
+      color: var(--white);
+
+      &:hover:not(:disabled) {
+        background-color: var(--info-dark);
+      }
+    }
   }
 
   // Outlined variant
@@ -137,6 +155,26 @@
 
       &:hover:not(:disabled) {
         background-color: var(--danger-color);
+        color: var(--white);
+      }
+    }
+
+    &.eidos-button--warning {
+      border-color: var(--warning-color);
+      color: var(--warning-color);
+
+      &:hover:not(:disabled) {
+        background-color: var(--warning-color);
+        color: var(--white);
+      }
+    }
+
+    &.eidos-button--info {
+      border-color: var(--info-color);
+      color: var(--info-color);
+
+      &:hover:not(:disabled) {
+        background-color: var(--info-color);
         color: var(--white);
       }
     }
@@ -201,6 +239,30 @@
 
       &:active:not(:disabled) {
         background-color: rgba(var(--danger-rgb), 0.2);
+      }
+    }
+
+    &.eidos-button--warning {
+      color: var(--warning-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--warning-rgb), 0.1);
+      }
+
+      &:active:not(:disabled) {
+        background-color: rgba(var(--warning-rgb), 0.2);
+      }
+    }
+
+    &.eidos-button--info {
+      color: var(--info-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--info-rgb), 0.1);
+      }
+
+      &:active:not(:disabled) {
+        background-color: rgba(var(--info-rgb), 0.2);
       }
     }
   }

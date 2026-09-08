@@ -159,6 +159,34 @@
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
     }
+
+    &.eidos-input-wrapper--warning {
+      &:hover:not(:disabled) {
+        border-color: var(--warning-color);
+      }
+
+      &:focus-within {
+        border-color: var(--warning-color);
+        box-shadow:
+          0 0 0 3px rgba(var(--warning-rgb), 0.1),
+          0 4px 12px rgba(0, 0, 0, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    &.eidos-input-wrapper--info {
+      &:hover:not(:disabled) {
+        border-color: var(--info-color);
+      }
+
+      &:focus-within {
+        border-color: var(--info-color);
+        box-shadow:
+          0 0 0 3px rgba(var(--info-rgb), 0.1),
+          0 4px 12px rgba(0, 0, 0, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+    }
   }
 
   // Outlined variant - transparent background
@@ -225,6 +253,38 @@
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
     }
+
+    &.eidos-input-wrapper--warning {
+      border-color: var(--warning-color);
+
+      &:hover:not(:disabled) {
+        border-color: var(--warning-dark);
+      }
+
+      &:focus-within {
+        border-color: var(--warning-color);
+        box-shadow:
+          0 0 0 3px rgba(var(--warning-rgb), 0.1),
+          0 4px 12px rgba(0, 0, 0, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    &.eidos-input-wrapper--info {
+      border-color: var(--info-color);
+
+      &:hover:not(:disabled) {
+        border-color: var(--info-dark);
+      }
+
+      &:focus-within {
+        border-color: var(--info-color);
+        box-shadow:
+          0 0 0 3px rgba(var(--info-rgb), 0.1),
+          0 4px 12px rgba(0, 0, 0, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+    }
   }
 
   // Text variant - only bottom border with rounded top corners
@@ -283,6 +343,32 @@
 
       &:focus-within {
         border-bottom-color: var(--danger-color);
+      }
+    }
+
+    &.eidos-input-wrapper--warning {
+      border-bottom-color: var(--warning-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--warning-rgb), 0.05);
+        border-bottom-color: var(--warning-dark);
+      }
+
+      &:focus-within {
+        border-bottom-color: var(--warning-color);
+      }
+    }
+
+    &.eidos-input-wrapper--info {
+      border-bottom-color: var(--info-color);
+
+      &:hover:not(:disabled) {
+        background-color: rgba(var(--info-rgb), 0.05);
+        border-bottom-color: var(--info-dark);
+      }
+
+      &:focus-within {
+        border-bottom-color: var(--info-color);
       }
     }
   }

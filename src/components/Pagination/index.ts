@@ -1,2 +1,2 @@
 export { Pagination } from './Pagination.component';
-export type { PaginationProps } from './Pagination.types';
+export type { PaginationProps, PaginationColorProps } from './Pagination.types';

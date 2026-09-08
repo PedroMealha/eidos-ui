@@ -132,6 +132,12 @@
     &.eidos-pagination-page--danger {
       background: var(--danger-color);
     }
+    &.eidos-pagination-page--warning {
+      background: var(--warning-color);
+    }
+    &.eidos-pagination-page--info {
+      background: var(--info-color);
+    }
 
     &:focus {
       box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.25);

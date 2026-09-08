@@ -1,3 +1,6 @@
+export type PaginationColorProps =
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface PaginationProps {
   /** Current page (1-based). */
   page: number;
@@ -10,7 +13,7 @@ export interface PaginationProps {
   /** Show first/last page jump buttons. Default: false. */
   showFirstLast?: boolean;
   /** Color of the active page button. Default: 'primary'. */
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: PaginationColorProps;
   /** Size of page buttons. Default: 'sm'. */
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;

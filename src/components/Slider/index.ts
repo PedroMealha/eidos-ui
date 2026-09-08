@@ -1,2 +1,2 @@
 export { Slider } from './Slider.component';
-export type { SliderProps } from './Slider.types';
+export type { SliderProps, SliderColorProps } from './Slider.types';

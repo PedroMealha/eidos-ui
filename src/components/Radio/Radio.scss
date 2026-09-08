@@ -111,6 +111,30 @@
     }
   }
 
+  &--warning {
+    .eidos-radio-input:focus-visible + .eidos-radio-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+    }
+
+    .eidos-radio-control--checked {
+      background: var(--warning-color);
+      border-color: var(--warning-color);
+    }
+  }
+
+  &--info {
+    .eidos-radio-input:focus-visible + .eidos-radio-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+    }
+
+    .eidos-radio-control--checked {
+      background: var(--info-color);
+      border-color: var(--info-color);
+    }
+  }
+
   // ── Hover: darken border on unchecked controls ─────────────────────────
 
   &:hover:not(&--disabled) {

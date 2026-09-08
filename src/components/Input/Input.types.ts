@@ -1,9 +1,12 @@
 import React from 'react';
 import type { IconType } from '../../utils';
 
+export type InputVariantProps = 'filled' | 'outlined' | 'text' | 'bare';
+export type InputColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 interface BaseInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  variant?: 'filled' | 'outlined' | 'text' | 'bare';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: InputVariantProps;
+  color?: InputColorProps;
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;

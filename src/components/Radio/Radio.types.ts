@@ -1,11 +1,13 @@
 import React from 'react';
 
+export type RadioColorProps = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface RadioProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'size' | 'type'
 > {
   label?: React.ReactNode;
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: RadioColorProps;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -23,7 +25,7 @@ export interface RadioGroupProps {
   onChange?: (value: string) => void;
   options: RadioOption[];
   direction?: 'horizontal' | 'vertical';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  color?: RadioColorProps;
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   error?: string;

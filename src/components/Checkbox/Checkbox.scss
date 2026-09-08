@@ -126,6 +126,32 @@
     }
   }
 
+  &--warning {
+    .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+    }
+
+    .eidos-checkbox-control--checked,
+    .eidos-checkbox-control--indeterminate {
+      background: var(--warning-color);
+      border-color: var(--warning-color);
+    }
+  }
+
+  &--info {
+    .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+    }
+
+    .eidos-checkbox-control--checked,
+    .eidos-checkbox-control--indeterminate {
+      background: var(--info-color);
+      border-color: var(--info-color);
+    }
+  }
+
   // ── Hover: darken border on unchecked controls ─────────────────────────
 
   &:hover:not(&--disabled) {

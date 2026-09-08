@@ -1,2 +1,2 @@
 export { Accordion, AccordionItem } from './Accordion.component';
-export type { AccordionProps, AccordionItemProps } from './Accordion.types';
+export type { AccordionProps, AccordionItemProps, AccordionColorProps } from './Accordion.types';

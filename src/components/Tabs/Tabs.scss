@@ -224,6 +224,44 @@
   }
 }
 
+.eidos-tabs--warning {
+  .eidos-tab--active {
+    color: var(--warning-color);
+  }
+
+  &.eidos-tabs--line .eidos-tabs-indicator {
+    background: var(--warning-color);
+  }
+
+  &.eidos-tabs--pills .eidos-tab--active {
+    background: var(--warning-color);
+    color: var(--white);
+  }
+
+  .eidos-tab:focus-visible {
+    box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+  }
+}
+
+.eidos-tabs--info {
+  .eidos-tab--active {
+    color: var(--info-color);
+  }
+
+  &.eidos-tabs--line .eidos-tabs-indicator {
+    background: var(--info-color);
+  }
+
+  &.eidos-tabs--pills .eidos-tab--active {
+    background: var(--info-color);
+    color: var(--white);
+  }
+
+  .eidos-tab:focus-visible {
+    box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+  }
+}
+
 // ============================================================================
 // ANIMATED INDICATOR - line variant only; positioned via JS (useLayoutEffect)
 // ============================================================================

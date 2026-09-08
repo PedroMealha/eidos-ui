@@ -122,5 +122,13 @@
     .eidos-segmented--danger & {
       color: var(--danger-color);
     }
+
+    .eidos-segmented--warning & {
+      color: var(--warning-color);
+    }
+
+    .eidos-segmented--info & {
+      color: var(--info-color);
+    }
   }
 }

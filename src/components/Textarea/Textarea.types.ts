@@ -1,12 +1,16 @@
 import React from 'react';
 import type { IconType } from '../../utils';
 
+export type TextareaVariantProps = 'filled' | 'outlined' | 'text';
+export type TextareaColorProps =
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
+
 export interface TextareaProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   'size'
 > {
-  variant?: 'filled' | 'outlined' | 'text';
-  color?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: TextareaVariantProps;
+  color?: TextareaColorProps;
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;

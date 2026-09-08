@@ -91,7 +91,7 @@ export const Colors: Story = {
   name: 'Colors',
   render: () => (
     <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-      {(['primary', 'secondary', 'success', 'danger'] as const).map((color) => (
+      {(['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const).map((color) => (
         <SplitButton
           key={color}
           label={color.charAt(0).toUpperCase() + color.slice(1)}

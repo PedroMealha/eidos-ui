@@ -132,6 +132,12 @@
     &.eidos-accordion-trigger--danger {
       color: var(--danger-color);
     }
+    &.eidos-accordion-trigger--warning {
+      color: var(--warning-color);
+    }
+    &.eidos-accordion-trigger--info {
+      color: var(--info-color);
+    }
   }
 }
 
