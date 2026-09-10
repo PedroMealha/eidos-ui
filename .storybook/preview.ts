@@ -24,7 +24,7 @@ const preview: Preview = {
         // The `order` array defines the top-level group sequence;
         // '*' catches anything not explicitly listed.
         method: 'alphabetical',
-        order: ['Elements', 'Forms', 'Navigation', 'Overlays', 'Data', 'Feedback', 'Layout', '*'],
+        order: ['Layout', 'Elements', 'Forms', 'Navigation', 'Overlays', 'Data', 'Feedback', '*'],
       },
     },
   },

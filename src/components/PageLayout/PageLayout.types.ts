@@ -1,10 +1,8 @@
-import { BreadcrumbProps } from '../Breadcrumb';
 import { ToolbarProps } from '../Toolbar/Toolbar.types';
+import { HeaderProps } from '../Header/Header.types';
 
 export interface PageLayoutProps {
-  title: string;
-  subtitle?: string | React.ReactNode;
-  noHeaderDivider?: boolean;
+  children: React.ReactNode;
   toolbar?: ToolbarProps;
-  breadcrumbs?: Pick<BreadcrumbProps, 'items' | 'separator'>;
+  header?: HeaderProps;
 }

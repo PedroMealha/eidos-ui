@@ -1,0 +1,27 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as HeaderStories from './Header.stories';
+
+<Meta of={HeaderStories} />
+
+# Header
+
+Surface container for grouping related content. Use it to establish visual hierarchy and visually separate distinct sections within a page or layout.
+
+> **Note**: Prefer semantic elements via `as="article"` or `as="section"` when the navigation represents a meaningful document section rather than a generic grouping div.
+
+## Usage
+
+```tsx
+import { Header } from '@pmealha/eidos-ui';
+
+<Header variant="outlined" padding="md">
+  <h3>Header title</h3>
+  <p>Body content goes here.</p>
+</Header>
+```
+
+## Default
+
+<Canvas of={HeaderStories.Default} />
+
+<Controls of={HeaderStories.Default} />

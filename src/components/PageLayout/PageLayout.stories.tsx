@@ -14,8 +14,6 @@ const meta = {
     ),
   ],
   args: {
-    title: 'Page Title',
-    subtitle: 'Page Subtitle',
     toolbar: {
       brandName: 'Eidos UI',
       avatar: {
@@ -39,39 +37,46 @@ const meta = {
         },
       ],
     },
-    breadcrumbs: {
-      separator: <ChevronRight size={14} />,
-      items: [
-        { label: 'Home' },
-        { label: 'Products' },
-        { label: 'Electronics' },
-        { label: 'Smartphones' },
+    header: {
+      title: 'Page Title',
+      subtitle: 'Page Subtitle',
+      actions: [
+        {
+          children: 'Action 1',
+          onClick: () => alert('Action 1 clicked'),
+        },
+        {
+          children: 'Action 2',
+          onClick: () => alert('Action 2 clicked'),
+        },
       ],
+      breadcrumbs: {
+        separator: <ChevronRight size={14} />,
+        items: [
+          { label: 'Home' },
+          { label: 'Products' },
+          { label: 'Electronics' },
+          { label: 'Smartphones' },
+        ],
+      },
     },
+    children: 'Page content',
   },
   argTypes: {
-    title: {
-      control: 'text',
-      description: 'Title of the page layout.',
+    header: {
+      control: 'object',
+      description: 'Header section of the page layout.',
       table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: 'Page Title' },
+        type: { summary: 'HeaderProps' },
+        defaultValue: { summary: '{}' },
       },
     },
-    subtitle: {
-      control: 'text',
-      description: 'Subtitle of the page layout.',
+    toolbar: {
+      control: 'object',
+      description: 'Toolbar of the page layout.',
       table: {
-        type: { summary: 'string | React.ReactNode' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    noHeaderDivider: {
-      control: 'boolean',
-      description: 'Whether to show the divider after the header.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
+        type: { summary: 'ToolbarProps' },
+        defaultValue: { summary: '{}' },
       },
     },
   },

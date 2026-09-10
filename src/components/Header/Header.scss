@@ -1,0 +1,23 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  padding: var(--spacing-md);
+  will-change: transform;
+
+  &__content {
+  }
+
+  &__actions {
+    @include flex-center-y;
+    gap: var(--spacing-sm);
+  }
+
+  &__title {
+    margin: var(--spacing-xs) 0;
+  }
+}

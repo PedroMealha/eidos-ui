@@ -19,18 +19,22 @@
 
   &__navigation {
     grid-area: navigation;
-    background-color: rgb(var(--secondary-rgb), 0.8);
+    border-right: 1px solid var(--gray-200);
   }
 
   &__content {
     grid-area: content;
     display: grid;
     grid-template-rows: minmax(50px, auto) 1fr auto;
-    padding: var(--spacing-md);
   }
 
-  &__title {
-    margin: 0;
+  &__header {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  &__body {
+    padding: var(--spacing-md);
   }
 
   &__footer {
