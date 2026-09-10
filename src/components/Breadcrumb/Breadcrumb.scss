@@ -18,7 +18,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 0;
+  gap: var(--spacing-xs);
 }
 
 // ============================================================================
@@ -28,6 +28,7 @@
 .eidos-breadcrumb-item {
   @include flex-center-y;
   gap: var(--spacing-xs);
+  line-height: 1;
   will-change: transform;
 }
 
@@ -41,7 +42,6 @@
   @include font-size(sm);
   color: var(--gray-500);
   text-decoration: none;
-  padding: 2px 4px;
   @include border-radius(xs);
   transition: color 0.15s ease;
 
@@ -64,7 +64,6 @@
     color: var(--gray-500);
     text-decoration: none;
     cursor: pointer;
-    padding: 2px 4px;
     @include border-radius(xs);
     transition: color 0.15s ease;
 
@@ -90,7 +89,6 @@
   @include font-size(sm);
   @include font-weight(medium);
   color: var(--dark-color);
-  padding: 2px 4px;
 }
 
 // ============================================================================
@@ -100,9 +98,9 @@
 .eidos-breadcrumb-separator {
   @include font-size(sm);
   color: var(--gray-300);
-  padding: 0 var(--spacing-xs);
   user-select: none;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 // ============================================================================

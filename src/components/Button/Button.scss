@@ -31,19 +31,22 @@
   // Icon-only variant
   &--icon-only {
     aspect-ratio: 1;
-    padding: var(--spacing-sm);
-    font-size: var(--font-size-base);
-    min-width: 2.5905em;
-    min-height: 2.5905em;
+    min-width: 2.063em;
+    min-height: 2.063em;
 
     &.eidos-button--sm {
-      font-size: var(--font-size-xs);
       padding: var(--spacing-xs);
+      font-size: var(--font-size-sm);
+    }
+
+    &.eidos-button--md {
+      padding: var(--spacing-sm);
+      font-size: var(--font-size-base);
     }
 
     &.eidos-button--lg {
-      font-size: var(--font-size-md);
       padding: var(--spacing-md);
+      font-size: var(--font-size-lg);
     }
   }
 

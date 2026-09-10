@@ -1,0 +1,39 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-pagelayout {
+  box-sizing: border-box;
+  background: rgb(var(--primary-rgb), 0.05);
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-areas:
+    'toolbar toolbar'
+    'navigation content';
+  grid-template-columns: minmax(150px, 200px) 1fr;
+  grid-template-rows: auto 1fr;
+
+  &__toolbar {
+    grid-area: toolbar;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  &__navigation {
+    grid-area: navigation;
+    background-color: rgb(var(--secondary-rgb), 0.8);
+  }
+
+  &__content {
+    grid-area: content;
+    display: grid;
+    grid-template-rows: minmax(50px, auto) 1fr auto;
+    padding: var(--spacing-md);
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__footer {
+    padding-top: var(--spacing-md);
+  }
+}

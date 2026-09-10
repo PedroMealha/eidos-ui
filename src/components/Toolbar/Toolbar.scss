@@ -1,0 +1,22 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-toolbar {
+  @include flex-between;
+  padding: var(--spacing-md);
+  will-change: transform;
+
+  &__brand {
+    @include flex-center-y;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+
+    &-name {
+      margin: 0;
+    }
+  }
+
+  &__actions {
+    @include flex-center-y;
+    gap: var(--spacing-sm);
+  }
+}
