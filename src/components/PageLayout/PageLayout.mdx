@@ -5,19 +5,21 @@ import * as PageLayoutStories from './PageLayout.stories';
 
 # PageLayout
 
-Surface container for grouping related content. Use it to establish visual hierarchy and visually separate distinct sections within a page or layout.
+Application shell that composes the standard page chrome - a `Toolbar`, a navigation rail, and a `Header` above the page body - into a single grid layout. Use it as the top-level layout for an authenticated app page.
 
-> **Note**: Prefer semantic elements via `as="article"` or `as="section"` when the pagelayout represents a meaningful document section rather than a generic grouping div.
+> **Note**: The navigation rail is currently a fixed-width reserved region and is not yet configurable via props.
 
 ## Usage
 
 ```tsx
 import { PageLayout } from '@pmealha/eidos-ui';
 
-<PageLayout variant="outlined" padding="md">
-  <h3>PageLayout title</h3>
-  <p>Body content goes here.</p>
-</PageLayout>
+<PageLayout
+  toolbar={{ brandName: 'Acme', avatar: { name: 'Acme' } }}
+  header={{ title: 'Dashboard', subtitle: 'Overview of your account' }}
+>
+  <p>Page content goes here.</p>
+</PageLayout>;
 ```
 
 ## Default

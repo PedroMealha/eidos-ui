@@ -5,19 +5,21 @@ import * as HeaderStories from './Header.stories';
 
 # Header
 
-Surface container for grouping related content. Use it to establish visual hierarchy and visually separate distinct sections within a page or layout.
+Page-level header combining a title, an optional subtitle and breadcrumb trail, with a set of right-aligned action buttons. Typically rendered inside `PageLayout`'s content area, above the page body.
 
-> **Note**: Prefer semantic elements via `as="article"` or `as="section"` when the navigation represents a meaningful document section rather than a generic grouping div.
+> **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `HeaderActionProps`.
 
 ## Usage
 
 ```tsx
 import { Header } from '@pmealha/eidos-ui';
 
-<Header variant="outlined" padding="md">
-  <h3>Header title</h3>
-  <p>Body content goes here.</p>
-</Header>
+<Header
+  title="Dashboard"
+  subtitle="Overview of your account"
+  breadcrumbs={{ items: [{ label: 'Home', href: '/' }, { label: 'Dashboard' }] }}
+  actions={[{ children: 'New', onClick: () => {} }]}
+/>;
 ```
 
 ## Default

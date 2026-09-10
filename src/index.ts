@@ -1,5 +1,8 @@
 // Components
 export { Card } from './components/Card';
+export { PageLayout } from './components/PageLayout';
+export { Toolbar } from './components/Toolbar';
+export { Header } from './components/Header';
 export { Badge } from './components/Badge';
 export { Pill } from './components/Pill';
 export { Alert } from './components/Alert';
@@ -56,6 +59,9 @@ export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 
 // Types
 export type { CardProps } from './components/Card';
+export type { PageLayoutProps } from './components/PageLayout';
+export type { ToolbarProps, ToolbarActionProps, ToolbarAvatarProps } from './components/Toolbar';
+export type { HeaderProps, HeaderActionProps } from './components/Header';
 export type { BadgeProps, BadgeColorProps } from './components/Badge';
 export type { PillProps, PillColorProps, PillVariantProps } from './components/Pill';
 export type { AlertProps, AlertAction } from './components/Alert';

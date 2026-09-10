@@ -1,2 +1,2 @@
 export { Header } from './Header.component';
-export type { HeaderProps } from './Header.types';
+export type { HeaderProps, HeaderActionProps } from './Header.types';

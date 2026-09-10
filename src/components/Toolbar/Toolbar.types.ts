@@ -2,8 +2,11 @@ import { AvatarProps } from "../Avatar";
 import { TextButtonProps, IconButtonProps } from "../Button";
 
 export interface ToolbarProps {
-  brandName: string;
+  /** Text shown next to the brand avatar, inside the clickable brand button. Defaults to `"Brand Name"`. */
+  brandName?: string;
+  /** Avatar rendered to the left of the brand name. Omit to render the brand name on its own. */
   avatar?: ToolbarAvatarProps;
+  /** Trailing action buttons, rendered right-aligned. */
   actions?: ToolbarActionProps[];
   className?: string;
 }

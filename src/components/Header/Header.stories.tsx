@@ -45,14 +45,13 @@ const meta = {
       description: 'Title to display in the header.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: 'Brand Name' },
       },
     },
     subtitle: {
       control: 'object',
       description: 'Subtitle to display in the header.',
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'string | React.ReactNode' },
         defaultValue: { summary: 'undefined' },
       },
     },

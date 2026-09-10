@@ -5,19 +5,23 @@ import * as ToolbarStories from './Toolbar.stories';
 
 # Toolbar
 
-Surface container for grouping related content. Use it to establish visual hierarchy and visually separate distinct sections within a page or layout.
+Top application bar pairing an optional brand (avatar + name) with a set of right-aligned action buttons. Used as the top-level bar in `PageLayout`, but usable on its own as a page or section toolbar.
 
-> **Note**: Prefer semantic elements via `as="article"` or `as="section"` when the navigation represents a meaningful document section rather than a generic grouping div.
+> **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `ToolbarActionProps`.
 
 ## Usage
 
 ```tsx
 import { Toolbar } from '@pmealha/eidos-ui';
 
-<Toolbar variant="outlined" padding="md">
-  <h3>Toolbar title</h3>
-  <p>Body content goes here.</p>
-</Toolbar>
+<Toolbar
+  brandName="Acme"
+  avatar={{ name: 'Acme' }}
+  actions={[
+    { icon: 'Bell', color: 'secondary', onClick: () => {} },
+    { children: 'Settings', preIcon: 'Settings', onClick: () => {} },
+  ]}
+/>;
 ```
 
 ## Default

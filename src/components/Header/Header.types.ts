@@ -1,11 +1,14 @@
-import { AvatarProps } from '../Avatar';
 import { BreadcrumbProps } from '../Breadcrumb';
 import { TextButtonProps, IconButtonProps } from '../Button';
 
 export interface HeaderProps {
+  /** Page or section title. */
   title: string;
+  /** Supporting text rendered below the title. */
   subtitle?: string | React.ReactNode;
+  /** Breadcrumb trail rendered above the title. */
   breadcrumbs?: Pick<BreadcrumbProps, 'items' | 'separator'>;
+  /** Trailing action buttons, rendered right-aligned. */
   actions?: HeaderActionProps[];
   className?: string;
 }
@@ -38,6 +41,3 @@ export type HeaderActionProps =
       | 'children'
       | 'onClick'
     >;
-
-/** Header brand avatar - only the presentational fields, no `onClick`/`className` since the brand button already owns click handling and layout owns styling. */
-export type HeaderAvatarProps = Pick<AvatarProps, 'src' | 'alt' | 'name' | 'color' | 'fallback'>;

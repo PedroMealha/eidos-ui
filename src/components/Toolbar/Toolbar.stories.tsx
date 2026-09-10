@@ -39,9 +39,9 @@ const meta = {
     },
     avatar: {
       control: 'object',
-      description: 'Avatar to display in the toolbar.',
+      description: 'Avatar to display next to the brand name.',
       table: {
-        type: { summary: 'AvatarProps' },
+        type: { summary: 'ToolbarAvatarProps' },
         defaultValue: { summary: 'undefined' },
       },
     },
