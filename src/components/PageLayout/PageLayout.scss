@@ -39,6 +39,10 @@
   }
 
   &__footer {
-    padding-top: var(--spacing-md);
+    // Only the default `copyright` variant gets the extra top spacing - a
+    // custom `component` is expected to fully own its own layout/spacing.
+    &.eidos-footer--copyright {
+      padding-top: var(--spacing-md);
+    }
   }
 }

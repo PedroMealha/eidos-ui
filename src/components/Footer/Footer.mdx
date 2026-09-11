@@ -1,0 +1,47 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as FooterStories from './Footer.stories';
+
+<Meta of={FooterStories} />
+
+# Footer
+
+Bottom bar rendered at the end of `PageLayout`'s content area, usable standalone as well. It accepts exactly one of two mutually exclusive props: a centered `copyright` string (the common case) or a fully custom `component`.
+
+> **Note**: `copyright` and `component` are a discriminated union - passing both, or neither, is a type error. This mirrors the `TextButtonProps | IconButtonProps` split on `Button`.
+
+## Usage
+
+```tsx
+import { Footer } from '@pmealha/eidos-ui';
+
+// Centered copyright text (the default use case)
+<Footer copyright={`© ${new Date().getFullYear()} Acme Inc.`} />;
+
+// Or a fully custom component - `copyright` is then forbidden
+<Footer
+  component={
+    <>
+      <span>© {new Date().getFullYear()} Acme Inc.</span>
+      <a href="/privacy">Privacy</a>
+    </>
+  }
+/>;
+```
+
+Inside `PageLayout`, pass the same shape via the `footer` prop:
+
+```tsx
+<PageLayout footer={{ copyright: 'Acme Inc.' }}>...</PageLayout>
+```
+
+`PageLayout` only applies its default top padding to the footer region when `copyright` is used - a `component` is expected to fully own its own spacing.
+
+## Default
+
+<Canvas of={FooterStories.Default} />
+
+<Controls of={FooterStories.Default} />
+
+## With a custom component
+
+<Canvas of={FooterStories.WithCustomComponent} />

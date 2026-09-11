@@ -1,0 +1,12 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-footer {
+  display: flex;
+
+  // Default variant (`copyright`) - centered, muted small text.
+  &--copyright {
+    @include flex-center-x;
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
+  }
+}

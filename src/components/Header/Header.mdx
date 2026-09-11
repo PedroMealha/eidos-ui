@@ -5,7 +5,7 @@ import * as HeaderStories from './Header.stories';
 
 # Header
 
-Page-level header combining a title, an optional subtitle and breadcrumb trail, with a set of right-aligned action buttons. Typically rendered inside `PageLayout`'s content area, above the page body.
+Page-level header combining a title with an optional subtitle and a set of right-aligned action buttons. Typically rendered inside `PageLayout`'s content area, above the page body.
 
 > **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `HeaderActionProps`.
 
@@ -17,7 +17,6 @@ import { Header } from '@pmealha/eidos-ui';
 <Header
   title="Dashboard"
   subtitle="Overview of your account"
-  breadcrumbs={{ items: [{ label: 'Home', href: '/' }, { label: 'Dashboard' }] }}
   actions={[{ children: 'New', onClick: () => {} }]}
 />;
 ```
@@ -27,3 +26,15 @@ import { Header } from '@pmealha/eidos-ui';
 <Canvas of={HeaderStories.Default} />
 
 <Controls of={HeaderStories.Default} />
+
+## With multiple actions
+
+Icon-only and labeled actions can be freely mixed within the same `actions` array.
+
+<Canvas of={HeaderStories.WithMultipleActions} />
+
+## Title only
+
+`subtitle` and `actions` are both optional.
+
+<Canvas of={HeaderStories.TitleOnly} />

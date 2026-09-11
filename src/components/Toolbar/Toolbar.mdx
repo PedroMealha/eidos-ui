@@ -5,9 +5,9 @@ import * as ToolbarStories from './Toolbar.stories';
 
 # Toolbar
 
-Top application bar pairing an optional brand (avatar + name) with a set of right-aligned action buttons. Used as the top-level bar in `PageLayout`, but usable on its own as a page or section toolbar.
+Top application bar pairing a breadcrumb trail with an optional command palette trigger, a set of right-aligned action buttons, and a user menu. Used as the top-level bar in `PageLayout`, but usable on its own as a page or section toolbar.
 
-> **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `ToolbarActionProps`.
+> **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `ToolbarActionProps`. `cmdPaletteItems` is optional; when supplied, `Toolbar` renders a `CommandPalette` with its built-in `trigger` (see the `CommandPalette` docs).
 
 ## Usage
 
@@ -15,12 +15,10 @@ Top application bar pairing an optional brand (avatar + name) with a set of righ
 import { Toolbar } from '@pmealha/eidos-ui';
 
 <Toolbar
-  brandName="Acme"
-  avatar={{ name: 'Acme' }}
-  actions={[
-    { icon: 'Bell', color: 'secondary', onClick: () => {} },
-    { children: 'Settings', preIcon: 'Settings', onClick: () => {} },
-  ]}
+  breadcrumbs={{ items: [{ label: 'Home', href: '/' }, { label: 'Dashboard' }] }}
+  cmdPaletteItems={[{ id: '1', label: 'Go to Dashboard' }]}
+  actions={[{ icon: 'Bell', color: 'secondary', onClick: () => {} }]}
+  userMenu={[{ type: 'item', id: 'logout', label: 'Logout', onClick: () => {} }]}
 />;
 ```
 
@@ -29,3 +27,19 @@ import { Toolbar } from '@pmealha/eidos-ui';
 <Canvas of={ToolbarStories.Default} />
 
 <Controls of={ToolbarStories.Default} />
+
+## With the command palette
+
+`cmdPaletteItems` renders a `CommandPalette` with its built-in `trigger` (see the `CommandPalette` docs).
+
+<Canvas of={ToolbarStories.WithCommandPalette} />
+
+## With actions
+
+<Canvas of={ToolbarStories.WithActions} />
+
+## Minimal
+
+`breadcrumbs` and `userMenu` are the only required props - everything else is optional.
+
+<Canvas of={ToolbarStories.Minimal} />

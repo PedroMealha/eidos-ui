@@ -115,3 +115,36 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+/**
+ * `cmdPaletteItems` renders a `CommandPalette` with its built-in `trigger`,
+ * with no `actions` alongside it.
+ */
+export const WithCommandPalette: Story = {
+  args: {
+    actions: undefined,
+  },
+};
+
+/**
+ * `actions` accepts a restricted subset of `Button` props - `icon` for an
+ * icon-only action - rendered right-aligned, with no command palette trigger.
+ */
+export const WithActions: Story = {
+  args: {
+    cmdPaletteItems: undefined,
+  },
+};
+
+/**
+ * A single breadcrumb and an empty `userMenu` - the minimum required shape
+ * for `ToolbarProps`, with every optional prop omitted.
+ */
+export const Minimal: Story = {
+  args: {
+    breadcrumbs: { items: [{ label: 'Home' }] },
+    cmdPaletteItems: undefined,
+    actions: undefined,
+    userMenu: [],
+  },
+};

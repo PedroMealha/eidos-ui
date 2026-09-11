@@ -5,7 +5,7 @@ import * as PageLayoutStories from './PageLayout.stories';
 
 # PageLayout
 
-Application shell that composes the standard page chrome - a `Toolbar`, a navigation rail, and a `Header` above the page body - into a single grid layout. Use it as the top-level layout for an authenticated app page.
+Application shell that composes the standard page chrome - a `Toolbar`, a navigation rail, a `Header` above the page body, and a `Footer` below it - into a single grid layout. Use it as the top-level layout for an authenticated app page.
 
 > **Note**: The navigation rail is currently a fixed-width reserved region and is not yet configurable via props.
 
@@ -15,12 +15,15 @@ Application shell that composes the standard page chrome - a `Toolbar`, a naviga
 import { PageLayout } from '@pmealha/eidos-ui';
 
 <PageLayout
-  toolbar={{ brandName: 'Acme', avatar: { name: 'Acme' } }}
+  toolbar={{ breadcrumbs: { items: [{ label: 'Acme' }] }, userMenu: [] }}
   header={{ title: 'Dashboard', subtitle: 'Overview of your account' }}
+  footer={{ copyright: '© 2026 Acme Inc.' }}
 >
   <p>Page content goes here.</p>
 </PageLayout>;
 ```
+
+`footer` is optional - omit it and `PageLayout` falls back to its own `© <year> Eidos UI` notice. It accepts the same `copyright` / `component` shape as the standalone `Footer` component; `PageLayout` only applies its default top spacing to the footer region when `copyright` is used.
 
 ## Default
 

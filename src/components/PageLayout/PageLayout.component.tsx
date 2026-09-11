@@ -3,10 +3,15 @@ import type { PageLayoutProps } from './PageLayout.types';
 import './PageLayout.scss';
 import { Toolbar } from '../Toolbar';
 import { Header } from '../Header';
+import { Footer } from '../Footer';
+import type { FooterProps } from '../Footer';
+
+const defaultFooter: FooterProps = { copyright: `© ${new Date().getFullYear()} Eidos UI` };
 
 export const PageLayout: React.FC<PageLayoutProps> = ({
   toolbar,
   header,
+  footer,
   children,
   className = '',
   ...rest
@@ -34,7 +39,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
           />
         )}
         <div className="eidos-pagelayout__body">{children}</div>
-        <div className="eidos-pagelayout__footer">&copy; {new Date().getFullYear()} Eidos UI</div>
+        <Footer
+          {...(footer ?? defaultFooter)}
+          className={['eidos-pagelayout__footer', footer?.className].filter(Boolean).join(' ')}
+        />
       </main>
     </div>
   );

@@ -116,6 +116,15 @@ const meta = {
         defaultValue: { summary: '{}' },
       },
     },
+    footer: {
+      control: 'object',
+      description:
+        'Footer of the page layout. Omit to fall back to the default Eidos UI copyright notice.',
+      table: {
+        type: { summary: 'FooterProps' },
+        defaultValue: { summary: "{ copyright: '© <year> Eidos UI' }" },
+      },
+    },
   },
 } satisfies Meta<typeof PageLayout>;
 
