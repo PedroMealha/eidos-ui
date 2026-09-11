@@ -1,0 +1,112 @@
+@use '../../styles/mixins.scss' as *;
+
+.eidos-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--spacing-lg);
+  width: 100%;
+  min-width: var(--navigation-min-width);
+  max-width: var(--navigation-max-width);
+
+  // ── Brand ──────────────────────────────────────────────────────────────
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+
+    &--clickable {
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.85;
+      }
+
+      @include focus-ring(primary, 3px);
+    }
+  }
+
+  &__brand-name {
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: -0.01em;
+    color: var(--dark-color);
+  }
+
+  // A safe, distortion-free default with no JS at all: fixed height,
+  // `width: auto` derives the rendered width from the image's own intrinsic
+  // ratio, `max-width` stops very wide/horizontal logos from overflowing the
+  // rail, and `object-fit: contain` prevents stretching if both bounds are
+  // hit at once (an extremely wide logo clamped by max-width). The
+  // component's `onLoad` handler only fine-tunes the exact pixel width
+  // afterwards - see Navigation.component.tsx.
+  &__brand-logo {
+    display: block;
+    height: 32px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+  }
+
+  // ── Items ──────────────────────────────────────────────────────────────
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    @include button-reset;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--gray-600);
+    text-align: left;
+    transition:
+      background 0.12s ease,
+      color 0.12s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--gray-100);
+      color: var(--dark-color);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--active {
+      background: var(--primary-50);
+      color: var(--primary-color);
+      font-weight: var(--font-weight-semibold);
+    }
+  }
+
+  &__item-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  // ── Footer ─────────────────────────────────────────────────────────────
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+}

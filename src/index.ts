@@ -4,6 +4,7 @@ export { PageLayout } from './components/PageLayout';
 export { Toolbar } from './components/Toolbar';
 export { Header } from './components/Header';
 export { Footer } from './components/Footer';
+export { Navigation } from './components/Navigation';
 export { Badge } from './components/Badge';
 export { Pill } from './components/Pill';
 export { Alert } from './components/Alert';
@@ -64,6 +65,12 @@ export type { PageLayoutProps } from './components/PageLayout';
 export type { ToolbarProps, ToolbarActionProps } from './components/Toolbar';
 export type { HeaderProps, HeaderActionProps } from './components/Header';
 export type { FooterProps, FooterCopyrightProps, FooterComponentProps } from './components/Footer';
+export type {
+  NavigationProps,
+  NavigationItem,
+  NavigationBrandProps,
+  NavigationLogo,
+} from './components/Navigation';
 export type { BadgeProps, BadgeColorProps } from './components/Badge';
 export type { PillProps, PillColorProps, PillVariantProps } from './components/Pill';
 export type { AlertProps, AlertAction } from './components/Alert';

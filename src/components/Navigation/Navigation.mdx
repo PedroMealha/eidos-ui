@@ -1,0 +1,80 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as NavigationStories from './Navigation.stories';
+
+<Meta of={NavigationStories} />
+
+# Navigation
+
+Sidebar navigation rail combining a brand mark (a custom logo or an initials avatar), a list of items, and an optional footer slot. Typically rendered in `PageLayout`'s reserved navigation region, but usable on its own.
+
+> **Note**: `Navigation` has no routing knowledge - `active` and `onClick` on each `NavigationItem` are fully controlled by the consumer. Compute `active: currentPath === item.path` (or however your app tracks the current page) before passing `items` in.
+
+## Usage
+
+```tsx
+import { Navigation } from '@pmealha/eidos-ui';
+import { LayoutDashboard, Settings } from 'lucide-react';
+
+<Navigation
+  brand={{ name: 'Acme', onClick: () => navigate('/') }}
+  items={[
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      active: true,
+      onClick: () => navigate('/dashboard'),
+    },
+    { id: 'settings', label: 'Settings', icon: Settings, onClick: () => navigate('/settings') },
+  ]}
+/>;
+```
+
+Inside `PageLayout`, pass the same shape via the `navigation` prop:
+
+```tsx
+<PageLayout navigation={{ brand: { name: 'Acme' }, items: [...] }}>...</PageLayout>
+```
+
+## Brand logo
+
+`brand.logo` accepts a real image (svg, png, or jpg) in place of the default initials avatar. It's rendered at a fixed height with its aspect ratio always preserved - a vertical, horizontal, or square logo all render correctly, with no distortion or cropping:
+
+```tsx
+<Navigation brand={{ name: 'Acme', logo: { src: '/acme-logo.svg' } }} items={items} />
+```
+
+This is guaranteed two ways:
+
+1. **CSS alone** already prevents distortion with no JavaScript: a fixed `height`, `width: auto` (derived from the image's own intrinsic ratio), a `max-width` so a very wide logo can't overflow the rail, and `object-fit: contain` so an extremely wide logo is letterboxed rather than stretched if it hits both bounds at once.
+2. Once the image loads, `Navigation` reads its real `naturalWidth`/`naturalHeight` and fine-tunes the exact rendered width (still capped by the same max-width) - a small enhancement on top of the CSS-only guarantee above.
+
+> **Note on CSP**: step 2 sets an inline `style` on the logo `<img>`, but only from inside `onLoad` - a DOM event that can only fire client-side, after the image has decoded. It never runs during server rendering, so the computed style can never appear in server-rendered markup - no `style-src-attr` allowance is needed even under SSR. See `ContentSecurityPolicy.mdx` for the full reasoning.
+
+## Default
+
+Without `brand.logo`, the brand mark falls back to an initials `Avatar` built from `brand.name`.
+
+<Canvas of={NavigationStories.Default} />
+
+<Controls of={NavigationStories.Default} />
+
+## With a square logo
+
+<Canvas of={NavigationStories.WithSquareLogo} />
+
+## With a horizontal logo
+
+A wide wordmark-style logo renders at the same fixed height as a square one, scaling its width to match its own aspect ratio.
+
+<Canvas of={NavigationStories.WithHorizontalLogo} />
+
+## With a vertical logo
+
+A tall, narrow logo is capped by the same fixed height as the other orientations.
+
+<Canvas of={NavigationStories.WithVerticalLogo} />
+
+## With a disabled item
+
+<Canvas of={NavigationStories.WithDisabledItem} />

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.stories';
 
@@ -15,6 +15,15 @@ const meta = {
     ),
   ],
   args: {
+    navigation: {
+      brand: { name: 'Eidos' },
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, active: true },
+        { id: 'tickets', label: 'Tickets', icon: Ticket },
+        { id: 'team', label: 'Team', icon: Users },
+        { id: 'settings', label: 'Settings', icon: Settings },
+      ],
+    },
     toolbar: {
       breadcrumbs: {
         separator: <ChevronRight size={14} />,
@@ -114,6 +123,14 @@ const meta = {
       table: {
         type: { summary: 'ToolbarProps' },
         defaultValue: { summary: '{}' },
+      },
+    },
+    navigation: {
+      control: 'object',
+      description: 'Sidebar navigation rail of the page layout. Omit to leave the region empty.',
+      table: {
+        type: { summary: 'NavigationProps' },
+        defaultValue: { summary: 'undefined' },
       },
     },
     footer: {

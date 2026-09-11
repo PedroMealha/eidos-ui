@@ -32,6 +32,10 @@ These portal-based, interaction-only components never render their dynamic-posit
 
 Nothing to configure for these - `style-src-attr 'self'` (i.e. no `unsafe-inline`) is sufficient.
 
+### Navigation logo
+
+`Navigation`'s brand `logo` is a different case again, worth calling out separately - it's rendered inline in the normal DOM tree (not portal-based), yet still needs no allowance under SSR, for a different reason than the components above: the exact rendered width is only ever computed and set inside the logo `<img>`'s `onLoad` handler, which is a DOM event that can only fire client-side, after the browser has decoded the image. It never runs during `renderToString`/`renderToPipeableStream`, so `Navigation`'s very first render - the one SSR captures - never includes that inline `style` at all; a fixed-height, `object-fit: contain` CSS class is the only thing present on first paint. The computed width can therefore never reach server-rendered markup, under any circumstance.
+
 ### Components that need an allowance only if you server-render them
 
 These render inline in the normal DOM tree, so a server-rendered page containing them will include their computed `style` attribute in the initial HTML:

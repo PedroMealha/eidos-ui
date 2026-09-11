@@ -5,11 +5,13 @@ import { Toolbar } from '../Toolbar';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import type { FooterProps } from '../Footer';
+import { Navigation } from '../Navigation';
 
 const defaultFooter: FooterProps = { copyright: `© ${new Date().getFullYear()} Eidos UI` };
 
 export const PageLayout: React.FC<PageLayoutProps> = ({
   toolbar,
+  navigation,
   header,
   footer,
   children,
@@ -28,8 +30,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         className="eidos-pagelayout__toolbar"
       />
       <div className="eidos-pagelayout__navigation">
-        {/* Reserved for future sidebar navigation content - not yet configurable via props. */}
-        <div></div>
+        {navigation && <Navigation {...navigation} />}
       </div>
       <main className="eidos-pagelayout__content">
         {header && (
