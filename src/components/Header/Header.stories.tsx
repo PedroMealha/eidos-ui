@@ -8,33 +8,11 @@ const meta = {
   args: {
       title: 'Eidos UI',
       subtitle: 'A modern UI component library',
-      breadcrumbs: {
-        items: [
-          {
-            label: 'Home',
-            href: '#',
-          },
-          {
-            label: 'Components',
-            href: '#',
-          },
-        ],
-        separator: '/',
-      },
       actions: [
         {
-          icon: 'Bell',
-          color: 'secondary',
-          onClick: () => alert('Notifications clicked'),
-        },
-        {
-          children: 'Settings',
-          preIcon: 'Settings',
-          color: 'secondary',
-          onClick: () => alert('Settings clicked'),
-        },
-        {
-          icon: 'User',
+          children: 'Refresh',
+          preIcon: 'refresh-cw',
+          variant: 'outlined',
           onClick: () => alert('Settings clicked'),
         },
       ],
@@ -52,14 +30,6 @@ const meta = {
       description: 'Subtitle to display in the header.',
       table: {
         type: { summary: 'string | React.ReactNode' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    breadcrumbs: {
-      control: 'object',
-      description: 'Breadcrumbs to display in the header.',
-      table: {
-        type: { summary: 'BreadcrumbProps' },
         defaultValue: { summary: 'undefined' },
       },
     },

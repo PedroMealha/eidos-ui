@@ -6,7 +6,7 @@ import type { CommandItem } from './CommandPalette.types';
 
 // ── Shared sample data ─────────────────────────────────────────────────────────
 
-const ITEMS: CommandItem[] = [
+export const CMDP_ITEMS: CommandItem[] = [
   {
     id: '1',
     label: 'Go to Dashboard',
@@ -66,10 +66,12 @@ const ITEMS: CommandItem[] = [
  * Canvas it produced a huge, mostly-empty block. A fixed height centres the
  * button just as well without depending on the surrounding page's height.
  */
-const TriggerButton = ({
+export const CmdPaletteTriggerButton = ({
+  label = 'Open Command Palette',
   onClick,
   shortcutKey,
 }: {
+  label?: string;
   onClick: () => void;
   shortcutKey?: string | null;
 }) => (
@@ -78,8 +80,6 @@ const TriggerButton = ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      height: '400px',
-      background: '#f8fafc',
     }}
   >
     <button
@@ -87,33 +87,35 @@ const TriggerButton = ({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '0.5rem',
-        padding: '0.5rem 1rem',
+        gap: 'var(--spacing-sm)',
+        padding: 'var(--spacing-sm) var(--spacing-md)',
         border: '1px solid #e2e8f0',
         borderRadius: '8px',
         background: '#fff',
         color: '#1e293b',
-        fontSize: '0.875rem',
+        fontSize: '0.75rem',
         cursor: 'pointer',
         boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
       }}
     >
-      Open Command Palette
+      {label}
       {shortcutKey && (
         <kbd
           style={{
             display: 'inline-flex',
+            alignItems: 'center',
             gap: '2px',
             padding: '1px 6px',
             border: '1px solid #e2e8f0',
             borderRadius: '4px',
-            fontSize: '11px',
+            fontSize: '1em',
             fontFamily: 'monospace',
             color: '#94a3b8',
             background: '#f8fafc',
           }}
         >
-          ⌘{shortcutKey.toUpperCase()}
+          <span style={{ fontSize: '1.3em' }}>⌘</span>
+          {shortcutKey.toUpperCase()}
         </kbd>
       )}
     </button>
@@ -135,6 +137,13 @@ const meta = {
       },
     },
   },
+  decorators: [
+    (Story) => (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', height: '300px' }}>
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     open: {
       control: false,
@@ -154,7 +163,15 @@ const meta = {
       control: 'text',
       description: 'Cmd/Ctrl+<key> shortcut that opens the palette. Pass `null` to disable it.',
     },
-    items: { control: false },
+    items: {
+      control: 'object',
+      description: 'Array of command items to display in the palette.',
+      table: {
+        type: {
+          summary: 'CommandItem[]',
+        },
+      },
+    },
     footer: { control: false },
     placeholder: { control: 'text' },
     emptyText: { control: 'text' },
@@ -192,13 +209,16 @@ export const Default = {
             functional shortcut defaults to disabled above - this story's
             trigger is the button; `shortcutKey` only reflects a value you've
             explicitly set via Controls. */}
-        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
+        <CmdPaletteTriggerButton
+          onClick={() => setOpen(true)}
+          shortcutKey={args.shortcutKey || 'k'}
+        />
         <CommandPalette
           {...args}
           open={open}
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
-          items={ITEMS}
+          items={CMDP_ITEMS}
         />
       </>
     );
@@ -251,7 +271,7 @@ export const Uncontrolled = {
             No trigger here - `shortcutKey` is disabled and there's no button in this story
           </span>
         )}
-        <CommandPalette {...args} items={ITEMS} />
+        <CommandPalette {...args} items={CMDP_ITEMS} />
       </div>
     );
   },
@@ -281,13 +301,16 @@ export const WithGroups = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
+        <CmdPaletteTriggerButton
+          onClick={() => setOpen(true)}
+          shortcutKey={args.shortcutKey || 'k'}
+        />
         <CommandPalette
           {...args}
           open={open}
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
-          items={ITEMS}
+          items={CMDP_ITEMS}
         />
       </>
     );
@@ -319,10 +342,13 @@ export const WithShortcuts = {
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => {
     const [open, setOpen] = useState(false);
-    const shortcutItems: CommandItem[] = ITEMS.filter((item) => item.shortcut);
+    const shortcutItems: CommandItem[] = CMDP_ITEMS.filter((item) => item.shortcut);
     return (
       <>
-        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
+        <CmdPaletteTriggerButton
+          onClick={() => setOpen(true)}
+          shortcutKey={args.shortcutKey || 'k'}
+        />
         <CommandPalette
           {...args}
           open={open}
@@ -363,7 +389,10 @@ export const EmptyState = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
+        <CmdPaletteTriggerButton
+          onClick={() => setOpen(true)}
+          shortcutKey={args.shortcutKey || 'k'}
+        />
         <CommandPalette
           {...args}
           open={open}
@@ -404,13 +433,16 @@ export const WithFooter = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
+        <CmdPaletteTriggerButton
+          onClick={() => setOpen(true)}
+          shortcutKey={args.shortcutKey || 'k'}
+        />
         <CommandPalette
           {...args}
           open={open}
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
-          items={ITEMS}
+          items={CMDP_ITEMS}
           footer={
             <span
               style={{
@@ -419,7 +451,7 @@ export const WithFooter = {
                 fontFamily: 'var(--font-family-mono, monospace)',
               }}
             >
-              {ITEMS.length} commands
+              {CMDP_ITEMS.length} commands
             </span>
           }
         />
@@ -474,7 +506,10 @@ export const WithDisabledItems = {
     ];
     return (
       <>
-        <TriggerButton onClick={() => setOpen(true)} shortcutKey={args.shortcutKey || 'k'} />
+        <CmdPaletteTriggerButton
+          onClick={() => setOpen(true)}
+          shortcutKey={args.shortcutKey || 'k'}
+        />
         <CommandPalette
           {...args}
           open={open}

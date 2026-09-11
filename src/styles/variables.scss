@@ -138,6 +138,13 @@
   --component-size-md: 40px;
   --component-size-lg: 48px;
 
+  // Layout
+  --toolbar-height: 60px;
+  --navigation-min-width: 150px;
+  --navigation-max-width: 200px;
+  --footer-height: 60px;
+
+
   // Z-index layers
   //
   // Ordered low -> high, in steps of 100 so consumers can slot their own

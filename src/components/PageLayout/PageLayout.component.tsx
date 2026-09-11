@@ -16,16 +16,17 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   return (
     <div className={classes} {...rest}>
       <Toolbar
-        avatar={toolbar?.avatar}
-        brandName={toolbar?.brandName || 'Eidos UI'}
-        actions={toolbar?.actions}
+        breadcrumbs={toolbar?.breadcrumbs || { items: [], separator: <></> }}
+        cmdPaletteItems={toolbar?.cmdPaletteItems || []}
+        actions={toolbar?.actions || []}
+        userMenu={toolbar?.userMenu || []}
         className="eidos-pagelayout__toolbar"
       />
       <div className="eidos-pagelayout__navigation">
         {/* Reserved for future sidebar navigation content - not yet configurable via props. */}
         <div></div>
       </div>
-      <div className="eidos-pagelayout__content">
+      <main className="eidos-pagelayout__content">
         {header && (
           <Header
             {...header}
@@ -34,7 +35,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         )}
         <div className="eidos-pagelayout__body">{children}</div>
         <div className="eidos-pagelayout__footer">&copy; {new Date().getFullYear()} Eidos UI</div>
-      </div>
+      </main>
     </div>
   );
 };

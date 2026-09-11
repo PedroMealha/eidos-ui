@@ -30,19 +30,21 @@
   // ========================================================================
 
   &--sm {
-    width: 32px;
-    height: 32px;
-    font-size: 0.75rem;
+    width: var(--component-size-sm);
+    height: var(--component-size-sm);
+    font-size: var(--font-size-sm);
   }
+
   &--md {
-    width: 40px;
-    height: 40px;
-    font-size: 0.875rem;
+    width: var(--component-size-md);
+    height: var(--component-size-md);
+    font-size: var(--font-size-base);
   }
+
   &--lg {
-    width: 48px;
-    height: 48px;
-    font-size: 1rem;
+    width: var(--component-size-lg);
+    height: var(--component-size-lg);
+    font-size: var(--font-size-lg);
   }
 
   // ========================================================================

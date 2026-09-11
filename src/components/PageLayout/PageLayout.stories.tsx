@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronRight } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
+import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.stories';
 
 const meta = {
   title: 'Layout/PageLayout',
@@ -8,48 +9,13 @@ const meta = {
   parameters: { layout: 'padded' },
   decorators: [
     (Story) => (
-      <div style={{ height: '1000px' }}>
+      <div style={{ height: '1000px', backgroundColor: 'var(--gray-200)' }}>
         <Story />
       </div>
     ),
   ],
   args: {
     toolbar: {
-      brandName: 'Eidos UI',
-      avatar: {
-        name: 'Eidos UI',
-      },
-      actions: [
-        {
-          icon: 'Bell',
-          color: 'secondary',
-          onClick: () => alert('Notifications clicked'),
-        },
-        {
-          children: 'Settings',
-          preIcon: 'Settings',
-          color: 'secondary',
-          onClick: () => alert('Settings clicked'),
-        },
-        {
-          icon: 'User',
-          onClick: () => alert('Settings clicked'),
-        },
-      ],
-    },
-    header: {
-      title: 'Page Title',
-      subtitle: 'Page Subtitle',
-      actions: [
-        {
-          children: 'Action 1',
-          onClick: () => alert('Action 1 clicked'),
-        },
-        {
-          children: 'Action 2',
-          onClick: () => alert('Action 2 clicked'),
-        },
-      ],
       breadcrumbs: {
         separator: <ChevronRight size={14} />,
         items: [
@@ -59,6 +25,77 @@ const meta = {
           { label: 'Smartphones' },
         ],
       },
+      cmdPaletteItems: CMDP_ITEMS,
+      actions: [
+        {
+          tooltip: 'Notifications',
+          icon: 'Bell',
+          color: 'secondary',
+          onClick: () => alert('Notifications clicked'),
+        },
+        {
+          tooltip: 'Settings',
+          icon: 'Settings',
+          color: 'secondary',
+          onClick: () => alert('Settings clicked'),
+        },
+        {
+          tooltip: 'User',
+          icon: 'User',
+          onClick: () => alert('Settings clicked'),
+        },
+      ],
+      userMenu: [
+        {
+          type: 'component',
+          id: 'identity',
+          component: (
+            <div
+              style={{ display: 'flex', flexDirection: 'column', padding: 'var(--spacing-sm) 0' }}
+            >
+              <span
+                style={{
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 'var(--font-weight-semibold)',
+                }}
+              >
+                John Doe
+              </span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)' }}>
+                john.doe@example.com
+              </span>
+            </div>
+          ),
+        },
+        { type: 'separator', id: 'sep-1' },
+        {
+          type: 'item',
+          id: 'settings',
+          label: 'Settings',
+          icon: 'settings',
+          onClick: () => alert('Settings clicked'),
+        },
+        {
+          type: 'item',
+          id: 'logout',
+          label: 'Logout',
+          icon: 'log-out',
+          color: 'danger',
+          onClick: () => alert('Logout clicked'),
+        },
+      ],
+    },
+    header: {
+      title: 'Page Title',
+      subtitle: 'Page Subtitle',
+      actions: [
+        {
+          children: 'Refresh',
+          preIcon: 'refresh-cw',
+          variant: 'outlined',
+          onClick: () => alert('Settings clicked'),
+        },
+      ],
     },
     children: 'Page content',
   },

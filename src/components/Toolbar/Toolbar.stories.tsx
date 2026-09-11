@@ -1,47 +1,94 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Toolbar } from './Toolbar.component';
+import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.stories';
 
 const meta = {
   title: 'Layout/Components/Toolbar',
   component: Toolbar,
   parameters: { layout: 'padded' },
   args: {
-      brandName: 'Eidos UI',
-      avatar: {
-        name: 'Eidos UI',
-      },
-      actions: [
+    breadcrumbs: {
+      items: [
         {
-          icon: 'Bell',
-          color: 'secondary',
-          onClick: () => console.log('Notifications clicked'),
+          label: 'Home',
+          href: '#',
         },
         {
-          children: 'Settings',
-          preIcon: 'Settings',
-          color: 'secondary',
-          onClick: () => console.log('Settings clicked'),
-        },
-        {
-          icon: 'User',
-          onClick: () => console.log('Settings clicked'),
+          label: 'Components',
+          href: '#',
         },
       ],
+      separator: '/',
+    },
+    cmdPaletteItems: CMDP_ITEMS,
+    actions: [
+      {
+        tooltip: 'Notifications',
+        icon: 'Bell',
+        color: 'secondary',
+        onClick: () => alert('Notifications clicked'),
+      },
+      {
+        tooltip: 'Settings',
+        icon: 'Settings',
+        color: 'secondary',
+        onClick: () => alert('Settings clicked'),
+      },
+      {
+        tooltip: 'User',
+        icon: 'User',
+        onClick: () => alert('Settings clicked'),
+      },
+    ],
+    userMenu: [
+      {
+        type: 'component',
+        id: 'identity',
+        component: (
+          <div style={{ display: 'flex', flexDirection: 'column', padding: 'var(--spacing-sm) 0' }}>
+            <span
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)' }}
+            >
+              John Doe
+            </span>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)' }}>
+              john.doe@example.com
+            </span>
+          </div>
+        ),
+      },
+      { type: 'separator', id: 'sep-1' },
+      {
+        type: 'item',
+        id: 'settings',
+        label: 'Settings',
+        icon: 'settings',
+        onClick: () => alert('Settings clicked'),
+      },
+      {
+        type: 'item',
+        id: 'logout',
+        label: 'Logout',
+        icon: 'log-out',
+        color: 'danger',
+        onClick: () => alert('Logout clicked'),
+      },
+    ],
   },
   argTypes: {
-    brandName: {
-      control: 'text',
-      description: 'Brand name to display in the toolbar.',
+    breadcrumbs: {
+      control: 'object',
+      description: 'Breadcrumbs to display in the header.',
       table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: 'Brand Name' },
+        type: { summary: 'BreadcrumbProps' },
+        defaultValue: { summary: 'undefined' },
       },
     },
-    avatar: {
+    cmdPaletteItems: {
       control: 'object',
-      description: 'Avatar to display next to the brand name.',
+      description: 'Command palette items to display in the toolbar.',
       table: {
-        type: { summary: 'ToolbarAvatarProps' },
+        type: { summary: 'CommandItem[]' },
         defaultValue: { summary: 'undefined' },
       },
     },
@@ -50,6 +97,14 @@ const meta = {
       description: 'Actions to display in the toolbar.',
       table: {
         type: { summary: 'ToolbarActionProps[]' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    userMenu: {
+      control: 'object',
+      description: 'User menu items to display in the toolbar.',
+      table: {
+        type: { summary: 'MenuItemType[]' },
         defaultValue: { summary: 'undefined' },
       },
     },

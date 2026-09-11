@@ -1,4 +1,3 @@
-import { BreadcrumbProps } from '../Breadcrumb';
 import { TextButtonProps, IconButtonProps } from '../Button';
 
 export interface HeaderProps {
@@ -6,8 +5,6 @@ export interface HeaderProps {
   title: string;
   /** Supporting text rendered below the title. */
   subtitle?: string | React.ReactNode;
-  /** Breadcrumb trail rendered above the title. */
-  breadcrumbs?: Pick<BreadcrumbProps, 'items' | 'separator'>;
   /** Trailing action buttons, rendered right-aligned. */
   actions?: HeaderActionProps[];
   className?: string;
@@ -28,6 +25,7 @@ export type HeaderActionProps =
       | 'icon'
       | 'children'
       | 'onClick'
+      | 'tooltip'
     >
   | Pick<
       IconButtonProps,
@@ -40,4 +38,5 @@ export type HeaderActionProps =
       | 'icon'
       | 'children'
       | 'onClick'
+      | 'tooltip'
     >;

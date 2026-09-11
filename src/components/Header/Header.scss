@@ -6,10 +6,16 @@
   justify-content: space-between;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
-  padding: var(--spacing-md);
   will-change: transform;
+  background-color: var(--gray-50);
 
   &__content {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    flex: 1;
   }
 
   &__actions {
@@ -18,6 +24,7 @@
   }
 
   &__title {
-    margin: var(--spacing-xs) 0;
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-xs);
   }
 }

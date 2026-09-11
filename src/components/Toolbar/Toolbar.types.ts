@@ -1,11 +1,15 @@
-import { AvatarProps } from "../Avatar";
-import { TextButtonProps, IconButtonProps } from "../Button";
+import { BreadcrumbProps } from "../Breadcrumb";
+import { IconButtonProps } from "../Button";
+import { MenuItemType } from "../Menu";
+import { CommandItem } from "../CommandPalette";
 
 export interface ToolbarProps {
-  /** Text shown next to the brand avatar, inside the clickable brand button. Defaults to `"Brand Name"`. */
-  brandName?: string;
-  /** Avatar rendered to the left of the brand name. Omit to render the brand name on its own. */
-  avatar?: ToolbarAvatarProps;
+  /** Breadcrumb trail rendered above the page. */
+  breadcrumbs: Pick<BreadcrumbProps, 'items' | 'separator'>;
+  /** User menu items, rendered right-aligned. */
+  userMenu: MenuItemType[];
+  /** Command palette items, rendered right-aligned. */
+  cmdPaletteItems?: CommandItem[];
   /** Trailing action buttons, rendered right-aligned. */
   actions?: ToolbarActionProps[];
   className?: string;
@@ -16,20 +20,7 @@ export interface ToolbarProps {
  */
 export type ToolbarActionProps =
   | Pick<
-      TextButtonProps,
-      | 'variant'
-      | 'color'
-      | 'loading'
-      | 'disabled'
-      | 'preIcon'
-      | 'posIcon'
-      | 'icon'
-      | 'children'
-      | 'onClick'
-    >
-  | Pick<
       IconButtonProps,
-      | 'variant'
       | 'color'
       | 'loading'
       | 'disabled'
@@ -38,7 +29,5 @@ export type ToolbarActionProps =
       | 'icon'
       | 'children'
       | 'onClick'
+      | 'tooltip'
     >;
-
-/** Toolbar brand avatar - only the presentational fields, no `onClick`/`className` since the brand button already owns click handling and layout owns styling. */
-export type ToolbarAvatarProps = Pick<AvatarProps, 'src' | 'alt' | 'name' | 'color' | 'fallback'>;
