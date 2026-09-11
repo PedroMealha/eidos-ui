@@ -9,7 +9,7 @@ const meta = {
   parameters: { layout: 'padded' },
   decorators: [
     (Story) => (
-      <div style={{ height: '1000px', backgroundColor: 'var(--gray-200)' }}>
+      <div style={{ height: '1000px', boxShadow: '0 0 6px 3px rgb(0,0,0,0.04)' }}>
         <Story />
       </div>
     ),

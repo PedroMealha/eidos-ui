@@ -28,7 +28,20 @@ function App() {
 }
 ```
 
-Pass `shortcutKey` to change the shortcut (e.g. `'r'` for `⌘R`), or `shortcutKey={null}` to disable the built-in listener entirely if you only want to open it from your own trigger (a button's `onClick`, for instance).
+That's headless by design - nothing is rendered until `⌘K` is pressed. Pass `trigger` if you also want a visible, clickable entry point:
+
+```tsx
+import { Button, CommandPalette } from '@pmealha/eidos-ui';
+
+// Built-in default trigger (a button + Kbd badge showing the shortcut)
+<CommandPalette trigger items={items} />
+
+// Or supply your own element - it's wrapped with the click handler that
+// opens the palette, the same convention Menu/Dropdown use for `trigger`
+<CommandPalette trigger={<Button>Search</Button>} items={items} />
+```
+
+Pass `shortcutKey` to change the shortcut (e.g. `'r'` for `⌘R`), or `shortcutKey={null}` to disable the built-in listener entirely if you only want to open it via `trigger`.
 
 If you need full external control - syncing with a URL, another piece of app state, etc - pass `open` (+ `onClose`, and `onOpen` if you also want the shortcut to still work):
 
@@ -49,7 +62,7 @@ function App() {
 
 ## Default
 
-The palette opens immediately in Storybook so you can interact with it right away. Use the Controls panel to customise `placeholder`, `emptyText`, and `maxHeight`.
+Click the built-in trigger to open the palette. Use the Controls panel to customise `placeholder`, `emptyText`, `maxHeight`, and `triggerLabel`.
 
 <Canvas of={CommandPaletteStories.Default} />
 
@@ -60,6 +73,12 @@ The palette opens immediately in Storybook so you can interact with it right awa
 Omit `open`/`onClose` entirely and the palette manages its own state, including the `⌘K` listener - no `useState`/`useEffect` required in your app.
 
 <Canvas of={CommandPaletteStories.Uncontrolled} />
+
+## With a custom trigger
+
+`trigger` also accepts any `ReactNode` in place of `true`, wrapped with the same click-to-open wiring as the built-in default.
+
+<Canvas of={CommandPaletteStories.WithCustomTrigger} />
 
 ## With groups
 

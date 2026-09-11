@@ -10,6 +10,7 @@
     'navigation content';
   grid-template-columns: minmax(var(--navigation-min-width), var(--navigation-max-width)) 1fr;
   grid-template-rows: auto 1fr;
+  background-color: var(--white);
 
   &__toolbar {
     grid-area: toolbar;

@@ -60,7 +60,7 @@ export { useSnackbar, useSnackbarContext } from './components/Snackbar';
 // Types
 export type { CardProps } from './components/Card';
 export type { PageLayoutProps } from './components/PageLayout';
-export type { ToolbarProps, ToolbarActionProps, ToolbarAvatarProps } from './components/Toolbar';
+export type { ToolbarProps, ToolbarActionProps } from './components/Toolbar';
 export type { HeaderProps, HeaderActionProps } from './components/Header';
 export type { BadgeProps, BadgeColorProps } from './components/Badge';
 export type { PillProps, PillColorProps, PillVariantProps } from './components/Pill';

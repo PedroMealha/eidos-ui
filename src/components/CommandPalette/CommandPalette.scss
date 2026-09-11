@@ -1,5 +1,41 @@
 @use '../../styles/mixins.scss' as *;
 
+// ── Trigger ────────────────────────────────────────────────────────────────────
+// Rendered inline (not portalled) when the `trigger` prop is supplied.
+
+// Wrapper around a custom `trigger` node - mirrors Dropdown/Menu's own
+// trigger wrapper so the click target always matches what's visually shown.
+.eidos-cmd-trigger {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+// Built-in default trigger (`trigger={true}`) - a plain button, not the
+// `Button` component, so it stays visually low-key next to whatever else
+// lives in a toolbar/topbar rather than competing as a primary action.
+.eidos-cmd-trigger-default {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-sm);
+  background: var(--gray-50);
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--gray-300);
+    color: var(--gray-700);
+  }
+}
+
+// Spacing between the built-in default trigger's label and its Kbd badge.
+.eidos-cmd-trigger-kbd {
+  gap: 3px;
+}
+
 // ── Backdrop ───────────────────────────────────────────────────────────────────
 // Full-screen overlay that dims the page content behind the dialog.
 // Starts fully transparent; .eidos-cmd-backdrop--visible drives the fade-in.

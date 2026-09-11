@@ -52,4 +52,18 @@ export interface CommandPaletteProps {
   className?: string;
   /** Optional content rendered on the right side of the footer */
   footer?: React.ReactNode;
+  /**
+   * Renders a clickable entry point inline, wherever `<CommandPalette>` is
+   * mounted, wired up to open it - no external button/state required.
+   * - Omitted (default): nothing is rendered inline, matching the fully
+   *   headless behaviour of a bare `<CommandPalette items={items} />`.
+   * - `true`: renders a built-in default trigger (button + `Kbd` shortcut
+   *   badge reflecting `shortcutKey`).
+   * - A `ReactNode`: renders your own element instead, with the open click
+   *   handler wired onto a wrapping element (mirrors the `trigger` prop on
+   *   `Menu`/`Dropdown`).
+   */
+  trigger?: boolean | React.ReactNode;
+  /** Label used by the built-in default trigger (`trigger={true}`). @default 'Search' */
+  triggerLabel?: string;
 }
