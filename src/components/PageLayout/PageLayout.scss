@@ -28,21 +28,21 @@
     grid-template-rows: minmax(50px, auto) 1fr auto;
   }
 
-  &__header {
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--gray-200);
-  }
-
   &__body {
-    padding: var(--spacing-xl);
     background-color: var(--gray-50);
   }
 
   &__footer {
-    // Only the default `copyright` variant gets the extra top spacing - a
+    // Only the default `copyright` variant gets the extra vertical spacing - a
     // custom `component` is expected to fully own its own layout/spacing.
     &.eidos-footer--copyright {
-      padding-top: var(--spacing-md);
+      padding: var(--spacing-md) var(--spacing-xl);
     }
+  }
+
+  &__header,
+  &__body,
+  &__footer {
+    padding: var(--spacing-xl) var(--spacing-xl) 0;
   }
 }
