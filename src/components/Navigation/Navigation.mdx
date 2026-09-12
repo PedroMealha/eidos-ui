@@ -5,7 +5,7 @@ import * as NavigationStories from './Navigation.stories';
 
 # Navigation
 
-Sidebar navigation rail combining a brand mark (a custom logo or an initials avatar), a list of items, and an optional footer slot. Typically rendered in `PageLayout`'s reserved navigation region, but usable on its own.
+Sidebar navigation rail combining a brand mark (a custom logo or an initials avatar), a list of items, an optional footer slot, and a built-in collapse/expand toggle. Typically rendered in `PageLayout`'s reserved navigation region, but usable on its own.
 
 > **Note**: `Navigation` has no routing knowledge - `active` and `onClick` on each `NavigationItem` are fully controlled by the consumer. Compute `active: currentPath === item.path` (or however your app tracks the current page) before passing `items` in.
 
@@ -38,22 +38,56 @@ Inside `PageLayout`, pass the same shape via the `navigation` prop:
 
 ## Brand logo
 
-`brand.logo` accepts a real image (svg, png, or jpg) in place of the default initials avatar. It's rendered at a fixed height with its aspect ratio always preserved - a vertical, horizontal, or square logo all render correctly, with no distortion or cropping:
+`brand` is a discriminated union - pass exactly one of `name` (renders an initials `Avatar` + text) or `logo` (rendered alone, no separate text), never both:
 
 ```tsx
-<Navigation brand={{ name: 'Acme', logo: { src: '/acme-logo.svg' } }} items={items} />
+// Initials avatar + name text
+<Navigation brand={{ name: 'Acme' }} items={items} />
+
+// A real image instead - no separate `name` text alongside it, since a logo
+// typically already bakes the brand name into the image. `alt` is required,
+// since there's no other text for it to fall back to.
+<Navigation brand={{ logo: { src: '/acme-logo.svg', alt: 'Acme' } }} items={items} />
+
+// Type error - `name` and `logo` can't both be passed, same as `copyright`/
+// `component` on `Footer`
+<Navigation brand={{ name: 'Acme', logo: { src: '/acme-logo.svg', alt: 'Acme' } }} items={items} />
 ```
 
-This is guaranteed two ways:
+`logo` accepts a real image (svg, png, or jpg), rendered at a fixed height with its aspect ratio always preserved - a vertical, horizontal, or square logo all render correctly, with no distortion or cropping, in both the expanded and collapsed rail. This is deliberately plain, responsive CSS with no JavaScript sizing/measurement at all: a fixed `height`, `width: auto` (derived from the image's own intrinsic ratio), `max-width: min(72px, 100%)` so it's capped at `72px` when there's room but always shrinks to fit whatever's actually available otherwise (the collapsed rail is only ~48px wide), and `object-fit: contain` so it's letterboxed rather than distorted if that ever clamps it below its natural width.
 
-1. **CSS alone** already prevents distortion with no JavaScript: a fixed `height`, `width: auto` (derived from the image's own intrinsic ratio), a `max-width` so a very wide logo can't overflow the rail, and `object-fit: contain` so an extremely wide logo is letterboxed rather than stretched if it hits both bounds at once.
-2. Once the image loads, `Navigation` reads its real `naturalWidth`/`naturalHeight` and fine-tunes the exact rendered width (still capped by the same max-width) - a small enhancement on top of the CSS-only guarantee above.
+## Collapsing to icon-only
 
-> **Note on CSP**: step 2 sets an inline `style` on the logo `<img>`, but only from inside `onLoad` - a DOM event that can only fire client-side, after the image has decoded. It never runs during server rendering, so the computed style can never appear in server-rendered markup - no `style-src-attr` allowance is needed even under SSR. See `ContentSecurityPolicy.mdx` for the full reasoning.
+A toggle button at the bottom of the rail collapses `Navigation` to a narrow, icon-only width (`--navigation-collapsed-width`, `64px` by default). While collapsed:
+
+- Every item's label moves into a `Tooltip` (shown on hover) instead of being rendered inline, and its icon is centered.
+- `brand.name`'s text (when that variant is used) and the `footer` slot are hidden - arbitrary footer content can't reliably adapt to an icon-only width.
+- The brand mark (a `logo` or the initials `Avatar`) stays visible and centered, and the toggle button itself stays centered too rather than pinned to the right.
+
+The simplest form needs no state at all:
+
+```tsx
+<Navigation brand={{ name: 'Acme' }} items={items} />
+```
+
+Set `defaultCollapsed` to start collapsed while remaining uncontrolled, or pass `collapsed` (+ `onCollapsedChange`) for full external control - e.g. to persist the preference, or to auto-collapse below a viewport breakpoint as part of a broader responsive layout:
+
+```tsx
+const [collapsed, setCollapsed] = useState(false);
+
+<Navigation
+  brand={{ name: 'Acme' }}
+  items={items}
+  collapsed={collapsed}
+  onCollapsedChange={setCollapsed}
+/>;
+```
+
+Pass `collapsible={false}` to hide the built-in toggle button entirely - useful if collapsing should only ever be driven externally (e.g. purely by a responsive breakpoint).
 
 ## Default
 
-Without `brand.logo`, the brand mark falls back to an initials `Avatar` built from `brand.name`.
+Without `brand.logo`, the brand mark falls back to an initials `Avatar` built from `brand.name`. Click the toggle button at the bottom of the rail to collapse it - `Navigation` manages this itself.
 
 <Canvas of={NavigationStories.Default} />
 
@@ -78,3 +112,15 @@ A tall, narrow logo is capped by the same fixed height as the other orientations
 ## With a disabled item
 
 <Canvas of={NavigationStories.WithDisabledItem} />
+
+## Starting collapsed
+
+`defaultCollapsed` starts the rail collapsed while still leaving it uncontrolled - the toggle button still expands/collapses it normally.
+
+<Canvas of={NavigationStories.DefaultCollapsed} />
+
+## Controlled collapse
+
+`collapsed` + `onCollapsedChange` hand control to the consumer - here an external button drives the same state passed into `Navigation`.
+
+<Canvas of={NavigationStories.Controlled} />

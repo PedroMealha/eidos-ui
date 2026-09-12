@@ -1,22 +1,74 @@
 @use '../../styles/mixins.scss' as *;
 
+// `.eidos-navigation__item-icon`'s own width/height, the initials `Avatar`'s
+// fixed `sm` size, and the collapse toggle's own icon-only `sm` Button size
+// (Button.scss's `&--icon-only`) - kept in one place so the
+// collapsed-centering calc()s below can reference them directly instead of
+// a second, easily-forgotten-to-update hardcoded value.
+$icon-size: 16px;
+$avatar-size: 32px;
+$toggle-size: 2.063em;
+
 .eidos-navigation {
+  // Single source of truth for the collapse/expand animation - every
+  // property below that changes when `--collapsed` toggles (root width,
+  // brand name, item labels, footer) references this pair instead of its
+  // own hardcoded duration/easing. Previously several of them drifted
+  // slightly (0.15s vs 0.12s, or missing from a `transition` list entirely),
+  // which was enough to visibly desync elements that are meant to move as
+  // one unit, on top of the `justify-content` issue noted below.
+  --navigation-collapse-duration: 0.18s;
+  --navigation-collapse-easing: ease;
+
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
   height: 100%;
   box-sizing: border-box;
   padding: var(--spacing-lg);
+  background-color: var(--white);
   width: 100%;
   min-width: var(--navigation-min-width);
   max-width: var(--navigation-max-width);
+  transition:
+    width var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+    min-width var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+    max-width var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+    padding var(--navigation-collapse-duration) var(--navigation-collapse-easing);
+
+  // ── Collapsed (icon-only) ────────────────────────────────────────────────
+  // A single modifier on the root drives every descendant change below -
+  // width, brand name, item labels, and the footer slot (which is hidden
+  // outright, since arbitrary content can't reliably adapt to this width).
+
+  &--collapsed {
+    width: var(--navigation-collapsed-width);
+    min-width: var(--navigation-collapsed-width);
+    max-width: var(--navigation-collapsed-width);
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
 
   // ── Brand ──────────────────────────────────────────────────────────────
 
   &__brand {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    // `min-width: 0` is what actually lets `&__brand-name` shrink below its
+    // own content size to truncate - without it, a flex item's automatic
+    // minimum size is its content size, which is exactly what let a wide
+    // logo + a full-length name overflow the rail rather than the name
+    // giving way first.
+    min-width: 0;
+    // Fixed, never toggled - correct for the `name` variant (an initials
+    // `Avatar` + text - see `&__brand-name` below), which has real,
+    // variable-width content that must stay left-anchored. `&--logo-only`
+    // below overrides this - see its own comment for why that's safe.
+    justify-content: flex-start;
     gap: var(--spacing-sm);
+    padding: 0;
+    transition:
+      gap var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+      padding var(--navigation-collapse-duration) var(--navigation-collapse-easing);
 
     &--clickable {
       cursor: pointer;
@@ -30,24 +82,83 @@
     }
   }
 
+  // A `logo` brand (see Navigation.component.tsx) has no competing `name`
+  // text alongside it - it's the row's only child, so unlike `&__item`,
+  // there's no ragged-alignment risk in centering it outright. Fixed,
+  // never toggled between expanded/collapsed (so no jump either), and
+  // correct in both: the image itself is already properly responsive (see
+  // `&__brand-logo` below), so there's nothing further to compute here.
+  &__brand--logo-only {
+    justify-content: center;
+  }
+
+  // Centers the initials `Avatar` precisely, the same way `&__item` centers
+  // its icon below: padding computed so the content area works out to
+  // exactly `$avatar-size` wide, leaving nothing left over for
+  // `justify-content` to distribute either way. Only applies to the `name`
+  // variant - `&--logo-only` handles itself above. `gap: 0` matters here
+  // too - once `&__brand-name` has faded away (see below), a flex `gap`
+  // would otherwise still reserve space for it.
+  &--collapsed &__brand:not(&__brand--logo-only) {
+    gap: 0;
+    padding: 0
+      calc((var(--navigation-collapsed-width) - (2 * var(--spacing-sm)) - #{$avatar-size}) / 2);
+  }
+
   &__brand-name {
+    // Shrinks first (down to nothing) whenever the logo + name don't both
+    // fit the rail's 150-200px width - `text-overflow: ellipsis` then
+    // truncates gracefully instead of overflowing past the rail's edge.
+    flex: 1 1 auto;
+    min-width: 0;
     font-weight: var(--font-weight-semibold);
     letter-spacing: -0.01em;
     color: var(--dark-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 1;
+    // Generous upper bound, well above any real rendered width - only here
+    // so the collapse transition below has a `max-width` to animate from.
+    // Truncation above already keeps the *actual* size within the rail.
+    max-width: 200px;
+    transition:
+      opacity var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+      max-width var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+      flex-grow var(--navigation-collapse-duration) var(--navigation-collapse-easing);
   }
 
-  // A safe, distortion-free default with no JS at all: fixed height,
-  // `width: auto` derives the rendered width from the image's own intrinsic
-  // ratio, `max-width` stops very wide/horizontal logos from overflowing the
-  // rail, and `object-fit: contain` prevents stretching if both bounds are
-  // hit at once (an extremely wide logo clamped by max-width). The
-  // component's `onLoad` handler only fine-tunes the exact pixel width
-  // afterwards - see Navigation.component.tsx.
+  // `max-width`/`opacity` (not `display: none`) so the name fades away as
+  // part of the same transition that narrows the rail, instead of popping
+  // in/out abruptly. `flex-grow: 0` avoids it claiming any space once
+  // faded; `gap: 0` above matters here too - a flex `gap` still reserves
+  // space between items even once one of them has shrunk to zero width,
+  // which would otherwise leave the mark slightly off-centre.
+  &--collapsed &__brand-name {
+    opacity: 0;
+    max-width: 0;
+    flex-grow: 0;
+  }
+
+  // A safe, distortion-free, fully responsive default with no JS at all:
+  // fixed height, `width: auto` derives the rendered width from the image's
+  // own intrinsic ratio, and `object-fit: contain` prevents stretching if
+  // `max-width` ever clamps it below that.
+  //
+  // `max-width: min(72px, 100%)` is the key part - a flat `72px` (sized for
+  // the *expanded* row, 150-200px wide) doesn't shrink for the *collapsed*
+  // row, only ~48px wide, so a wide logo could still overflow it there.
+  // `100%` alone has the opposite problem: with no logo, `&__brand-name`
+  // stretches to fill the row (`flex: 1 1 auto` above), so a logo's `100%`
+  // would resolve against whatever's left after that - `min()` picks
+  // whichever of the two is smaller, so it's properly responsive to
+  // *either* constraint, expanded or collapsed, without needing to know
+  // which one applies.
   &__brand-logo {
     display: block;
     height: 32px;
     width: auto;
-    max-width: 160px;
+    max-width: min(72px, 100%);
     object-fit: contain;
   }
 
@@ -63,10 +174,35 @@
     padding: 0;
   }
 
+  // `.eidos-navigation__item-wrapper` (the `<li>`) is what `Tooltip`'s own
+  // trigger wrapper renders inside of - see the note further down, this is
+  // what actually keeps the icon centred while collapsed.
+  &__item-wrapper {
+    display: block;
+  }
+
   &__item {
     @include button-reset;
     display: flex;
     align-items: center;
+    // Fixed at `flex-start`, never toggled between states - required while
+    // expanded, since the label has real, variable-per-item width and must
+    // stay left-anchored (toggling this to `center` for the collapsed state
+    // instead would center each item's icon+label as its own group, so rows
+    // with different label lengths would each start at a different x
+    // position - exactly the ragged look that briefly shipped here).
+    //
+    // `justify-content` also has no meaningful in-between value for a
+    // transition to animate anyway - a browser can't interpolate
+    // `flex-start` into `center` frame by frame, it just flips at some
+    // point *during* the width transition (browsers differ on exactly
+    // when), popping content into its new position mid-animation instead of
+    // moving with it. Collapsed centering is instead achieved below by
+    // giving the item exactly enough horizontal padding that its content
+    // area matches the icon's own width precisely - a real,
+    // continuously-interpolable length, so it can transition in lockstep
+    // with the rail's own width instead of snapping.
+    justify-content: flex-start;
     width: 100%;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
@@ -77,7 +213,9 @@
     text-align: left;
     transition:
       background 0.12s ease,
-      color 0.12s ease;
+      color 0.12s ease,
+      gap var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+      padding var(--navigation-collapse-duration) var(--navigation-collapse-easing);
 
     &:hover:not(:disabled) {
       background: var(--gray-100);
@@ -96,10 +234,58 @@
     }
   }
 
+  // Centers the icon precisely: the item's own available width (its 100%
+  // width, minus the rail's own collapsed horizontal padding) minus the
+  // icon's width, halved, gives left/right padding that leaves a content
+  // area exactly as wide as the icon itself - i.e. zero leftover space for
+  // `justify-content` to distribute either way, so `flex-start` (fixed
+  // above) renders identically to `center` here. `gap: 0` matters too - a
+  // flex `gap` still reserves space between items even once the label has
+  // shrunk to zero width (see `&__item-label` below), which would otherwise
+  // throw off this exact math.
+  &--collapsed &__item {
+    gap: 0;
+    padding: var(--spacing-sm)
+      calc((var(--navigation-collapsed-width) - (2 * var(--spacing-sm)) - #{$icon-size}) / 2);
+  }
+
+  // `Tooltip`'s own trigger wrapper (`.eidos-tooltip-trigger`, always
+  // rendered - see Navigation.component.tsx, only *disabled* while
+  // expanded) is `display: inline-flex` by default, which only shrink-wraps
+  // its content. Left as-is, the button inside would shrink to exactly its
+  // content's width with nothing left for `justify-content: center` to
+  // center *within*. Scoped to this component only, not a global override
+  // of `.eidos-tooltip-trigger`.
+  &__item-wrapper .eidos-tooltip-trigger {
+    display: flex;
+    width: 100%;
+  }
+
   &__item-icon {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
+  }
+
+  &__item-label {
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 1;
+    max-width: 200px;
+    transition:
+      opacity var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+      max-width var(--navigation-collapse-duration) var(--navigation-collapse-easing);
+  }
+
+  // `max-width`/`opacity` (not `display: none`) so the label fades away as
+  // part of the same transition that narrows the rail, instead of popping
+  // in/out abruptly. It stays in the DOM (and in the accessibility tree,
+  // unless collapsed - see the `aria-hidden` set alongside this in
+  // Navigation.component.tsx) purely so the fade has something to animate;
+  // sighted users get a `Tooltip` instead once it's fully faded.
+  &--collapsed &__item-label {
+    opacity: 0;
+    max-width: 0;
   }
 
   // ── Footer ─────────────────────────────────────────────────────────────
@@ -108,5 +294,48 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-md);
+    overflow: hidden;
+    opacity: 1;
+    // A generous cap, not a measurement of the actual (arbitrary) content -
+    // exists purely so the collapse transition below has a `max-height` to
+    // animate from/to, matching the same technique used for the brand name
+    // and item labels above. Content taller than this will already be
+    // clipped before any transition starts; unusual for a role badge/plan
+    // indicator/CTA, the kind of content this slot is meant for.
+    max-height: 120px;
+    transition:
+      opacity var(--navigation-collapse-duration) var(--navigation-collapse-easing),
+      max-height var(--navigation-collapse-duration) var(--navigation-collapse-easing);
+  }
+
+  // `max-height`/`opacity` (not `display: none`) so the footer collapses
+  // smoothly in step with the rail's own width transition, instead of
+  // vanishing instantly and yanking the toggle button below it up into its
+  // place mid-animation.
+  &--collapsed &__footer {
+    opacity: 0;
+    max-height: 0;
+  }
+
+  // ── Collapse / expand toggle ─────────────────────────────────────────────
+
+  // Fixed at `flex-end`, never toggled between states - matches `&__item`'s
+  // own reasoning for never toggling `justify-content`. "Bottom right" while
+  // expanded comes from this; centering while collapsed is instead achieved
+  // below with the same exact-fit padding technique as `&__item`/`&__brand`.
+  &__toggle-row {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0;
+    transition: padding var(--navigation-collapse-duration) var(--navigation-collapse-easing);
+  }
+
+  // Padding computed so the content area works out to exactly `$toggle-size`
+  // wide, leaving nothing left over for `justify-content` to push toward
+  // either edge - so the fixed `flex-end` above renders identically to
+  // `center` here, the same way `&__item` centers its icon.
+  &--collapsed &__toggle-row {
+    padding: 0
+      calc((var(--navigation-collapsed-width) - (2 * var(--spacing-sm)) - #{$toggle-size}) / 2);
   }
 }

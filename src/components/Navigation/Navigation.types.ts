@@ -22,31 +22,62 @@ export interface NavigationItem {
 export interface NavigationLogo {
   /** Image source - svg, png, or jpg. */
   src: string;
-  /** Accessible alt text. Falls back to the brand `name` if omitted. */
-  alt?: string;
+  /**
+   * Accessible alt text. Required - unlike the `name` variant, there's no
+   * other text this could fall back to once a logo is in play.
+   */
+  alt: string;
 }
 
-export interface NavigationBrandProps {
-  /**
-   * Brand / product name. Rendered next to the mark, and used to build the
-   * fallback initials `Avatar` when `logo` is omitted.
-   */
+export interface NavigationBrandNameProps {
+  /** Brand / product name, rendered next to an initials `Avatar` built from it. */
   name: string;
-  /**
-   * Custom logo image (svg, png, or jpg). Rendered at a fixed height with
-   * its aspect ratio preserved - vertical, horizontal, and square logos all
-   * render correctly with no distortion or cropping. Omit to render an
-   * initials `Avatar` built from `name` instead.
-   */
-  logo?: NavigationLogo;
+  logo?: never;
   onClick?: () => void;
 }
+
+export interface NavigationBrandLogoProps {
+  /**
+   * Custom logo image (svg, png, or jpg), rendered alone - no separate
+   * `name` text alongside it. Rendered at a fixed height with its aspect
+   * ratio preserved - vertical, horizontal, and square logos all render
+   * correctly with no distortion or cropping.
+   */
+  logo: NavigationLogo;
+  name?: never;
+  onClick?: () => void;
+}
+
+/**
+ * Discriminated union - pass exactly one of `name` (an initials `Avatar` +
+ * text) or `logo` (rendered alone), never both. A logo typically already
+ * bakes the brand name into the image itself, so pairing it with a separate
+ * `name` label would just repeat it. Mirrors the `copyright` / `component`
+ * split on `Footer`.
+ */
+export type NavigationBrandProps = NavigationBrandNameProps | NavigationBrandLogoProps;
 
 export interface NavigationProps {
   /** Brand mark (logo or initials avatar) and name, rendered above the item list. */
   brand: NavigationBrandProps;
   items: NavigationItem[];
-  /** Rendered at the bottom of the rail - a role badge, plan indicator, upgrade CTA, etc. */
+  /**
+   * Rendered at the bottom of the rail - a role badge, plan indicator,
+   * upgrade CTA, etc. Hidden while collapsed, since arbitrary content can't
+   * reliably adapt to an icon-only width.
+   */
   footer?: React.ReactNode;
+  /**
+   * Controlled collapsed (icon-only) state. Omit it (along with
+   * `defaultCollapsed`) to let `Navigation` manage its own collapsed state
+   * internally.
+   */
+  collapsed?: boolean;
+  /** Initial collapsed state when uncontrolled (`collapsed` omitted). @default false */
+  defaultCollapsed?: boolean;
+  /** Called whenever the collapsed state changes, in both controlled and uncontrolled modes. */
+  onCollapsedChange?: (collapsed: boolean) => void;
+  /** Renders the built-in collapse/expand toggle button. @default true */
+  collapsible?: boolean;
   className?: string;
 }

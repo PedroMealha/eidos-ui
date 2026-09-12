@@ -18,10 +18,14 @@ const SQUARE_LOGO = `data:image/svg+xml,${encodeURIComponent(`
   </svg>
 `)}`;
 
+// Abstract, text-free (like the other two) - a wordmark logo baking its own
+// brand name into the image would otherwise visually repeat next to the
+// `brand.name` text Navigation renders alongside every logo.
 const HORIZONTAL_LOGO = `data:image/svg+xml,${encodeURIComponent(`
   <svg xmlns="http://www.w3.org/2000/svg" width="240" height="64">
     <rect width="64" height="64" rx="12" fill="#6366f1" />
-    <text x="80" y="42" font-family="sans-serif" font-size="28" font-weight="700" fill="#1e293b">Eidos</text>
+    <rect x="88" width="64" height="64" rx="12" fill="#a5b4fc" />
+    <rect x="176" width="64" height="64" rx="12" fill="#c7d2fe" />
   </svg>
 `)}`;
 
@@ -75,7 +79,8 @@ const meta = {
   argTypes: {
     brand: {
       control: 'object',
-      description: 'Brand mark (logo or initials avatar) and name.',
+      description:
+        'Either `{ name }` (an initials Avatar + text) or `{ logo }` (rendered alone) - never both.',
       table: { type: { summary: 'NavigationBrandProps' } },
     },
     items: {
@@ -85,8 +90,24 @@ const meta = {
     },
     footer: {
       control: false,
-      description: 'Rendered at the bottom of the rail.',
+      description: 'Rendered at the bottom of the rail. Hidden while collapsed.',
       table: { type: { summary: 'ReactNode' } },
+    },
+    collapsed: {
+      control: false,
+      description:
+        'Controlled collapsed (icon-only) state. Omit (with `defaultCollapsed`) for Navigation to manage its own state.',
+    },
+    defaultCollapsed: {
+      control: 'boolean',
+      description: 'Initial collapsed state when uncontrolled (`collapsed` omitted).',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    onCollapsedChange: { control: false },
+    collapsible: {
+      control: 'boolean',
+      description: 'Renders the built-in collapse/expand toggle button.',
+      table: { defaultValue: { summary: 'true' } },
     },
     className: { table: { disable: true } },
   },
@@ -101,7 +122,9 @@ export default meta;
 
 /**
  * Without a `logo`, the brand mark falls back to an initials `Avatar` built
- * from `name`.
+ * from `name`. Click the toggle button at the bottom of the rail to collapse
+ * it to an icon-only width - no `useState` required, `Navigation` manages
+ * this itself.
  */
 export const Default = {
   render: () => (
@@ -121,11 +144,14 @@ export const Default = {
 };
 
 /**
- * A square logo renders at a fixed height with no distortion.
+ * A square logo renders at a fixed height with no distortion. Note there's
+ * no separate `name` text - a logo is rendered alone, since it typically
+ * already bakes the brand name into the image (passing both is a type
+ * error, same as `Footer`'s `copyright`/`component`).
  */
 export const WithSquareLogo = {
   render: () => (
-    <Navigation brand={{ name: 'Eidos', logo: { src: SQUARE_LOGO } }} items={useDemoItems()} />
+    <Navigation brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }} items={useDemoItems()} />
   ),
 };
 
@@ -136,7 +162,7 @@ export const WithSquareLogo = {
  */
 export const WithHorizontalLogo = {
   render: () => (
-    <Navigation brand={{ name: 'Eidos', logo: { src: HORIZONTAL_LOGO } }} items={useDemoItems()} />
+    <Navigation brand={{ logo: { src: HORIZONTAL_LOGO, alt: 'Eidos' } }} items={useDemoItems()} />
   ),
 };
 
@@ -147,7 +173,7 @@ export const WithHorizontalLogo = {
  */
 export const WithVerticalLogo = {
   render: () => (
-    <Navigation brand={{ name: 'Eidos', logo: { src: VERTICAL_LOGO } }} items={useDemoItems()} />
+    <Navigation brand={{ logo: { src: VERTICAL_LOGO, alt: 'Eidos' } }} items={useDemoItems()} />
   ),
 };
 
@@ -159,5 +185,72 @@ export const WithDisabledItem = {
     const items = useDemoItems();
     items[2] = { ...items[2], disabled: true, onClick: undefined };
     return <Navigation brand={{ name: 'Eidos' }} items={items} />;
+  },
+};
+
+/**
+ * `defaultCollapsed` sets the initial state while still leaving Navigation
+ * uncontrolled - the toggle button still works normally.
+ */
+export const DefaultCollapsed = {
+  render: () => (
+    <Navigation
+      brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
+      items={useDemoItems()}
+      defaultCollapsed
+    />
+  ),
+};
+
+/**
+ * Pass `collapsed` (+ `onCollapsedChange`) for full external control - e.g.
+ * to persist the preference, or to auto-collapse below a viewport
+ * breakpoint. `collapsible={false}` also hides the built-in toggle button
+ * entirely when the only way to change it should be external.
+ */
+export const Controlled = {
+  render: () => {
+    const [collapsed, setCollapsed] = useState(false);
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--spacing-md)',
+          height: '100%',
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setCollapsed((c) => !c)}
+          style={{ alignSelf: 'flex-start' }}
+        >
+          Toggle from outside
+        </button>
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <Navigation
+            brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
+            items={useDemoItems()}
+            collapsed={collapsed}
+            onCollapsedChange={setCollapsed}
+          />
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+const [collapsed, setCollapsed] = useState(false);
+
+<Navigation
+  brand={{ name: 'Acme' }}
+  items={items}
+  collapsed={collapsed}
+  onCollapsedChange={setCollapsed}
+/>`.trim(),
+      },
+    },
   },
 };
