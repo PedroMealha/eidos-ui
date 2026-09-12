@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { PanelLeftClose, PanelLeftOpen, SquareChevronLeft, SquareChevronRight } from 'lucide-react';
 import type { NavigationLogo, NavigationProps } from './Navigation.types';
 import { Avatar } from '../Avatar';
 import { IconButton } from '../Button';
@@ -31,6 +31,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   collapsed: collapsedProp,
   defaultCollapsed = false,
   onCollapsedChange,
+  collapseBelow,
   collapsible = true,
   className = '',
 }) => {
@@ -43,11 +44,37 @@ export const Navigation: React.FC<NavigationProps> = ({
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
   const collapsed = isControlled ? collapsedProp : internalCollapsed;
 
+  // Shared by the manual toggle button and `collapseBelow` below - uncontrolled
+  // flips the internal state directly, controlled defers to `onCollapsedChange`
+  // since Navigation can't change `collapsed` itself.
+  const applyCollapsed = useCallback(
+    (next: boolean) => {
+      if (!isControlled) setInternalCollapsed(next);
+      onCollapsedChange?.(next);
+    },
+    [isControlled, onCollapsedChange],
+  );
+
   const toggleCollapsed = useCallback(() => {
-    const next = !collapsed;
-    if (!isControlled) setInternalCollapsed(next);
-    onCollapsedChange?.(next);
-  }, [collapsed, isControlled, onCollapsedChange]);
+    applyCollapsed(!collapsed);
+  }, [applyCollapsed, collapsed]);
+
+  // Auto-collapse/expand at a viewport breakpoint. `matchMedia`'s `change`
+  // event only fires exactly at the crossing point, not on every resize
+  // tick, so a manual toggle in between crossings is left alone until the
+  // viewport actually crosses the breakpoint again.
+  useEffect(() => {
+    if (collapseBelow === undefined) return;
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+
+    const query = window.matchMedia(`(max-width: ${collapseBelow}px)`);
+
+    applyCollapsed(query.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => applyCollapsed(e.matches);
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, [collapseBelow, applyCollapsed]);
 
   const classes = ['eidos-navigation', collapsed && 'eidos-navigation--collapsed', className]
     .filter(Boolean)
@@ -150,18 +177,21 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       {footer && <div className="eidos-navigation__footer">{footer}</div>}
 
+      {/* Floats half in/half out of the rail's right edge (see `&__toggle`
+          in Navigation.scss) rather than sitting in its own row - a
+          dedicated row reserved space in the flex column even when there
+          were too few items to need it. */}
       {collapsible && (
-        <div className="eidos-navigation__toggle-row">
-          <IconButton
-            icon={collapsed ? PanelLeftOpen : PanelLeftClose}
-            variant="text"
-            color="secondary"
-            size="sm"
-            tooltip={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-            onClick={toggleCollapsed}
-          />
-        </div>
+        <IconButton
+          className="eidos-navigation__toggle"
+          icon={collapsed ? SquareChevronRight : SquareChevronLeft}
+          variant="text"
+          color="secondary"
+          size="sm"
+          tooltip={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+          aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+          onClick={toggleCollapsed}
+        />
       )}
     </nav>
   );

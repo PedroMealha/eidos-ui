@@ -1,13 +1,11 @@
 @use '../../styles/mixins.scss' as *;
 
-// `.eidos-navigation__item-icon`'s own width/height, the initials `Avatar`'s
-// fixed `sm` size, and the collapse toggle's own icon-only `sm` Button size
-// (Button.scss's `&--icon-only`) - kept in one place so the
-// collapsed-centering calc()s below can reference them directly instead of
-// a second, easily-forgotten-to-update hardcoded value.
+// `.eidos-navigation__item-icon`'s own width/height, and the initials
+// `Avatar`'s fixed `sm` size - kept in one place so the collapsed-centering
+// calc()s below can reference them directly instead of a second,
+// easily-forgotten-to-update hardcoded value.
 $icon-size: 16px;
 $avatar-size: 32px;
-$toggle-size: 2.063em;
 
 .eidos-navigation {
   // Single source of truth for the collapse/expand animation - every
@@ -27,6 +25,10 @@ $toggle-size: 2.063em;
   box-sizing: border-box;
   padding: var(--spacing-lg);
   background-color: var(--white);
+  // Establishes the positioning context for `&__toggle` below, which floats
+  // half in/half out of the rail rather than occupying its own row in the
+  // flex column - see that rule's own comment for why.
+  position: relative;
   width: 100%;
   min-width: var(--navigation-min-width);
   max-width: var(--navigation-max-width);
@@ -169,6 +171,15 @@ $toggle-size: 2.063em;
     flex-direction: column;
     gap: 2px;
     flex: 1;
+    // `min-height: 0` is what actually lets this shrink below its content's
+    // natural height - a flex item's automatic minimum size is otherwise its
+    // content size, which is exactly what pushed the whole rail (and the
+    // items below the fold with it) taller than the viewport instead of
+    // scrolling internally on a short window. `overflow-y: auto` is the
+    // scroll itself, kicking in only once there's actually too little
+    // height for every item to fit.
+    min-height: 0;
+    overflow-y: auto;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -319,23 +330,23 @@ $toggle-size: 2.063em;
 
   // ── Collapse / expand toggle ─────────────────────────────────────────────
 
-  // Fixed at `flex-end`, never toggled between states - matches `&__item`'s
-  // own reasoning for never toggling `justify-content`. "Bottom right" while
-  // expanded comes from this; centering while collapsed is instead achieved
-  // below with the same exact-fit padding technique as `&__item`/`&__brand`.
-  &__toggle-row {
-    display: flex;
-    justify-content: flex-end;
-    padding: 0;
-    transition: padding var(--navigation-collapse-duration) var(--navigation-collapse-easing);
-  }
-
-  // Padding computed so the content area works out to exactly `$toggle-size`
-  // wide, leaving nothing left over for `justify-content` to push toward
-  // either edge - so the fixed `flex-end` above renders identically to
-  // `center` here, the same way `&__item` centers its icon.
-  &--collapsed &__toggle-row {
-    padding: 0
-      calc((var(--navigation-collapsed-width) - (2 * var(--spacing-sm)) - #{$toggle-size}) / 2);
+  // Floats half in, half out of the rail's right edge, rather than sitting
+  // in its own row in the flex column - a dedicated row reserved its own
+  // padding/gap at the bottom even when there were few enough items (or a
+  // short enough viewport) to leave a large, pointless gap above it. `right:
+  // 0` anchors it to the rail's own border; `translateX(50%)` then shifts it
+  // right by exactly half of *its own* rendered width - so half sits over
+  // the rail, half over whatever's next to it - without needing to know
+  // that width up front. `right: 0` tracks the rail's own right edge through
+  // the collapse/expand width transition with no extra work either.
+  &__toggle {
+    position: absolute;
+    bottom: var(--spacing-lg);
+    right: 0;
+    transform: translateX(50%);
+    z-index: 1;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: var(--box-shadow-sm);
   }
 }

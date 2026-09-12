@@ -71,7 +71,13 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div style={{ height: '480px', boxShadow: '0 0 6px 3px rgb(0,0,0,0.04)' }}>
+      <div
+        style={{
+          height: '400px',
+          boxShadow: '0 0 6px 3px rgb(0,0,0,0.04)',
+          backgroundColor: 'var(--gray-100)',
+        }}
+      >
         <Story />
       </div>
     ),
@@ -104,6 +110,11 @@ const meta = {
       table: { defaultValue: { summary: 'false' } },
     },
     onCollapsedChange: { control: false },
+    collapseBelow: {
+      control: 'number',
+      description: 'Automatically collapses (and re-expands) below this viewport width, in pixels.',
+      table: { defaultValue: { summary: 'undefined' } },
+    },
     collapsible: {
       control: 'boolean',
       description: 'Renders the built-in collapse/expand toggle button.',
@@ -178,6 +189,35 @@ export const WithVerticalLogo = {
 };
 
 /**
+ * More items than fit in a short rail scroll internally, rather than
+ * overflowing it - the brand mark, footer, and toggle all stay fixed in
+ * place above/below the scrolling item list.
+ */
+export const WithManyItems = {
+  render: () => {
+    const [activeId, setActiveId] = useState('item-0');
+    const items: NavigationItem[] = Array.from({ length: 20 }, (_, i) => ({
+      id: `item-${i}`,
+      label: `Item ${i + 1}`,
+      icon: ITEMS[i % ITEMS.length].icon,
+      active: activeId === `item-${i}`,
+      onClick: () => setActiveId(`item-${i}`),
+    }));
+    return (
+      <Navigation
+        brand={{ name: 'Eidos' }}
+        items={items}
+        footer={
+          <Pill color="primary" variant="outlined" size="sm">
+            Admin
+          </Pill>
+        }
+      />
+    );
+  },
+};
+
+/**
  * `disabled: true` renders an item at reduced opacity and blocks clicks.
  */
 export const WithDisabledItem = {
@@ -200,6 +240,29 @@ export const DefaultCollapsed = {
       defaultCollapsed
     />
   ),
+};
+
+/**
+ * `collapseBelow` auto-collapses (and re-expands) whenever the *browser
+ * window* - not this canvas frame - crosses the given width, in pixels.
+ * Resize your actual browser window to see it react; the toggle button
+ * still works normally in between crossings.
+ */
+export const CollapseBelowBreakpoint = {
+  render: () => (
+    <Navigation
+      brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
+      items={useDemoItems()}
+      collapseBelow={1024}
+    />
+  ),
+  parameters: {
+    docs: {
+      source: {
+        code: `<Navigation brand={{ name: 'Acme' }} items={items} collapseBelow={1024} />`,
+      },
+    },
+  },
 };
 
 /**

@@ -58,11 +58,13 @@ Inside `PageLayout`, pass the same shape via the `navigation` prop:
 
 ## Collapsing to icon-only
 
-A toggle button at the bottom of the rail collapses `Navigation` to a narrow, icon-only width (`--navigation-collapsed-width`, `64px` by default). While collapsed:
+A toggle button collapses `Navigation` to a narrow, icon-only width (`--navigation-collapsed-width`, `64px` by default). It floats half in, half out of the rail's right edge rather than sitting in its own row - a dedicated row reserved space in the layout even when there were too few items (or too short a viewport) to need it, leaving a large, pointless gap above it. While collapsed:
 
 - Every item's label moves into a `Tooltip` (shown on hover) instead of being rendered inline, and its icon is centered.
 - `brand.name`'s text (when that variant is used) and the `footer` slot are hidden - arbitrary footer content can't reliably adapt to an icon-only width.
-- The brand mark (a `logo` or the initials `Avatar`) stays visible and centered, and the toggle button itself stays centered too rather than pinned to the right.
+- The brand mark (a `logo` or the initials `Avatar`) stays visible and centered.
+
+The item list also scrolls internally (rather than overflowing the rail) if there are more items than a short viewport has room for - the brand mark, footer, and toggle stay fixed in place above/below it.
 
 The simplest form needs no state at all:
 
@@ -70,7 +72,7 @@ The simplest form needs no state at all:
 <Navigation brand={{ name: 'Acme' }} items={items} />
 ```
 
-Set `defaultCollapsed` to start collapsed while remaining uncontrolled, or pass `collapsed` (+ `onCollapsedChange`) for full external control - e.g. to persist the preference, or to auto-collapse below a viewport breakpoint as part of a broader responsive layout:
+Set `defaultCollapsed` to start collapsed while remaining uncontrolled, or pass `collapsed` (+ `onCollapsedChange`) for full external control - e.g. to persist the preference:
 
 ```tsx
 const [collapsed, setCollapsed] = useState(false);
@@ -83,7 +85,34 @@ const [collapsed, setCollapsed] = useState(false);
 />;
 ```
 
-Pass `collapsible={false}` to hide the built-in toggle button entirely - useful if collapsing should only ever be driven externally (e.g. purely by a responsive breakpoint).
+Pass `collapsible={false}` to hide the built-in toggle button entirely - useful if collapsing should only ever be driven externally.
+
+## Responsive breakpoint
+
+`collapseBelow` automatically collapses (and re-expands) `Navigation` when the viewport crosses a given width, in pixels - no extra state or resize listener of your own required:
+
+```tsx
+<Navigation brand={{ name: 'Acme' }} items={items} collapseBelow={1024} />
+```
+
+This uses `window.matchMedia` internally, so it does nothing until mounted client-side (SSR-safe), and it works the same way whether `Navigation` is controlled or not:
+
+- **Uncontrolled** (the example above): it drives `Navigation`'s own internal state directly.
+- **Controlled**: it calls `onCollapsedChange` at the crossing point, exactly as if the built-in toggle button had been clicked - your own state stays in charge either way.
+
+```tsx
+const [collapsed, setCollapsed] = useState(false);
+
+<Navigation
+  brand={{ name: 'Acme' }}
+  items={items}
+  collapsed={collapsed}
+  onCollapsedChange={setCollapsed}
+  collapseBelow={1024}
+/>;
+```
+
+`matchMedia`'s `change` event only fires exactly at the crossing point, not on every resize tick, so a manual toggle in between crossings (e.g. expanding back while the viewport is still narrower than the breakpoint) is left alone until it crosses again.
 
 ## Default
 
@@ -109,9 +138,19 @@ A tall, narrow logo is capped by the same fixed height as the other orientations
 
 <Canvas of={NavigationStories.WithVerticalLogo} />
 
+## With many items
+
+<Canvas of={NavigationStories.WithManyItems} />
+
 ## With a disabled item
 
 <Canvas of={NavigationStories.WithDisabledItem} />
+
+## Collapse below a breakpoint
+
+Resize your actual browser window (not just this canvas frame) past `1024px` to see it react.
+
+<Canvas of={NavigationStories.CollapseBelowBreakpoint} />
 
 ## Starting collapsed
 
