@@ -2,9 +2,29 @@
 
 .eidos-toolbar {
   @include flex-between;
-  padding: 0 var(--spacing-xl);
-  height: var(--toolbar-height);
+  // `flex-wrap` + `min-height` (not a fixed `height`) so a breadcrumb trail
+  // that can't fit alongside the search/actions/user menu on one line wraps
+  // to a second line instead of either being clipped by a fixed-height row
+  // or squeezing the trailing content off to the side - the same pattern
+  // `Header` already uses. `row-gap` only has any effect once it does wrap.
+  flex-wrap: wrap;
+  row-gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  // Not a fixed `height` - `min-height` keeps the common (single-line) case
+  // looking exactly as before, while still letting the row grow when it
+  // wraps to a second line instead of clipping it.
+  min-height: var(--toolbar-height);
+  box-sizing: border-box;
   will-change: transform;
+
+  // The breadcrumb trail is what gives way first - it can shrink and
+  // truncate (see Breadcrumb's own `flex-wrap: wrap` and each link's
+  // `overflow`/`text-overflow` for long individual labels) before the row
+  // as a whole wraps to a second line.
+  > .eidos-breadcrumb-nav {
+    min-width: 0;
+    flex-shrink: 1;
+  }
 
   &__brand {
     @include flex-center-y;
@@ -19,6 +39,10 @@
   &__content {
     @include flex-center-y;
     gap: var(--spacing-lg);
+    // Search/actions/user menu never shrink or wrap themselves - the
+    // breadcrumb trail (or, failing that, the row wrapping to a second
+    // line) is what accommodates a narrow viewport instead.
+    flex-shrink: 0;
   }
 
   &__actions {

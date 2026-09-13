@@ -339,6 +339,14 @@ $avatar-size: 32px;
   // the rail, half over whatever's next to it - without needing to know
   // that width up front. `right: 0` tracks the rail's own right edge through
   // the collapse/expand width transition with no extra work either.
+  //
+  // This has to target the `<span>` wrapper around the `IconButton` (see
+  // Navigation.component.tsx), not the button itself - the button's own
+  // `tooltip` prop makes it render inside `Tooltip`'s own
+  // `.eidos-tooltip-trigger` div, which is the element that's actually a
+  // direct flex child of `.eidos-navigation`. Positioning only the button
+  // left that wrapper in-flow, still reserving space and `gap` around it -
+  // exactly the leftover gap this is meant to eliminate.
   &__toggle {
     position: absolute;
     bottom: var(--spacing-lg);

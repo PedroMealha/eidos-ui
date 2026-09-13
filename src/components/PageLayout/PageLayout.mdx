@@ -7,7 +7,7 @@ import * as PageLayoutStories from './PageLayout.stories';
 
 Application shell that composes the standard page chrome - a `Toolbar`, a `Navigation` rail, a `Header` above the page body, and a `Footer` below it - into a single grid layout. Use it as the top-level layout for an authenticated app page.
 
-> **Note**: The navigation rail is a fixed-width reserved region regardless of whether `navigation` is passed - omitting it leaves that region empty rather than collapsing the grid column.
+> **Note**: The navigation column is grid-`auto`-sized to `Navigation`'s own rendered width, not a fixed reservation - this is what lets `Navigation`'s own expand/collapse width transition (see its own docs) resize the whole column smoothly. Omitting `navigation` collapses the column to nothing, since there's no content to size it.
 
 ## Usage
 
@@ -33,10 +33,28 @@ import { LayoutDashboard, Settings } from 'lucide-react';
 
 `footer` is optional - omit it and `PageLayout` falls back to its own `© <year> Eidos UI` notice. It accepts the same `copyright` / `component` shape as the standalone `Footer` component; `PageLayout` only applies its default top spacing to the footer region when `copyright` is used.
 
-`navigation` is also optional and accepts the same shape as the standalone `Navigation` component - see its own docs for the brand logo, item, and footer slot behaviour.
+`navigation` is also optional and accepts the same shape as the standalone `Navigation` component - see its own docs for the brand logo, item, footer slot, and collapse behaviour. That includes `collapseBelow`, which works exactly the same way nested inside `PageLayout` as it does standalone:
+
+```tsx
+<PageLayout navigation={{ brand: { name: 'Acme' }, items: [...], collapseBelow: 1024 }}>
+  ...
+</PageLayout>
+```
+
+## Responsive behaviour
+
+Every piece of `PageLayout`'s chrome adapts to a narrow viewport on its own, with no coordination required between them:
+
+- **`Navigation`** can auto-collapse to icon-only via `navigation.collapseBelow` (or be driven manually/externally - see its own docs) - the grid column narrows smoothly along with it, since that column is sized to `Navigation`'s own rendered width rather than a fixed reservation (see the note above).
+- **`Toolbar`** wraps its breadcrumb trail onto its own line rather than clipping it or squeezing the search/actions/user menu aside, once there isn't room for both on one line.
+- **`Header`** wraps its actions below the title/subtitle once there isn't room for both side by side.
 
 ## Default
 
 <Canvas of={PageLayoutStories.Default} />
 
 <Controls of={PageLayoutStories.Default} />
+
+## Narrow viewport
+
+<Canvas of={PageLayoutStories.NarrowViewport} />

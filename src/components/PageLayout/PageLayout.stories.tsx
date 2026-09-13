@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.stories';
+import { Divider } from '../Divider';
+import { Pill } from '../Pill';
 
 const meta = {
   title: 'Layout/PageLayout',
@@ -23,6 +25,14 @@ const meta = {
         { id: 'team', label: 'Team', icon: Users },
         { id: 'settings', label: 'Settings', icon: Settings },
       ],
+      footer: (
+        <>
+          <Divider />
+          <Pill color="primary" variant="outlined" size="sm">
+            Admin
+          </Pill>
+        </>
+      ),
     },
     toolbar: {
       breadcrumbs: {
@@ -149,3 +159,33 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+/**
+ * At a narrow width, `Toolbar` wraps its breadcrumb trail onto its own line
+ * (rather than clipping it or squeezing the search/actions/user menu off to
+ * the side) and `Header` wraps its actions below the title/subtitle - both
+ * driven by plain CSS, with no JS breakpoint of their own.
+ *
+ * `navigation.collapseBelow` is also set here - resize your actual browser
+ * window (not this canvas frame) past `1024px` to see the rail itself
+ * auto-collapse to icon-only, exactly as it does standalone (see the
+ * `Navigation` docs).
+ */
+export const NarrowViewport: Story = {
+  args: {
+    navigation: {
+      ...meta.args.navigation,
+      collapseBelow: 1024,
+    },
+  },
+  // Combined with the meta-level decorator's own height/shadow wrapper -
+  // this one just constrains the width to demonstrate the narrow-viewport
+  // behaviour without duplicating that styling.
+  decorators: [
+    (Story) => (
+      <div style={{ width: '480px' }}>
+        <Story />
+      </div>
+    ),
+  ],
+};

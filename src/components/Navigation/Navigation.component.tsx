@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PanelLeftClose, PanelLeftOpen, SquareChevronLeft, SquareChevronRight } from 'lucide-react';
+import { SquareChevronLeft, SquareChevronRight } from 'lucide-react';
 import type { NavigationLogo, NavigationProps } from './Navigation.types';
 import { Avatar } from '../Avatar';
 import { IconButton } from '../Button';
@@ -180,18 +180,27 @@ export const Navigation: React.FC<NavigationProps> = ({
       {/* Floats half in/half out of the rail's right edge (see `&__toggle`
           in Navigation.scss) rather than sitting in its own row - a
           dedicated row reserved space in the flex column even when there
-          were too few items to need it. */}
+          were too few items to need it.
+
+          The positioning has to live on this wrapping `<span>`, not on the
+          `IconButton` itself: its `tooltip` prop makes `Button` wrap it in
+          `Tooltip`'s own `.eidos-tooltip-trigger` div, which - not the
+          button - is the actual flex child of `.eidos-navigation`. Removing
+          only the inner button from flow left that outer wrapper still
+          in-flow, still consuming space and still getting `gap` applied
+          around it, which is exactly why a gap remained. */}
       {collapsible && (
-        <IconButton
-          className="eidos-navigation__toggle"
-          icon={collapsed ? SquareChevronRight : SquareChevronLeft}
-          variant="text"
-          color="secondary"
-          size="sm"
-          tooltip={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-          aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
-          onClick={toggleCollapsed}
-        />
+        <span className="eidos-navigation__toggle">
+          <IconButton
+            icon={collapsed ? SquareChevronRight : SquareChevronLeft}
+            variant="text"
+            color="secondary"
+            size="sm"
+            tooltip={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+            aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
+            onClick={toggleCollapsed}
+          />
+        </span>
       )}
     </nav>
   );

@@ -16,20 +16,33 @@
     gap: var(--spacing-lg);
     flex-wrap: wrap;
     flex: 1;
+    // `min-width: 0` matters here - without it, the automatic minimum size
+    // of a flex item is its content's own size, which is exactly what
+    // pushed `&__actions` off to the side (or past the edge) instead of the
+    // title/subtitle wrapping or truncating first on a narrow viewport.
+    min-width: 0;
+  }
+
+  &__titles {
+    min-width: 0;
+    flex: 1 1 auto;
   }
 
   &__actions {
     @include flex-center-y;
     gap: var(--spacing-sm);
+    flex-shrink: 0;
   }
 
   &__title {
     font-size: var(--font-size-2xl);
     margin-bottom: var(--spacing-xs);
+    overflow-wrap: break-word;
   }
 
   &__subtitle {
     font-size: var(--font-size-sm);
     color: var(--gray-500);
+    overflow-wrap: break-word;
   }
 }

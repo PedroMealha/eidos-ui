@@ -9,7 +9,7 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle, actions, classN
   return (
     <div className={classes}>
       <div className="eidos-header__content">
-        <div>
+        <div className="eidos-header__titles">
           <h1 className="eidos-header__title">{title}</h1>
           {subtitle && <span className="eidos-header__subtitle">{subtitle}</span>}
         </div>
