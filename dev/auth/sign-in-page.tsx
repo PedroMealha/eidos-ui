@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Button, Card, Input, OTPInput, SegmentedControl, Stepper } from '@pmealha/eidos-ui';
+import { Alert, Button, Card, Input, OTPInput, SegmentedControl, Stepper } from 'eidos-ui';
 import { authApi, DEMO_OTP_CODE } from '../api/auth';
 import { errorMessage } from '../api/client';
 import type { Role } from '../api/types';

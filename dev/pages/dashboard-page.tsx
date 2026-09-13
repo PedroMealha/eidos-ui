@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Alert, Button, Card, Pill, Progress, Skeleton, Timeline } from '@pmealha/eidos-ui';
+import { Alert, Button, Card, Pill, Progress, Skeleton, Timeline } from 'eidos-ui';
 import { ArrowUpRight, CircleCheck, CirclePlus, TriangleAlert, UserCheck } from 'lucide-react';
 import { ticketsApi } from '../api/tickets';
 import type { ActivityEntry, DashboardStats } from '../api/types';

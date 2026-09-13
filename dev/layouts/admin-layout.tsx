@@ -10,7 +10,7 @@ import {
   Switch,
   Tooltip,
   useSnackbar,
-} from '@pmealha/eidos-ui';
+} from 'eidos-ui';
 import {
   LayoutDashboard,
   LifeBuoy,
@@ -19,7 +19,7 @@ import {
   Ticket as TicketIcon,
   Users,
 } from 'lucide-react';
-import type { CommandItem, MenuItemType } from '@pmealha/eidos-ui';
+import type { CommandItem, MenuItemType } from 'eidos-ui';
 import { getForceFailures, setForceFailures } from '../api/client';
 import { useAuth } from '../auth/auth-context';
 import { useRouter } from '../routes/router';

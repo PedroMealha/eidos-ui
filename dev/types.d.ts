@@ -13,4 +13,4 @@ declare module '*.css' {
  * there is no type to import - it is a side-effect import only. Declared here
  * so the example app typechecks without a built `dist/`.
  */
-declare module '@pmealha/eidos-ui/styles';
+declare module 'eidos-ui/styles';

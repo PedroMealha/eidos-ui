@@ -14,8 +14,8 @@ A keyboard-driven command launcher presented as a floating modal - type to fuzzy
 The simplest form needs no state at all - the palette opens itself on `⌘K` / `Ctrl+K`:
 
 ```tsx
-import { CommandPalette } from '@pmealha/eidos-ui';
-import type { CommandItem } from '@pmealha/eidos-ui';
+import { CommandPalette } from 'eidos-ui';
+import type { CommandItem } from 'eidos-ui';
 
 const items: CommandItem[] = [
   { id: '1', label: 'Go to Dashboard', group: 'Navigation', shortcut: ['⌘', 'D'] },
@@ -31,7 +31,7 @@ function App() {
 That's headless by design - nothing is rendered until `⌘K` is pressed. Pass `trigger` if you also want a visible, clickable entry point:
 
 ```tsx
-import { Button, CommandPalette } from '@pmealha/eidos-ui';
+import { Button, CommandPalette } from 'eidos-ui';
 
 // Built-in default trigger (a button + Kbd badge showing the shortcut)
 <CommandPalette trigger items={items} />

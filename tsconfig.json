@@ -15,7 +15,7 @@
        falling back to Node's package self-reference, which would typecheck the
        example against a stale (and gitignored) dist/. */
     "paths": {
-      "@pmealha/eidos-ui": ["./src/index.ts"]
+      "eidos-ui": ["./src/index.ts"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

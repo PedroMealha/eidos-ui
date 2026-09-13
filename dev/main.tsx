@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { DropdownProvider, SnackbarContainer, SnackbarProvider } from '@pmealha/eidos-ui';
+import { DropdownProvider, SnackbarContainer, SnackbarProvider } from 'eidos-ui';
 import { App } from './App';
 import { AuthProvider } from './auth/auth-context';
 import { RouterProvider } from './routes/router';
-import '@pmealha/eidos-ui/styles';
+import 'eidos-ui/styles';
 import './app.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

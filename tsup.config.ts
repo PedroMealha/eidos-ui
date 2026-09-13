@@ -16,9 +16,9 @@ const componentEntries = Object.fromEntries(
 
 export default defineConfig({
   entry: {
-    // Root barrel - keeps `import { Button } from '@pmealha/eidos-ui'` working
+    // Root barrel - keeps `import { Button } from 'eidos-ui'` working
     index: 'src/index.ts',
-    // Per-component entries - enables `import { Button } from '@pmealha/eidos-ui/button'`
+    // Per-component entries - enables `import { Button } from 'eidos-ui/button'`
     ...componentEntries,
   },
   format: ['cjs', 'esm'],

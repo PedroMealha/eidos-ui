@@ -13,7 +13,7 @@ import {
   Tabs,
   Textarea,
   useSnackbar,
-} from '@pmealha/eidos-ui';
+} from 'eidos-ui';
 import { useAuth } from '../auth/auth-context';
 
 const DIGEST_OPTIONS = [

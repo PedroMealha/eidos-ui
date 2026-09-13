@@ -1,7 +1,7 @@
 /**
  * Verifies that every value/type exported from a component's own `index.ts`
- * (its public deep-import entry point, e.g. `@pmealha/eidos-ui/combobox`) is
- * also re-exported from the root barrel (`src/index.ts`, `@pmealha/eidos-ui`).
+ * (its public deep-import entry point, e.g. `eidos-ui/combobox`) is
+ * also re-exported from the root barrel (`src/index.ts`, `eidos-ui`).
  *
  * Why this exists: `ComboboxOption` shipped in 3.0.0 missing from the root
  * barrel even though the component's own `index.ts` exported it - the

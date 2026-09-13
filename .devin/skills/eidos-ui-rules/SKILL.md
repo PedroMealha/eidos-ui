@@ -168,7 +168,7 @@ One or two sentences describing what the component is and when to use it.
 ## Usage
 
 ```tsx
-import { ComponentName } from '@pmealha/eidos-ui';
+import { ComponentName } from 'eidos-ui';
 // minimal runnable example
 ````
 
@@ -288,7 +288,7 @@ dev/
 
 ### Rules
 
-- Import from the public entry points (`@pmealha/eidos-ui`, `@pmealha/eidos-ui/styles`),
+- Import from the public entry points (`eidos-ui`, `eidos-ui/styles`),
   never via relative `../../src/...` paths. Both the Vite alias
   (`vite.dev.config.ts`) and the tsconfig `paths` entry map these to `src/`, so
   a type or value missing from the root barrel breaks the dev server
@@ -324,7 +324,7 @@ When creating a new component, always wire it into:
 1. `src/styles/index.scss` (SCSS import)
 2. `src/index.ts` (value export **and** type export - the root barrel must
    re-export every public type from the component's own `index.ts`, not just the
-   component itself; consumers importing from `@pmealha/eidos-ui` cannot reach
+   component itself; consumers importing from `eidos-ui` cannot reach
    types that only the deep entry point exports)
 3. Storybook (`Component.stories.tsx` + `Component.mdx`)
 
@@ -336,11 +336,11 @@ There is deliberately no dev-showcase step - see "Dev example app rules" above.
 
 ### Published package
 
-- Package name: `@pmealha/eidos-ui`
+- Package name: `eidos-ui`
 - Registry: npmjs.com (public)
 - Current version: do not record it here - this line went stale twice. Read the
   source of truth instead: `node -p "require('./package.json').version"` for
-  local, `npm view @pmealha/eidos-ui version` for what is actually published.
+  local, `npm view eidos-ui version` for what is actually published.
   They differing means a release was bumped but never published.
 
 ### Build system
@@ -359,9 +359,9 @@ There is deliberately no dev-showcase step - see "Dev example app rules" above.
 ### Consumer import patterns
 
 ```ts
-import { Button } from '@pmealha/eidos-ui'; // root barrel - tree-shaken
-import { Button } from '@pmealha/eidos-ui/button'; // deep import - only Button chunk loaded
-import '@pmealha/eidos-ui/styles'; // styles (once, in app entry)
+import { Button } from 'eidos-ui'; // root barrel - tree-shaken
+import { Button } from 'eidos-ui/button'; // deep import - only Button chunk loaded
+import 'eidos-ui/styles'; // styles (once, in app entry)
 ```
 
 ### Externalized dependencies
@@ -388,6 +388,44 @@ eslint config, and `package.json` `scripts`/`devDependencies`.
 
 `.mdx` and `.stories.tsx` sit under `src/` but are Storybook-only and never
 reach the tarball - do not treat them as releasable.
+
+### Changelog discipline (write it as you go, not at release time)
+
+`CHANGELOG.md` has a standing `## [Unreleased]` section at the top. Whenever
+a change is made that "needs a release" per the check above (touches `src/**`,
+`tsup.config.ts`, `scripts/build-styles.js`, or the consumer-facing
+`package.json` fields) - add or update a bullet under it **in the same
+turn/session as the change itself**, not retroactively when someone remembers
+to cut a release. Use the standard [Keep a Changelog](https://keepachangelog.com/)
+subheadings, only adding the ones actually needed:
+
+```md
+## [Unreleased]
+
+### Added
+
+- `Navigation` component - collapsible sidebar rail with responsive auto-collapse.
+
+### Fixed
+
+- `Toolbar` no longer clips its breadcrumb trail on narrow viewports.
+```
+
+- **Added** → implies `release:minor` at cut time. **Fixed**/**Changed**
+  (non-breaking) → `release:patch`. Anything breaking → its own clearly
+  labeled note and `release:major`, regardless of what else is queued.
+- If `[Unreleased]` already has entries from earlier in the session (or from
+  a previous uncut session), a new change amends the existing bullet list -
+  never overwrite what's there, and never remove another entry just because
+  it's unrelated to the current task.
+- Internal-only changes (`dev/**`, `.storybook/**`, `.github/**`, docs-only
+  `.mdx`/`.stories.tsx` edits, tooling) do not need a changelog entry unless
+  they're genuinely consumer-relevant.
+- At actual release time, rename `## [Unreleased]` to `## [x.y.z] - <date>`
+  (matching whatever `npm version` just produced) with a fresh, empty
+  `## [Unreleased]` left above it for the next round, and copy the same
+  entries into `src/Releases.mdx` under a matching heading - see that file's
+  own header note for why both exist.
 
 ### Release workflow
 

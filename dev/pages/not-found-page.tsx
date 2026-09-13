@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, EmptyState } from '@pmealha/eidos-ui';
+import { Button, EmptyState } from 'eidos-ui';
 import { Compass } from 'lucide-react';
 import { useRouter } from '../routes/router';
 

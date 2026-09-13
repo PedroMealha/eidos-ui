@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@pmealha/eidos-ui';
+import { Button } from 'eidos-ui';
 import { useRouter } from '../routes/router';
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

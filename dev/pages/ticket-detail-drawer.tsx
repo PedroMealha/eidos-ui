@@ -9,7 +9,7 @@ import {
   Select,
   TagInput,
   useSnackbar,
-} from '@pmealha/eidos-ui';
+} from 'eidos-ui';
 import { errorMessage } from '../api/client';
 import { ticketsApi } from '../api/tickets';
 import {

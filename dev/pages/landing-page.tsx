@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Chip, Pill } from '@pmealha/eidos-ui';
+import { Button, Card, Chip, Pill } from 'eidos-ui';
 import { Gauge, Inbox, ShieldCheck } from 'lucide-react';
 import { useRouter } from '../routes/router';
 

@@ -67,7 +67,7 @@ if (status) {
 // ── 3. Root barrel export completeness ──────────────────────────────────────
 // Every type/value a component's own index.ts exports must also be reachable
 // from the root barrel (src/index.ts) - otherwise consumers importing from
-// `@pmealha/eidos-ui` hit a type they can see in the deep entry point but not
+// `eidos-ui` hit a type they can see in the deep entry point but not
 // import from the package root. This exact gap shipped in 3.0.0
 // (`ComboboxOption` was missing) and went unnoticed until 3.2.0.
 const missingExports = checkBarrelExports();

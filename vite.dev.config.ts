@@ -24,11 +24,11 @@ export default defineConfig({
      */
     alias: [
       {
-        find: /^@pmealha\/eidos-ui\/styles$/,
+        find: /^eidos-ui\/styles$/,
         replacement: `${repoRoot}src/styles/index.scss`,
       },
       {
-        find: /^@pmealha\/eidos-ui$/,
+        find: /^eidos-ui$/,
         replacement: `${repoRoot}src/index.ts`,
       },
     ],

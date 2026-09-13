@@ -200,4 +200,4 @@ export type { MenuPanelProps } from './components/Menu';
 export { renderIcon } from './utils';
 
 // Styles - users can import this separately
-// import '@pmealha/eidos-ui/styles';
+// import 'eidos-ui/styles';

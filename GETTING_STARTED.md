@@ -21,7 +21,7 @@ npm run lint
 ## Install
 
 ```bash
-npm install @pmealha/eidos-ui
+npm install eidos-ui
 ```
 
 **Peer dependencies** - must be present in your project (not bundled):
@@ -38,7 +38,7 @@ npm install @pmealha/eidos-ui
 Once at your app root (`main.tsx` or equivalent). Without it, components render unstyled.
 
 ```ts
-import '@pmealha/eidos-ui/styles';
+import 'eidos-ui/styles';
 ```
 
 ## Set up providers
@@ -48,7 +48,7 @@ Most components work standalone. Two require a context provider at the app root.
 ### Snackbar (required for toast notifications)
 
 ```tsx
-import { SnackbarProvider, SnackbarContainer } from '@pmealha/eidos-ui';
+import { SnackbarProvider, SnackbarContainer } from 'eidos-ui';
 
 function Root() {
   return (
@@ -63,7 +63,7 @@ function Root() {
 Then call from anywhere inside the tree:
 
 ```tsx
-import { useSnackbar } from '@pmealha/eidos-ui';
+import { useSnackbar } from 'eidos-ui';
 
 const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
 showSuccess('Saved!');
@@ -74,7 +74,7 @@ showSuccess('Saved!');
 Only needed when using `dropdownGroup` to ensure only one menu is open at a time.
 
 ```tsx
-import { DropdownProvider, Dropdown } from '@pmealha/eidos-ui';
+import { DropdownProvider, Dropdown } from 'eidos-ui';
 
 <DropdownProvider>
   <Dropdown dropdownGroup="toolbar" trigger={<button>File</button>} content={...} />
@@ -88,7 +88,7 @@ Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lu
 
 ```tsx
 import { Download, Plus } from 'lucide-react';
-import { Button } from '@pmealha/eidos-ui';
+import { Button } from 'eidos-ui';
 
 <Button preIcon={Download}>Export</Button>;
 ```
@@ -98,7 +98,7 @@ import { Button } from '@pmealha/eidos-ui';
 All components are fully typed. Import types from the main entry point:
 
 ```ts
-import type { ButtonProps, InputProps, SelectOption } from '@pmealha/eidos-ui';
+import type { ButtonProps, InputProps, SelectOption } from 'eidos-ui';
 ```
 
 ## Theming
@@ -157,11 +157,11 @@ give it a value below `--z-index-drawer` so library overlays always cover it:
 
 ```ts
 // Root barrel - works with any bundler that tree-shakes
-import { Button, Input, DataGrid } from '@pmealha/eidos-ui';
+import { Button, Input, DataGrid } from 'eidos-ui';
 
 // Deep import - explicit single-component chunk (useful in CJS / non-tree-shaking envs)
-import { Button } from '@pmealha/eidos-ui/button';
-import { DataGrid } from '@pmealha/eidos-ui/data-grid';
+import { Button } from 'eidos-ui/button';
+import { DataGrid } from 'eidos-ui/data-grid';
 ```
 
 ## File structure
@@ -204,7 +204,7 @@ latency, and genuine loading, empty and error states.
 > pattern to copy.
 
 The example imports the library through its **public entry points**
-(`@pmealha/eidos-ui` and `@pmealha/eidos-ui/styles`), aliased to `src/` by
+(`eidos-ui` and `eidos-ui/styles`), aliased to `src/` by
 `vite.dev.config.ts` and the tsconfig `paths` entry. That is deliberate: if a
 component or type is missing from the root barrel, the example app fails
 immediately instead of after publishing.
@@ -225,7 +225,7 @@ cohesive app, so adding a new component requires no changes to it.
    export type { NewComponentProps } from './components/NewComponent';
    ```
    Export **every** public type the component's own `index.ts` exposes, not just
-   the component. Consumers importing from `@pmealha/eidos-ui` cannot reach
+   the component. Consumers importing from `eidos-ui` cannot reach
    types that only the deep entry point re-exports.
 4. Add `NewComponent.stories.tsx` and `NewComponent.mdx` so it appears in Storybook.
 
@@ -295,7 +295,7 @@ Afterwards, push the commit and the tag (`npm version` only tags locally):
 
 ```bash
 git push --follow-tags
-npm view @pmealha/eidos-ui version   # confirm the registry agrees
+npm view eidos-ui version   # confirm the registry agrees
 ```
 
 A logged-out publish of a scoped package fails with a misleading

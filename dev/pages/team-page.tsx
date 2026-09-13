@@ -11,7 +11,7 @@ import {
   Pill,
   Select,
   useSnackbar,
-} from '@pmealha/eidos-ui';
+} from 'eidos-ui';
 import { ShieldOff, Trash2 } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { teamApi } from '../api/team';

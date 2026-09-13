@@ -4,7 +4,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 
 # Content Security Policy
 
-A precise reference for running `@pmealha/eidos-ui` under a strict CSP (`style-src` without `unsafe-inline`). Short version: the compiled stylesheet needs nothing special, most components need nothing special, and a small, explicitly-named group only needs an allowance if you server-render them.
+A precise reference for running `eidos-ui` under a strict CSP (`style-src` without `unsafe-inline`). Short version: the compiled stylesheet needs nothing special, most components need nothing special, and a small, explicitly-named group only needs an allowance if you server-render them.
 
 > **Note**: CSP nonces and hashes are only defined for `<style>` and `<script>` elements - never for inline `style="..."` HTML attributes on arbitrary elements. This library never generates a `<style>` or `<script>` element at runtime, so nonces are not a relevant mechanism here at all; the only lever that matters is whether `style-src-attr` allows `'unsafe-inline'`.
 
@@ -14,7 +14,7 @@ A precise reference for running `@pmealha/eidos-ui` under a strict CSP (`style-s
 content-security-policy: style-src 'self';
 ```
 
-`@pmealha/eidos-ui/styles` is a single, pre-compiled, same-origin `dist/index.css` file - every colour, variant, layout rule, and keyframe animation in this library ships there. `style-src 'self'` covers all of it. No nonce, no hash, no `unsafe-inline` needed for the stylesheet under any circumstance.
+`eidos-ui/styles` is a single, pre-compiled, same-origin `dist/index.css` file - every colour, variant, layout rule, and keyframe animation in this library ships there. `style-src 'self'` covers all of it. No nonce, no hash, no `unsafe-inline` needed for the stylesheet under any circumstance.
 
 ## Dynamic inline styles
 

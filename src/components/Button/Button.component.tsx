@@ -88,7 +88,7 @@ export const Button: React.FC<ButtonProps> = ({
  *
  * @example
  * ```tsx
- * import { IconButton } from '@pmealha/eidos-ui';
+ * import { IconButton } from 'eidos-ui';
  * import { Plus } from 'lucide-react';
  *
  * <IconButton icon={Plus} tooltip="Add item" />

@@ -10,14 +10,14 @@ import {
   Pill,
   Table,
   useSnackbar,
-} from '@pmealha/eidos-ui';
+} from 'eidos-ui';
 import type {
   BulkAction,
   FilterValue,
   MenuItemType,
   TableColumn,
   TableFilters,
-} from '@pmealha/eidos-ui';
+} from 'eidos-ui';
 import { CircleCheck, Clock, Lock } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { ticketsApi } from '../api/tickets';

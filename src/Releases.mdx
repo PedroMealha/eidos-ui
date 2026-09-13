@@ -1,0 +1,40 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import pkg from '../package.json';
+
+<Meta title="Releases" />
+
+# Releases
+
+A summary of what changed release to release. This mirrors
+[`CHANGELOG.md`](https://github.com/pmea/eidos-ui/blob/main/CHANGELOG.md) in
+the repository, which is the source of truth if the two ever drift - keep
+both in sync when cutting a release.
+
+Current version: **v{pkg.version}**
+
+## 0.1.0 - Fresh start
+
+This package was previously published as `@pmealha/eidos-ui` (versions
+`0.1.1` through `5.0.0`). That version history does not reflect real semantic
+versioning - major/minor bumps went out without the corresponding
+breaking/additive-only guarantees semver implies, and `5.x` was reached long
+before the API was actually stable. Rather than carry that misleading history
+forward under a new name, `eidos-ui` restarts at `0.1.0`: pre-1.0, meaning
+breaking changes may still happen between minor versions, exactly as semver
+intends for a library that hasn't yet committed to a stable public API.
+
+> **`@pmealha/eidos-ui` is deprecated on npm and will not receive further
+> updates** - install `eidos-ui` instead.
+
+**What's included as of this release:**
+
+- `Navigation` - collapsible sidebar rail (brand logo or initials avatar,
+  routing-agnostic items, footer slot), with controlled/uncontrolled collapse
+  and a `collapseBelow` viewport breakpoint for automatic responsive collapse.
+- `Footer` - a `copyright` string or a fully custom `component`, never both.
+- `CommandPalette` - inline `trigger` support, so it no longer requires a
+  consumer-built trigger element.
+- Responsive layout improvements to `PageLayout`, `Header`, and `Toolbar` -
+  breadcrumbs and actions wrap gracefully instead of overflowing on narrow
+  viewports.
+- The existing 49-component set, carried forward unchanged.

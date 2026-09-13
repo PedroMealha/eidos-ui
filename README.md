@@ -1,6 +1,12 @@
-# @pmealha/eidos-ui
+# eidos-ui
 
 A modern, accessible React component library built with TypeScript, SCSS, and CSS custom properties.
+
+> **This package starts fresh at `0.1.0`.** It was previously published as `@pmealha/eidos-ui`
+> (versions `0.1.1` through `5.0.0`), which reached `5.x` well before the API was actually stable -
+> those version numbers didn't reflect real semantic versioning and are deprecated. `@pmealha/eidos-ui`
+> will not receive further updates; install `eidos-ui` instead. See [CHANGELOG.md](./CHANGELOG.md) for
+> what's changed release to release from here on.
 
 ## ✨ Features
 
@@ -15,7 +21,7 @@ A modern, accessible React component library built with TypeScript, SCSS, and CS
 ## 📦 Installation
 
 ```bash
-npm install @pmealha/eidos-ui
+npm install eidos-ui
 ```
 
 **Optional:** If you want to use component-based icons (recommended):
@@ -28,8 +34,8 @@ npm install lucide-react
 ## 🚀 Quick Start
 
 ```tsx
-import { Button, Tooltip, DatePicker } from '@pmealha/eidos-ui';
-import '@pmealha/eidos-ui/styles';
+import { Button, Tooltip, DatePicker } from 'eidos-ui';
+import 'eidos-ui/styles';
 
 function App() {
   return (
@@ -133,7 +139,7 @@ All design tokens are customizable via CSS custom properties:
 Full TypeScript support with exported types:
 
 ```tsx
-import type { ButtonProps, TooltipProps } from '@pmealha/eidos-ui';
+import type { ButtonProps, TooltipProps } from 'eidos-ui';
 
 const MyButton: React.FC<ButtonProps> = (props) => {
   return <Button {...props} />;
