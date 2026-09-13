@@ -1,63 +1,10 @@
 import type { Meta } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
-import { BookOpen, Bug, FilePlus, LayoutDashboard, Moon, Search, Settings } from 'lucide-react';
+import { Bug, FilePlus, Moon, Settings } from 'lucide-react';
 import { CommandPalette } from './CommandPalette.component';
 import type { CommandItem } from './CommandPalette.types';
+import { CMDP_ITEMS } from './CommandPalette.fixtures';
 import { Avatar } from '../Avatar';
-
-// ── Shared sample data ─────────────────────────────────────────────────────────
-
-export const CMDP_ITEMS: CommandItem[] = [
-  {
-    id: '1',
-    label: 'Go to Dashboard',
-    icon: LayoutDashboard,
-    group: 'Navigation',
-    shortcut: ['⌘', 'D'],
-  },
-  {
-    id: '2',
-    label: 'New Document',
-    icon: FilePlus,
-    group: 'Actions',
-    shortcut: ['⌘', 'N'],
-    action: () => alert('New doc'),
-  },
-  {
-    id: '3',
-    label: 'Search Files',
-    icon: Search,
-    group: 'Actions',
-    keywords: ['find', 'lookup'],
-  },
-  {
-    id: '4',
-    label: 'Toggle Theme',
-    icon: Moon,
-    group: 'Settings',
-  },
-  {
-    id: '5',
-    label: 'Open Settings',
-    icon: Settings,
-    group: 'Settings',
-    shortcut: ['⌘', ','],
-  },
-  {
-    id: '6',
-    label: 'View Documentation',
-    description: 'Open the docs in a new tab',
-    icon: BookOpen,
-    group: 'Help',
-  },
-  {
-    id: '7',
-    label: 'Report a Bug',
-    icon: Bug,
-    group: 'Help',
-    disabled: true,
-  },
-];
 
 // ── Meta ───────────────────────────────────────────────────────────────────────
 

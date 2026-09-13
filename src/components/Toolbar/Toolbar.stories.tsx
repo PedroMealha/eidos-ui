@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Toolbar } from './Toolbar.component';
-import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.stories';
+import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 
 const meta = {
   title: 'Layout/Components/Toolbar',

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
-import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.stories';
+import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 import { Divider } from '../Divider';
 import { Pill } from '../Pill';
 

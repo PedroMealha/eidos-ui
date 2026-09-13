@@ -26,6 +26,9 @@ dist-ssr
 # Storybook
 storybook-static
 
+# Playwright MCP debugging artifacts
+.playwright-mcp/
+
 # Local secrets - never commit
 .env
 .env.local
