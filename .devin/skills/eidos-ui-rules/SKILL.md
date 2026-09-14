@@ -547,6 +547,19 @@ land on GitHub a few seconds before it's actually on the registry if
 `npm publish` then fails - acceptable (the commit/tag are real either way),
 but don't assume "tag exists on GitHub" implies "published successfully".
 
+A `version` script (`scripts/promote-changelog.js`) also runs automatically,
+earlier in the same `npm version` lifecycle - after the version is bumped in
+`package.json`, but before the commit/tag are created. It renames
+`## [Unreleased]` to `## [x.y.z] - <today>` in `CHANGELOG.md` and stages the
+result, so the changelog promotion lands in the *same* commit as the version
+bump instead of a separate manual one afterward. It also **aborts the whole
+`npm version` call** (nothing gets committed or tagged) if `[Unreleased]` has
+an `### Added` entry but the actual bump run was only `patch` - that implies
+at least `release:minor` was needed. It does not touch `src/Releases.mdx`
+(generating JSX programmatically was judged too fragile after repeated MDX
+parsing issues while building that file by hand) - it prints a ready-to-paste
+`<ReleaseCard>` snippet to the terminal instead; copy it in manually.
+
 ### Dependency constraints
 
 - **TypeScript is held at `^6.0.x`** - `@typescript-eslint` peer dep requires `<6.1.0`, blocking TS 7.x. Check each time `@typescript-eslint` is updated.

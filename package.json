@@ -40,6 +40,7 @@
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "prepublishOnly": "npm run build",
+    "version": "node scripts/promote-changelog.js",
     "postversion": "git push --follow-tags",
     "init": "npm run dev & npm run storybook",
     "release:needed": "node scripts/release-needed.js",
