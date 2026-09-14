@@ -12,6 +12,7 @@
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { checkBarrelExports } from './check-barrel-exports.js';
+import { checkChangelogUpToDate } from './check-changelog.js';
 
 const run = (command) =>
   execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -83,7 +84,16 @@ if (missingExports.length > 0) {
   );
 }
 
-// ── 4. Publish rights on this package ───────────────────────────────────────
+// ── 4. Changelog is up to date ───────────────────────────────────────────────
+// Enforces the "Changelog discipline" convention in
+// `.devin/skills/eidos-ui-rules/SKILL.md` - entries should land as work
+// happens, not get written retroactively right before a release.
+const changelogCheck = checkChangelogUpToDate();
+if (!changelogCheck.ok) {
+  fail(changelogCheck.reason, 'Changed since the last release:', '', ...changelogCheck.changed);
+}
+
+// ── 5. Publish rights on this package ───────────────────────────────────────
 // Being logged in is not the same as being allowed to publish this name.
 const { name, version } = JSON.parse(readFileSync('./package.json', 'utf8'));
 

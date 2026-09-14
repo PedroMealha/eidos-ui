@@ -1,5 +1,139 @@
 import { Meta } from '@storybook/addon-docs/blocks';
 import pkg from '../package.json';
+import { Divider } from './components/Divider';
+
+{/* Design tokens for this page only. Kept local (not exported from the library) since this is a Storybook docs page, not a shipped component - see the note on top-level guide pages in `.devin/skills/eidos-ui-rules/SKILL.md`. Colours reuse the same semantic palette every component already uses (primary/secondary/danger/success/warning/info), so a reader who knows the rest of the system already knows what these mean here. */}
+
+{/* Every size below is a fixed px value, not rem/em - deliberately, not a style preference. Storybook's Docs page renders this file's JSX in the manager frame, not the preview iframe where global.scss's `html { font-size: 14px }` reset applies, so rem/em here resolve against whatever the manager frame's own root happens to be instead - which is exactly why reusing Chip (or Pill wrapped in a local scale-fix) still rendered oversized no matter how it was patched. Fixed px sizing has no root dependency at all, so it's the only way to guarantee this page looks the same regardless of which frame renders it. This also means not reusing Chip/Pill for the tags below - a shared component can't opt out of the library's rem-based sizing without changing it for every other consumer. */}
+
+export const BUMP_META = {
+  major: { label: 'Major', bg: 'var(--danger-color)' },
+  minor: { label: 'Minor', bg: 'var(--primary-color)' },
+  patch: { label: 'Patch', bg: 'var(--secondary-color)' },
+  initial: { label: 'Initial', bg: 'var(--secondary-color)' },
+};
+
+export const CATEGORY_META = {
+  added: { label: 'Added', color: 'var(--success-color)' },
+  changed: { label: 'Changed', color: 'var(--warning-dark)' },
+  fixed: { label: 'Fixed', color: 'var(--info-color)' },
+  removed: { label: 'Removed', color: 'var(--danger-color)' },
+};
+
+export const Code = ({ children }) => {
+  return (
+    <code
+      style={{
+        fontSize: '13px',
+        background: 'var(--gray-100)',
+        padding: '1px 5px',
+        borderRadius: 'var(--border-radius-sm)',
+      }}
+    >
+      {children}
+    </code>
+  );
+};
+
+export const BumpTag = ({ bump }) => {
+  const meta = BUMP_META[bump];
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        border: `1px solid ${meta.bg}`,
+        color: meta.bg,
+        fontFamily: 'monospace',
+        fontSize: '10px',
+        fontWeight: 700,
+        letterSpacing: '0.03em',
+        textTransform: 'uppercase',
+        padding: '3px 8px',
+        borderRadius: '4px',
+      }}
+    >
+      {meta.label}
+    </span>
+  );
+};
+
+export const VersionTag = ({ children }) => {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        background: 'var(--primary-color)',
+        color: 'white',
+        fontFamily: 'monospace',
+        fontSize: '11px',
+        fontWeight: 700,
+        letterSpacing: '0.03em',
+        padding: '3px 8px',
+        borderRadius: '4px',
+        lineHeight: 1.4,
+      }}
+    >
+      {children}
+    </span>
+  );
+};
+
+export const CategoryLabel = ({ category }) => {
+  const meta = CATEGORY_META[category];
+  return (
+    <span
+      style={{
+        fontSize: '12px',
+        fontWeight: 700,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: meta.color,
+      }}
+    >
+      {meta.label}
+    </span>
+  );
+};
+
+export const ReleaseCard = ({ version, date, bump, sections }) => {
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: '22px', fontWeight: 800, color: 'var(--dark-color)' }}>
+          v{version}
+        </span>
+        <BumpTag bump={bump} />
+        {date && <span style={{ fontSize: '13px', color: 'var(--gray-400)' }}>{date}</span>}
+      </div>
+
+      <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {sections.map((section) => (
+          <div key={section.category}>
+            <CategoryLabel category={section.category} />
+            <ul style={{ margin: '6px 0 0', paddingLeft: '18px' }}>
+              {section.items.map((item, i) => (
+                <li
+                  key={i}
+                  style={{
+                    fontSize: '14px',
+                    color: 'var(--gray-600)',
+                    lineHeight: 1.6,
+                    marginBottom: '4px',
+                  }}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+);
+};
 
 <Meta title="Releases" />
 
@@ -10,31 +144,42 @@ A summary of what changed release to release. This mirrors
 the repository, which is the source of truth if the two ever drift - keep
 both in sync when cutting a release.
 
-Current version: **v{pkg.version}**
+Current version: <VersionTag>v{pkg.version}</VersionTag>
 
-## 0.1.0 - Fresh start
+<Divider style={{ margin: '24px 0' }} />
 
-This package was previously published as `@pmealha/eidos-ui` (versions
-`0.1.1` through `5.0.0`). That version history does not reflect real semantic
-versioning - major/minor bumps went out without the corresponding
-breaking/additive-only guarantees semver implies, and `5.x` was reached long
-before the API was actually stable. Rather than carry that misleading history
-forward under a new name, `eidos-ui` restarts at `0.1.0`: pre-1.0, meaning
-breaking changes may still happen between minor versions, exactly as semver
-intends for a library that hasn't yet committed to a stable public API.
-
-> **`@pmealha/eidos-ui` is deprecated on npm and will not receive further
-> updates** - install `eidos-ui` instead.
-
-**What's included as of this release:**
-
-- `Navigation` - collapsible sidebar rail (brand logo or initials avatar,
-  routing-agnostic items, footer slot), with controlled/uncontrolled collapse
-  and a `collapseBelow` viewport breakpoint for automatic responsive collapse.
-- `Footer` - a `copyright` string or a fully custom `component`, never both.
-- `CommandPalette` - inline `trigger` support, so it no longer requires a
-  consumer-built trigger element.
-- Responsive layout improvements to `PageLayout`, `Header`, and `Toolbar` -
-  breadcrumbs and actions wrap gracefully instead of overflowing on narrow
-  viewports.
-- The existing 49-component set, carried forward unchanged.
+<ReleaseCard
+  version="0.1.0"
+  bump="initial"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>Navigation</Code> - collapsible sidebar rail with responsive auto-collapse.
+        </>,
+        <>
+          <Code>Footer</Code> - a <Code>copyright</Code> string or a fully custom{' '}
+          <Code>component</Code>.
+        </>,
+        <>
+          <Code>CommandPalette</Code> - inline <Code>trigger</Code> support.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>PageLayout</Code>, <Code>Header</Code>, and <Code>Toolbar</Code> now wrap gracefully
+          on narrow viewports instead of overflowing.
+        </>,
+        <>
+          Renamed from <Code>@pmealha/eidos-ui</Code> and reset to <Code>0.1.0</Code> - the old
+          package's version history predates real semver discipline. <Code>@pmealha/eidos-ui</Code>{' '}
+          is deprecated; install <Code>eidos-ui</Code> instead.
+        </>,
+      ],
+    },
+  ]}
+/>

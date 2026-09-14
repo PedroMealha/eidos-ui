@@ -59,6 +59,26 @@ Avatar is the only component with a defined `AvatarSize` type; it also uses `sm 
 
 Always: `primary | secondary | success | danger | warning | info`
 
+### Small inline elements must be `inline-flex`, not `flex`
+
+`Pill`, `Chip`, and any similar small label/tag-style component must
+explicitly set `display: inline-flex` (overriding whatever layout mixin it
+uses, e.g. `flex-center-y`) - never leave it at the mixin's own
+`display: flex`. A block-level flex element stretches to fill its parent's
+full width the moment it's used anywhere other than inside another flex
+row (a `<p>`, a `<div>` in prose, table cell, etc.), rendering as a
+full-width bar instead of a compact tag. `Chip` had this exact bug (missing
+the override `Pill` already had) until it was found via `Releases.mdx`.
+
+### `rem`-based tokens don't survive being reused outside the library's own root font-size
+
+Only the `--font-size-*` tokens are `rem` (root-relative); `--spacing-*` and
+`--border-radius-*` are `em`/`px` and unaffected. Any component whose sizing
+comes from `--font-size-*` will render inconsistently if used somewhere
+that doesn't share the same document root font-size as `global.scss`'s
+`html { font-size: 14px }` reset - see the `Releases.mdx` guide-page note
+above for the concrete case (Storybook's Docs manager frame) this bit.
+
 ### Dropdown viewport clamping
 
 `Dropdown`'s `calculateOptimalPosition` must clamp its position against **both**
@@ -197,13 +217,63 @@ CommandPalette, Modal, Drawer, and similar overlay components must start CLOSED 
 
 ### Top-level guide pages (not component docs)
 
-`Introduction.mdx` ("Getting Started") and `ContentSecurityPolicy.mdx`
-("Content Security Policy") live at `src/` root, not under a component
-folder, and don't follow the component `.mdx` template above - they're
-prose/reference pages, picked up by the same `../src/**/*.mdx` glob in
-`.storybook/main.ts`. Use a bare `<Meta title="..." />` (no component group
-prefix) so they land in the ungrouped bucket at the end of the sidebar per
-`storySort` in `.storybook/preview.ts`.
+`Introduction.mdx` ("Getting Started"), `ContentSecurityPolicy.mdx`
+("Content Security Policy"), and `Releases.mdx` ("Releases") live at `src/`
+root, not under a component folder, and don't follow the component `.mdx`
+template above - they're prose/reference pages, picked up by the same
+`../src/**/*.mdx` glob in `.storybook/main.ts`. Use a bare `<Meta title="..." />`
+(no component group prefix) so they land in the ungrouped bucket at the end
+of the sidebar per `storySort` in `.storybook/preview.ts`.
+
+`Releases.mdx` mirrors `CHANGELOG.md` in summary form (see "Changelog
+discipline" below) - it has its own mock/example release entries clearly
+marked with a banner and a `MOCK DATA BELOW` comment; leave them until real
+entries have shipped and replaced them, don't delete them just to tidy up.
+
+### Custom JSX directly in a top-level `.mdx` page needs fixed `px` sizing, not `rem`/`em`
+
+Applies specifically to inline JSX written directly in a top-level guide
+page's body (like `Releases.mdx`'s `Code`/`BumpTag`/`ReleaseCard`) - not to
+component stories rendered via `<Canvas>`, which are unaffected.
+
+Storybook's Docs page renders that JSX in the *manager* frame, not the
+*preview* iframe where `global.scss`'s `html { font-size: 14px }` reset
+actually applies - it inherits the browser/Storybook-UI default of `16px`
+instead. `--spacing-*` tokens are `em` (relative to each element's own
+font-size, so they're unaffected), but the 8 `--font-size-*` tokens are
+`rem` (relative to the document root), so anything sized off them renders
+~14% larger there than anywhere else in the library - including reused
+components like `Chip`/`Pill`, which can't opt out of `rem` sizing without
+changing it for every other consumer. Use fixed `px` values for anything
+custom written directly in one of these pages instead; don't reuse a shared
+component there if the only way to size it correctly would be a local
+scale/font-size hack.
+
+### MDX top-level ESM block must be pure imports/exports, and avoid shorthand `<>...</>` as a component's sole top-level return
+
+Two related but separate MDX gotchas hit while building `Releases.mdx`:
+
+1. The *leading* block of an `.mdx` file (before any prose/JSX body content)
+   must be entirely `import`/`export` statements, with nothing else mixed
+   in - Storybook's actual Vite/MDX pipeline tolerates a stray `<Meta />` in
+   the middle of that block, but stricter MDX tooling (e.g. an editor's MDX
+   language server) will not. Put `<Meta title="..." />` *after* all
+   `export const` declarations, immediately before the first prose content.
+2. A component defined in that block whose sole top-level return value is a
+   shorthand fragment (`<>...</>`) - not fragments used elsewhere, e.g.
+   inside an array of JSX children - can trip the same class of tooling
+   with a misleading "unexpected closing slash" error. Use a real wrapping
+   element (a `<div>`) instead of a fragment in that specific position;
+   fragments used to group multiple children within an array entry are
+   fine and don't need this treatment.
+
+If a fix here doesn't seem to stick, check whether an MDX-aware editor
+extension has format-on-save enabled for `.mdx` - one observed in the wild
+(the "MDX" extension by unified) repeatedly re-corrupts multi-line
+`{/* ... */}` JSX comments into invalid `{/_ ... _/}`, and separately
+collapses a function's closing `);`/`};` onto one line, independent of any
+manual edit. Disable format-on-save for `.mdx` there before trusting further
+edits to stick.
 
 ### Storybook's own CSP posture is not this library's to fix
 
@@ -414,6 +484,11 @@ subheadings, only adding the ones actually needed:
 - **Added** → implies `release:minor` at cut time. **Fixed**/**Changed**
   (non-breaking) → `release:patch`. Anything breaking → its own clearly
   labeled note and `release:major`, regardless of what else is queued.
+- **Keep every entry to one line, one sentence.** No walls of text, no
+  restating the full backstory of *why* something changed (that lives in
+  the commit/PR, not the changelog) - just what changed, from a consumer's
+  point of view. If an entry needs more than one sentence to explain, it's
+  a sign to split it into multiple short bullets, not to write a paragraph.
 - If `[Unreleased]` already has entries from earlier in the session (or from
   a previous uncut session), a new change amends the existing bullet list -
   never overwrite what's there, and never remove another entry just because
@@ -424,8 +499,18 @@ subheadings, only adding the ones actually needed:
 - At actual release time, rename `## [Unreleased]` to `## [x.y.z] - <date>`
   (matching whatever `npm version` just produced) with a fresh, empty
   `## [Unreleased]` left above it for the next round, and copy the same
-  entries into `src/Releases.mdx` under a matching heading - see that file's
-  own header note for why both exist.
+  entries into `src/Releases.mdx` under a matching heading (same one-line-
+  per-entry rule applies there) - see that file's own header note for why
+  both exist.
+
+**This is enforced, not just a convention to remember**:
+`scripts/check-changelog.js` (run from `release:preflight`, same as
+`check-barrel-exports.js`) diffs the working tree against the last git tag's
+build-affecting files (the same list `release-needed.js` uses) and fails the
+release outright if anything reaches `dist/` but `[Unreleased]` is still
+empty. It only checks that *something* was written, not wording/length -
+run `node scripts/check-changelog.js` standalone to check without running
+the full preflight.
 
 ### Release workflow
 

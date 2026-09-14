@@ -3,6 +3,7 @@
 .eidos-chip {
   @include flex-center-y;
   @include button-reset;
+  display: inline-flex;
   position: relative;
   border-radius: var(--border-radius-sm);
   font-weight: var(--font-weight-medium);
