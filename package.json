@@ -105,6 +105,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pmea/eidos-ui.git"
+    "url": "git+https://github.com/PedroMealha/eidos-ui.git"
+  },
+  "homepage": "https://github.com/PedroMealha/eidos-ui#readme",
+  "bugs": {
+    "url": "https://github.com/PedroMealha/eidos-ui/issues"
   }
 }

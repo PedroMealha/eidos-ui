@@ -1,6 +1,15 @@
+<div align="center">
+
 # eidos-ui
 
-A modern, accessible React component library built with TypeScript, SCSS, and CSS custom properties.
+**A modern, accessible React component library built with TypeScript, SCSS, and CSS custom properties.**
+
+[![npm version](https://img.shields.io/npm/v/eidos-ui.svg)](https://www.npmjs.com/package/eidos-ui)
+[![npm downloads](https://img.shields.io/npm/dm/eidos-ui.svg)](https://www.npmjs.com/package/eidos-ui)
+[![license](https://img.shields.io/npm/l/eidos-ui.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](https://www.typescriptlang.org/)
+
+</div>
 
 > **This package starts fresh at `0.1.0`.** It was previously published as `@pmealha/eidos-ui`
 > (versions `0.1.1` through `5.0.0`), which reached `5.x` well before the API was actually stable -
@@ -8,33 +17,33 @@ A modern, accessible React component library built with TypeScript, SCSS, and CS
 > will not receive further updates; install `eidos-ui` instead. See [CHANGELOG.md](./CHANGELOG.md) for
 > what's changed release to release from here on.
 
-## ✨ Features
+## Features
 
-- 🎨 **Customizable** - CSS custom properties for easy theming
-- 💪 **TypeScript** - Full type safety and IntelliSense support
-- 🎭 **SCSS** - Powerful styling with mixins and design tokens
-- 🏗️ **Optimized** - Built with tsup for minimal bundle size
-- ⚡ **Tree-shakeable** - Import only what you need
-- ♿ **Accessible** - Built with accessibility in mind
-- 🎯 **Icon Flexibility** - Works with any icon library (Lucide, MUI Icons, Font Awesome, Remix Icons, etc.)
+|                     |                                                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Themeable**       | Every design token is a CSS custom property, so palette, spacing, and radii can be overridden without touching source. |
+| **Type-safe**       | Written in TypeScript with full prop typings exported for every component.                                             |
+| **Tree-shakeable**  | Per-component entry points (`eidos-ui/button`, `eidos-ui/table`, ...) keep bundles lean.                               |
+| **Icon-agnostic**   | Works with any icon library - Lucide, MUI Icons, Font Awesome, Remix Icons, or your own.                               |
+| **Accessible**      | Built with keyboard navigation and ARIA semantics in mind.                                                             |
+| **Optimized build** | Bundled with tsup, shipping both ESM and CJS with source maps and `.d.ts` files.                                       |
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install eidos-ui
 ```
 
-**Optional:** If you want to use component-based icons (recommended):
+**Optional** - for component-based icons (recommended over string-based icon fonts):
 
 ```bash
 npm install lucide-react
-# or use MUI Icons, Heroicons, etc.
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ```tsx
-import { Button, Tooltip, DatePicker } from 'eidos-ui';
+import { Button, Tooltip } from 'eidos-ui';
 import 'eidos-ui/styles';
 
 function App() {
@@ -52,50 +61,126 @@ function App() {
 }
 ```
 
-### With Icons
+### With icons
 
 ```tsx
-// Using component icons (tree-shakeable)
+// Component icons (tree-shakeable)
 import { Plus, Download } from 'lucide-react';
+
 <Button icon={Plus} />
 <Button preIcon={Download}>Download</Button>
 
-// Or using string-based icons
-<Button icon="fa fa-plus" />  // Font Awesome
+// String-based icons (icon font classes)
+<Button icon="fa fa-plus" />   // Font Awesome
 <Button icon="ri-add-line" />  // Remix Icons
 ```
 
-## 📦 Available Components
+## Components
 
-- **Button** - Versatile button with variants, sizes, colors, icons, loading states
-- **Chip** - Compact elements for tags, labels, or selections
-- **DatePicker** - Date selection with single, multiple, and range modes
-- **Divider** - Visual separator with optional text
-- **Dropdown** - Customizable dropdown menus
-- **Input** - Text input with validation and icons
-- **Menu** - Navigation and action menus
-- **Modal** - Dialog overlays with customizable actions
-- **Select** - Dropdown selection with search
-- **Snackbar** - Toast notifications with actions
-- **Spinner** - Loading indicators
-- **Table** - Data tables with sorting, filtering, and pagination
-- **Tooltip** - Contextual hints with smart positioning
+These are the same groups used in Storybook, so the README and the docs sidebar stay in sync.
 
-## 📚 Documentation
+<table>
+<tr><td valign="top">
 
-For detailed component documentation, props, and interactive examples, visit our Storybook:
+**Layout**
+
+- PageLayout
+- Header
+- Footer
+- Navigation
+- Toolbar
+- Breadcrumb
+
+**Elements**
+
+- Button
+- ButtonGroup
+- SplitButton
+- Avatar
+- Badge
+- Card
+- Chip
+- Divider
+- EmptyState
+- Kbd
+- Pill
+- SegmentedControl
+
+</td><td valign="top">
+
+**Forms**
+
+- Input
+- Textarea
+- NumberInput
+- Select
+- Combobox
+- Checkbox
+- Radio
+- Switch
+- Slider
+- ColorPicker
+- DatePicker
+- OTPInput
+- TagInput
+- FileUpload
+- InlineEdit
+
+**Navigation**
+
+- Tabs
+- Stepper
+- Accordion
+- Pagination
+- TreeView
+
+</td><td valign="top">
+
+**Data**
+
+- Table
+- DataGrid
+- Timeline
+- VirtualList
+
+**Overlays**
+
+- Modal
+- Drawer
+- Snackbar
+- Tooltip
+- Popover
+- Menu
+- ContextMenu
+- CommandPalette
+- Dropdown
+
+**Feedback**
+
+- Alert
+- Progress
+- Skeleton
+- Spinner
+
+</td></tr>
+</table>
+
+Full props and interactive examples for every component live in Storybook - see [Documentation](#documentation).
+
+## Documentation
+
+Run Storybook locally for the full interactive component reference, including a searchable "Releases" page mirroring [CHANGELOG.md](./CHANGELOG.md):
 
 ```bash
+git clone https://github.com/PedroMealha/eidos-ui.git
+cd eidos-ui
+npm install
 npm run storybook
 ```
 
-Or check the [live Storybook documentation](#) _(coming soon)_
+## Theming
 
-## 🎨 Customization
-
-### Theming with CSS Variables
-
-All design tokens are customizable via CSS custom properties:
+All design tokens are exposed as CSS custom properties, so themes can be overridden globally without touching component source.
 
 ```css
 :root {
@@ -112,64 +197,29 @@ All design tokens are customizable via CSS custom properties:
 }
 ```
 
-### Dark Mode Example
+Individual component styles can also be targeted directly, following each component's `eidos-<name>` BEM-style class names:
 
 ```css
-[data-theme='dark'] {
-  --primary-color: #818cf8;
-  --background: #1e293b;
-  --text-color: #f1f5f9;
-}
-```
-
-### Override Component Styles
-
-```css
-.eidos-button {
+.eidos-button--filled.eidos-button--primary {
   border-radius: 20px;
-}
-
-.eidos-button--primary {
   background: linear-gradient(to right, #6366f1, #8b5cf6);
 }
 ```
 
-## 💻 TypeScript Support
+## TypeScript
 
-Full TypeScript support with exported types:
+Every component ships with exported prop types:
 
 ```tsx
 import type { ButtonProps, TooltipProps } from 'eidos-ui';
 
-const MyButton: React.FC<ButtonProps> = (props) => {
-  return <Button {...props} />;
-};
+const MyButton: React.FC<ButtonProps> = (props) => <Button {...props} />;
 ```
 
-## 🎯 Icon Support
+## Contributing
 
-The library supports multiple icon approaches:
+This is currently a personal project without an established external contribution process. Bug reports and suggestions are welcome via [GitHub Issues](https://github.com/PedroMealha/eidos-ui/issues).
 
-1. **Component Icons** (Lucide, MUI, Heroicons) - Recommended for tree-shaking
-2. **String-based Icons** (Font Awesome, Remix Icons) - Great for dynamic icons
+## License
 
-```tsx
-// Component-based (tree-shakeable)
-import { Plus } from 'lucide-react';
-<Button icon={Plus} />
-
-// String-based (requires icon CSS to be loaded)
-<Button icon="fa fa-plus" />
-```
-
-## 📄 License
-
-MIT
-
-## 👤 Author
-
-Pedro Mealha
-
----
-
-Built with ❤️ using React, TypeScript, SCSS, and Storybook
+[MIT](./LICENSE) © Pedro Mealha
