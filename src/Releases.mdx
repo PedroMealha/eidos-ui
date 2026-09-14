@@ -131,7 +131,8 @@ export const ReleaseCard = ({ version, date, bump, sections }) => {
         ))}
       </div>
     </div>
-  );
+
+);
 };
 
 <Meta title="Releases" />
@@ -146,6 +147,24 @@ both in sync when cutting a release.
 Current version: <VersionTag>v{pkg.version}</VersionTag>
 
 <Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
+  version="0.1.1"
+  date="2026-09-14"
+  bump="patch"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Chip</Code> now sizes to its content instead of stretching full-width.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '32px 0' }} />
 
 <ReleaseCard
   version="0.1.0"
