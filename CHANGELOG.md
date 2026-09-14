@@ -9,9 +9,12 @@ anyone browsing the component docs - keep both in sync when cutting a release.
 
 ## [Unreleased]
 
-Entries land here as work happens, not written retroactively at release time
-- see the "Changelog discipline" section in
-`.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
+### Changed
+
+- Rewrote README to remove emoji-heavy sections, align component groupings with
+  Storybook's sidebar, and include real package badges.
+- Fixed package metadata on npm (`repository`, `homepage`, `bugs`) so the
+  package page links to the correct GitHub repository and issue tracker.
 
 ## [1.0.0] - 2026-09-14
 
