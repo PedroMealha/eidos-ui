@@ -78,17 +78,20 @@ export interface NavigationProps {
   /** Called whenever the collapsed state changes, in both controlled and uncontrolled modes. */
   onCollapsedChange?: (collapsed: boolean) => void;
   /**
-   * Automatically collapses (and re-expands) `Navigation` when the viewport
-   * crosses this width, in pixels - e.g. `collapseBelow={1024}` collapses it
-   * on any viewport narrower than that, and expands it again above. Uses
-   * `window.matchMedia` internally; does nothing until mounted client-side,
-   * so it's SSR-safe. Works the same way in both controlled and uncontrolled
-   * modes: uncontrolled, it drives Navigation's own state directly;
-   * controlled, it calls `onCollapsedChange` at the crossing point, exactly
-   * as if the built-in toggle button had been clicked - your own state stays
-   * in charge either way. A manual toggle in between crossings (e.g.
-   * expanding back while still narrower than this) is respected until the
-   * viewport crosses the breakpoint again.
+   * On by default: automatically collapses (and re-expands) `Navigation`
+   * when the viewport crosses this width, in pixels - e.g.
+   * `collapseBelow={1024}` collapses it on any viewport narrower than that,
+   * and expands it again above. Uses `window.matchMedia` internally; does
+   * nothing until mounted client-side, so it's SSR-safe. Works the same way
+   * in both controlled and uncontrolled modes: uncontrolled, it drives
+   * Navigation's own state directly; controlled, it calls
+   * `onCollapsedChange` at the crossing point, exactly as if the built-in
+   * toggle button had been clicked - your own state stays in charge either
+   * way. A manual toggle in between crossings (e.g. expanding back while
+   * still narrower than this) is respected until the viewport crosses the
+   * breakpoint again. Pass `collapseBelow={0}` to opt out entirely (no
+   * viewport is ever narrower than `0px`).
+   * @default 768
    */
   collapseBelow?: number;
   /** Renders the built-in collapse/expand toggle button. @default true */

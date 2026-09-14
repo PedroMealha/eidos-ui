@@ -200,16 +200,27 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
 
   // ── Card view ──────────────────────────────────────────────────────────────
   /**
-   * Below `cardViewBreakpoint`, swap the table for a stacked list of cards -
-   * one per row. Only the row rendering changes: pagination, filtering,
-   * sorting, selection, and cell editing all keep working exactly as in
-   * table mode, driven off the grid's own measured width (not the viewport),
-   * so it responds correctly even inside a narrow sidebar on a wide screen.
-   * Row drag-reordering (`draggableRows`) is not available in card view.
-   * @default false
+   * On by default: below `cardViewBreakpoint`, or once the grid's own width
+   * can no longer fit every column at a reasonable minimum, swap the table
+   * for a stacked list of cards - one per row. Only the row rendering
+   * changes: pagination, filtering, sorting, selection, and cell editing all
+   * keep working exactly as in table mode, driven off the grid's own
+   * measured width (not the viewport), so it responds correctly even inside
+   * a narrow sidebar on a wide screen. Row drag-reordering (`draggableRows`)
+   * is not available in card view. Set to `false` to always render a table.
+   * @default true
    */
   hasCardView?: boolean;
-  /** Container width (px) at/below which card view kicks in. @default 640 */
+  /**
+   * Container width (px) at/below which card view kicks in. This is an
+   * explicit floor - card view also switches on automatically, regardless
+   * of this value, once the container is narrower than the number of
+   * displayed columns times a 100px minimum column width. That means a
+   * grid with many columns never has to overflow horizontally waiting for
+   * a hand-tuned breakpoint; this prop is mainly useful for forcing card
+   * view earlier than that automatic threshold.
+   * @default 640
+   */
   cardViewBreakpoint?: number;
   /**
    * Cards lay out in a responsive grid (CSS `repeat(auto-fill, minmax(...))`)

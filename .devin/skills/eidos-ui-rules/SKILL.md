@@ -482,8 +482,11 @@ subheadings, only adding the ones actually needed:
 ```
 
 - **Added** → implies `release:minor` at cut time. **Fixed**/**Changed**
-  (non-breaking) → `release:patch`. Anything breaking → its own clearly
-  labeled note and `release:major`, regardless of what else is queued.
+  (non-breaking) → `release:patch`. Anything breaking → start that bullet
+  with the literal marker `**Breaking**:` and `release:major`, regardless of
+  what else is queued - `promote-changelog.js` greps for this exact marker
+  (case-insensitively) to abort the release if the bump run doesn't match,
+  so the wording isn't just a style preference here.
 - **Keep every entry to one line, one sentence.** No walls of text, no
   restating the full backstory of *why* something changed (that lives in
   the commit/PR, not the changelog) - just what changed, from a consumer's
@@ -553,9 +556,11 @@ earlier in the same `npm version` lifecycle - after the version is bumped in
 `## [Unreleased]` to `## [x.y.z] - <today>` in `CHANGELOG.md` and stages the
 result, so the changelog promotion lands in the *same* commit as the version
 bump instead of a separate manual one afterward. It also **aborts the whole
-`npm version` call** (nothing gets committed or tagged) if `[Unreleased]` has
-an `### Added` entry but the actual bump run was only `patch` - that implies
-at least `release:minor` was needed. It does not touch `src/Releases.mdx`
+`npm version` call** (nothing gets committed or tagged) if the bump run is
+smaller than what `[Unreleased]` implies: a literal `**Breaking**:` marker
+requires `major`, checked first since it overrides everything else; an
+`### Added` entry with no breaking marker requires at least `minor`. It does
+not touch `src/Releases.mdx`
 (generating JSX programmatically was judged too fragile after repeated MDX
 parsing issues while building that file by hand) - it prints a ready-to-paste
 `<ReleaseCard>` snippet to the terminal instead; copy it in manually.

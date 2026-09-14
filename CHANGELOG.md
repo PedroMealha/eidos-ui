@@ -13,6 +13,17 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Changed
+
+- **Breaking**: `DataGrid`'s `hasCardView` now defaults to `true` - pass
+  `hasCardView={false}` to keep a table-only layout.
+- `DataGrid` card view now also auto-activates once the container can't fit
+  every column at a 100px minimum width, not just below `cardViewBreakpoint`.
+- `DataGrid` card fields now lay out in a responsive auto-fit grid instead of
+  one per line.
+- **Breaking**: `Navigation`'s `collapseBelow` now defaults to `768` (was
+  opt-in/`undefined`) - pass `collapseBelow={0}` to opt out entirely.
+
 ## [0.1.1] - 2026-09-14
 
 ### Fixed

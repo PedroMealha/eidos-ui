@@ -75,10 +75,19 @@ function parseSections(content) {
   return sections;
 }
 
-/** `` `Foo` `` → `<Code>Foo</Code>` - the rest of a bullet is plain enough
+/** `{`/`}` are special in JSX children (an expression container) - escape
+ * them to their literal-text form first, before `` `Foo` `` → `<Code>Foo</Code>`
+ * conversion, so prose like `` `hasCardView={false}` `` doesn't get parsed
+ * as a JS expression when pasted. The rest of a bullet is plain enough
  * prose that no further escaping has proven necessary in practice; this is
  * a starting point to paste and review, not a guaranteed-correct output. */
-const toJsx = (text) => text.replace(/`([^`]+)`/g, '<Code>$1</Code>');
+const toJsx = (text) =>
+  text
+    // Single combined pass, not two sequential ones - two separate global
+    // replaces would have the second one re-match braces the first one just
+    // inserted (`{'{'}` itself contains `{`/`}`), corrupting the escape.
+    .replace(/[{}]/g, (ch) => (ch === '{' ? "{'{'}" : "{'}'}"))
+    .replace(/`([^`]+)`/g, '<Code>$1</Code>');
 
 function buildSnippet(version, date, bump, sections) {
   const sectionsSrc = sections
@@ -127,12 +136,28 @@ const bump = detectBump(oldVersion, newVersion);
 const date = today();
 const sections = parseSections(content);
 
-// The content implies its own minimum bump (Added → at least minor) - if
-// what was actually run is smaller than that, abort before the commit/tag
-// are created. Exiting non-zero here makes `npm version` abort entirely
-// (nothing is committed/tagged), so this is safe to run before the point
-// of no return, unlike everything else `release:preflight` already checks.
-if (bump === 'patch' && sections.some((s) => s.category === 'added')) {
+// The content implies its own minimum bump - if what was actually run is
+// smaller than that, abort before the commit/tag are created. Exiting
+// non-zero here makes `npm version` abort entirely (nothing is committed or
+// tagged), so this is safe to run before the point of no return, unlike
+// everything else `release:preflight` already checks.
+//
+// A literal `**Breaking**` marker (see the "Changelog discipline" section
+// in `.devin/skills/eidos-ui-rules/SKILL.md`) requires major, checked first
+// since it overrides everything else regardless of what else is queued. An
+// `### Added` entry with no breaking marker requires at least minor.
+const hasBreaking = /\*\*Breaking\*\*/i.test(content);
+const hasAdded = sections.some((s) => s.category === 'added');
+
+if (hasBreaking && bump !== 'major') {
+  console.error(
+    '✖ [Unreleased] has a "**Breaking**" entry, which needs a major bump.\n' +
+      '  Re-run as `npm run release:major`.',
+  );
+  process.exit(1);
+}
+
+if (!hasBreaking && hasAdded && bump === 'patch') {
   console.error(
     '✖ [Unreleased] has an "Added" entry, which needs at least a minor bump.\n' +
       '  Re-run as `npm run release:minor` (or `release:major` if anything is breaking).',

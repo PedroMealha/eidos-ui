@@ -52,6 +52,13 @@ import type {
 import { renderIcon } from '../../utils';
 import './DataGrid.scss';
 
+// Minimum usable width (px) for a single table column - used to derive an
+// automatic card-view threshold from the number of displayed columns, so a
+// grid with many columns doesn't have to overflow horizontally before
+// `cardViewBreakpoint` (a single, hand-tuned number) is reached. See
+// `isCardView` below.
+const MIN_COLUMN_WIDTH_PX = 100;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SortableTableRow - wraps a <tr> with dnd-kit sortable behaviour.
 //
@@ -274,7 +281,7 @@ function DataGridInner<T extends Record<string, unknown>>({
   density = 'comfortable',
   showDensity = false,
   // ── Card view ────────────────────────────────────────────────────────────────
-  hasCardView = false,
+  hasCardView = true,
   cardViewBreakpoint = 640,
   cardMinWidth = 280,
 }: DataGridProps<T>): React.ReactElement {
@@ -407,7 +414,27 @@ function DataGridInner<T extends Record<string, unknown>>({
     },
     [hasCardView],
   );
-  const isCardView = hasCardView && containerWidth !== null && containerWidth < cardViewBreakpoint;
+  // Displayed column count, computed directly from props (available here
+  // without waiting on the `dataColumns`/`actionsColumn` memos below) -
+  // `columns.length` already includes the actions column if any, matching
+  // how `totalCols` is derived further down from `dataColumns.length +
+  // (actionsColumn ? 1 : 0)`.
+  const columnCountForCardView =
+    columns.length +
+    (showRowNumbers ? 1 : 0) +
+    (draggableRows ? 1 : 0) +
+    (selectable ? 1 : 0) +
+    (expandable ? 1 : 0);
+
+  // Card view kicks in below the explicit `cardViewBreakpoint` OR once the
+  // container is too narrow to fit every column at a reasonable minimum
+  // width - the latter means a wide/many-column grid auto-switches without
+  // the consumer having to hand-calculate a breakpoint for it.
+  const isCardView =
+    hasCardView &&
+    containerWidth !== null &&
+    (containerWidth < cardViewBreakpoint ||
+      containerWidth < columnCountForCardView * MIN_COLUMN_WIDTH_PX);
 
   // Card view header/subheader: only the first matching column is honored
   // (see DataGridColumn.cardHeader/cardSubheader).

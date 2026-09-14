@@ -89,7 +89,7 @@ Pass `collapsible={false}` to hide the built-in toggle button entirely - useful 
 
 ## Responsive breakpoint
 
-`collapseBelow` automatically collapses (and re-expands) `Navigation` when the viewport crosses a given width, in pixels - no extra state or resize listener of your own required:
+`collapseBelow` is on by default (`768`px): `Navigation` automatically collapses (and re-expands) whenever the viewport crosses that width, in pixels - no extra state or resize listener of your own required. Pass a different value to change the breakpoint, or `collapseBelow={0}` to opt out entirely (no viewport is ever narrower than `0px`):
 
 ```tsx
 <Navigation brand={{ name: 'Acme' }} items={items} collapseBelow={1024} />

@@ -1,5 +1,25 @@
 # eidos-ui - Agent Rules
 
+## Skill
+
+**Invoke the `eidos-ui-rules` skill at the start of every session that touches
+this repo** - component code, Storybook docs, build/release scripts, or the
+`dev/` example app. It has the full project conventions (API normalization,
+`.mdx` structure, build/release workflow, changelog discipline, known
+gotchas). This file only covers what must apply even if that skill somehow
+isn't invoked.
+
+## Changelog (do this even before invoking the skill)
+
+Any change touching `src/**`, `tsup.config.ts`, `scripts/build-styles.js`, or
+consumer-facing `package.json` fields needs a one-line bullet added to
+`CHANGELOG.md`'s `## [Unreleased]` section (`### Added`/`### Changed`/
+`### Fixed`/`### Removed`) **in the same session as the change**, not
+retroactively. See the "Changelog discipline" section in
+`.devin/skills/eidos-ui-rules/SKILL.md` for the full convention (one entry
+per bullet, no walls of text) and `scripts/check-changelog.js` for the
+automated gate that blocks a release if this was skipped.
+
 ## Git
 
 **NEVER run `git commit`, `git push`, or any command that writes to git history.**

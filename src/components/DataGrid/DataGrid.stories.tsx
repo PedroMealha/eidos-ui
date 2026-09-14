@@ -395,13 +395,16 @@ const meta: Meta<typeof DataGrid<Person>> = {
     hasCardView: {
       control: 'boolean',
       description:
-        'Below `cardViewBreakpoint`, swap the table for one card per row - measured off ' +
-        "the grid's own container width, not the viewport.",
-      table: { defaultValue: { summary: 'false' } },
+        'On by default: below `cardViewBreakpoint`, or once the grid can no longer fit ' +
+        'every column at a reasonable minimum width, swap the table for one card per row ' +
+        "- measured off the grid's own container width, not the viewport.",
+      table: { defaultValue: { summary: 'true' } },
     },
     cardViewBreakpoint: {
       control: { type: 'number', min: 200, max: 1200, step: 20 },
-      description: 'Container width (px) at/below which card view kicks in.',
+      description:
+        'Container width (px) at/below which card view kicks in. Card view also switches ' +
+        'on automatically below (columns × 100px), regardless of this value.',
       table: { defaultValue: { summary: '640' } },
     },
     cardMinWidth: {

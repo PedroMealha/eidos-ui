@@ -31,7 +31,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   collapsed: collapsedProp,
   defaultCollapsed = false,
   onCollapsedChange,
-  collapseBelow,
+  collapseBelow = 768,
   collapsible = true,
   className = '',
 }) => {

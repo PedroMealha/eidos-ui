@@ -112,8 +112,10 @@ const meta = {
     onCollapsedChange: { control: false },
     collapseBelow: {
       control: 'number',
-      description: 'Automatically collapses (and re-expands) below this viewport width, in pixels.',
-      table: { defaultValue: { summary: 'undefined' } },
+      description:
+        'On by default: automatically collapses (and re-expands) below this viewport width, ' +
+        'in pixels. Pass `0` to opt out entirely.',
+      table: { defaultValue: { summary: '768' } },
     },
     collapsible: {
       control: 'boolean',

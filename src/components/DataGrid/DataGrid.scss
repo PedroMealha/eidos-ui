@@ -710,10 +710,14 @@
   border-radius: var(--border-radius-sm);
 }
 
-// Remaining columns, each a label-above-value stack.
+// Remaining columns, each a label-above-value stack. `auto-fit` + `minmax`
+// lays out as many fields per row as the card's own width allows, and
+// collapses to a single column once it's too narrow to fit a second
+// 140px track - no media query needed, it falls out of the grid algorithm
+// itself as the card (not the viewport) shrinks.
 .eidos-datagrid-card-fields {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--spacing-sm);
 }
 
