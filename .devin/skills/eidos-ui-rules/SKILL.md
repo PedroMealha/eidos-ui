@@ -540,7 +540,12 @@ checked for this before. Run it standalone with
 **If publish fails after the bump, run `npm publish` alone to retry. Never
 re-run `release:*`** - that bumps again and strands another version.
 
-Then `git push --follow-tags`; `npm version` only tags locally.
+A `postversion` script (`git push --follow-tags`) pushes automatically -
+`npm version` runs it right after creating the commit+tag, which happens
+*before* `npm publish` runs in the `release:*` chain. That means the tag can
+land on GitHub a few seconds before it's actually on the registry if
+`npm publish` then fails - acceptable (the commit/tag are real either way),
+but don't assume "tag exists on GitHub" implies "published successfully".
 
 ### Dependency constraints
 
