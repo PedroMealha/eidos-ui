@@ -149,6 +149,27 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
 <Divider style={{ margin: '24px 0' }} />
 
 <ReleaseCard
+  version="1.0.1"
+  date="2026-09-14"
+  bump="patch"
+  sections={[
+    {
+      category: 'changed',
+      items: [
+        <>
+          Rewrote README to remove emoji-heavy sections, align component groupings with Storybook's sidebar, and include real package badges.
+        </>,
+        <>
+          Fixed package metadata on npm (<Code>repository</Code>, <Code>homepage</Code>, <Code>bugs</Code>) so the package page links to the correct GitHub repository and issue tracker.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
   version="1.0.0"
   date="2026-09-14"
   bump="major"

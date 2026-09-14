@@ -180,4 +180,6 @@ execSync('git add CHANGELOG.md');
 
 console.log(`✓ CHANGELOG.md: [Unreleased] → [${newVersion}] - ${date}`);
 console.log('\nPaste this into src/Releases.mdx (adjust wording/placement as needed):\n');
-console.log(buildSnippet(newVersion, date, bump, sections));
+console.log(
+  `<Divider style={{ margin: '24px 0' }} />\n\n${buildSnippet(newVersion, date, bump, sections)}`,
+);
