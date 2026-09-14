@@ -149,6 +149,45 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
 <Divider style={{ margin: '24px 0' }} />
 
 <ReleaseCard
+  version="1.0.0"
+  date="2026-09-14"
+  bump="major"
+  sections={[
+    {
+      category: 'changed',
+      items: [
+        <>
+          <strong>Breaking</strong>: <Code>DataGrid</Code>'s <Code>hasCardView</Code> now defaults
+          to <Code>true</Code> - pass{' '}
+          <Code>
+            hasCardView={'{'}false{'}'}
+          </Code>{' '}
+          to keep a table-only layout.
+        </>,
+        <>
+          <Code>DataGrid</Code> card view now also auto-activates once the container can't fit every
+          column at a 100px minimum width, not just below <Code>cardViewBreakpoint</Code>.
+        </>,
+        <>
+          <Code>DataGrid</Code> card fields now lay out in a responsive auto-fit grid instead of one
+          per line.
+        </>,
+        <>
+          <strong>Breaking</strong>: <Code>Navigation</Code>'s <Code>collapseBelow</Code> now
+          defaults to <Code>768</Code> (was opt-in/<Code>undefined</Code>) - pass{' '}
+          <Code>
+            collapseBelow={'{'}0{'}'}
+          </Code>{' '}
+          to opt out entirely.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
   version="0.1.1"
   date="2026-09-14"
   bump="patch"

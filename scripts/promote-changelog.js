@@ -75,14 +75,20 @@ function parseSections(content) {
   return sections;
 }
 
-/** `{`/`}` are special in JSX children (an expression container) - escape
- * them to their literal-text form first, before `` `Foo` `` → `<Code>Foo</Code>`
- * conversion, so prose like `` `hasCardView={false}` `` doesn't get parsed
- * as a JS expression when pasted. The rest of a bullet is plain enough
- * prose that no further escaping has proven necessary in practice; this is
- * a starting point to paste and review, not a guaranteed-correct output. */
+/** The rendered `<ReleaseCard>` items are JSX, not markdown - `**Foo**` is
+ * literal asterisk characters to React, not bold, unlike everywhere else in
+ * this project (CHANGELOG.md, GitHub, editors) that renders markdown. So
+ * `**Breaking**:` (the marker `promote-changelog.js` itself greps for - see
+ * the abort check below) needs converting to real `<strong>` here, same as
+ * `` `Foo` `` needs `<Code>`. `{`/`}` are special in JSX children (an
+ * expression container) - escape them to their literal-text form too, so
+ * prose like `` `hasCardView={false}` `` doesn't get parsed as a JS
+ * expression when pasted. The rest of a bullet is plain enough prose that no
+ * further conversion has proven necessary in practice; this is a starting
+ * point to paste and review, not a guaranteed-correct output. */
 const toJsx = (text) =>
   text
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     // Single combined pass, not two sequential ones - two separate global
     // replaces would have the second one re-match braces the first one just
     // inserted (`{'{'}` itself contains `{`/`}`), corrupting the escape.
