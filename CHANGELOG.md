@@ -13,6 +13,18 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- Storybook's "Releases" page linked to a non-existent repository for
+  `CHANGELOG.md`.
+- Release tooling now detects the version bump correctly whatever the
+  configured git tag prefix is; it previously labelled every release `major`
+  and skipped the breaking-change and new-feature bump guards.
+
+### Changed
+
+- Release tags use git's default `v` prefix again (e.g. `v1.0.2`).
+
 ## [1.0.1] - 2026-09-14
 
 ### Changed

@@ -131,9 +131,14 @@ const { version: newVersion } = JSON.parse(readFileSync('./package.json', 'utf8'
 
 let oldVersion = '0.0.0';
 try {
+  // Strip ANY non-numeric prefix, not just a literal `v`. `npm version`'s
+  // prefix is configurable (`tag-version-prefix`), and a prefix this regex
+  // failed to match left the tag name itself in `oldVersion` - so
+  // `detectBump` ran `Number('eidos-v1')`, got NaN, and returned 'major'
+  // unconditionally, silently disabling both guards below.
   oldVersion = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' })
     .trim()
-    .replace(/^v/, '');
+    .replace(/^\D*/, '');
 } catch {
   // No tags yet - first release, `detectBump` falls back to comparing against 0.0.0.
 }

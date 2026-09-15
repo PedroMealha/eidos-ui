@@ -140,7 +140,7 @@ export const ReleaseCard = ({ version, date, bump, sections }) => {
 # Releases
 
 A summary of what changed release to release. This mirrors
-[`CHANGELOG.md`](https://github.com/pmea/eidos-ui/blob/main/CHANGELOG.md) in
+[`CHANGELOG.md`](https://github.com/PedroMealha/eidos-ui/blob/main/CHANGELOG.md) in
 the repository, which is the source of truth if the two ever drift - keep
 both in sync when cutting a release.
 
@@ -157,10 +157,13 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
       category: 'changed',
       items: [
         <>
-          Rewrote README to remove emoji-heavy sections, align component groupings with Storybook's sidebar, and include real package badges.
+          Rewrote README to remove emoji-heavy sections, align component groupings with Storybook's
+          sidebar, and include real package badges.
         </>,
         <>
-          Fixed package metadata on npm (<Code>repository</Code>, <Code>homepage</Code>, <Code>bugs</Code>) so the package page links to the correct GitHub repository and issue tracker.
+          Fixed package metadata on npm (<Code>repository</Code>, <Code>homepage</Code>,{' '}
+          <Code>bugs</Code>) so the package page links to the correct GitHub repository and issue
+          tracker.
         </>,
       ],
     },
