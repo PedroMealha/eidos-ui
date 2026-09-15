@@ -149,6 +149,42 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
 <Divider style={{ margin: '24px 0' }} />
 
 <ReleaseCard
+  version="1.0.2"
+  date="2026-09-15"
+  bump="patch"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          Storybook's "Releases" page linked to a non-existent repository for{' '}
+          <Code>CHANGELOG.md</Code>.
+        </>,
+        <>
+          Release tooling now detects the version bump correctly whatever the configured git tag
+          prefix is; it previously labelled every release <Code>major</Code> and skipped the
+          breaking-change and new-feature bump guards.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          Release tags use git's default <Code>v</Code> prefix again (e.g. <Code>v1.0.2</Code>).
+        </>,
+        <>
+          Releases are now published from CI via npm trusted publishing, so each version carries a
+          verifiable provenance attestation on npm.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
   version="1.0.1"
   date="2026-09-14"
   bump="patch"
