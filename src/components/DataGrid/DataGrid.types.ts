@@ -1,6 +1,9 @@
 import type React from 'react';
 import type { IconType } from '../../utils';
+import type { ComboboxOption } from '../Combobox';
 import type { MenuItemType } from '../Menu';
+import type { SelectOption } from '../Select';
+import type { SegmentedControlColorProps, SegmentedOption } from '../SegmentedControl';
 import type { BulkAction, TableFilters } from '../Table/Table.types';
 
 export type DataGridCellType =
@@ -29,6 +32,86 @@ export interface DataGridFilterField {
   /** UI mode for filterType='date'. @default 'single' */
   dateFilterMode?: 'single' | 'multiple' | 'range';
 }
+
+// ─── Quick filters ───────────────────────────────────────────────────────────
+// Option shapes are derived from the underlying components' own option types
+// so they can't drift out of sync, minus `id` - it would only ever duplicate
+// `value` here, so the grid fills it in internally.
+
+export type DataGridQuickFilterSelectOption = Omit<SelectOption, 'id'>;
+export type DataGridQuickFilterComboboxOption = Omit<ComboboxOption, 'id'>;
+export type DataGridQuickFilterSegmentedOption = SegmentedOption;
+
+interface DataGridQuickFilterBase {
+  /** Row data key this filter reads/writes. Does not need to match a `columns` entry. */
+  key: string;
+  /**
+   * Short label for the control. The toolbar has no room for a visible field
+   * label, so this is used as the control's placeholder and its accessible
+   * name rather than being rendered above it.
+   */
+  label: string;
+  disabled?: boolean;
+  /**
+   * Control width. Omit for the default (160px). Only sizing is configurable -
+   * `size`, `fullWidth`, and `className` are fixed by the grid so every quick
+   * filter matches the rest of the toolbar.
+   */
+  width?: number | string;
+  /**
+   * Initial value, applied only when the grid manages filter state itself.
+   * Ignored in server-side mode (when `onFiltersChange` is set), where the
+   * caller owns `filters` and should seed its own initial state instead.
+   */
+  defaultValue?: string | string[];
+}
+
+export interface DataGridQuickFilterSelect extends DataGridQuickFilterBase {
+  type: 'select';
+  options: DataGridQuickFilterSelectOption[];
+  /** Select several values at once - writes a `string[]` filter value. @default false */
+  multiple?: boolean;
+  /** Lets the user clear the filter - this is the control's "no filter" state. @default true */
+  clearable?: boolean;
+  /** Defaults to `label`. */
+  placeholder?: string;
+}
+
+export interface DataGridQuickFilterCombobox extends DataGridQuickFilterBase {
+  type: 'combobox';
+  /** Optional so options can be supplied asynchronously via `onSearch`. */
+  options?: DataGridQuickFilterComboboxOption[];
+  /** Defaults to `label`. */
+  placeholder?: string;
+  /** Lets the user clear the filter - this is the control's "no filter" state. @default true */
+  clearable?: boolean;
+  emptyText?: string;
+  /** Fires as the user types - use it to fetch `options` for long/remote lists. */
+  onSearch?: (query: string) => void;
+  loading?: boolean;
+  loadingText?: string;
+}
+
+export interface DataGridQuickFilterSegmented extends DataGridQuickFilterBase {
+  type: 'segmented';
+  /**
+   * Rendered after the reset segment, which the grid always prepends - a
+   * SegmentedControl has no empty state of its own, so without it the filter
+   * could never be cleared.
+   */
+  options: DataGridQuickFilterSegmentedOption[];
+  color?: SegmentedControlColorProps;
+  /** Label for the auto-prepended reset segment. @default 'All' */
+  allLabel?: string;
+}
+
+/**
+ * One always-visible filter control in the toolbar - see
+ * `DataGridProps.quickFilters`. Discriminated on `type`, so each control only
+ * accepts the props that actually apply to it.
+ */
+export type DataGridQuickFilter =
+  DataGridQuickFilterSelect | DataGridQuickFilterCombobox | DataGridQuickFilterSegmented;
 
 /** A single entry in a `type: 'actions'` column's menu - see `DataGridColumn.actions`. */
 export interface DataGridRowAction<T = Record<string, unknown>> {
@@ -149,6 +232,24 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   filters?: TableFilters;
   /** Filter change callback. When omitted, filtering is handled client-side. */
   onFiltersChange?: (filters: TableFilters) => void;
+
+  // ── Quick filters ──────────────────────────────────────────────────────────
+  /**
+   * Always-visible filter controls rendered on the left of the toolbar, for
+   * the one or two filters users reach for constantly - no `showFilters`-style
+   * flag, a non-empty array is what enables them.
+   *
+   * They write into the same filter state as the filter dropdown, so both
+   * compose (a quick filter and a dropdown filter narrow the data together)
+   * and server-side mode still receives one `onFiltersChange` object. Each
+   * `key` must therefore be distinct from every `filterConfig` key: a key
+   * claimed here wins and is dropped from the dropdown, rather than letting
+   * two controls fight over the same value.
+   *
+   * Hidden while rows are selected - the selection count and bulk actions
+   * occupy the same toolbar zone.
+   */
+  quickFilters?: DataGridQuickFilter[];
 
   // ── Pagination ─────────────────────────────────────────────────────────────
   showPagination?: boolean;

@@ -34,6 +34,8 @@ import { Button } from '../Button';
 import { SplitButton } from '../SplitButton';
 import { Input } from '../Input/Input.component';
 import { Select } from '../Select/Select.component';
+import { Combobox } from '../Combobox';
+import { SegmentedControl } from '../SegmentedControl';
 import { Checkbox } from '../Checkbox/Checkbox.component';
 import { Spinner } from '../Spinner/Spinner.component';
 import { Pagination } from '../Pagination';
@@ -42,11 +44,12 @@ import { Dropdown } from '../Dropdown';
 import { Menu } from '../Menu';
 import type { MenuItemType } from '../Menu';
 import { TableFiltersDropdown } from '../Table/TableFiltersDropdown.component';
-import type { TableColumn, TableFilters } from '../Table/Table.types';
+import type { FilterValue, TableColumn, TableFilters } from '../Table/Table.types';
 import type {
   DataGridProps,
   DataGridColumn,
   DataGridFilterField,
+  DataGridQuickFilter,
   EditingCell,
 } from './DataGrid.types';
 import { renderIcon } from '../../utils';
@@ -58,6 +61,23 @@ import './DataGrid.scss';
 // `cardViewBreakpoint` (a single, hand-tuned number) is reached. See
 // `isCardView` below.
 const MIN_COLUMN_WIDTH_PX = 100;
+
+// Value of the reset ("All") segment a quick filter's SegmentedControl always
+// prepends - a SegmentedControl has no empty state of its own, so it needs an
+// explicit segment standing for "no filter".
+const QUICK_FILTER_RESET_VALUE = '';
+
+// Whether a filter value is meaningful enough to keep in the filter state.
+// Empty values are *deleted* from it rather than stored as '' / [], so the
+// key count stays an accurate "are any filters active?" signal - that's what
+// drives the "No results found" empty state and the dropdown's active
+// indicator.
+const hasFilterValue = (value: FilterValue): boolean => {
+  if (value === undefined || value === null || value === '') return false;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === 'object' && 'start' in value) return !!(value.start || value.end);
+  return true;
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SortableTableRow - wraps a <tr> with dnd-kit sortable behaviour.
@@ -257,6 +277,8 @@ function DataGridInner<T extends Record<string, unknown>>({
   filterConfig = [],
   filters,
   onFiltersChange,
+  // ── Quick filters ──────────────────────────────────────────────────────────
+  quickFilters = [],
   // ── Pagination ─────────────────────────────────────────────────────────────
   showPagination = false,
   pageSize = 10,
@@ -358,8 +380,18 @@ function DataGridInner<T extends Record<string, unknown>>({
     direction: 'asc' | 'desc';
   } | null>(null);
 
-  // Filtering (client-side internal state)
-  const [internalFilters, setInternalFilters] = useState<TableFilters>({});
+  // Filtering (client-side internal state), seeded from any quick filter
+  // `defaultValue`s. Lazy, so it only reads `quickFilters` on mount - later
+  // edits to the array's default values don't yank a filter the user has
+  // since changed. In server-side mode this state is unused entirely, which
+  // is why `defaultValue` is documented as client-side only.
+  const [internalFilters, setInternalFilters] = useState<TableFilters>(() => {
+    const seeded: TableFilters = {};
+    quickFilters.forEach(({ key, defaultValue }) => {
+      if (hasFilterValue(defaultValue)) seeded[key] = defaultValue;
+    });
+    return seeded;
+  });
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -525,22 +557,51 @@ function DataGridInner<T extends Record<string, unknown>>({
     [isControlledExpansion, controlledExpandedRows, internalExpandedKeys],
   );
 
+  // ── Quick filters: key ownership ───────────────────────────────────────────
+  // Quick filters and the filter dropdown share one TableFilters object, so
+  // each side has to own a disjoint set of keys - see `dropdownFilters` below
+  // for why the dropdown can't just be handed the whole thing.
+  const quickFilterKeys = useMemo(() => new Set(quickFilters.map((f) => f.key)), [quickFilters]);
+
   // ── Filter dropdown adapter: DataGridFilterField → TableColumn ─────────────
   // TableFiltersDropdown expects TableColumn<T>[]; we project our (decoupled,
-  // column-independent) filter schema onto that shape.
+  // column-independent) filter schema onto that shape. A key already claimed
+  // by a quick filter is dropped: the quick filter is the always-visible
+  // control, and two controls writing one key would each clobber the other.
   const filterDropdownColumns = useMemo((): TableColumn<T>[] => {
-    return filterConfig.map(
-      (field: DataGridFilterField) =>
-        ({
-          key: field.key,
-          label: field.label,
-          filterable: true,
-          filterType: field.filterType,
-          filterOptions: field.filterOptions,
-          dateFilterMode: field.dateFilterMode,
-        }) as TableColumn<T>,
-    );
-  }, [filterConfig]);
+    return filterConfig
+      .filter((field) => !quickFilterKeys.has(field.key))
+      .map(
+        (field: DataGridFilterField) =>
+          ({
+            key: field.key,
+            label: field.label,
+            filterable: true,
+            filterType: field.filterType,
+            filterOptions: field.filterOptions,
+            dateFilterMode: field.dateFilterMode,
+          }) as TableColumn<T>,
+      );
+  }, [filterConfig, quickFilterKeys]);
+
+  const dropdownFilterKeys = useMemo(
+    () => new Set(filterDropdownColumns.map((col) => String(col.key))),
+    [filterDropdownColumns],
+  );
+
+  // The dropdown gets only the keys it owns, never the whole filter object.
+  // It mirrors every key it's handed into a filter row, so a key it has no
+  // matching column for (a quick filter's, or a server-side caller's filter
+  // on an unlisted field) would render as a blank, un-removable "Select
+  // column" row - and its Apply, which emits its complete set, would drop
+  // that value on the floor.
+  const dropdownFilters = useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(activeFilters).filter(([key]) => dropdownFilterKeys.has(key)),
+      ),
+    [activeFilters, dropdownFilterKeys],
+  );
 
   // ── Client-side filtering ──────────────────────────────────────────────────
   const filteredData = useMemo(() => {
@@ -1047,8 +1108,8 @@ function DataGridInner<T extends Record<string, unknown>>({
     [onSortChange, currentSort],
   );
 
-  // ── Filter handler ───────────────────────────────────────────────────────────
-  const handleFiltersChange = useCallback(
+  // ── Filter handlers ──────────────────────────────────────────────────────────
+  const commitFilters = useCallback(
     (newFilters: TableFilters) => {
       setCurrentPage(1);
       if (onFiltersChange) {
@@ -1059,6 +1120,39 @@ function DataGridInner<T extends Record<string, unknown>>({
     },
     [onFiltersChange],
   );
+
+  // The dropdown's writer. It emits its complete cleaned set, covering only
+  // the keys it owns, so everything else in the filter state - quick filters
+  // included - has to be merged back in rather than replaced. This is also
+  // what makes its "Clear All" clear only the dropdown's own filters.
+  const handleFiltersChange = useCallback(
+    (newFilters: TableFilters) => {
+      const preserved = Object.entries(activeFilters).filter(
+        ([key]) => !dropdownFilterKeys.has(key),
+      );
+      commitFilters({ ...Object.fromEntries(preserved), ...newFilters });
+    },
+    [activeFilters, dropdownFilterKeys, commitFilters],
+  );
+
+  // A quick filter's writer. Empty values delete the key instead of storing
+  // '' / [] - see `hasFilterValue`.
+  const handleQuickFilterChange = useCallback(
+    (key: string, value: FilterValue) => {
+      const next = { ...activeFilters };
+      if (hasFilterValue(value)) {
+        next[key] = value;
+      } else {
+        delete next[key];
+      }
+      commitFilters(next);
+    },
+    [activeFilters, commitFilters],
+  );
+
+  // Resets every filter, whichever control owns it - what the "no results"
+  // empty state offers, unlike the dropdown's own scoped "Clear All".
+  const clearAllFilters = useCallback(() => commitFilters({}), [commitFilters]);
 
   // ── Page handlers ────────────────────────────────────────────────────────────
   const handlePageChange = useCallback(
@@ -1390,8 +1484,109 @@ function DataGridInner<T extends Record<string, unknown>>({
     containerStyle.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
   }
 
-  // Toolbar visibility: show whenever filters, density picker, selectable, or add-row are active.
-  const showToolbar = !!showFilters || !!showDensity || !!selectable || !!onRowAdd;
+  // Toolbar visibility: show whenever filters, quick filters, density picker,
+  // selectable, or add-row are active.
+  const showToolbar =
+    !!showFilters || quickFilters.length > 0 || !!showDensity || !!selectable || !!onRowAdd;
+
+  // Quick filters share the toolbar's left zone with the selection count and
+  // bulk actions, which take it over entirely while rows are selected.
+  const showQuickFilters = quickFilters.length > 0 && !(selectable && hasSelection);
+
+  const renderQuickFilter = (quickFilter: DataGridQuickFilter): React.ReactElement => {
+    const { key, label, disabled, width } = quickFilter;
+    const value = activeFilters[key];
+    // Only set inline when supplied - the default lives in the stylesheet, so
+    // the common case emits no style attribute at all.
+    const style =
+      width === undefined
+        ? undefined
+        : ({
+            '--eidos-datagrid-quick-filter-width': typeof width === 'number' ? `${width}px` : width,
+          } as React.CSSProperties);
+
+    const control = (() => {
+      switch (quickFilter.type) {
+        case 'segmented':
+          return (
+            <SegmentedControl
+              size="sm"
+              color={quickFilter.color}
+              disabled={disabled}
+              // The reset segment is always prepended: a SegmentedControl
+              // always has exactly one segment selected, so without it the
+              // filter could never be cleared.
+              options={[
+                { value: QUICK_FILTER_RESET_VALUE, label: quickFilter.allLabel ?? 'All' },
+                ...quickFilter.options,
+              ]}
+              value={typeof value === 'string' ? value : QUICK_FILTER_RESET_VALUE}
+              onChange={(next) => handleQuickFilterChange(key, next)}
+            />
+          );
+        case 'combobox':
+          return (
+            <Combobox
+              size="sm"
+              fullWidth
+              disabled={disabled}
+              placeholder={quickFilter.placeholder ?? label}
+              clearable={quickFilter.clearable ?? true}
+              emptyText={quickFilter.emptyText}
+              loading={quickFilter.loading}
+              loadingText={quickFilter.loadingText}
+              onSearch={quickFilter.onSearch}
+              options={(quickFilter.options ?? []).map((option) => ({
+                ...option,
+                id: option.value,
+              }))}
+              value={typeof value === 'string' ? value : ''}
+              onChange={(next) => handleQuickFilterChange(key, next)}
+            />
+          );
+        case 'select':
+        default:
+          return (
+            <Select
+              fullWidth
+              inputProps={{ size: 'sm' }}
+              disabled={disabled}
+              placeholder={quickFilter.placeholder ?? label}
+              clearable={quickFilter.clearable ?? true}
+              multiple={quickFilter.multiple}
+              options={quickFilter.options.map((option) => ({ ...option, id: option.value }))}
+              // Never `undefined` - Select and Combobox both treat that as
+              // "uncontrolled" and would then keep showing a value the
+              // filter state no longer holds after a clear.
+              value={
+                quickFilter.multiple
+                  ? Array.isArray(value)
+                    ? value
+                    : []
+                  : typeof value === 'string'
+                    ? value
+                    : ''
+              }
+              onChange={(next) => handleQuickFilterChange(key, next)}
+            />
+          );
+      }
+    })();
+
+    return (
+      <div
+        key={key}
+        className={`eidos-datagrid-quick-filter eidos-datagrid-quick-filter--${quickFilter.type}`}
+        style={style}
+        // No visible field label fits in the toolbar, so the group carries the
+        // accessible name for whichever control it wraps.
+        role="group"
+        aria-label={label}
+      >
+        {control}
+      </div>
+    );
+  };
 
   // Density modifier class (comfortable = default = no extra class)
   const densityClass =
@@ -1451,8 +1646,14 @@ function DataGridInner<T extends Record<string, unknown>>({
       {/* ── Toolbar ─────────────────────────────────────────────────────── */}
       {showToolbar && (
         <div className="eidos-datagrid-toolbar">
-          {/* Left zone: selection count + bulk actions */}
+          {/* Left zone: quick filters, or selection count + bulk actions */}
           <div className="eidos-datagrid-toolbar-left">
+            {showQuickFilters && (
+              <div className="eidos-datagrid-quick-filters">
+                {quickFilters.map(renderQuickFilter)}
+              </div>
+            )}
+
             {selectable && hasSelection && (
               <>
                 <span className="eidos-datagrid-selection-count">{selectedSet.size} selected</span>
@@ -1572,7 +1773,7 @@ function DataGridInner<T extends Record<string, unknown>>({
             {showFilters && filterDropdownColumns.length > 0 && (
               <TableFiltersDropdown<T>
                 columns={filterDropdownColumns}
-                filters={activeFilters}
+                filters={dropdownFilters}
                 onFiltersChange={handleFiltersChange}
               />
             )}
@@ -1691,12 +1892,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                   title="No results found"
                   description="Try adjusting your filters or search terms."
                   action={
-                    <Button
-                      size="sm"
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => handleFiltersChange({})}
-                    >
+                    <Button size="sm" variant="outlined" color="primary" onClick={clearAllFilters}>
                       Clear filters
                     </Button>
                   }
@@ -2077,7 +2273,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                                   size="sm"
                                   variant="outlined"
                                   color="primary"
-                                  onClick={() => handleFiltersChange({})}
+                                  onClick={clearAllFilters}
                                 >
                                   Clear filters
                                 </Button>

@@ -67,6 +67,8 @@ Enable `showPagination` and configure `pageSize` and `pageSizeOptions` to add a 
 
 Set `filterable: true` and `filterType` (`'text'`, `'select'`, or `'date'`) on a column. Pass `filters` and `onFiltersChange` to control the active filter state externally.
 
+> **Note**: filtering in Table is always behind the toolbar's filter dropdown. There's no equivalent of `DataGrid`'s `quickFilters` - always-visible Select/Combobox/SegmentedControl filter controls in the toolbar itself. If you need a filter permanently on screen rather than one click away, use `DataGrid`.
+
 <Canvas of={TableStories.WithFilters} />
 
 ## With actions menu

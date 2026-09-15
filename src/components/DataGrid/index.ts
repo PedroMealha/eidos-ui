@@ -6,6 +6,13 @@ export type {
   DataGridSelectOption,
   DataGridRowAction,
   DataGridFilterField,
+  DataGridQuickFilter,
+  DataGridQuickFilterSelect,
+  DataGridQuickFilterCombobox,
+  DataGridQuickFilterSegmented,
+  DataGridQuickFilterSelectOption,
+  DataGridQuickFilterComboboxOption,
+  DataGridQuickFilterSegmentedOption,
   EditingCell,
 } from './DataGrid.types';
 export type {

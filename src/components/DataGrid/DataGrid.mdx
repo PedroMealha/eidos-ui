@@ -73,6 +73,52 @@ For `filterType: 'date'` fields, `dateFilterMode` (`'single' | 'multiple' | 'ran
 
 <Canvas of={DataGridStories.WithFiltering} />
 
+## With quick filters
+
+`quickFilters` renders always-visible filter controls on the left of the toolbar, for the one or two filters users reach for constantly rather than ones they open a panel for. There's no `showFilters`-style flag - a non-empty array is what enables them. Each entry is discriminated on `type`, so it only accepts the props that apply to that control:
+
+| `type`        | Renders            | Type-specific props                                                                      |
+| ------------- | ------------------ | ---------------------------------------------------------------------------------------- |
+| `'select'`    | `Select`           | `options`, `multiple`, `clearable`, `placeholder`                                        |
+| `'combobox'`  | `Combobox`         | `options`, `placeholder`, `clearable`, `emptyText`, `onSearch`, `loading`, `loadingText` |
+| `'segmented'` | `SegmentedControl` | `options`, `color`, `allLabel`                                                           |
+
+All three also take `key`, `label`, `disabled`, `width`, and `defaultValue`. Only sizing is configurable - `size`, `fullWidth`, and `className` are fixed by the grid so every quick filter matches the rest of the toolbar. Option objects are the underlying components' own option types minus `id` (the grid fills that in from `value`), so a `'segmented'` filter still supports per-segment `icon`/`tooltip`, and a `'combobox'` one still supports `description`/`group`.
+
+```tsx
+<DataGrid<Person>
+  columns={columns}
+  data={data}
+  quickFilters={[
+    {
+      type: 'segmented',
+      key: 'department',
+      label: 'Department',
+      options: [
+        { value: 'engineering', label: 'Engineering' },
+        { value: 'design', label: 'Design' },
+      ],
+    },
+    { type: 'select', key: 'role', label: 'Role', multiple: true, options: roleOptions },
+  ]}
+/>
+```
+
+A `'segmented'` filter always gets an extra reset segment prepended, ahead of the options you pass - a `SegmentedControl` always has exactly one segment selected, so without it the filter could never be cleared. It reads `All` by default; rename it with `allLabel`. Select and combobox filters need no equivalent because `clearable` (on by default) already gives them an empty state.
+
+> **Note**: `defaultValue` applies only when the grid manages filter state itself. In server-side mode (`onFiltersChange` set) the caller owns `filters`, so seed your own initial state instead.
+
+### How quick filters and the filter dropdown interact
+
+Both write to the same filter state, which means they compose - a quick filter and a dropdown filter narrow the data together - and server-side mode still receives everything through one `onFiltersChange` object. Each side owns a distinct set of keys:
+
+- A `key` claimed by a `quickFilters` entry **wins and is dropped from the dropdown**, so the same field is never editable from two controls at once. Keep the two key sets distinct unless that's what you want.
+- The dropdown's **Clear All** clears only the dropdown's own filters; the quick filters keep their values. The "no results found" empty state's **Clear filters** resets everything.
+
+Quick filters are hidden while rows are selected - the selection count and bulk actions take over the same toolbar zone.
+
+<Canvas of={DataGridStories.WithQuickFilters} />
+
 ## With pagination
 
 Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `pageSizeOptions` to let users switch between page sizes. For server-side pagination supply `totalRows` and `onPageChange`.

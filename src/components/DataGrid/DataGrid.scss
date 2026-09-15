@@ -48,6 +48,38 @@
   flex-shrink: 0;
 }
 
+// ─── Quick filters ────────────────────────────────────────────────────────────
+// Always-visible toolbar filter controls - see DataGridProps.quickFilters.
+
+.eidos-datagrid-quick-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  // Wraps rather than overflowing: the toolbar is shared with the density
+  // picker and filter button, and stays this narrow in card view too.
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.eidos-datagrid-quick-filter {
+  // Overridden per filter via the same custom property, set inline only when
+  // `width` is supplied - so the default case emits no style attribute.
+  --eidos-datagrid-quick-filter-width: 160px;
+
+  display: flex;
+  align-items: center;
+  min-width: 0;
+
+  // Select and Combobox render fullWidth so they fill this box. A
+  // SegmentedControl sizes itself to its segments, so it gets no width at
+  // all - forcing one would either clip segments or leave a gap inside the
+  // pill's border.
+  &--select,
+  &--combobox {
+    width: var(--eidos-datagrid-quick-filter-width);
+  }
+}
+
 .eidos-datagrid-selection-count {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);

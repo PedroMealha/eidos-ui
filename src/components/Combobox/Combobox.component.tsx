@@ -258,13 +258,20 @@ export const Combobox: React.FC<ComboboxProps> = ({
    * document.activeElement reliably.
    */
   const handleBlur = useCallback(() => {
-    const current = inputValueRef.current;
-    const committed = committedValueRef.current;
-
     setTimeout(() => {
       // If focus came back inside the container (e.g., posIcon button clicked),
       // don't close or validate yet.
       if (containerRef.current?.contains(document.activeElement)) return;
+
+      // Read both refs *inside* the deferred callback, never captured at blur
+      // time - that's the whole reason they're kept in sync by the setters.
+      // Anything can run in the gap this 0ms defer opens, including the click
+      // that caused the blur: a controlled consumer clearing `value` from
+      // another control (e.g. DataGrid's "Clear filters", which resets every
+      // quick filter at once) updates the refs via the sync effect, and stale
+      // captured values would then resurrect the label that was just cleared.
+      const current = inputValueRef.current;
+      const committed = committedValueRef.current;
 
       // Close
       isOpenRef.current = false;

@@ -176,6 +176,13 @@ export type {
   DataGridSelectOption,
   DataGridRowAction,
   DataGridFilterField,
+  DataGridQuickFilter,
+  DataGridQuickFilterSelect,
+  DataGridQuickFilterCombobox,
+  DataGridQuickFilterSegmented,
+  DataGridQuickFilterSelectOption,
+  DataGridQuickFilterComboboxOption,
+  DataGridQuickFilterSegmentedOption,
   EditingCell,
 } from './components/DataGrid';
 export type { OTPInputProps } from './components/OTPInput';

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, useEffect } from 'react';
 import { Trash2, Pencil, ShieldOff, FolderInput, Mail, MessageSquare } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
-import type { DataGridColumn, DataGridFilterField } from './DataGrid.types';
+import type { DataGridColumn, DataGridFilterField, DataGridQuickFilter } from './DataGrid.types';
 import type { BulkAction } from '../Table/Table.types';
 import type { MenuItemType } from '../Menu';
 import { Chip } from '../Chip/Chip.component';
@@ -238,6 +238,54 @@ const FILTER_CONFIG: DataGridFilterField[] = [
     ],
   },
   { key: 'joinDate', label: 'Join Date', filterType: 'date', dateFilterMode: 'range' },
+];
+
+// Quick filters sit in the toolbar itself rather than behind the filter
+// dropdown. One of each control type: a segmented control for a handful of
+// mutually exclusive values, a multi-select for a medium list, and a
+// searchable combobox for a long one.
+const QUICK_FILTERS: DataGridQuickFilter[] = [
+  {
+    type: 'segmented',
+    key: 'department',
+    label: 'Department',
+    // No "All" entry here - the grid always prepends it.
+    options: [
+      { value: 'engineering', label: 'Engineering' },
+      { value: 'design', label: 'Design' },
+      { value: 'product', label: 'Product' },
+    ],
+  },
+  {
+    type: 'select',
+    key: 'role',
+    label: 'Role',
+    multiple: true,
+    options: ROLE_OPTIONS,
+  },
+  {
+    type: 'combobox',
+    key: 'name',
+    label: 'Name',
+    width: 200,
+    options: makePeople().map((person) => ({ value: person.name, label: person.name })),
+  },
+];
+
+// `department` is deliberately also in FILTER_CONFIG above: a key claimed by a
+// quick filter wins and is dropped from the filter dropdown, so the same field
+// is never editable from two controls at once.
+const FULL_FEATURED_QUICK_FILTERS: DataGridQuickFilter[] = [
+  {
+    type: 'segmented',
+    key: 'department',
+    label: 'Department',
+    options: [
+      { value: 'engineering', label: 'Engineering' },
+      { value: 'design', label: 'Design' },
+      { value: 'product', label: 'Product' },
+    ],
+  },
 ];
 
 // Pinned-from-middle demo columns.
@@ -841,10 +889,17 @@ export const FullFeatured: Story = {
     docs: {
       description: {
         story:
-          'Kitchen-sink story combining: sortable columns, column filters, ' +
-          'client-side pagination (5 rows/page), row selection with a bulk-delete ' +
-          'action, row numbers, and a density picker. ' +
-          'This mirrors a real-world admin table use-case.',
+          'Kitchen-sink story combining: sortable columns, a quick filter, column ' +
+          'filters, client-side pagination (5 rows/page), row selection with a ' +
+          'bulk-delete action, row numbers, and a density picker. ' +
+          'This mirrors a real-world admin table use-case. ' +
+          'Both filter surfaces write to the same state, so the Department quick ' +
+          'filter and any dropdown filter narrow the data together - and because ' +
+          'the quick filter claims `department`, that field is dropped from the ' +
+          'dropdown rather than being editable from two places at once. The ' +
+          'dropdown\'s own "Clear All" therefore leaves the quick filter alone, ' +
+          'while the "no results" empty state clears everything. Select a row to ' +
+          'see the quick filter yield the toolbar to the bulk-action bar.',
       },
     },
   },
@@ -879,6 +934,7 @@ export const FullFeatured: Story = {
         pageSizeOptions={[5, 10, 12]}
         showFilters={true}
         filterConfig={FILTER_CONFIG}
+        quickFilters={FULL_FEATURED_QUICK_FILTERS}
       />
     );
   },
@@ -1272,6 +1328,40 @@ export const ExpandableRows: Story = {
         renderExpandedContent={(person) => <PersonDetails person={person} />}
         hasCardView
         cardViewBreakpoint={480}
+      />
+    );
+  },
+};
+
+// ─── 20. Quick filters ────────────────────────────────────────────────────────
+
+export const WithQuickFilters: Story = {
+  name: 'WithQuickFilters',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Always-visible filter controls on the left of the toolbar, one of each ' +
+          'type: a `segmented` Department filter, a `multiple` `select` Role filter, ' +
+          'and a searchable `combobox` Name filter. The Department control shows the ' +
+          '"All" segment the grid always prepends - a SegmentedControl has no empty ' +
+          'state of its own, so without it the filter could never be cleared. The ' +
+          'select and combobox use their own `clearable` affordance instead. ' +
+          'Quick filters compose with each other, and only sizing is configurable ' +
+          'per filter (`width`) - `size`, `fullWidth`, and `className` are fixed by ' +
+          'the grid so every control matches the rest of the toolbar.',
+      },
+    },
+  },
+  render: function WithQuickFiltersStory() {
+    const [data, setData] = useState<Person[]>(makePeople());
+    return (
+      <DataGrid<Person>
+        columns={FILTERABLE_COLUMNS}
+        data={data}
+        rowKey="id"
+        onChange={setData}
+        quickFilters={QUICK_FILTERS}
       />
     );
   },

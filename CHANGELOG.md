@@ -13,6 +13,22 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `DataGrid` gains `quickFilters` - always-visible Select, Combobox, or
+  SegmentedControl filter controls in the toolbar, sharing filter state with
+  the existing filter dropdown.
+
+### Fixed
+
+- `DataGrid`'s filter dropdown no longer renders a blank, un-removable filter
+  row for a filter whose key isn't in `filterConfig`, nor discards that
+  filter's value when applying.
+- `Combobox` no longer reserves ~20px of phantom height below its input, which
+  de-centred it in any flex row and read as stray spacing in a form.
+- `Combobox` no longer restores a stale label when a controlled `value` is
+  cleared externally while its input has focus.
+
 ## [1.0.2] - 2026-09-15
 
 ### Fixed

@@ -55,15 +55,24 @@
   position: relative;
   width: 100%;
 
+  // Flex, not the default block: the Dropdown wrapper below this is
+  // `display: inline-block`, so in a *block* container it generates a line
+  // box whose height comes from this element's own line-height strut
+  // (~19.6px at the default font size) - even though the span itself is
+  // 0-height and holds nothing but an absolutely positioned anchor. That
+  // phantom row made every Combobox ~20px taller than the input it renders,
+  // which passes for stray bottom spacing in a stacked form but visibly
+  // de-centres the input in any `align-items: center` flex row (found via
+  // DataGrid's quick filters). A flex container has no line boxes at all, so
+  // the 0-height item contributes nothing and the root matches the input's
+  // height exactly. Zeroing `line-height` on the span itself does NOT fix
+  // this - the strut belongs to the parent, not the inline child.
+  display: flex;
+  flex-direction: column;
+
   // Make the Input cursor text (it is editable)
   input {
     cursor: text;
-  }
-
-  // Ensure the 0-height Dropdown span anchor does not affect layout
-  .eidos-dropdown-trigger {
-    line-height: 0;
-    overflow: hidden;
   }
 }
 
