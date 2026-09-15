@@ -6,9 +6,21 @@ on:
   pull_request:
     branches: [main]
 
+# Only `contents: read` is needed, for checkout - Chromatic authenticates with
+# its own project token rather than GITHUB_TOKEN. Without this block the token
+# inherits the repository default, which is broader than this workflow needs.
+permissions:
+  contents: read
+
 jobs:
   chromatic:
     name: Publish Storybook to Chromatic
+    # Secrets are never passed to `pull_request` runs from a forked repository,
+    # so the token guard below would fail every fork PR with a red check that
+    # the contributor cannot do anything about. Skip the job for those instead
+    # of reporting a failure. `github.event.pull_request` is null on `push`,
+    # hence the explicit event check first.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +54,11 @@ jobs:
           fi
           echo "Token is present (${#CHROMATIC_PROJECT_TOKEN} characters)."
 
+      # Pinned to a commit SHA, not a moving tag: on a public repository a
+      # floating `@latest` means an upstream compromise runs here automatically.
+      # Dependabot updates SHA pins and keeps the trailing version comment
+      # current. v18.7.2 matches the `chromatic` CLI version in package-lock.json.
       - name: Publish to Chromatic
-        uses: chromaui/action@latest
+        uses: chromaui/action@2a0b63f30233c48591844a46d451b9cf68128186 # v18.7.2
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
