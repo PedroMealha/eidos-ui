@@ -218,7 +218,9 @@ const MyButton: React.FC<ButtonProps> = (props) => <Button {...props} />;
 
 ## Contributing
 
-This is currently a personal project without an established external contribution process. Bug reports and suggestions are welcome via [GitHub Issues](https://github.com/PedroMealha/eidos-ui/issues).
+Bug reports, questions, and suggestions are very welcome via [GitHub Issues](https://github.com/PedroMealha/eidos-ui/issues). Pull requests are not accepted - this is a single-maintainer project by design; see [CONTRIBUTING.md](./CONTRIBUTING.md) for the reasoning and for what to do if you need behaviour the library doesn't have.
+
+To report a security issue, please use private reporting rather than a public issue - see [SECURITY.md](./SECURITY.md).
 
 ## License
 
