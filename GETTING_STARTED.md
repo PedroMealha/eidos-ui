@@ -268,9 +268,9 @@ next real change — but don't sit on a genuine `src/` fix.
 ### Releasing
 
 ```bash
-npm run release:patch   # bug fixes
-npm run release:minor   # new components / non-breaking changes
-npm run release:major   # breaking API changes
+npm run verify           # lint, typecheck, prettier, build (+ Storybook if .mdx changed)
+npm run release          # reports the bump your changelog implies, then stops
+npm run release -- minor # patch (fixes) | minor (new, non-breaking) | major (breaking)
 ```
 
 Each script runs `release:preflight` first, then bumps the version and

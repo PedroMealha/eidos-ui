@@ -481,12 +481,13 @@ subheadings, only adding the ones actually needed:
 - `Toolbar` no longer clips its breadcrumb trail on narrow viewports.
 ```
 
-- **Added** → implies `release:minor` at cut time. **Fixed**/**Changed**
-  (non-breaking) → `release:patch`. Anything breaking → start that bullet
-  with the literal marker `**Breaking**:` and `release:major`, regardless of
-  what else is queued - `promote-changelog.js` greps for this exact marker
-  (case-insensitively) to abort the release if the bump run doesn't match,
-  so the wording isn't just a style preference here.
+- **Added** → implies `minor` at cut time. **Fixed**/**Changed**
+  (non-breaking) → `patch`. Anything breaking → start that bullet with the
+  literal marker `**Breaking**:` and release `major`, regardless of what else
+  is queued. The wording isn't just a style preference: `scripts/changelog-bump.js`
+  greps for this exact marker (case-insensitively), `release.js` refuses a
+  too-small bump before preflight runs, and `promote-changelog.js` aborts
+  `npm version` itself if the bump that actually ran is too small.
 - **Keep every entry to one line, one sentence.** No walls of text, no
   restating the full backstory of _why_ something changed (that lives in
   the commit/PR, not the changelog) - just what changed, from a consumer's
@@ -518,10 +519,20 @@ the full preflight.
 ### Release workflow
 
 ```bash
-npm run release:patch   # bug fixes
-npm run release:minor   # new features / new components (backward-compatible)
-npm run release:major   # breaking API changes
+npm run verify              # lint, typecheck, prettier, build (+ Storybook if .mdx changed)
+npm run release             # prints the bump your changelog implies, then stops
+npm run release -- minor    # patch | minor | major
 ```
+
+`verify` is the one command to run while working and before releasing - it
+covers the two things `release:preflight` does not (`prettier:check`, and
+`build-storybook`, which is the only thing in the toolchain that parses `.mdx`).
+It is deliberately separate from the release path: a mis-formatted file or a
+broken docs page affects neither `dist/` nor consumers, so it must not be able
+to block a release on its own.
+
+`npm run release` with no bump reports what `[Unreleased]` implies and exits
+without doing anything, so the safe move is always to run it bare first.
 
 Each script is `release:preflight && npm version <bump>`. **Nothing publishes
 locally** - `npm version`'s `postversion` hook pushes the tag, and the tag push

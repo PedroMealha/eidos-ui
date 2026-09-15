@@ -18,11 +18,7 @@
  */
 import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
-
-const BOILERPLATE =
-  'Entries land here as work happens, not written retroactively at release time\n' +
-  '- see the "Changelog discipline" section in\n' +
-  '`.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.';
+import { BOILERPLATE, impliedBump, rank, unreleasedContent } from './changelog-bump.js';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -118,9 +114,7 @@ function buildSnippet(version, date, bump, sections) {
 }
 
 const changelog = readFileSync('./CHANGELOG.md', 'utf8');
-const match = changelog.match(/## \[Unreleased\]\n([\s\S]*?)(?=\n## \[|$)/);
-const rawSection = match ? match[1] : '';
-const content = rawSection.replace(BOILERPLATE, '').trim();
+const content = unreleasedContent(changelog);
 
 if (!content) {
   console.log('promote-changelog: [Unreleased] has no real entries - nothing to promote.');
@@ -153,25 +147,20 @@ const sections = parseSections(content);
 // tagged), so this is safe to run before the point of no return, unlike
 // everything else `release:preflight` already checks.
 //
-// A literal `**Breaking**` marker (see the "Changelog discipline" section
-// in `.devin/skills/eidos-ui-rules/SKILL.md`) requires major, checked first
-// since it overrides everything else regardless of what else is queued. An
-// `### Added` entry with no breaking marker requires at least minor.
-const hasBreaking = /\*\*Breaking\*\*/i.test(content);
-const hasAdded = sections.some((s) => s.category === 'added');
+// The rule itself lives in `changelog-bump.js`, shared with `release.js` so a
+// too-small bump is normally rejected before preflight even runs. This remains
+// the authoritative check: it is the only one that sees the bump `npm version`
+// actually applied, rather than the one that was requested.
+const implied = impliedBump(content);
 
-if (hasBreaking && bump !== 'major') {
+if (rank(bump) < rank(implied)) {
+  const why =
+    implied === 'major'
+      ? 'a literal "**Breaking**" entry requires major'
+      : 'an "### Added" entry requires at least minor';
   console.error(
-    '✖ [Unreleased] has a "**Breaking**" entry, which needs a major bump.\n' +
-      '  Re-run as `npm run release:major`.',
-  );
-  process.exit(1);
-}
-
-if (!hasBreaking && hasAdded && bump === 'patch') {
-  console.error(
-    '✖ [Unreleased] has an "Added" entry, which needs at least a minor bump.\n' +
-      '  Re-run as `npm run release:minor` (or `release:major` if anything is breaking).',
+    `✖ [Unreleased] requires a ${implied} bump, but this run is ${bump} - ${why}.\n` +
+      `  Re-run as \`npm run release -- ${implied}\`.`,
   );
   process.exit(1);
 }

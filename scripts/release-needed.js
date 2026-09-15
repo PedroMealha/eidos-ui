@@ -124,4 +124,4 @@ if (changed.length === 0 && fieldChanges.length === 0) {
 console.log('  RELEASE NEEDED - these change what consumers install:\n');
 for (const f of changed) console.log(`    ${f}`);
 for (const f of fieldChanges) console.log(`    package.json → "${f}"`);
-console.log('\n  Then: npm run release:patch | release:minor | release:major\n');
+console.log('\n  Then: npm run release -- patch | minor | major\n');
