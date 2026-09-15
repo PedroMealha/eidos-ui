@@ -1,0 +1,80 @@
+name: Publish
+
+# Publishing happens here, not from a laptop, so that no long-lived npm token
+# exists anywhere and every published artifact is built in a clean environment.
+# Authentication is npm trusted publishing (OIDC): npm trusts this specific
+# workflow file in this specific repository, configured under the package's
+# "Trusted Publisher" settings on npmjs.com. Provenance attestations are
+# generated automatically in this mode - the `--provenance` flag is not needed
+# and would be redundant.
+#
+# This workflow only ever STAGES a release. It cannot make one live: the trusted
+# publisher is configured stage-only, so a plain `npm publish` from here is
+# rejected by the registry. Going live requires `npm stage approve` with 2FA
+# from a trusted device. That is deliberate - it means a compromised workflow,
+# action, or build dependency cannot ship a version to consumers on its own,
+# which is the threat a local pre-flight check can do nothing about.
+#
+# The tag is created locally by `npm version` (via `npm run release:*`) and
+# pushed by its `postversion` hook, which is what triggers this run.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  # Required for OIDC: without it npm cannot obtain an identity token, silently
+  # falls back to looking for a token, and fails as though unauthenticated.
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+
+      # Trusted publishing requires npm >= 11.5.1 and `npm stage` requires
+      # >= 11.15.0. The npm bundled with Node (10.x on Node 22, and not
+      # guaranteed recent enough on Node 24) is too old for either, and the
+      # trusted-publishing failure mode is quiet: OIDC simply isn't detected and
+      # npm looks for a token instead. Upgrading explicitly avoids depending on
+      # whatever npm the runner image happens to ship.
+      - name: Ensure npm supports trusted publishing and staging
+        run: |
+          npm i -g npm@latest
+          echo "npm $(npm -v)"
+
+      - run: npm ci
+
+      # `npm version` sets both the tag and package.json version, so a mismatch
+      # means something was hand-edited or the tag was pushed manually. Catch it
+      # before anything reaches the registry, where it cannot be undone.
+      - name: Verify the tag matches package.json
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "$TAG" != "$PKG" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME implies version $TAG, but package.json says $PKG."
+            exit 1
+          fi
+          echo "Tag matches package.json ($PKG)."
+
+      # Triggers `prepublishOnly: npm run build`, so dist/ is built here rather
+      # than uploaded from anywhere else. Staging needs no 2FA, which is what
+      # makes it usable non-interactively; the 2FA challenge is deferred to
+      # `npm stage approve`.
+      - run: npm stage publish
+
+      - name: How to release the staged version
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "::notice::Staged eidos-ui@$VERSION. It is NOT live yet."
+          echo "Approve it with 2FA to publish:"
+          echo "  npm stage approve eidos-ui@$VERSION"
+          echo "…or from the package page on npmjs.com."

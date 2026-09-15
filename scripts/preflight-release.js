@@ -1,13 +1,21 @@
 /**
  * Pre-flight checks that run BEFORE `npm version` bumps anything.
  *
- * Why this exists: the release scripts are `npm version <bump> && npm publish`.
- * `npm version` creates a commit and a tag immediately, and nothing rolls them
- * back if `npm publish` then fails. A failed publish therefore strands a
- * version that exists in git but never reached the registry.
+ * Why this exists: the release scripts are `npm version <bump>`, whose tag push
+ * triggers `.github/workflows/publish.yml`. `npm version` creates a commit and
+ * a tag immediately, and nothing rolls them back if the publish then fails. A
+ * failed publish therefore strands a version that exists in git but never
+ * reached the registry.
  *
  * Everything that can be checked cheaply up front is checked here, so the
  * version commit is only created once a publish is very likely to succeed.
+ *
+ * Deliberately does NOT check npm authentication or package ownership any more.
+ * Publishing moved into CI and authenticates with npm trusted publishing
+ * (OIDC), so there is no npm credential on this machine to validate - a
+ * `npm whoami` check here would fail for a perfectly releasable tree. The
+ * equivalent failure now surfaces in the publish workflow, which is the only
+ * place that actually needs publish rights.
  */
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -24,24 +32,7 @@ const fail = (title, ...lines) => {
   process.exit(1);
 };
 
-// ── 1. npm authentication ───────────────────────────────────────────────────
-// An expired or missing token makes `npm publish` fail with a misleading
-// "404 Not Found" for scoped packages, because npm will not reveal whether a
-// private/scoped package exists to an unauthenticated caller.
-let user;
-try {
-  user = run('npm whoami');
-} catch {
-  fail(
-    'Not authenticated with npm.',
-    'Run: npm login',
-    '',
-    'Note: publishing while logged out fails with a confusing "404 Not Found"',
-    'rather than a permission error.',
-  );
-}
-
-// ── 2. Clean working tree ───────────────────────────────────────────────────
+// ── 1. Clean working tree ───────────────────────────────────────────────────
 // `npm version` refuses to run on a dirty tree, but failing here gives a much
 // clearer message than npm's.
 let status;
@@ -65,7 +56,7 @@ if (status) {
   );
 }
 
-// ── 3. Root barrel export completeness ──────────────────────────────────────
+// ── 2. Root barrel export completeness ──────────────────────────────────────
 // Every type/value a component's own index.ts exports must also be reachable
 // from the root barrel (src/index.ts) - otherwise consumers importing from
 // `eidos-ui` hit a type they can see in the deep entry point but not
@@ -84,7 +75,7 @@ if (missingExports.length > 0) {
   );
 }
 
-// ── 4. Changelog is up to date ───────────────────────────────────────────────
+// ── 3. Changelog is up to date ───────────────────────────────────────────────
 // Enforces the "Changelog discipline" convention in
 // `.devin/skills/eidos-ui-rules/SKILL.md` - entries should land as work
 // happens, not get written retroactively right before a release.
@@ -93,25 +84,6 @@ if (!changelogCheck.ok) {
   fail(changelogCheck.reason, 'Changed since the last release:', '', ...changelogCheck.changed);
 }
 
-// ── 5. Publish rights on this package ───────────────────────────────────────
-// Being logged in is not the same as being allowed to publish this name.
 const { name, version } = JSON.parse(readFileSync('./package.json', 'utf8'));
 
-try {
-  const owners = run(`npm owner ls ${name}`);
-  if (!owners.includes(user)) {
-    fail(
-      `"${user}" is not listed as an owner of ${name}.`,
-      'Owners:',
-      ...owners.split('\n').map((o) => `  ${o}`),
-    );
-  }
-} catch (error) {
-  // A brand-new package that has never been published has no owners yet -
-  // that is fine, so only fail on an explicit ownership mismatch above.
-  if (error?.status === 1 && !String(error.stderr || '').includes('404')) {
-    fail('Could not verify package ownership.', String(error.stderr || error.message).trim());
-  }
-}
-
-console.log(`✓ Pre-flight passed - authenticated as "${user}", releasing from ${name}@${version}`);
+console.log(`✓ Pre-flight passed - releasing from ${name}@${version}`);

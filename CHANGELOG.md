@@ -24,6 +24,8 @@ Entries land here as work happens, not written retroactively at release time
 ### Changed
 
 - Release tags use git's default `v` prefix again (e.g. `v1.0.2`).
+- Releases are now published from CI via npm trusted publishing, so each version
+  carries a verifiable provenance attestation on npm.
 
 ## [1.0.1] - 2026-09-14
 

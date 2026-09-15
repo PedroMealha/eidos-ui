@@ -45,9 +45,9 @@
     "init": "npm run dev & npm run storybook",
     "release:needed": "node scripts/release-needed.js",
     "release:preflight": "node scripts/preflight-release.js && npm run lint && npm run typecheck && npm run build",
-    "release:patch": "npm run release:preflight && npm version patch && npm publish",
-    "release:minor": "npm run release:preflight && npm version minor && npm publish",
-    "release:major": "npm run release:preflight && npm version major && npm publish"
+    "release:patch": "npm run release:preflight && npm version patch",
+    "release:minor": "npm run release:preflight && npm version minor",
+    "release:major": "npm run release:preflight && npm version major"
   },
   "keywords": [
     "react",

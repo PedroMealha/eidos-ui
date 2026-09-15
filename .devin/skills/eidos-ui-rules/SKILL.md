@@ -523,14 +523,56 @@ npm run release:minor   # new features / new components (backward-compatible)
 npm run release:major   # breaking API changes
 ```
 
-Each script is `release:preflight && npm version <bump> && npm publish`
-(publish triggers `prepublishOnly: npm run build`).
+Each script is `release:preflight && npm version <bump>`. **Nothing publishes
+locally** - `npm version`'s `postversion` hook pushes the tag, and the tag push
+triggers `.github/workflows/publish.yml`, which runs `npm stage publish` in CI
+(triggering `prepublishOnly: npm run build` there).
+
+**A release is a two-step process. CI cannot make a version live.** The workflow
+only stages it; the final step is yours:
+
+```bash
+npm stage approve eidos-ui@<version>   # prompts for 2FA
+```
+
+(or approve it from the package page on npmjs.com). Until then the version
+exists in the stage queue and is not installable. `npm stage list` shows what's
+pending, `npm stage view`/`download` inspect it, `npm stage reject` discards it.
+
+Publishing uses **npm trusted publishing (OIDC)**: npm trusts that one workflow
+file in this one repository, configured under the package's "Trusted Publisher"
+settings on npmjs.com. Consequences worth knowing:
+
+- There is **no npm token** anywhere - not on any machine, not in GitHub
+  secrets. Nothing to rotate or leak.
+- The trusted publisher is deliberately configured **stage-only**: `npm publish`
+  from CI is rejected by the registry, only `npm stage publish` is accepted. This
+  guards a threat a local pre-flight cannot - a compromised workflow, action or
+  build dependency shipping a version to consumers unattended. Staging needs no
+  2FA (so CI stays non-interactive); the approval is where the 2FA lands.
+- **Provenance attestations are generated automatically** in this mode. Do not
+  add `--provenance`; it is redundant here.
+- Trusted publishing needs **npm >= 11.5.1** and `npm stage` needs **>= 11.15.0**,
+  both newer than the npm bundled with Node 22 (10.x). The publish workflow
+  upgrades npm explicitly, because the trusted-publishing failure mode is quiet:
+  OIDC just isn't detected and npm falls back to looking for a token.
+- Provenance requires the source repo to be **public** and `package.json`'s
+  `repository` to match it case-sensitively.
+- If the workflow file is ever renamed, the trusted publisher config on
+  npmjs.com must be updated to match, or publishes start failing.
+- npmjs.com → package settings → "Publishing access" is set to require 2FA and
+  **disallow bypass-2FA tokens**. Bypass tokens only existed to let CI publish
+  without a human; OIDC replaces that need, so allowing them would be strictly
+  extra attack surface.
 
 `release:preflight` (`scripts/preflight-release.js` + lint/typecheck/build)
-runs BEFORE the bump and checks npm auth, package ownership and a clean tree.
+runs BEFORE the bump and checks a clean tree, barrel exports and the changelog.
 It exists because `npm version` commits and tags immediately and is never rolled
 back - a failed publish otherwise strands a version that is tagged in git but
-absent from the registry (this happened to 3.1.0).
+absent from the registry (this happened to 3.1.0). It deliberately no longer
+checks npm auth or package ownership: there is no local npm credential to
+validate now that publishing is OIDC-based in CI, so those checks would fail on
+a perfectly releasable tree.
 
 `preflight-release.js` also runs `scripts/check-barrel-exports.js`, which diffs
 every component's own `index.ts` exports against the root barrel
@@ -540,15 +582,23 @@ enforcement for the "root barrel must re-export every public type" rule above -
 checked for this before. Run it standalone with
 `node scripts/check-barrel-exports.js`.
 
-**If publish fails after the bump, run `npm publish` alone to retry. Never
-re-run `release:*`** - that bumps again and strands another version.
+**If the publish workflow fails after the bump, re-run that workflow run from
+the Actions tab. Never re-run `release:*`** - that bumps again and strands
+another version. Note that a version cannot be staged twice: staged versions
+share the same semver index as published ones, so re-running after a _successful_
+stage fails on the duplicate. Approve or reject the pending one instead.
 
 A `postversion` script (`git push --follow-tags`) pushes automatically -
-`npm version` runs it right after creating the commit+tag, which happens
-_before_ `npm publish` runs in the `release:*` chain. That means the tag can
-land on GitHub a few seconds before it's actually on the registry if
-`npm publish` then fails - acceptable (the commit/tag are real either way),
-but don't assume "tag exists on GitHub" implies "published successfully".
+`npm version` runs it right after creating the commit+tag. That tag push is now
+the publish trigger rather than something that merely races ahead of a local
+`npm publish`, so the old warning has become the mechanism: the tag still lands
+on GitHub before the registry has the version, and "tag exists on GitHub" still
+does not imply "published successfully" - check the Publish workflow run.
+
+The workflow re-checks that the tag matches `package.json`'s version before
+publishing. `npm version` always sets both together, so a mismatch means a
+hand-edited version or a manually pushed tag - worth catching before it reaches
+the registry, where a published version can never be replaced.
 
 A `version` script (`scripts/promote-changelog.js`) also runs automatically,
 earlier in the same `npm version` lifecycle - after the version is bumped in
