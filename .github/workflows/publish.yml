@@ -69,12 +69,26 @@ jobs:
       # than uploaded from anywhere else. Staging needs no 2FA, which is what
       # makes it usable non-interactively; the 2FA challenge is deferred to
       # `npm stage approve`.
-      - run: npm stage publish
+      # `npm stage publish` prints "(staged with id <uuid>)". Capture it, because
+      # `npm stage approve` takes that stage id - NOT a package spec, which fails
+      # with "stage-id must be a valid UUID".
+      - name: Stage the release
+        id: stage
+        run: |
+          npm stage publish 2>&1 | tee /tmp/stage.log
+          STAGE_ID="$(sed -n 's/.*staged with id \([0-9a-f-]*\)).*/\1/p' /tmp/stage.log | tail -1)"
+          echo "stage-id=$STAGE_ID" >> "$GITHUB_OUTPUT"
 
       - name: How to release the staged version
         run: |
           VERSION="$(node -p "require('./package.json').version")"
-          echo "::notice::Staged eidos-ui@$VERSION. It is NOT live yet."
-          echo "Approve it with 2FA to publish:"
-          echo "  npm stage approve eidos-ui@$VERSION"
+          ID="${{ steps.stage.outputs.stage-id }}"
+          echo "::notice::Staged eidos-ui@$VERSION (id ${ID:-unknown}). It is NOT live yet."
+          echo "Approve it with 2FA to publish. Requires npm >= 11.15.0 locally:"
+          if [ -n "$ID" ]; then
+            echo "  npm stage approve $ID"
+          else
+            echo "  npm stage list eidos-ui      # copy the id"
+            echo "  npm stage approve <stage-id>"
+          fi
           echo "…or from the package page on npmjs.com."

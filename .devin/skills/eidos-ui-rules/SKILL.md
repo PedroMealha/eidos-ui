@@ -532,12 +532,23 @@ triggers `.github/workflows/publish.yml`, which runs `npm stage publish` in CI
 only stages it; the final step is yours:
 
 ```bash
-npm stage approve eidos-ui@<version>   # prompts for 2FA
+npm stage list eidos-ui                # copy the stage id (a UUID)
+npm stage approve <stage-id>           # prompts for 2FA
 ```
 
 (or approve it from the package page on npmjs.com). Until then the version
-exists in the stage queue and is not installable. `npm stage list` shows what's
-pending, `npm stage view`/`download` inspect it, `npm stage reject` discards it.
+exists in the stage queue and is not installable. `npm stage view`/`download`
+inspect it, `npm stage reject <stage-id>` discards it.
+
+Two gotchas, both hit on the first real release:
+
+- **`approve` takes the stage id, not a package spec.** Passing a spec such as
+  `eidos-ui@1.0.2` fails with "stage-id must be a valid UUID". The workflow
+  prints the id in its summary; `npm stage list` also shows it.
+- **`npm stage` needs npm >= 11.15.0 locally**, not just in CI. Node 22.19 ships
+  npm 10.8, where the subcommand does not exist at all ("Unknown command").
+  Note that `npm@latest` is now 12.x and requires a newer Node than 22.19, so on
+  an older Node 22 install `npm@11` specifically rather than `npm@latest`.
 
 Publishing uses **npm trusted publishing (OIDC)**: npm trusts that one workflow
 file in this one repository, configured under the package's "Trusted Publisher"
