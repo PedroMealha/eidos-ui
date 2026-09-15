@@ -149,6 +149,44 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
 <Divider style={{ margin: '24px 0' }} />
 
 <ReleaseCard
+  version="1.1.0"
+  date="2026-09-15"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>DataGrid</Code> gains <Code>quickFilters</Code> - always-visible Select, Combobox,
+          or SegmentedControl filter controls in the toolbar, sharing filter state with the existing
+          filter dropdown.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>DataGrid</Code>'s filter dropdown no longer renders a blank, un-removable filter row
+          for a filter whose key isn't in <Code>filterConfig</Code>, nor discards that filter's
+          value when applying.
+        </>,
+        <>
+          <Code>Combobox</Code> no longer reserves ~20px of phantom height below its input, which
+          de-centred it in any flex row and read as stray spacing in a form.
+        </>,
+        <>
+          <Code>Combobox</Code> no longer restores a stale label when a controlled{' '}
+          <Code>value</Code> is cleared externally while its input has focus.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
   version="1.0.2"
   date="2026-09-15"
   bump="patch"
