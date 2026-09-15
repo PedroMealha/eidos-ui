@@ -184,7 +184,17 @@ writeFileSync('./CHANGELOG.md', promoted);
 execSync('git add CHANGELOG.md');
 
 console.log(`✓ CHANGELOG.md: [Unreleased] → [${newVersion}] - ${date}`);
-console.log('\nPaste this into src/Releases.mdx (adjust wording/placement as needed):\n');
-console.log(
-  `<Divider style={{ margin: '24px 0' }} />\n\n${buildSnippet(newVersion, date, bump, sections)}`,
-);
+
+const snippet = `<Divider style={{ margin: '24px 0' }} />\n\n${buildSnippet(newVersion, date, bump, sections)}\n`;
+
+// Also written to disk, not just printed: a long bullet wraps at the terminal
+// width, and copying a wrapped line out of scrollback silently breaks a word in
+// half (this nearly shipped "new-fea\nture" once). The file is gitignored - it's
+// a clipboard staging area, not an artifact.
+const SNIPPET_PATH = './.release-snippet.mdx';
+writeFileSync(SNIPPET_PATH, snippet);
+
+console.log(`\nRelease card written to ${SNIPPET_PATH}`);
+console.log('Copy it from there into src/Releases.mdx (adjust wording/placement as needed),');
+console.log('then run `npm run prettier:fix` and `npm run build-storybook` to validate the MDX.\n');
+console.log(snippet);

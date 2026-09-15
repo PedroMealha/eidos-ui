@@ -39,3 +39,7 @@ storybook-static
 *.tmp
 *.temp
 
+# Release card staged for pasting into src/Releases.mdx - written by
+# scripts/promote-changelog.js, not an artifact.
+.release-snippet.mdx
+
