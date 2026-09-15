@@ -1,23 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  Button,
-  Card,
-  Chip,
-  Input,
-  Menu,
-  Modal,
-  Pill,
-  Table,
-  useSnackbar,
-} from 'eidos-ui';
-import type {
-  BulkAction,
-  FilterValue,
-  MenuItemType,
-  TableColumn,
-  TableFilters,
-} from 'eidos-ui';
+import { Alert, Button, Card, Chip, Input, Menu, Modal, Pill, Table, useSnackbar } from 'eidos-ui';
+import type { BulkAction, FilterValue, MenuItemType, TableColumn, TableFilters } from 'eidos-ui';
 import { CircleCheck, Clock, Lock } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { ticketsApi } from '../api/tickets';

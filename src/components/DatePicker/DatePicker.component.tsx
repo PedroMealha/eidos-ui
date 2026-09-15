@@ -373,7 +373,8 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   const displayValue = useMemo(() => {
     if (!value?.date) return '';
 
-    const displayFmt = format.displayFormat || (granularity === 'month' ? 'MMM YYYY' : 'MMM DD, YYYY');
+    const displayFmt =
+      format.displayFormat || (granularity === 'month' ? 'MMM YYYY' : 'MMM DD, YYYY');
     // Date-only values were anchored to `pickerTimezone` when stored (see
     // `composeDateOnly`) - display them in that same timezone rather than
     // the viewer's ambient one, so the trigger shows the actual calendar

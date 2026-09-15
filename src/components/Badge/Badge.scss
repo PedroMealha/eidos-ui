@@ -29,8 +29,7 @@
   white-space: nowrap;
   color: var(--white);
   pointer-events: none;
-  transform: var(--eidos-badge-translate, translate(50%, -50%))
-    scale(var(--eidos-badge-scale, 1));
+  transform: var(--eidos-badge-translate, translate(50%, -50%)) scale(var(--eidos-badge-scale, 1));
   transition:
     transform 0.2s ease,
     opacity 0.2s ease;

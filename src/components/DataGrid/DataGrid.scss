@@ -631,7 +631,10 @@
 // the same row.
 .eidos-datagrid-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--eidos-datagrid-card-min-width, 280px), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--eidos-datagrid-card-min-width, 280px), 1fr)
+  );
   align-items: start;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);

@@ -1,0 +1,10 @@
+# Normalize line endings for every text file: LF in the repository and LF in
+# the working tree, on every platform.
+#
+# The repository content was already LF throughout - the CRLF only ever
+# appeared in the working tree, manufactured on checkout by a machine-level
+# `core.autocrlf=true`/`core.eol=crlf`. Declaring it here rather than relying
+# on each machine's git config means clones, CI runners, and editors all agree
+# without anyone having to configure anything, and it overrides `core.autocrlf`
+# wherever it happens to be set.
+* text=auto eol=lf

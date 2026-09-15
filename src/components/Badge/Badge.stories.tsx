@@ -93,7 +93,9 @@ export const Default: Story = {
   args: {
     content: 4,
     color: 'danger',
-    children: <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />,
+    children: (
+      <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
+    ),
   },
 };
 
@@ -118,7 +120,12 @@ export const Counts = {
             <IconButton icon={ShoppingCart} variant="text" color="secondary" aria-label="Cart" />
           </Badge>
           <Badge content={0} color="primary">
-            <IconButton icon={Bell} variant="text" color="secondary" aria-label="No notifications" />
+            <IconButton
+              icon={Bell}
+              variant="text"
+              color="secondary"
+              aria-label="No notifications"
+            />
           </Badge>
         </div>
       </div>
@@ -174,7 +181,12 @@ export const Overlap = {
           <p style={label}>Rectangular - square/rectangular children (default)</p>
           <div style={row}>
             <Badge content={2} color="primary" overlap="rectangular">
-              <IconButton icon={Bell} variant="outlined" color="secondary" aria-label="Notifications" />
+              <IconButton
+                icon={Bell}
+                variant="outlined"
+                color="secondary"
+                aria-label="Notifications"
+              />
             </Badge>
           </div>
         </div>

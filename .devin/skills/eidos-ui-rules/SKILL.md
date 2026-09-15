@@ -236,8 +236,8 @@ Applies specifically to inline JSX written directly in a top-level guide
 page's body (like `Releases.mdx`'s `Code`/`BumpTag`/`ReleaseCard`) - not to
 component stories rendered via `<Canvas>`, which are unaffected.
 
-Storybook's Docs page renders that JSX in the *manager* frame, not the
-*preview* iframe where `global.scss`'s `html { font-size: 14px }` reset
+Storybook's Docs page renders that JSX in the _manager_ frame, not the
+_preview_ iframe where `global.scss`'s `html { font-size: 14px }` reset
 actually applies - it inherits the browser/Storybook-UI default of `16px`
 instead. `--spacing-*` tokens are `em` (relative to each element's own
 font-size, so they're unaffected), but the 8 `--font-size-*` tokens are
@@ -253,11 +253,11 @@ scale/font-size hack.
 
 Two related but separate MDX gotchas hit while building `Releases.mdx`:
 
-1. The *leading* block of an `.mdx` file (before any prose/JSX body content)
+1. The _leading_ block of an `.mdx` file (before any prose/JSX body content)
    must be entirely `import`/`export` statements, with nothing else mixed
    in - Storybook's actual Vite/MDX pipeline tolerates a stray `<Meta />` in
    the middle of that block, but stricter MDX tooling (e.g. an editor's MDX
-   language server) will not. Put `<Meta title="..." />` *after* all
+   language server) will not. Put `<Meta title="..." />` _after_ all
    `export const` declarations, immediately before the first prose content.
 2. A component defined in that block whose sole top-level return value is a
    shorthand fragment (`<>...</>`) - not fragments used elsewhere, e.g.
@@ -488,7 +488,7 @@ subheadings, only adding the ones actually needed:
   (case-insensitively) to abort the release if the bump run doesn't match,
   so the wording isn't just a style preference here.
 - **Keep every entry to one line, one sentence.** No walls of text, no
-  restating the full backstory of *why* something changed (that lives in
+  restating the full backstory of _why_ something changed (that lives in
   the commit/PR, not the changelog) - just what changed, from a consumer's
   point of view. If an entry needs more than one sentence to explain, it's
   a sign to split it into multiple short bullets, not to write a paragraph.
@@ -511,7 +511,7 @@ subheadings, only adding the ones actually needed:
 `check-barrel-exports.js`) diffs the working tree against the last git tag's
 build-affecting files (the same list `release-needed.js` uses) and fails the
 release outright if anything reaches `dist/` but `[Unreleased]` is still
-empty. It only checks that *something* was written, not wording/length -
+empty. It only checks that _something_ was written, not wording/length -
 run `node scripts/check-changelog.js` standalone to check without running
 the full preflight.
 
@@ -545,7 +545,7 @@ re-run `release:*`** - that bumps again and strands another version.
 
 A `postversion` script (`git push --follow-tags`) pushes automatically -
 `npm version` runs it right after creating the commit+tag, which happens
-*before* `npm publish` runs in the `release:*` chain. That means the tag can
+_before_ `npm publish` runs in the `release:*` chain. That means the tag can
 land on GitHub a few seconds before it's actually on the registry if
 `npm publish` then fails - acceptable (the commit/tag are real either way),
 but don't assume "tag exists on GitHub" implies "published successfully".
@@ -554,7 +554,7 @@ A `version` script (`scripts/promote-changelog.js`) also runs automatically,
 earlier in the same `npm version` lifecycle - after the version is bumped in
 `package.json`, but before the commit/tag are created. It renames
 `## [Unreleased]` to `## [x.y.z] - <today>` in `CHANGELOG.md` and stages the
-result, so the changelog promotion lands in the *same* commit as the version
+result, so the changelog promotion lands in the _same_ commit as the version
 bump instead of a separate manual one afterward. It also **aborts the whole
 `npm version` call** (nothing gets committed or tagged) if the bump run is
 smaller than what `[Unreleased]` implies: a literal `**Breaking**:` marker

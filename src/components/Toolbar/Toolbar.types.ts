@@ -1,7 +1,7 @@
-import { BreadcrumbProps } from "../Breadcrumb";
-import { IconButtonProps } from "../Button";
-import { MenuItemType } from "../Menu";
-import { CommandItem } from "../CommandPalette";
+import { BreadcrumbProps } from '../Breadcrumb';
+import { IconButtonProps } from '../Button';
+import { MenuItemType } from '../Menu';
+import { CommandItem } from '../CommandPalette';
 
 export interface ToolbarProps {
   /** Breadcrumb trail rendered above the page. */
@@ -18,16 +18,15 @@ export interface ToolbarProps {
 /**
  * Restricted, discriminated subset of ButtonProps for Toolbar actions.
  */
-export type ToolbarActionProps =
-  | Pick<
-      IconButtonProps,
-      | 'color'
-      | 'loading'
-      | 'disabled'
-      | 'preIcon'
-      | 'posIcon'
-      | 'icon'
-      | 'children'
-      | 'onClick'
-      | 'tooltip'
-    >;
+export type ToolbarActionProps = Pick<
+  IconButtonProps,
+  | 'color'
+  | 'loading'
+  | 'disabled'
+  | 'preIcon'
+  | 'posIcon'
+  | 'icon'
+  | 'children'
+  | 'onClick'
+  | 'tooltip'
+>;
