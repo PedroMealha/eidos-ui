@@ -183,7 +183,32 @@ const snippet = `<Divider style={{ margin: '24px 0' }} />\n\n${buildSnippet(newV
 const SNIPPET_PATH = './.release-snippet.mdx';
 writeFileSync(SNIPPET_PATH, snippet);
 
+// Format with the repo's own prettier config, so what you paste is already
+// compliant and `npm run verify` passes without a separate `prettier:fix` run.
+//
+// `--ignore-path .prettierignore` is required, not cosmetic: prettier 3
+// defaults its ignore path to BOTH .gitignore and .prettierignore, and this
+// file is gitignored - so without the override prettier silently skips it and
+// reports success.
+//
+// Best-effort by design. This runs inside `npm version`, after package.json has
+// already been rewritten, so a formatting hiccup must never be what aborts a
+// release.
+let formatted = false;
+try {
+  execSync(`npx prettier --write --ignore-path .prettierignore ${SNIPPET_PATH}`, {
+    stdio: 'ignore',
+  });
+  formatted = true;
+} catch {
+  // Falls through to the hint below.
+}
+
 console.log(`\nRelease card written to ${SNIPPET_PATH}`);
 console.log('Copy it from there into src/Releases.mdx (adjust wording/placement as needed),');
-console.log('then run `npm run prettier:fix` and `npm run build-storybook` to validate the MDX.\n');
+if (formatted) {
+  console.log('then `npm run verify` - it is the only thing that parses .mdx.\n');
+} else {
+  console.log('then `npm run prettier:fix` (auto-format failed) and `npm run verify`.\n');
+}
 console.log(snippet);

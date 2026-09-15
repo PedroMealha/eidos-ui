@@ -3,19 +3,19 @@
  *
  *   npm run release -- patch | minor | major
  *   npm run release              # tells you which bump your changelog implies
+ *   npm run release -- approve   # publish the version CI staged (prompts 2FA)
  *
- * Replaced three near-identical `release:patch|minor|major` scripts. The point
- * isn't brevity for its own sake - it's that this can check the requested bump
- * against the changelog BEFORE running anything. Previously a too-small bump
- * was only caught by `promote-changelog.js`, which runs after ~2 minutes of
- * preflight and after `package.json` has already been rewritten. That guard
- * still exists and remains authoritative; this just means you rarely reach it.
+ * Replaces three near-identical `release:patch|minor|major` scripts, and checks
+ * the requested bump against the changelog BEFORE running anything. That check
+ * previously only happened in `promote-changelog.js` - after ~2 minutes of
+ * preflight and after `package.json` had been rewritten. That guard is still
+ * authoritative; this just means you rarely reach it.
  *
- * Everything after the check is unchanged: `release:preflight` then
- * `npm version <bump>`, whose `postversion` hook pushes the tag, which triggers
- * `.github/workflows/publish.yml` to stage the release for approval.
+ * Then: `release:preflight`, `npm version <bump>`, whose `postversion` hook
+ * pushes the tag, which triggers `publish.yml` to stage the release.
  */
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { BUMPS, impliedBump, rank, unreleasedContent } from './changelog-bump.js';
 
 const fail = (title, ...lines) => {
@@ -26,6 +26,52 @@ const fail = (title, ...lines) => {
 };
 
 const requested = process.argv[2];
+
+/**
+ * Publishes the version CI staged, without copy-pasting a UUID by hand. The id
+ * can't come from the release run itself - that finishes when the tag is
+ * pushed, and the stage is created ~45s later by the publish workflow.
+ *
+ * Resolves the id and hands off; the 2FA prompt stays interactive, because that
+ * prompt IS the security control behind stage-only publishing.
+ */
+if (requested === 'approve') {
+  const { name, version } = JSON.parse(readFileSync('./package.json', 'utf8'));
+
+  let staged;
+  try {
+    staged = JSON.parse(execSync(`npm stage list ${name} --json`, { encoding: 'utf8' }));
+  } catch (error) {
+    fail('Could not read the stage queue.', String(error.stderr || error.message).trim());
+  }
+
+  if (!Array.isArray(staged) || staged.length === 0) {
+    fail(
+      `Nothing is staged for ${name}.`,
+      'Either the publish workflow has not finished yet (it takes ~45s after the',
+      'tag is pushed), or this version was already approved. Check with:',
+      '',
+      `  npm view ${name} version`,
+    );
+  }
+
+  const match = staged.find((entry) => entry.version === version);
+  if (!match) {
+    fail(
+      `Nothing staged matches package.json's version (${version}).`,
+      'Staged instead:',
+      '',
+      ...staged.map((e) => `  ${e.version}  id ${e.id}`),
+      '',
+      'Approve one explicitly with `npm stage approve <stage-id>` if that is intended.',
+    );
+  }
+
+  console.log(`\n▶ Approving ${name}@${match.version} (staged ${match.date_staged ?? 'recently'})`);
+  console.log(`  id ${match.id}\n`);
+  execSync(`npm stage approve ${match.id}`, { stdio: 'inherit' });
+  process.exit(0);
+}
 const content = unreleasedContent();
 
 if (!content) {

@@ -1,66 +1,71 @@
 /**
- * One command for "is this repo healthy?" - run it before committing, and
- * before cutting a release.
+ * One command for "is this repo healthy?" - run it while working, and before
+ * cutting a release.
  *
- * Why this exists: the checks were previously a list of six commands to
- * remember and run by hand, four of which `release:preflight` already runs
- * anyway. That redundancy made the real gaps (`prettier:check` and
- * `build-storybook`) easy to skip, which is exactly how 14 files drifted out of
- * prettier compliance without anyone noticing.
+ * Output is suppressed unless a step fails. tsup and Storybook between them
+ * print ~3000 lines of asset tables on success, which is exactly how a real
+ * warning goes unnoticed. On failure the captured output is dumped in full, so
+ * nothing is lost. Pass --verbose to stream everything live.
  *
  * Deliberately separate from `release:preflight`, which gates the *published
- * artifact* (clean tree, barrel exports, changelog). This gates the
- * *repository* - a mis-formatted file or a broken Storybook page affects
- * neither `dist/` nor consumers, so it must not be able to block a release on
- * its own.
- *
- * `build-storybook` is conditional: it is the only thing in the toolchain that
- * actually parses `.mdx` (tsc and eslint both ignore it), but it costs ~60-90s,
- * so it runs only when an `.mdx` file has actually changed.
+ * artifact*. This gates the *repository*: a mis-formatted file or a broken
+ * Storybook page affects neither dist/ nor consumers, so it must not be able to
+ * block a release on its own.
  */
 import { execFileSync, execSync } from 'node:child_process';
 
+const verbose = process.argv.includes('--verbose');
 const gitArgs = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
+const secs = (from) => `${((Date.now() - from) / 1000).toFixed(1)}s`;
 
-/** Runs a step, streaming its output, and exits on first failure. */
 function step(label, command) {
-  process.stdout.write(`\n▶ ${label}\n`);
+  const started = Date.now();
+  process.stdout.write(`  ${label.padEnd(18)}`);
+  if (verbose) process.stdout.write('\n');
+
   try {
-    execSync(command, { stdio: 'inherit' });
-  } catch {
-    console.error(`\n✖ ${label} failed - stopping here.\n`);
+    execSync(command, verbose ? { stdio: 'inherit' } : { stdio: ['ignore', 'pipe', 'pipe'] });
+    console.log(verbose ? `  ${label.padEnd(18)}ok  ${secs(started)}` : `ok  ${secs(started)}`);
+  } catch (error) {
+    console.log('FAILED');
+    const output = [error.stdout?.toString(), error.stderr?.toString()]
+      .filter(Boolean)
+      .join('\n')
+      .trim();
+    if (output) console.error(`\n${output}\n`);
+    console.error(`✖ ${label} failed.\n`);
     process.exit(1);
   }
 }
 
 /**
- * Any `.mdx` touched since the last release, whether committed, staged or
- * merely edited on disk. Mirrors `release-needed.js` in comparing against the
- * last tag rather than a fixed number of commits, so the answer doesn't drift
- * as commits accumulate.
+ * Any `.mdx` touched since the last release, whether committed, staged or just
+ * edited. Storybook is the only thing in the toolchain that parses `.mdx` - tsc
+ * and eslint both ignore it - but it costs ~60s, so it runs only when needed.
  */
 function mdxChanged() {
   let lastTag;
   try {
     lastTag = gitArgs(['describe', '--tags', '--abbrev=0']);
   } catch {
-    return { changed: true, reason: 'no tags yet, so nothing to compare against' };
+    return { changed: true, reason: 'no tags to compare against' };
   }
 
-  const committed = gitArgs(['diff', '--name-only', lastTag, '--', '*.mdx'])
-    .split('\n')
-    .filter(Boolean);
-  const dirty = gitArgs(['status', '--porcelain', '--', '*.mdx'])
-    .split('\n')
-    .filter(Boolean)
-    .map((line) => line.slice(3));
+  const files = new Set([
+    ...gitArgs(['diff', '--name-only', lastTag, '--', '*.mdx']).split('\n').filter(Boolean),
+    ...gitArgs(['status', '--porcelain', '--', '*.mdx'])
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => line.slice(3)),
+  ]);
 
-  const files = [...new Set([...committed, ...dirty])];
-  return files.length > 0
-    ? { changed: true, reason: `${files.length} .mdx file(s) changed since ${lastTag}`, files }
+  return files.size > 0
+    ? { changed: true, reason: `${files.size} .mdx changed since ${lastTag}` }
     : { changed: false, reason: `no .mdx changes since ${lastTag}` };
 }
 
+const started = Date.now();
+console.log('');
 step('lint', 'npm run lint');
 step('typecheck', 'npm run typecheck');
 step('prettier', 'npm run prettier:check');
@@ -68,10 +73,9 @@ step('build', 'npm run build');
 
 const mdx = mdxChanged();
 if (mdx.changed) {
-  console.log(`\n  (${mdx.reason} - Storybook is the only .mdx validator, so building it)`);
   step('build-storybook', 'npm run build-storybook');
 } else {
-  console.log(`\n▶ build-storybook - SKIPPED (${mdx.reason})`);
+  console.log(`  ${'build-storybook'.padEnd(18)}skipped  (${mdx.reason})`);
 }
 
-console.log('\n✓ Everything passed.\n');
+console.log(`\n✓ All checks passed in ${secs(started)}.\n`);

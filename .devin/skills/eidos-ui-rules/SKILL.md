@@ -543,19 +543,24 @@ triggers `.github/workflows/publish.yml`, which runs `npm stage publish` in CI
 only stages it; the final step is yours:
 
 ```bash
-npm stage list eidos-ui                # copy the stage id (a UUID)
-npm stage approve <stage-id>           # prompts for 2FA
+npm run release -- approve             # resolves the stage id, prompts for 2FA
 ```
 
-(or approve it from the package page on npmjs.com). Until then the version
-exists in the stage queue and is not installable. `npm stage view`/`download`
-inspect it, `npm stage reject <stage-id>` discards it.
+That looks up the queue via `npm stage list --json`, matches the entry against
+`package.json`'s version, and hands the id to `npm stage approve` - so there is
+no UUID to copy by hand. It refuses rather than guessing if nothing is staged or
+if what's staged doesn't match the current version.
+
+Until approved the version sits in the stage queue and is not installable.
+`npm stage view`/`download <stage-id>` inspect it, `npm stage reject <stage-id>`
+discards it, and npmjs.com's package page can approve it too.
 
 Two gotchas, both hit on the first real release:
 
-- **`approve` takes the stage id, not a package spec.** Passing a spec such as
-  `eidos-ui@1.0.2` fails with "stage-id must be a valid UUID". The workflow
-  prints the id in its summary; `npm stage list` also shows it.
+- **Raw `npm stage approve` takes the stage id, not a package spec.** Passing a
+  spec such as `eidos-ui@1.0.2` fails with "stage-id must be a valid UUID" -
+  which is why `release -- approve` exists. The workflow also prints the id in
+  its summary.
 - **`npm stage` needs npm >= 11.15.0 locally**, not just in CI. Node 22.19 ships
   npm 10.8, where the subcommand does not exist at all ("Unknown command").
   Note that `npm@latest` is now 12.x and requires a newer Node than 22.19, so on

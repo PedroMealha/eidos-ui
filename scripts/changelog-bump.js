@@ -1,37 +1,25 @@
 /**
- * Shared reading of `CHANGELOG.md`'s `## [Unreleased]` section, and the bump
- * that its content implies.
+ * Reads `CHANGELOG.md`'s `## [Unreleased]` section and the bump its content
+ * implies. Shared by `release.js` (fails fast before preflight) and
+ * `promote-changelog.js` (the authoritative guard, which aborts `npm version`
+ * itself) so the two can never disagree.
  *
- * Extracted because three places need the same answer and must never disagree:
- *
- *   - `release.js`        - refuses a too-small bump BEFORE spending two
- *                           minutes on preflight (fails fast).
- *   - `promote-changelog.js` - the authoritative guard, aborting `npm version`
- *                           itself if the bump that actually ran is too small.
- *   - `check-changelog.js` - only cares whether anything was written at all.
- *
- * The rule, from the "Changelog discipline" section in SKILL.md: a literal
- * `**Breaking**` marker requires major and overrides everything else; an
- * `### Added` entry with no breaking marker requires at least minor; anything
- * else is a patch.
+ * The rule, from "Changelog discipline" in SKILL.md: a literal `**Breaking**`
+ * marker requires major and overrides everything; `### Added` without one
+ * requires at least minor; anything else is a patch.
  */
 import { readFileSync } from 'node:fs';
 
-/**
- * The standing explanatory note that sits under `## [Unreleased]` even when
- * there are no real entries. Exported as a literal because
- * `promote-changelog.js` writes it back out when it promotes a release.
- */
+/** Exported as a literal because `promote-changelog.js` writes it back out. */
 export const BOILERPLATE =
   'Entries land here as work happens, not written retroactively at release time\n' +
   '- see the "Changelog discipline" section in\n' +
   '`.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.';
 
 /**
- * Whitespace-tolerant form of BOILERPLATE, for stripping it back out. Matching
- * loosely matters because the note gets re-wrapped by prettier whenever the
- * surrounding prose changes, and an exact-string strip would silently start
- * treating the boilerplate as a real entry.
+ * Whitespace-tolerant, because prettier re-wraps the note whenever surrounding
+ * prose changes - an exact-string strip would silently start treating the
+ * boilerplate as a real entry.
  */
 const BOILERPLATE_PATTERN =
   /Entries land here as work happens, not written retroactively at release time\s*-\s*see the "Changelog discipline" section in\s*`\.devin\/skills\/eidos-ui-rules\/SKILL\.md` for the convention this follows\./;
