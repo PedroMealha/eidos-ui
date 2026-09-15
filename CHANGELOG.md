@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [1.1.0] - 2026-09-15
+
 ### Added
 
 - `DataGrid` gains `quickFilters` - always-visible Select, Combobox, or
