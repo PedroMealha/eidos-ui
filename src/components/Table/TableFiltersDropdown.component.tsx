@@ -250,6 +250,7 @@ export const TableFiltersDropdown = <T extends object>({
             placeholder="Select value"
             clearable={true}
             inputProps={{ size: 'sm' }}
+            fullWidth
           />
         );
       case 'boolean':
@@ -267,6 +268,7 @@ export const TableFiltersDropdown = <T extends object>({
             placeholder="Select value"
             clearable={false}
             inputProps={{ size: 'sm' }}
+            fullWidth
           />
         );
       case 'date': {
@@ -332,6 +334,7 @@ export const TableFiltersDropdown = <T extends object>({
             onChange={handleDateChange}
             placeholder={getPlaceholder()}
             inputProps={{ size: 'sm' }}
+            fullWidth
             format={{
               displayFormat: 'MMM DD, YYYY',
               inputFormat: 'YYYY-MM-DD',
@@ -347,6 +350,7 @@ export const TableFiltersDropdown = <T extends object>({
             onChange={(e) => updateFilter(row.id, row.columnKey, e.target.value)}
             placeholder="Enter value"
             size="sm"
+            fullWidth
           />
         );
     }
@@ -405,7 +409,13 @@ export const TableFiltersDropdown = <T extends object>({
                   {column && !isTemporaryFilter ? (
                     renderFilterInput(row, column)
                   ) : (
-                    <Input value="" disabled placeholder="Select column first" size="sm" />
+                    <Input
+                      value=""
+                      disabled
+                      placeholder="Select column first"
+                      size="sm"
+                      fullWidth
+                    />
                   )}
                 </div>
 
@@ -414,6 +424,8 @@ export const TableFiltersDropdown = <T extends object>({
                   size="sm"
                   icon={X}
                   color="secondary"
+                  className="eidos-table-filter-remove"
+                  aria-label="Remove filter"
                   onClick={() => removeFilter(row.id)}
                 />
               </div>

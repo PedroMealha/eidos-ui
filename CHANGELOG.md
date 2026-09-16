@@ -23,8 +23,24 @@ Entries land here as work happens, not written retroactively at release time
 - `title` accepts `React.ReactNode` on `Header`, `Alert`, `EmptyState`,
   `Modal`, `Drawer` and `Popover`, so a status indicator can sit inline
   beside the title text.
+- `Table` gains `DataGrid`'s responsive card view - `hasCardView` (on by
+  default), `cardViewBreakpoint`, `cardMinWidth`, and `cardHeader` /
+  `cardSubheader` on columns.
+
+### Changed
+
+- `density` now also scales card view on `Table` and `DataGrid` - card
+  padding and gaps, not just cell padding.
 
 ### Fixed
+
+- The shared table/grid filter dropdown no longer leaves its value control
+  narrower than its column select on small screens.
+- `DatePicker`'s `fullWidth` now actually stretches the field, instead of
+  stopping at the dropdown's trigger wrapper.
+- `Table` no longer renders a blank page-size select when `pageSize` isn't
+  one of `pageSizeOptions`.
+- Card view's empty state now spans the full card grid instead of one column.
 
 - `Toolbar` no longer renders a hardcoded "John Doe" avatar; it renders the
   `user` you pass, or no avatar at all.

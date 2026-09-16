@@ -210,6 +210,7 @@ export const TeamPage: React.FC = () => {
           onChange={setRows}
           emptyText="Nobody on the team yet."
           showFilters
+          showDensity
           filterConfig={filterConfig}
           stickyHeader
         />

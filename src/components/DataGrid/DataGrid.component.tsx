@@ -529,6 +529,17 @@ function DataGridInner<T extends object>({
     () => columns.filter((c) => c !== actionsColumn),
     [columns, actionsColumn],
   );
+  // A card with no system controls, no heading and no actions column has
+  // nothing to put in its top bar - rendering it anyway leaves a dead strip
+  // and a divider above the first field. Table applies the same guard.
+  const hasCardToolbar =
+    selectable ||
+    showRowNumbers ||
+    expandable ||
+    !!cardHeaderColumn ||
+    !!cardSubheaderColumn ||
+    !!actionsColumn;
+
   // Remaining columns render as label:value field rows, in declaration order.
   const cardFieldColumns = useMemo(
     () => dataColumns.filter((c) => c !== cardHeaderColumn && c !== cardSubheaderColumn),
@@ -1864,61 +1875,66 @@ function DataGridInner<T extends object>({
                       into a consumer's own row-click handler (e.g. opening a
                       details drawer) - mirrors the selection/drag-handle <td>s'
                       own `onClick={(e) => e.stopPropagation()}` in table mode. */}
-                  <div className="eidos-datagrid-card-toolbar" onClick={(e) => e.stopPropagation()}>
-                    <div className="eidos-datagrid-card-toolbar-left">
-                      {expandable && canExpandRow && (
-                        <button
-                          type="button"
-                          className={[
-                            'eidos-datagrid-expand-toggle',
-                            isRowExpanded && 'eidos-datagrid-expand-toggle--open',
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                          onClick={() => toggleExpanded(rowKeyValue)}
-                          aria-expanded={isRowExpanded}
-                          aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
-                        >
-                          <ChevronRight size={14} />
-                        </button>
-                      )}
-                      {selectable && (
-                        <Checkbox
-                          checked={isRowSelected}
-                          onChange={() => toggleRow(rowKeyValue)}
-                          size="sm"
-                        />
-                      )}
-                      {showRowNumbers && (
-                        <span className="eidos-datagrid-card-row-number">#{localIndex + 1}</span>
-                      )}
-                    </div>
+                  {hasCardToolbar && (
+                    <div
+                      className="eidos-datagrid-card-toolbar"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="eidos-datagrid-card-toolbar-left">
+                        {expandable && canExpandRow && (
+                          <button
+                            type="button"
+                            className={[
+                              'eidos-datagrid-expand-toggle',
+                              isRowExpanded && 'eidos-datagrid-expand-toggle--open',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() => toggleExpanded(rowKeyValue)}
+                            aria-expanded={isRowExpanded}
+                            aria-label={isRowExpanded ? 'Collapse row' : 'Expand row'}
+                          >
+                            <ChevronRight size={14} />
+                          </button>
+                        )}
+                        {selectable && (
+                          <Checkbox
+                            checked={isRowSelected}
+                            onChange={() => toggleRow(rowKeyValue)}
+                            size="sm"
+                          />
+                        )}
+                        {showRowNumbers && (
+                          <span className="eidos-datagrid-card-row-number">#{localIndex + 1}</span>
+                        )}
+                      </div>
 
-                    {/* Always rendered (even empty) so it occupies the toolbar's
+                      {/* Always rendered (even empty) so it occupies the toolbar's
                         middle grid column - conditionally omitting the element
                         itself would shift `eidos-datagrid-card-toolbar-right`
                         into this column instead of the third one. */}
-                    <div className="eidos-datagrid-card-heading">
-                      {cardHeaderColumn &&
-                        renderCardValue(
-                          cardHeaderColumn,
-                          row,
-                          localIndex,
-                          'eidos-datagrid-card-heading-title',
-                        )}
-                      {cardSubheaderColumn &&
-                        renderCardValue(
-                          cardSubheaderColumn,
-                          row,
-                          localIndex,
-                          'eidos-datagrid-card-heading-subtitle',
-                        )}
-                    </div>
+                      <div className="eidos-datagrid-card-heading">
+                        {cardHeaderColumn &&
+                          renderCardValue(
+                            cardHeaderColumn,
+                            row,
+                            localIndex,
+                            'eidos-datagrid-card-heading-title',
+                          )}
+                        {cardSubheaderColumn &&
+                          renderCardValue(
+                            cardSubheaderColumn,
+                            row,
+                            localIndex,
+                            'eidos-datagrid-card-heading-subtitle',
+                          )}
+                      </div>
 
-                    <div className="eidos-datagrid-card-toolbar-right">
-                      {renderActionsMenu(row, localIndex)}
+                      <div className="eidos-datagrid-card-toolbar-right">
+                        {renderActionsMenu(row, localIndex)}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="eidos-datagrid-card-fields">
                     {cardFieldColumns.map((col) => renderCardField(col, row, localIndex))}

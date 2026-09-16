@@ -503,6 +503,10 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         required={required}
         name={name}
         id={id}
+        // Forwarded, not just set on the wrapper above: the wrapper stretching
+        // to 100% does nothing on its own while the Input inside it keeps its
+        // own intrinsic width. Mirrors Select, which forwards it the same way.
+        fullWidth={fullWidth}
         readOnly={true}
         preIcon={CalendarIcon}
         posIcon={displayValue ? X : undefined}
@@ -688,6 +692,11 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         minHeight={minHeight}
         maxHeight={maxHeight || 'none'}
         autoWidth={autoWidth}
+        // Dropdown wraps `trigger` in its own `.eidos-dropdown-trigger` div,
+        // which stays shrink-to-fit unless told otherwise - so without this,
+        // `fullWidth` stopped at that wrapper and the trigger input never
+        // stretched. Select forwards it here for the same reason.
+        fullWidth={fullWidth}
         triggerRef={triggerRef as React.RefObject<HTMLElement | null>}
       />
     </div>

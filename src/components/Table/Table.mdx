@@ -108,6 +108,18 @@ Pass `onRowClick` to make every row interactive - the callback receives the full
 
 <Canvas of={TableStories.WithClickableRows} />
 
+## Responsive card view
+
+`hasCardView` is on by default: the table swaps itself for a grid of cards once its own measured width (via `ResizeObserver` - not the viewport, so it responds correctly inside a narrow sidebar on an otherwise wide screen) drops to/below `cardViewBreakpoint` (default `640`), or once it can no longer fit every visible column at a 100px minimum width - whichever threshold is hit first. Set `hasCardView={false}` to always render a table. Cards themselves lay out responsively with `cardMinWidth` (default `280`) controlling how many fit per row, and each card's fields lay out in their own auto-fit grid too, so a wide card shows fields side by side instead of one per line.
+
+Mark one column `cardHeader` and, optionally, another `cardSubheader` to use their values as the card's title/subtitle - every other column renders as a label-above-value field. A `type: 'action'` column always renders top-right of the card, and selection checkboxes top-left, regardless of where either sits in `columns`. `type: 'icon'` deliberately does not move: an icon column is as often a data glyph (a status or avatar) as it is a row-actions trigger.
+
+Only the row rendering changes - pagination, filtering, sorting, selection and `onRowClick` all keep working exactly as in table mode, and `density` (including the `showDensity` picker) scales each card's padding and gaps the same way it scales cell padding in table mode. `draggableColumns` has no effect in card view, since there are no column headers to drag.
+
+> **Note**: this matches `DataGrid`'s card view prop-for-prop, with the same defaults and the same measured-container logic, so the two siblings switch over at the same widths and render the same way.
+
+<Canvas of={TableStories.ResponsiveCardView} />
+
 ## Loading state
 
 Set `loading={true}` to overlay a spinner while data is being fetched.

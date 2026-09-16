@@ -1,4 +1,4 @@
-import { useState, useMemo, useLayoutEffect, useRef } from 'react';
+import { useState, useMemo, useLayoutEffect, useRef, useCallback } from 'react';
 import React from 'react';
 import {
   ChevronsUpDown,
@@ -44,6 +44,13 @@ import { Spinner } from '../Spinner';
 import { TableFiltersDropdown } from './TableFiltersDropdown.component';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+// Minimum usable width (px) for a single table column - used to derive an
+// automatic card-view threshold from the number of displayed columns, so a
+// table with many columns doesn't have to overflow horizontally before
+// `cardViewBreakpoint` (a single, hand-tuned number) is reached. Same value
+// as DataGrid's, so siblings switch over at the same point.
+const MIN_COLUMN_WIDTH_PX = 100;
 
 type Density = 'compact' | 'comfortable' | 'spacious';
 
@@ -183,6 +190,10 @@ export const Table = <T extends object>({
   showExport = false,
   draggableColumns = false,
   onColumnReorder,
+  // Card view
+  hasCardView = true,
+  cardViewBreakpoint = 640,
+  cardMinWidth = 280,
 }: TableProps<T>) => {
   // ── Column ordering (drag-reorder) ────────────────────────────────────────
   const [columnOrder, setColumnOrder] = useState<string[]>(() => columns.map((c) => String(c.key)));
@@ -216,6 +227,77 @@ export const Table = <T extends object>({
   const visibleColumns = useMemo(
     () => orderedColumns.filter((c) => !hiddenColumnKeys.has(String(c.key))),
     [orderedColumns, hiddenColumnKeys],
+  );
+
+  // ── Card view ─────────────────────────────────────────────────────────────
+  // Measured off the table's own container width (not the viewport) via
+  // ResizeObserver, so it responds correctly even when the table sits in a
+  // narrow sidebar/split-pane on an otherwise wide screen. Starts `null`
+  // (unmeasured) rather than 0, so the table is what renders for one frame on
+  // mount instead of briefly flashing cards.
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+  // A callback ref (not `useRef` + a `useLayoutEffect`) so this fires whenever
+  // the container node actually becomes available, not just when `hasCardView`
+  // changes: the `loading` early-return below renders its own container div, so
+  // a consumer whose `loading` starts `true` would otherwise measure nothing on
+  // mount and never re-measure once the real container replaces it. Mirrors
+  // DataGrid's `setContainerRef`, which has the same constraint.
+  const setContainerRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      resizeObserverRef.current?.disconnect();
+      resizeObserverRef.current = null;
+
+      if (!el || !hasCardView) return;
+
+      const observer = new ResizeObserver((entries) => {
+        const width = entries[0]?.contentRect.width;
+        if (width != null) setContainerWidth(width);
+      });
+      observer.observe(el);
+      resizeObserverRef.current = observer;
+    },
+    [hasCardView],
+  );
+
+  // Card view kicks in below the explicit `cardViewBreakpoint` OR once the
+  // container is too narrow to fit every visible column at a usable minimum
+  // width - the latter means a wide/many-column table auto-switches without
+  // the consumer having to hand-calculate a breakpoint for it.
+  const columnCountForCardView = visibleColumns.length + (selectable ? 1 : 0);
+
+  const isCardView =
+    hasCardView &&
+    containerWidth !== null &&
+    (containerWidth < cardViewBreakpoint ||
+      containerWidth < columnCountForCardView * MIN_COLUMN_WIDTH_PX);
+
+  // Only the first matching column is honored (see TableColumnCommon.cardHeader
+  // / cardSubheader).
+  const cardHeaderColumn = useMemo(
+    () => visibleColumns.find((c) => c.cardHeader),
+    [visibleColumns],
+  );
+  const cardSubheaderColumn = useMemo(
+    () => visibleColumns.find((c) => c.cardSubheader),
+    [visibleColumns],
+  );
+  // `type: 'action'` is the column that exists to hold interactive row
+  // controls (a Menu/button - see the <td>'s own stopPropagation below), so in
+  // card view it moves to the card's top-right slot rather than rendering as a
+  // labelled field. `type: 'icon'` deliberately does NOT: it's used for
+  // genuine data glyphs (a status/avatar icon) just as often as for actions.
+  const cardActionsColumn = useMemo(
+    () => visibleColumns.find((c) => c.type === 'action'),
+    [visibleColumns],
+  );
+  // Everything else renders as a label-above-value field, in column order.
+  const cardFieldColumns = useMemo(
+    () =>
+      visibleColumns.filter(
+        (c) => c !== cardHeaderColumn && c !== cardSubheaderColumn && c !== cardActionsColumn,
+      ),
+    [visibleColumns, cardHeaderColumn, cardSubheaderColumn, cardActionsColumn],
   );
 
   // ── Pinned / sticky columns ────────────────────────────────────────────────
@@ -355,19 +437,33 @@ export const Table = <T extends object>({
     [data, selectedSet, rowKey],
   );
 
-  // ── CSV Export ────────────────────────────────────────────────────────────
-  const getRawValue = (item: T, column: TableColumn<T>): string => {
-    const value =
-      typeof column.key === 'string' && column.key.includes('.')
-        ? (column.key as string)
-            .split('.')
-            .reduce(
-              (obj: unknown, k: string) => (obj as Record<string, unknown>)?.[k],
-              item as unknown,
-            )
-        : item[column.key as keyof T];
-    return String(value ?? '');
+  // ── Cell values ───────────────────────────────────────────────────────────
+  /**
+   * Raw value for a column, resolving dotted keys (`'user.name'`) against
+   * nested objects. Shared by the table cells, the cards and the CSV export so
+   * all three read the same field for a given column.
+   */
+  const getCellValue = (item: T, column: TableColumn<T>): unknown =>
+    typeof column.key === 'string' && column.key.includes('.')
+      ? (column.key as string)
+          .split('.')
+          .reduce(
+            (obj: unknown, k: string) => (obj as Record<string, unknown>)?.[k],
+            item as unknown,
+          )
+      : item[column.key as keyof T];
+
+  /** Rendered cell content - the column's own `render`, or the stringified value. */
+  const renderCellContent = (item: T, column: TableColumn<T>): React.ReactNode => {
+    const value = getCellValue(item, column);
+    return column.render
+      ? (column.render as TableCellRenderer<T>)(value, item)
+      : String(value ?? '');
   };
+
+  // ── CSV Export ────────────────────────────────────────────────────────────
+  const getRawValue = (item: T, column: TableColumn<T>): string =>
+    String(getCellValue(item, column) ?? '');
 
   const handleExportCsv = () => {
     const headers = visibleColumns.map((c) => escapeCsvValue(c.label)).join(',');
@@ -461,10 +557,22 @@ export const Table = <T extends object>({
   // ── Density class ─────────────────────────────────────────────────────────
   const densityClass = effectiveDensity !== 'comfortable' ? `eidos-table--${effectiveDensity}` : '';
 
+  // Always include the current page size in the options so the Select is never
+  // blank - matches DataGrid, which does the same with the same defaults.
+  const effectivePageSizeOptions = useMemo(
+    () =>
+      pageSizeOptions.includes(currentPageSize)
+        ? pageSizeOptions
+        : [...pageSizeOptions, currentPageSize].sort((a, b) => a - b),
+    [pageSizeOptions, currentPageSize],
+  );
+
   // ── Loading ───────────────────────────────────────────────────────────────
+  // Keeps the container ref attached: without it a table that mounts with
+  // `loading` already true would never get measured (see `setContainerRef`).
   if (loading) {
     return (
-      <div className={`eidos-table-container ${className || ''}`}>
+      <div ref={setContainerRef} className={`eidos-table-container ${className || ''}`}>
         <div className="eidos-table-loading">
           <Spinner size="md" />
           <p>Loading...</p>
@@ -538,9 +646,140 @@ export const Table = <T extends object>({
   // ── SortableContext items: visible column keys only ───────────────────────
   const sortableItems = visibleColumns.map((c) => String(c.key));
 
+  // ── Empty state ───────────────────────────────────────────────────────────
+  // Shared by table and card view so both read identically - filtered-to-empty
+  // offers a way out, genuinely-empty just explains itself.
+  const emptyStateNode =
+    Object.keys(filters).length > 0 ? (
+      <EmptyState
+        icon={<SearchX />}
+        title="No results found"
+        description="Try adjusting your filters or search terms."
+        action={
+          onFiltersChange ? (
+            <Button
+              size="sm"
+              variant="outlined"
+              color="primary"
+              onClick={() => onFiltersChange({})}
+            >
+              Clear filters
+            </Button>
+          ) : undefined
+        }
+        size="sm"
+      />
+    ) : (
+      <EmptyState
+        icon={<FolderOpen />}
+        title={emptyMessage}
+        description="There are no records to display."
+        size="sm"
+      />
+    );
+
+  // A card with no checkbox, no heading and no actions column has nothing to
+  // put in its top bar - rendering it anyway leaves a dead strip and a divider
+  // above the first field.
+  const hasCardToolbar =
+    selectable || !!cardHeaderColumn || !!cardSubheaderColumn || !!cardActionsColumn;
+
+  // ── Card view ─────────────────────────────────────────────────────────────
+  // Replaces the <table> below the breakpoint - see `isCardView`. Only the row
+  // rendering changes: toolbar, filters, sorting, selection and pagination are
+  // all rendered by the shared markup around it, exactly as in table mode.
+  const cardsContent = (
+    <div
+      className="eidos-table-cards"
+      style={{ '--eidos-table-card-min-width': `${cardMinWidth}px` } as React.CSSProperties}
+    >
+      {displayData.length > 0 ? (
+        displayData.map((item, rowIndex) => {
+          const globalIndex = showPagination
+            ? (currentPage - 1) * currentPageSize + rowIndex
+            : rowIndex;
+          const key = getRowKey(item, globalIndex);
+          const isSelected = selectedSet.has(key);
+
+          return (
+            <div
+              key={key}
+              className={[
+                'eidos-table-card',
+                onRowClick ? 'eidos-table-card--clickable' : '',
+                isSelected ? 'eidos-table-card--selected' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              onClick={() => onRowClick?.(item)}
+            >
+              {/* stopPropagation so the checkbox and the row-actions control
+                  never bubble into `onRowClick` - mirrors the checkbox /
+                  `type: 'action'` <td>s' own handlers in table mode. */}
+              {hasCardToolbar && (
+                <div className="eidos-table-card-toolbar" onClick={(e) => e.stopPropagation()}>
+                  <div className="eidos-table-card-toolbar-left">
+                    {selectable && (
+                      <Checkbox
+                        size="sm"
+                        checked={isSelected}
+                        onChange={() => toggleRow(key)}
+                        aria-label={`Select row ${globalIndex + 1}`}
+                      />
+                    )}
+                  </div>
+
+                  {/* Always rendered (even empty) so it occupies the toolbar's
+                    middle grid column - omitting the element would shift the
+                    right zone into this column instead of the third one. */}
+                  <div className="eidos-table-card-heading">
+                    {cardHeaderColumn && (
+                      <span className="eidos-table-card-heading-title">
+                        {renderCellContent(item, cardHeaderColumn)}
+                      </span>
+                    )}
+                    {cardSubheaderColumn && (
+                      <span className="eidos-table-card-heading-subtitle">
+                        {renderCellContent(item, cardSubheaderColumn)}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="eidos-table-card-toolbar-right">
+                    {cardActionsColumn && renderCellContent(item, cardActionsColumn)}
+                  </div>
+                </div>
+              )}
+
+              <div className="eidos-table-card-fields">
+                {cardFieldColumns.map((column) => (
+                  <div key={String(column.key)} className="eidos-table-card-field">
+                    {/* An icon column's label is typically empty - skip the
+                        label element entirely rather than leaving a gap. */}
+                    {column.label && (
+                      <span className="eidos-table-card-field-label">{column.label}</span>
+                    )}
+                    <span className="eidos-table-card-field-value">
+                      {renderCellContent(item, column)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="eidos-table-card-empty">{emptyStateNode}</div>
+      )}
+    </div>
+  );
+
   // ── Main JSX ──────────────────────────────────────────────────────────────
   const tableContent = (
-    <div className={`eidos-table-container ${className || ''}`}>
+    <div
+      ref={setContainerRef}
+      className={['eidos-table-container', densityClass, className].filter(Boolean).join(' ')}
+    >
       {/* ── Toolbar ───────────────────────────────────────────────────────── */}
       {showToolbar && (
         <div className="eidos-table-toolbar">
@@ -671,259 +910,228 @@ export const Table = <T extends object>({
         </div>
       )}
 
-      {/* ── Table (wrapped for horizontal scroll) ─────────────────────────── */}
-      <div className="eidos-table-scroll">
-        <table
-          className={[
-            'eidos-table',
-            densityClass,
-            draggableColumns ? 'eidos-table--draggable-columns' : '',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-        >
-          <thead ref={theadRef}>
-            <tr>
-              {selectable && (
-                <th
-                  className={[
-                    'eidos-table-header-cell',
-                    'eidos-table-checkbox-cell',
-                    getHeaderPinnedProps('__checkbox__').className,
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                  style={getHeaderPinnedProps('__checkbox__').style}
-                  data-col-key="__checkbox__"
-                >
-                  <Checkbox
-                    size="sm"
-                    checked={allSelected}
-                    indeterminate={someSelected}
-                    onChange={toggleAll}
-                    aria-label="Select all rows"
-                  />
-                </th>
-              )}
-
-              {/* ── Headers: draggable or plain ──────────────────────────── */}
-              {draggableColumns
-                ? visibleColumns.map((column) => {
-                    const colKey = String(column.key);
-                    const columnType = column.type || 'data';
-                    const columnWidth =
-                      column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
-                    const isSortable = !!column.sortable;
-                    const isCurrentlySorted = currentSort?.key === colKey;
-                    const sortDirection = isCurrentlySorted
-                      ? (currentSort!.direction as 'asc' | 'desc')
-                      : null;
-                    const alignment = column.align || 'left';
-                    const { style: pinnedStyle, className: pinnedClass } =
-                      getHeaderPinnedProps(colKey);
-
-                    return (
-                      <SortableColumnHeader
-                        key={colKey}
-                        id={colKey}
-                        column={column}
-                        isSortable={isSortable}
-                        isCurrentlySorted={!!isCurrentlySorted}
-                        sortDirection={sortDirection}
-                        alignment={alignment}
-                        columnType={columnType}
-                        columnWidth={columnWidth}
-                        pinnedClass={pinnedClass}
-                        stickyStyle={pinnedStyle}
-                        onSortClick={() => handleSort(colKey)}
-                      />
-                    );
-                  })
-                : visibleColumns.map((column, index) => {
-                    const colKey = String(column.key);
-                    const columnType = column.type || 'data';
-                    const columnWidth =
-                      column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
-                    const isSortable = column.sortable;
-                    const isCurrentlySorted = currentSort?.key === colKey;
-                    const sortDirection = isCurrentlySorted ? currentSort!.direction : null;
-                    const alignment = column.align || 'left';
-                    const alignmentClass = `eidos-table-align-${alignment}`;
-                    const { style: pinnedStyle, className: pinnedClass } =
-                      getHeaderPinnedProps(colKey);
-
-                    return (
-                      <th
-                        key={index}
-                        className={[
-                          'eidos-table-header-cell',
-                          `eidos-table-header-cell-${columnType}`,
-                          isSortable ? 'eidos-table-sortable' : '',
-                          isCurrentlySorted ? 'eidos-table-sorted' : '',
-                          alignmentClass,
-                          pinnedClass,
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                        style={{ width: columnWidth, ...pinnedStyle }}
-                        data-col-key={colKey}
-                        onClick={() => isSortable && handleSort(colKey)}
-                      >
-                        <div className={`eidos-table-header-content ${alignmentClass}`}>
-                          <span>{column.label}</span>
-                          {isSortable && (
-                            <div className="eidos-table-sort-indicator">
-                              {sortDirection === 'asc' && <ArrowUp size={14} />}
-                              {sortDirection === 'desc' && <ArrowDown size={14} />}
-                              {!sortDirection && <ChevronsUpDown size={14} />}
-                            </div>
-                          )}
-                        </div>
-                      </th>
-                    );
-                  })}
-            </tr>
-          </thead>
-          <tbody>
-            {displayData.length > 0 ? (
-              displayData.map((item, rowIndex) => {
-                const globalIndex = showPagination
-                  ? (currentPage - 1) * currentPageSize + rowIndex
-                  : rowIndex;
-                const key = getRowKey(item, globalIndex);
-                const isSelected = selectedSet.has(key);
-
-                return (
-                  <tr
-                    key={key}
+      {/* ── Rows: cards below the breakpoint, otherwise the table ─────────── */}
+      {isCardView ? (
+        cardsContent
+      ) : (
+        /* Table wrapped for horizontal scroll */
+        <div className="eidos-table-scroll">
+          <table
+            className={[
+              'eidos-table',
+              densityClass,
+              draggableColumns ? 'eidos-table--draggable-columns' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            <thead ref={theadRef}>
+              <tr>
+                {selectable && (
+                  <th
                     className={[
-                      'eidos-table-row',
-                      onRowClick ? 'eidos-table-clickable' : '',
-                      isSelected ? 'eidos-table-row--selected' : '',
+                      'eidos-table-header-cell',
+                      'eidos-table-checkbox-cell',
+                      getHeaderPinnedProps('__checkbox__').className,
                     ]
                       .filter(Boolean)
                       .join(' ')}
-                    onClick={() => onRowClick?.(item)}
+                    style={getHeaderPinnedProps('__checkbox__').style}
+                    data-col-key="__checkbox__"
                   >
-                    {selectable && (
-                      <td
-                        className={[
-                          'eidos-table-cell',
-                          'eidos-table-checkbox-cell',
-                          getCellPinnedProps('__checkbox__').className,
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                        style={getCellPinnedProps('__checkbox__').style}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleRow(key);
-                        }}
-                      >
-                        {/* Wrap in a span so Checkbox click-events don't
-                            bubble to the <td> and cause a double-toggle.
-                            The <td> onClick handles toggling when the user
-                            clicks the cell margin outside the checkbox. */}
-                        <span onClick={(e) => e.stopPropagation()}>
-                          <Checkbox
-                            size="sm"
-                            checked={isSelected}
-                            onChange={() => toggleRow(key)}
-                            aria-label={`Select row ${globalIndex + 1}`}
-                          />
-                        </span>
-                      </td>
-                    )}
-                    {visibleColumns.map((column, colIndex) => {
-                      const colKey = String(column.key);
-                      const value =
-                        typeof column.key === 'string' && column.key.includes('.')
-                          ? (column.key as string)
-                              .split('.')
-                              .reduce(
-                                (obj: unknown, k: string) => (obj as Record<string, unknown>)?.[k],
-                                item as unknown,
-                              )
-                          : item[column.key as keyof T];
+                    <Checkbox
+                      size="sm"
+                      checked={allSelected}
+                      indeterminate={someSelected}
+                      onChange={toggleAll}
+                      aria-label="Select all rows"
+                    />
+                  </th>
+                )}
 
+                {/* ── Headers: draggable or plain ──────────────────────────── */}
+                {draggableColumns
+                  ? visibleColumns.map((column) => {
+                      const colKey = String(column.key);
                       const columnType = column.type || 'data';
                       const columnWidth =
                         column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                      const isSortable = !!column.sortable;
+                      const isCurrentlySorted = currentSort?.key === colKey;
+                      const sortDirection = isCurrentlySorted
+                        ? (currentSort!.direction as 'asc' | 'desc')
+                        : null;
+                      const alignment = column.align || 'left';
+                      const { style: pinnedStyle, className: pinnedClass } =
+                        getHeaderPinnedProps(colKey);
+
+                      return (
+                        <SortableColumnHeader
+                          key={colKey}
+                          id={colKey}
+                          column={column}
+                          isSortable={isSortable}
+                          isCurrentlySorted={!!isCurrentlySorted}
+                          sortDirection={sortDirection}
+                          alignment={alignment}
+                          columnType={columnType}
+                          columnWidth={columnWidth}
+                          pinnedClass={pinnedClass}
+                          stickyStyle={pinnedStyle}
+                          onSortClick={() => handleSort(colKey)}
+                        />
+                      );
+                    })
+                  : visibleColumns.map((column, index) => {
+                      const colKey = String(column.key);
+                      const columnType = column.type || 'data';
+                      const columnWidth =
+                        column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                      const isSortable = column.sortable;
+                      const isCurrentlySorted = currentSort?.key === colKey;
+                      const sortDirection = isCurrentlySorted ? currentSort!.direction : null;
                       const alignment = column.align || 'left';
                       const alignmentClass = `eidos-table-align-${alignment}`;
                       const { style: pinnedStyle, className: pinnedClass } =
-                        getCellPinnedProps(colKey);
+                        getHeaderPinnedProps(colKey);
 
                       return (
-                        <td
-                          key={colIndex}
+                        <th
+                          key={index}
                           className={[
-                            'eidos-table-cell',
-                            `eidos-table-cell-${columnType}`,
+                            'eidos-table-header-cell',
+                            `eidos-table-header-cell-${columnType}`,
+                            isSortable ? 'eidos-table-sortable' : '',
+                            isCurrentlySorted ? 'eidos-table-sorted' : '',
                             alignmentClass,
                             pinnedClass,
                           ]
                             .filter(Boolean)
                             .join(' ')}
                           style={{ width: columnWidth, ...pinnedStyle }}
-                          // `type: 'action'` cells exist specifically to hold
-                          // interactive controls (a row-actions Menu/button,
-                          // typically) - without this, clicking them bubbles
-                          // straight into `onRowClick` on the <tr> below,
-                          // e.g. opening a details drawer at the same time as
-                          // (or instead of) the action itself. Mirrors the
-                          // selectable checkbox cell's own stopPropagation
-                          // above, for the same reason.
-                          onClick={columnType === 'action' ? (e) => e.stopPropagation() : undefined}
+                          data-col-key={colKey}
+                          onClick={() => isSortable && handleSort(colKey)}
                         >
-                          {column.render
-                            ? (column.render as TableCellRenderer<T>)(value, item)
-                            : String(value ?? '')}
-                        </td>
+                          <div className={`eidos-table-header-content ${alignmentClass}`}>
+                            <span>{column.label}</span>
+                            {isSortable && (
+                              <div className="eidos-table-sort-indicator">
+                                {sortDirection === 'asc' && <ArrowUp size={14} />}
+                                {sortDirection === 'desc' && <ArrowDown size={14} />}
+                                {!sortDirection && <ChevronsUpDown size={14} />}
+                              </div>
+                            )}
+                          </div>
+                        </th>
                       );
                     })}
-                  </tr>
-                );
-              })
-            ) : (
-              <tr className="eidos-table-empty-row">
-                <td
-                  colSpan={selectable ? visibleColumns.length + 1 : visibleColumns.length}
-                  className="eidos-table-cell eidos-table-empty-cell"
-                >
-                  {Object.keys(filters).length > 0 ? (
-                    <EmptyState
-                      icon={<SearchX />}
-                      title="No results found"
-                      description="Try adjusting your filters or search terms."
-                      action={
-                        onFiltersChange ? (
-                          <Button
-                            size="sm"
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => onFiltersChange({})}
-                          >
-                            Clear filters
-                          </Button>
-                        ) : undefined
-                      }
-                      size="sm"
-                    />
-                  ) : (
-                    <EmptyState
-                      icon={<FolderOpen />}
-                      title={emptyMessage}
-                      description="There are no records to display."
-                      size="sm"
-                    />
-                  )}
-                </td>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {displayData.length > 0 ? (
+                displayData.map((item, rowIndex) => {
+                  const globalIndex = showPagination
+                    ? (currentPage - 1) * currentPageSize + rowIndex
+                    : rowIndex;
+                  const key = getRowKey(item, globalIndex);
+                  const isSelected = selectedSet.has(key);
+
+                  return (
+                    <tr
+                      key={key}
+                      className={[
+                        'eidos-table-row',
+                        onRowClick ? 'eidos-table-clickable' : '',
+                        isSelected ? 'eidos-table-row--selected' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      onClick={() => onRowClick?.(item)}
+                    >
+                      {selectable && (
+                        <td
+                          className={[
+                            'eidos-table-cell',
+                            'eidos-table-checkbox-cell',
+                            getCellPinnedProps('__checkbox__').className,
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          style={getCellPinnedProps('__checkbox__').style}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleRow(key);
+                          }}
+                        >
+                          {/* Wrap in a span so Checkbox click-events don't
+                            bubble to the <td> and cause a double-toggle.
+                            The <td> onClick handles toggling when the user
+                            clicks the cell margin outside the checkbox. */}
+                          <span onClick={(e) => e.stopPropagation()}>
+                            <Checkbox
+                              size="sm"
+                              checked={isSelected}
+                              onChange={() => toggleRow(key)}
+                              aria-label={`Select row ${globalIndex + 1}`}
+                            />
+                          </span>
+                        </td>
+                      )}
+                      {visibleColumns.map((column, colIndex) => {
+                        const colKey = String(column.key);
+                        const columnType = column.type || 'data';
+                        const columnWidth =
+                          column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                        const alignment = column.align || 'left';
+                        const alignmentClass = `eidos-table-align-${alignment}`;
+                        const { style: pinnedStyle, className: pinnedClass } =
+                          getCellPinnedProps(colKey);
+
+                        return (
+                          <td
+                            key={colIndex}
+                            className={[
+                              'eidos-table-cell',
+                              `eidos-table-cell-${columnType}`,
+                              alignmentClass,
+                              pinnedClass,
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            style={{ width: columnWidth, ...pinnedStyle }}
+                            // `type: 'action'` cells exist specifically to hold
+                            // interactive controls (a row-actions Menu/button,
+                            // typically) - without this, clicking them bubbles
+                            // straight into `onRowClick` on the <tr> below,
+                            // e.g. opening a details drawer at the same time as
+                            // (or instead of) the action itself. Mirrors the
+                            // selectable checkbox cell's own stopPropagation
+                            // above, for the same reason.
+                            onClick={
+                              columnType === 'action' ? (e) => e.stopPropagation() : undefined
+                            }
+                          >
+                            {renderCellContent(item, column)}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr className="eidos-table-empty-row">
+                  <td
+                    colSpan={selectable ? visibleColumns.length + 1 : visibleColumns.length}
+                    className="eidos-table-cell eidos-table-empty-cell"
+                  >
+                    {emptyStateNode}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* ── Footer / Pagination ───────────────────────────────────────────── */}
       {showFooter && (
@@ -937,7 +1145,7 @@ export const Table = <T extends object>({
                 totalItems={totalItems ?? data.length}
                 pageSize={currentPageSize}
                 onPageSizeChange={handlePageSizeChange}
-                pageSizeOptions={pageSizeOptions}
+                pageSizeOptions={effectivePageSizeOptions}
                 size="sm"
               />
             ) : (

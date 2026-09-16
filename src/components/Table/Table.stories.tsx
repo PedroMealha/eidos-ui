@@ -139,6 +139,26 @@ const meta: Meta<typeof Table<User>> = {
       description: 'Show the column-filter toolbar',
       table: { defaultValue: { summary: 'false' } },
     },
+    hasCardView: {
+      control: 'boolean',
+      description:
+        'On by default: below `cardViewBreakpoint`, or once the table can no longer fit ' +
+        'every visible column at a usable minimum width, swap the table for a grid of cards.',
+      table: { defaultValue: { summary: 'true' } },
+    },
+    cardViewBreakpoint: {
+      control: 'number',
+      description:
+        'Container width (px) at/below which card view kicks in. Card view also switches ' +
+        'on automatically once the columns no longer fit, regardless of this value.',
+      table: { defaultValue: { summary: '640' } },
+    },
+    cardMinWidth: {
+      control: 'number',
+      description:
+        'Minimum width (px) a card can shrink to before the next one wraps to a new row.',
+      table: { defaultValue: { summary: '280' } },
+    },
     // Non-controllable props
     data: { control: false },
     columns: { control: false },
@@ -571,6 +591,89 @@ export const EmptyState: Story = {
           data={[]}
           columns={columns}
           emptyMessage="No users found. Try adjusting your filters or create a new user."
+        />
+      </div>
+    );
+  },
+};
+
+// Responsive card view
+const cardViewColumns: TableColumn<User>[] = [
+  { key: 'name', label: 'Name', sortable: true, cardHeader: true },
+  { key: 'role', label: 'Role', cardSubheader: true },
+  { key: 'email', label: 'Email' },
+  { key: 'status', label: 'Status', render: (value) => <Chip size="sm">{value}</Chip> },
+  { key: 'joinDate', label: 'Joined' },
+  {
+    key: 'actions',
+    label: '',
+    type: 'action',
+    render: (_value, item) => (
+      <Menu
+        trigger={<Button variant="text" size="sm" icon={MoreVertical} />}
+        items={[
+          {
+            id: 'view',
+            type: 'item',
+            label: 'View',
+            icon: Eye,
+            onClick: () => alert(`View ${item.name}`),
+          },
+          {
+            id: 'edit',
+            type: 'item',
+            label: 'Edit',
+            icon: Edit,
+            onClick: () => alert(`Edit ${item.name}`),
+          },
+        ]}
+      />
+    ),
+  },
+];
+
+export const ResponsiveCardView: Story = {
+  name: 'Responsive card view',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'With `hasCardView` (on by default), the table measures its own container width ' +
+          '(via ResizeObserver, not the viewport) and swaps the table for a card grid once ' +
+          'it drops to/below `cardViewBreakpoint` (900px here). Cards lay out with CSS ' +
+          '`repeat(auto-fill, minmax(cardMinWidth, 1fr))`, so as many fit per row as the ' +
+          'container allows - drag the resize handle at the bottom-right of the box below ' +
+          'to see both the table/card swap and the per-row card count respond live. `name` ' +
+          'is marked `cardHeader` and `role` `cardSubheader`, so they become the card ' +
+          'title / subtitle instead of a label:value row like every other column, and the ' +
+          "`type: 'action'` column renders top-right of the card. Density, pagination, " +
+          'filtering, sorting and selection all keep working exactly as in table mode.',
+      },
+    },
+  },
+  render: function ResponsiveCardViewStory() {
+    return (
+      <div
+        style={{
+          resize: 'horizontal',
+          overflow: 'auto',
+          width: 900,
+          maxWidth: '100%',
+          border: '1px dashed var(--gray-300)',
+          padding: 8,
+        }}
+      >
+        <Table
+          data={sampleUsers}
+          columns={cardViewColumns}
+          rowKey="id"
+          cardViewBreakpoint={900}
+          cardMinWidth={240}
+          selectable
+          showDensity
+          showFooter
+          showPagination
+          pageSize={4}
         />
       </div>
     );

@@ -54,9 +54,28 @@ interface TableColumnCommon {
   // Date filter specific options
   dateFilterMode?: 'single' | 'multiple' | 'range';
   width?: string;
+  /**
+   * Cell text alignment. Applies in table mode only: card view renders each
+   * field as a label above its value, where aligning the value away from its
+   * own label reads as a misalignment rather than a choice.
+   */
   align?: 'left' | 'center' | 'right';
   /** Enables position:sticky on this column */
   pin?: 'left' | 'right';
+
+  // ── Card view (see TableProps.hasCardView) ─────────────────────────────────
+  /**
+   * Render this column's value as the card's title instead of a label:value
+   * field row. Only the first column with `cardHeader` set is used - if
+   * several are marked, the rest render as normal fields.
+   */
+  cardHeader?: boolean;
+  /**
+   * Render this column's value as the card's subtitle, directly under the
+   * `cardHeader` value. Only the first column with `cardSubheader` set is
+   * used. Has no effect without a `cardHeader` column also being set.
+   */
+  cardSubheader?: boolean;
 }
 
 /**
@@ -159,6 +178,41 @@ interface TableProps<T extends object = Record<string, unknown>> {
   // Feature 5: Column drag-reorder
   draggableColumns?: boolean;
   onColumnReorder?: (newColumns: TableColumn<T>[]) => void;
+
+  // ── Card view ──────────────────────────────────────────────────────────────
+  /**
+   * On by default: below `cardViewBreakpoint`, or once the table's own width
+   * can no longer fit every visible column at a usable width, swap the table
+   * for a stacked list of cards - one per row. Only the row rendering
+   * changes; the toolbar, pagination, filtering, sorting and selection all
+   * keep working. `draggableColumns` has no effect in card view (there are no
+   * column headers to drag).
+   *
+   * Matches `DataGridProps.hasCardView` - both components use the same
+   * defaults and the same measured-container logic. Set to `false` to always
+   * render a table.
+   *
+   * @default true
+   */
+  hasCardView?: boolean;
+  /**
+   * Container width (px) at/below which card view kicks in. This is an
+   * explicit floor - card view also switches on automatically, regardless
+   * of this value, once the container can't fit every visible column at a
+   * usable minimum width, so a many-column table never has to overflow
+   * horizontally waiting for a hand-tuned breakpoint.
+   *
+   * @default 640
+   */
+  cardViewBreakpoint?: number;
+  /**
+   * Cards lay out in a responsive grid (CSS `repeat(auto-fill, minmax(...))`)
+   * rather than one per row - this sets the minimum width (px) a card can
+   * shrink to before the next one wraps to a new row.
+   *
+   * @default 280
+   */
+  cardMinWidth?: number;
 }
 
 export type { TableColumn, TableFilters, TableProps, FilterValue };

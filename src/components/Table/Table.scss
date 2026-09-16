@@ -281,6 +281,8 @@
 }
 
 // ── Feature 1: Row density ────────────────────────────────────────────────────
+// The modifier lands on both the container and the <table>, so it reaches card
+// view too (which has no <table> to hang off) - see Table.component.tsx.
 
 .eidos-table--compact .eidos-table-header-cell,
 .eidos-table--compact .eidos-table-cell {
@@ -292,6 +294,51 @@
 .eidos-table--spacious .eidos-table-header-cell,
 .eidos-table--spacious .eidos-table-cell {
   padding: 16px 12px;
+}
+
+// Density in card view: there are no cells to re-pad, so it scales the card
+// grid's own padding/gaps and each card's internal rhythm instead. Same
+// token steps as DataGrid's, so the two stay visually interchangeable.
+.eidos-table--compact {
+  .eidos-table-cards {
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .eidos-table-card {
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .eidos-table-card-toolbar {
+    gap: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .eidos-table-card-fields {
+    gap: var(--spacing-xs);
+  }
+}
+
+.eidos-table--spacious {
+  .eidos-table-cards {
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  .eidos-table-card {
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  .eidos-table-card-toolbar {
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+  }
+
+  .eidos-table-card-fields {
+    gap: var(--spacing-md);
+  }
 }
 
 // ── Feature 4: Pinned / sticky columns ────────────────────────────────────────
@@ -505,6 +552,137 @@
     padding: var(--spacing-sm);
     font-size: var(--font-size-xs);
   }
+}
+
+// ── Card view (TableProps.hasCardView) ───────────────────────────────────────
+// Swaps in for the <table> below `cardViewBreakpoint` - see Table.component.tsx.
+// Only the row layout changes; toolbar/pagination markup is untouched.
+// Deliberately mirrors DataGrid's own card view class-for-class so the two
+// siblings render the same way at the same widths.
+
+// `--eidos-table-card-min-width` is set inline per-instance from `cardMinWidth`
+// (genuinely dynamic, so a CSS custom property rather than a static class).
+// `auto-fill` + `minmax` fits as many cards per row as the container allows
+// instead of forcing one per row; `align-items: start` keeps a shorter card
+// from being stretched to match a taller neighbour in the same row.
+.eidos-table-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--eidos-table-card-min-width, 280px), 1fr));
+  align-items: start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+}
+
+.eidos-table-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background: var(--white);
+  transition: background-color 0.1s ease;
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--primary-50);
+    }
+  }
+
+  &--selected {
+    background: var(--primary-50);
+    border-color: var(--primary-200);
+
+    &.eidos-table-card--clickable:hover {
+      background: var(--primary-100);
+    }
+  }
+}
+
+// Top bar: checkbox (left) - header/subheader (centered) - row actions
+// (right), 3 zones on a single line, then a divider before the field list.
+// `grid-template-columns` (rather than flex `space-between`) is what keeps the
+// heading genuinely centered regardless of how wide the outer zones end up.
+.eidos-table-card-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.eidos-table-card-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-self: start;
+}
+
+.eidos-table-card-toolbar-right {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+}
+
+// Header/subheader - the columns opted into `cardHeader`/`cardSubheader`.
+// Centered in the toolbar's middle column; collapses to an empty column
+// (still keeping the outer zones apart) when neither is set.
+.eidos-table-card-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+
+.eidos-table-card-heading-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--dark-color);
+}
+
+.eidos-table-card-heading-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+// Remaining columns, each a label-above-value stack. `auto-fit` + `minmax`
+// lays out as many fields per row as the card's own width allows, and
+// collapses to a single column once it's too narrow to fit a second 140px
+// track - no media query needed, it falls out of the grid algorithm itself as
+// the card (not the viewport) shrinks.
+.eidos-table-card-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.eidos-table-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eidos-table-card-field-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--gray-500);
+}
+
+.eidos-table-card-field-value {
+  font-size: var(--font-size-sm);
+  color: var(--gray-700);
+  min-width: 0;
+}
+
+.eidos-table-card-empty {
+  grid-column: 1 / -1;
+  padding: var(--spacing-xl) var(--spacing-md);
 }
 
 // Footer styles

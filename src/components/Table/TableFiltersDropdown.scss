@@ -1,9 +1,20 @@
 @use '../../styles/mixins.scss' as *;
 
+// A definite width rather than shrink-to-fit: the rows below are a grid with a
+// flexible value track, which needs a resolved container width to divide up -
+// left to size itself off its content, that track's width would depend on
+// whichever filter control happens to be mounted. 480px matches what the old
+// content-driven layout measured out to (200px + 200px + the remove button).
+//
+// The panel is portalled to <body>, so the viewport is the one constraint it
+// can't discover for itself - `min()` clamps to it (leaving a 16px gutter on
+// each side) so a narrow screen shortens the rows instead of pushing the
+// panel off-screen.
 .eidos-table-filters-dropdown {
   background: var(--white);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-lg);
+  width: min(480px, calc(100vw - 32px));
 }
 
 .eidos-table-filters-header {
@@ -24,24 +35,22 @@
   margin-bottom: var(--spacing-lg);
 }
 
+// A grid, not a flex row: the narrow layout below only has to re-flow the
+// tracks (value onto its own line, remove button staying next to the column
+// select) instead of restacking three independently-sized flex children.
 .eidos-table-filter-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr) auto;
   gap: var(--spacing-md);
   align-items: center;
-  // padding: var(--spacing-md);
-  // background: var(--gray-50);
-  // border-radius: var(--border-radius-sm);
-  // border: 1px solid var(--gray-200);
 }
 
-.eidos-table-column-select {
-  flex: 0 0 200px;
-  min-width: 200px;
-}
-
+// Both controls are `fullWidth`, so the track sizes above are what actually
+// decides their width - these only need to stop their content from forcing a
+// track wider than its share.
+.eidos-table-column-select,
 .eidos-table-value-input {
-  flex: 1;
-  min-width: 200px;
+  min-width: 0;
 }
 
 .eidos-table-filters-footer {
@@ -83,34 +92,47 @@
   color: var(--primary-700);
 }
 
-// Responsive design
+// ── Narrow viewports ─────────────────────────────────────────────────────────
+// Two 200px controls side by side don't fit once the panel is clamped to the
+// viewport, so each row becomes two lines: column select + remove button on
+// the first, the value control spanning the full width below it. Every item is
+// placed explicitly - auto-placement around a full-width item leaves the
+// remove button's row ambiguous.
 @media (max-width: 768px) {
   .eidos-table-filters-dropdown {
-    min-width: 300px;
-    max-width: 400px;
+    padding: var(--spacing-md);
   }
 
   .eidos-table-filter-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--spacing-sm);
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--spacing-sm);
+    row-gap: var(--spacing-xs);
   }
 
-  .eidos-table-column-select,
+  .eidos-table-column-select {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .eidos-table-filter-remove {
+    grid-area: 1 / 2 / 2 / 3;
+  }
+
   .eidos-table-value-input {
-    flex: none;
-    min-width: auto;
+    grid-area: 2 / 1 / 3 / 3;
   }
 
-  .eidos-table-filter-row > :last-child {
-    align-self: flex-end;
+  // Rows are two lines tall now, so they need a visible boundary between them
+  // that the single-line layout doesn't.
+  .eidos-table-filter-rows {
+    gap: var(--spacing-md);
   }
 
-  .eidos-table-filters-actions {
-    flex-direction: column;
-    align-items: stretch;
+  .eidos-table-filter-row:not(:last-child) {
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--gray-100);
   }
 
+  .eidos-table-filters-actions,
   .eidos-table-filters-apply-actions {
     flex-direction: column;
     align-items: stretch;

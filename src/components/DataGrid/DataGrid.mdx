@@ -246,7 +246,9 @@ For menu capabilities `actions` can't express - nested submenus, custom `compone
 
 Mark one column `cardHeader` and, optionally, another `cardSubheader` to use their values as the card's title/subtitle - every other column renders as a label-above-value field. The row-actions column (see above) always renders top-right of the card, and selection checkboxes top-left, regardless of where either sits in `columns`.
 
-Only the row rendering changes - pagination, filtering, sorting, selection, and inline cell editing all keep working exactly as in table mode. `draggableRows` is not available in card view.
+Only the row rendering changes - pagination, filtering, sorting, selection, and inline cell editing all keep working exactly as in table mode, and `density` (including the `showDensity` picker) scales each card's padding and gaps the same way it scales cell padding in table mode. `draggableRows` is not available in card view.
+
+> **Note**: `Table` has the same card view, prop-for-prop and with the same defaults, so choosing between the two components never turns on responsive behaviour.
 
 <Canvas of={DataGridStories.ResponsiveCardView} />
 

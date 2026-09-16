@@ -607,6 +607,28 @@
   .eidos-data-grid-cell {
     padding: 4px 12px;
   }
+
+  // Card view has no cells to re-pad, so density scales the card grid's own
+  // padding/gaps and each card's internal rhythm instead. Table shares these
+  // token steps - see Table.scss.
+  .eidos-datagrid-cards {
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .eidos-datagrid-card {
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+  }
+
+  .eidos-datagrid-card-toolbar {
+    gap: var(--spacing-xs);
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .eidos-datagrid-card-fields {
+    gap: var(--spacing-xs);
+  }
 }
 
 .eidos-datagrid--spacious {
@@ -616,6 +638,25 @@
 
   .eidos-data-grid-cell {
     padding: 16px 12px;
+  }
+
+  .eidos-datagrid-cards {
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  .eidos-datagrid-card {
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+  }
+
+  .eidos-datagrid-card-toolbar {
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+  }
+
+  .eidos-datagrid-card-fields {
+    gap: var(--spacing-md);
   }
 }
 
@@ -874,6 +915,10 @@
   width: fit-content;
 }
 
+// Spans every track: the empty state is a single centered message, so letting
+// it sit in one `cardMinWidth`-wide column would squeeze it into a corner of
+// an otherwise blank grid.
 .eidos-datagrid-card-empty {
+  grid-column: 1 / -1;
   padding: var(--spacing-xl) var(--spacing-md);
 }
