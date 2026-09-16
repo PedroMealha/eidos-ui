@@ -58,12 +58,23 @@ import { renderIcon } from '../../utils';
 import type { RowKey } from '../../utils';
 import './DataGrid.scss';
 
-// Minimum usable width (px) for a single table column - used to derive an
-// automatic card-view threshold from the number of displayed columns, so a
-// grid with many columns doesn't have to overflow horizontally before
-// `cardViewBreakpoint` (a single, hand-tuned number) is reached. See
+// Minimum usable widths (px) per column, summed into the automatic card-view
+// threshold so a grid with many columns doesn't have to overflow horizontally
+// before `cardViewBreakpoint` (a single, hand-tuned number) is reached. See
 // `isCardView` below.
-const MIN_COLUMN_WIDTH_PX = 100;
+//
+// The system columns and the actions column are counted at their real, fixed
+// width rather than as a full data column: they never grow, so charging them
+// 100px each overstated the grid's minimum and flipped grids into card view
+// while they still had room to spare. Keep in sync with DataGrid.scss (and
+// with Table's own copy of these, which must agree for the two siblings to
+// switch over at the same point).
+const MIN_DATA_COLUMN_WIDTH_PX = 100;
+const ACTIONS_COLUMN_WIDTH_PX = 48;
+const CHECKBOX_COLUMN_WIDTH_PX = 40;
+const ROW_NUMBER_COLUMN_WIDTH_PX = 40;
+const DRAG_HANDLE_COLUMN_WIDTH_PX = 32;
+const EXPAND_COLUMN_WIDTH_PX = 32;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Internal column + row access
@@ -491,27 +502,32 @@ function DataGridInner<T extends object>({
     },
     [hasCardView],
   );
-  // Displayed column count, computed directly from props (available here
-  // without waiting on the `dataColumns`/`actionsColumn` memos below) -
-  // `columns.length` already includes the actions column if any, matching
-  // how `totalCols` is derived further down from `dataColumns.length +
-  // (actionsColumn ? 1 : 0)`.
-  const columnCountForCardView =
-    columns.length +
-    (showRowNumbers ? 1 : 0) +
-    (draggableRows ? 1 : 0) +
-    (selectable ? 1 : 0) +
-    (expandable ? 1 : 0);
+  // Narrowest width the grid can render at without overflowing: the sum of
+  // every column's own minimum (see the constants above). Computed directly
+  // from props, so it's available here without waiting on the `dataColumns`/
+  // `actionsColumn` memos below - `columns` already includes the actions
+  // column if any, matching how `totalCols` is derived further down.
+  const minTableWidth = useMemo(
+    () =>
+      columns.reduce(
+        (total, column) =>
+          total + (column.type === 'actions' ? ACTIONS_COLUMN_WIDTH_PX : MIN_DATA_COLUMN_WIDTH_PX),
+        (showRowNumbers ? ROW_NUMBER_COLUMN_WIDTH_PX : 0) +
+          (draggableRows ? DRAG_HANDLE_COLUMN_WIDTH_PX : 0) +
+          (selectable ? CHECKBOX_COLUMN_WIDTH_PX : 0) +
+          (expandable ? EXPAND_COLUMN_WIDTH_PX : 0),
+      ),
+    [columns, showRowNumbers, draggableRows, selectable, expandable],
+  );
 
   // Card view kicks in below the explicit `cardViewBreakpoint` OR once the
-  // container is too narrow to fit every column at a reasonable minimum
-  // width - the latter means a wide/many-column grid auto-switches without
-  // the consumer having to hand-calculate a breakpoint for it.
+  // container is too narrow to fit the grid at that minimum - the latter
+  // means a wide/many-column grid auto-switches without the consumer having
+  // to hand-calculate a breakpoint for it.
   const isCardView =
     hasCardView &&
     containerWidth !== null &&
-    (containerWidth < cardViewBreakpoint ||
-      containerWidth < columnCountForCardView * MIN_COLUMN_WIDTH_PX);
+    (containerWidth < cardViewBreakpoint || containerWidth < minTableWidth);
 
   // Card view header/subheader: only the first matching column is honored
   // (see DataGridColumn.cardHeader/cardSubheader).

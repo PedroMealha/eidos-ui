@@ -58,6 +58,10 @@ interface TableColumnCommon {
    * Cell text alignment. Applies in table mode only: card view renders each
    * field as a label above its value, where aligning the value away from its
    * own label reads as a misalignment rather than a choice.
+   *
+   * Ignored on `type: 'icon'` and `type: 'action'` columns, which are always
+   * centred - they hold a single control in a fixed-width cell, so there is
+   * nothing to align it within. `DataGrid`'s actions column behaves the same.
    */
   align?: 'left' | 'center' | 'right';
   /** Enables position:sticky on this column */

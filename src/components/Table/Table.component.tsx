@@ -45,12 +45,19 @@ import { TableFiltersDropdown } from './TableFiltersDropdown.component';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-// Minimum usable width (px) for a single table column - used to derive an
-// automatic card-view threshold from the number of displayed columns, so a
-// table with many columns doesn't have to overflow horizontally before
-// `cardViewBreakpoint` (a single, hand-tuned number) is reached. Same value
-// as DataGrid's, so siblings switch over at the same point.
-const MIN_COLUMN_WIDTH_PX = 100;
+// Minimum usable widths (px) per column, summed into the automatic card-view
+// threshold below so a table with many columns doesn't have to overflow
+// horizontally before `cardViewBreakpoint` (a single, hand-tuned number) is
+// reached. Same values as DataGrid's, so the siblings switch over at the same
+// point.
+//
+// Single-control columns are counted at their real, fixed width rather than as
+// a full data column: they never grow, so charging them 100px each overstated
+// the table's minimum and flipped tables into card view while they still had
+// room to spare. Keep in sync with the widths in Table.scss.
+const MIN_DATA_COLUMN_WIDTH_PX = 100;
+const ICON_COLUMN_WIDTH_PX = 48;
+const CHECKBOX_COLUMN_WIDTH_PX = 40;
 
 type Density = 'compact' | 'comfortable' | 'spacious';
 
@@ -260,17 +267,29 @@ export const Table = <T extends object>({
     [hasCardView],
   );
 
-  // Card view kicks in below the explicit `cardViewBreakpoint` OR once the
-  // container is too narrow to fit every visible column at a usable minimum
-  // width - the latter means a wide/many-column table auto-switches without
-  // the consumer having to hand-calculate a breakpoint for it.
-  const columnCountForCardView = visibleColumns.length + (selectable ? 1 : 0);
+  // Narrowest width the table can render at without overflowing - the sum of
+  // every visible column's own minimum (see the constants above).
+  const minTableWidth = useMemo(
+    () =>
+      visibleColumns.reduce(
+        (total, column) =>
+          total +
+          (column.type === 'icon' || column.type === 'action'
+            ? ICON_COLUMN_WIDTH_PX
+            : MIN_DATA_COLUMN_WIDTH_PX),
+        selectable ? CHECKBOX_COLUMN_WIDTH_PX : 0,
+      ),
+    [visibleColumns, selectable],
+  );
 
+  // Card view kicks in below the explicit `cardViewBreakpoint` OR once the
+  // container is too narrow to fit the table at that minimum - the latter
+  // means a wide/many-column table auto-switches without the consumer having
+  // to hand-calculate a breakpoint for it.
   const isCardView =
     hasCardView &&
     containerWidth !== null &&
-    (containerWidth < cardViewBreakpoint ||
-      containerWidth < columnCountForCardView * MIN_COLUMN_WIDTH_PX);
+    (containerWidth < cardViewBreakpoint || containerWidth < minTableWidth);
 
   // Only the first matching column is honored (see TableColumnCommon.cardHeader
   // / cardSubheader).
@@ -954,8 +973,12 @@ export const Table = <T extends object>({
                   ? visibleColumns.map((column) => {
                       const colKey = String(column.key);
                       const columnType = column.type || 'data';
-                      const columnWidth =
-                        column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                      // `icon`/`action` columns get their fixed width from
+                      // their own class in Table.scss, so `column.width` is
+                      // the only thing that needs to reach the element - and
+                      // it now actually applies to those columns instead of
+                      // being overwritten by a hardcoded value here.
+                      const columnWidth = column.width;
                       const isSortable = !!column.sortable;
                       const isCurrentlySorted = currentSort?.key === colKey;
                       const sortDirection = isCurrentlySorted
@@ -985,8 +1008,12 @@ export const Table = <T extends object>({
                   : visibleColumns.map((column, index) => {
                       const colKey = String(column.key);
                       const columnType = column.type || 'data';
-                      const columnWidth =
-                        column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                      // `icon`/`action` columns get their fixed width from
+                      // their own class in Table.scss, so `column.width` is
+                      // the only thing that needs to reach the element - and
+                      // it now actually applies to those columns instead of
+                      // being overwritten by a hardcoded value here.
+                      const columnWidth = column.width;
                       const isSortable = column.sortable;
                       const isCurrentlySorted = currentSort?.key === colKey;
                       const sortDirection = isCurrentlySorted ? currentSort!.direction : null;
@@ -1080,8 +1107,9 @@ export const Table = <T extends object>({
                       {visibleColumns.map((column, colIndex) => {
                         const colKey = String(column.key);
                         const columnType = column.type || 'data';
-                        const columnWidth =
-                          column.type === 'icon' ? 'var(--component-size-lg)' : column.width;
+                        // Fixed widths for `icon`/`action` come from their
+                        // own class in Table.scss - see the header above.
+                        const columnWidth = column.width;
                         const alignment = column.align || 'left';
                         const alignmentClass = `eidos-table-align-${alignment}`;
                         const { style: pinnedStyle, className: pinnedClass } =

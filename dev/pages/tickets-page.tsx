@@ -175,8 +175,6 @@ export const TicketsPage: React.FC = () => {
         key: 'actions',
         label: '',
         type: 'action',
-        width: '56px',
-        align: 'right',
         render: (_value, ticket) => (
           <Menu
             trigger={<Button variant="text" color="secondary" size="sm" icon="ellipsis-vertical" />}

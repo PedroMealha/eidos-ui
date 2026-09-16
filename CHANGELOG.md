@@ -41,6 +41,16 @@ Entries land here as work happens, not written retroactively at release time
 - `Table` no longer renders a blank page-size select when `pageSize` isn't
   one of `pageSizeOptions`.
 - Card view's empty state now spans the full card grid instead of one column.
+- Single-control columns (`Table`'s `type: 'icon'`/`'action'`, `DataGrid`'s
+  actions/selection/drag/expand/row-number columns) now hold one control's
+  width instead of stretching or being widened by `density`.
+- `Table` no longer ignores `column.width` on `type: 'icon'`/`'action'`
+  columns - a `type: 'action'` column was pinned at 120px regardless.
+- `Table` now always centres `type: 'icon'`/`'action'` columns, so `align`
+  can no longer sit their single control flush against the table's edge.
+- The automatic card-view threshold now sums each column's real minimum width
+  instead of charging every column 100px, so tables with icon or system
+  columns no longer switch to cards while they still fit.
 
 - `Toolbar` no longer renders a hardcoded "John Doe" avatar; it renders the
   `user` you pass, or no avatar at all.

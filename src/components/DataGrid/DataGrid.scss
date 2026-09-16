@@ -445,8 +445,12 @@
 
 // ─── Row numbers ──────────────────────────────────────────────────────────────
 
+// `width` alone is only a hint under `table-layout: auto` - the matching
+// `min-width` is what actually holds a single-control column at its size
+// instead of letting it share in the table's spare space.
 .eidos-data-grid-row-number-col {
   width: 40px;
+  min-width: 40px;
   text-align: right;
   padding-right: var(--spacing-md);
 }
@@ -497,6 +501,7 @@
 
 .eidos-data-grid-actions-col {
   width: 48px;
+  min-width: 48px;
   text-align: center;
   padding: 0;
 }
@@ -658,6 +663,34 @@
   .eidos-datagrid-card-fields {
     gap: var(--spacing-md);
   }
+}
+
+// Fixed-width system columns opt out of density's horizontal padding: each
+// holds a single control, so side padding would push the column past the width
+// declared for it above - and past what `minTableWidth` in the component
+// assumes when deciding whether the grid still fits. Two classes, the same
+// specificity as the density rules above, so source order is what decides
+// this: keep these below them.
+.eidos-data-grid-header-cell.eidos-datagrid-drag-handle-cell,
+.eidos-data-grid-cell.eidos-datagrid-drag-handle-cell,
+.eidos-data-grid-header-cell.eidos-datagrid-expand-cell,
+.eidos-data-grid-cell.eidos-datagrid-expand-cell {
+  padding: 0 4px;
+}
+
+.eidos-data-grid-header-cell.eidos-datagrid-checkbox-cell,
+.eidos-data-grid-cell.eidos-datagrid-checkbox-cell {
+  padding: 0 var(--spacing-sm);
+}
+
+.eidos-data-grid-header-cell.eidos-data-grid-actions-col,
+.eidos-data-grid-cell.eidos-data-grid-actions-col {
+  padding: 0;
+}
+
+.eidos-data-grid-header-cell.eidos-data-grid-row-number-col,
+.eidos-data-grid-cell.eidos-data-grid-row-number-col {
+  padding: 0 var(--spacing-md) 0 0;
 }
 
 // ─── Pinned / sticky columns ──────────────────────────────────────────────────

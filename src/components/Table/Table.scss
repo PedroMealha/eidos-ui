@@ -244,9 +244,16 @@
 }
 
 // Column type styles
+// Both types hold a single control - a glyph, or a row-actions Menu trigger -
+// so they're pinned to one control's width instead of sharing in the table's
+// spare space. `width` on its own is only a hint under `table-layout: auto`;
+// the matching `min-width` is what actually holds the column. A column that
+// genuinely needs more room sets its own `width`, which wins over these
+// (inline style beats a class), and `min-width` then only acts as a floor.
 .eidos-table-header-cell-icon,
 .eidos-table-cell-icon {
   width: var(--component-size-lg);
+  min-width: var(--component-size-lg);
   padding: 0 var(--spacing-md);
   text-align: center;
 
@@ -256,8 +263,8 @@
 
 .eidos-table-header-cell-action,
 .eidos-table-cell-action {
-  width: auto;
-  min-width: 120px;
+  width: var(--component-size-lg);
+  min-width: var(--component-size-lg);
   text-align: center;
 
   // Prevent menu from being cut off
@@ -294,6 +301,36 @@
 .eidos-table--spacious .eidos-table-header-cell,
 .eidos-table--spacious .eidos-table-cell {
   padding: 16px 12px;
+}
+
+// Fixed-width single-control columns opt out of density's horizontal padding:
+// each is exactly one control wide, so side padding would push the column past
+// the width declared for it above - and past what `minTableWidth` in the
+// component assumes when deciding whether the table still fits. Two classes,
+// the same specificity as the density rules above, so source order is what
+// decides this: keep these below them.
+//
+// They also opt out of `align`. The column is one control in a fixed-width
+// cell, so there is nothing to align *within* - and with no padding left to
+// inset it, an `align: 'right'` would sit the control flush against the
+// table's edge. `DataGrid`'s actions column has no `align` at all for the same
+// reason; this keeps the two consistent when a `Table` column passes one
+// anyway. (Alignment is a single class, so without this it would win on source
+// order alone - it is declared after the column-type rules above.)
+.eidos-table-header-cell.eidos-table-header-cell-icon,
+.eidos-table-cell.eidos-table-cell-icon,
+.eidos-table-header-cell.eidos-table-header-cell-action,
+.eidos-table-cell.eidos-table-cell-action,
+.eidos-table-header-cell.eidos-table-checkbox-cell,
+.eidos-table-cell.eidos-table-checkbox-cell {
+  text-align: center;
+}
+
+.eidos-table-header-cell.eidos-table-header-cell-action,
+.eidos-table-cell.eidos-table-cell-action,
+.eidos-table-header-cell.eidos-table-checkbox-cell,
+.eidos-table-cell.eidos-table-checkbox-cell {
+  padding: 0;
 }
 
 // Density in card view: there are no cells to re-pad, so it scales the card
