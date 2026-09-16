@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [2.0.0] - 2026-09-16
+
 ### Changed
 
 - **Breaking**: `DataGrid` and `Table` now check every field-addressing member
