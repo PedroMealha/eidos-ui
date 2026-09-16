@@ -47,12 +47,15 @@ import { TableFiltersDropdown } from '../Table/TableFiltersDropdown.component';
 import type { FilterValue, TableColumn, TableFilters } from '../Table/Table.types';
 import type {
   DataGridProps,
-  DataGridColumn,
+  DataGridActionsColumn,
+  DataGridCellType,
   DataGridFilterField,
   DataGridQuickFilter,
+  DataGridSelectOption,
   EditingCell,
 } from './DataGrid.types';
 import { renderIcon } from '../../utils';
+import type { RowKey } from '../../utils';
 import './DataGrid.scss';
 
 // Minimum usable width (px) for a single table column - used to derive an
@@ -61,6 +64,42 @@ import './DataGrid.scss';
 // `cardViewBreakpoint` (a single, hand-tuned number) is reached. See
 // `isCardView` below.
 const MIN_COLUMN_WIDTH_PX = 100;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Internal column + row access
+//
+// The public `DataGridColumn<T>` is a discriminated union, which is what lets
+// a consumer's `key` be checked against `keyof T` and gives `renderCell` /
+// `renderEditor` / `validate` the field's own value type instead of `unknown`.
+//
+// Internally the grid walks `columns` generically: it probes members that
+// exist on only one variant (`validate` on value columns, `actions` on the
+// actions column) and looks row fields up by a runtime string key. Narrowing
+// the union at each of those ~30 sites would add a lot of noise for no added
+// safety - the union is enforced where it matters, at the consumer's call
+// site - so the grid widens it once, here, and the render code below is
+// unchanged from when `DataGridColumn` was a single flat interface.
+// ─────────────────────────────────────────────────────────────────────────────
+type InternalColumn<T extends object> = Omit<DataGridActionsColumn<T>, 'type' | 'key'> & {
+  /**
+   * Widened to a required plain string. Only the actions variant may omit
+   * `key`, and it never reaches a path that consumes one: it renders in its
+   * own dedicated slot with a hard-coded `data-col-key="__actions__"`, and is
+   * filtered out of `dataColumns` / `sortedColumns`.
+   */
+  key: string;
+  type?: DataGridCellType;
+  editable?: boolean;
+  required?: boolean;
+  options?: DataGridSelectOption[];
+  validate?: (value: unknown) => string | true;
+  renderCell?: (value: unknown, row: T, rowIndex: number) => React.ReactNode;
+  renderEditor?: (value: unknown, onChange: (v: unknown) => void, row: T) => React.ReactNode;
+};
+
+/** Reads a row field by a runtime string key - see `InternalColumn` above. */
+const cellOf = <T extends object>(row: T, key: string): unknown =>
+  (row as Record<string, unknown>)[key];
 
 // Value of the reset ("All") segment a quick filter's SegmentedControl always
 // prepends - a SegmentedControl has no empty state of its own, so it needs an
@@ -253,11 +292,11 @@ function ExpandedCardPanel({
 // ─────────────────────────────────────────────────────────────────────────────
 // Inner implementation (generic function so we can assign .displayName cleanly)
 // ─────────────────────────────────────────────────────────────────────────────
-function DataGridInner<T extends Record<string, unknown>>({
+function DataGridInner<T extends object>({
   // ── Existing props ─────────────────────────────────────────────────────────
-  columns,
+  columns: columnsProp,
   data,
-  rowKey = 'id',
+  rowKey,
   onChange,
   onRowAdd,
   editable = false,
@@ -307,6 +346,12 @@ function DataGridInner<T extends Record<string, unknown>>({
   cardViewBreakpoint = 640,
   cardMinWidth = 280,
 }: DataGridProps<T>): React.ReactElement {
+  // See `InternalColumn` above - a cast, not a copy, so the identity
+  // comparisons below (`c !== actionsColumn`) still hold.
+  const columns = columnsProp as InternalColumn<T>[];
+  // `rowKey` is `RowKey<T>` publicly, so the `'id'` default can't live in the
+  // destructuring: `'id'` isn't a field of every `T`.
+  const rowKeyField: string = rowKey ?? 'id';
   // ── State + paired refs (editing - preserved exactly) ─────────────────────
   // We keep a ref alongside each piece of mutable state so that event
   // handlers registered in effects can always read the *latest* value without
@@ -537,8 +582,8 @@ function DataGridInner<T extends Record<string, unknown>>({
   );
 
   const allKeys = useMemo(
-    () => localData.map((row, idx) => String(row[rowKey as keyof T] ?? idx)),
-    [localData, rowKey],
+    () => localData.map((row, idx) => String(cellOf(row, rowKeyField) ?? idx)),
+    [localData, rowKeyField],
   );
 
   const allSelected = allKeys.length > 0 && allKeys.every((k) => selectedSet.has(k));
@@ -546,8 +591,8 @@ function DataGridInner<T extends Record<string, unknown>>({
   const hasSelection = selectedSet.size > 0;
 
   const selectedItems = useMemo(
-    () => localData.filter((row, idx) => selectedSet.has(String(row[rowKey as keyof T] ?? idx))),
-    [localData, selectedSet, rowKey],
+    () => localData.filter((row, idx) => selectedSet.has(String(cellOf(row, rowKeyField) ?? idx))),
+    [localData, selectedSet, rowKeyField],
   );
 
   // ── Row expansion derived state ─────────────────────────────────────────────
@@ -572,7 +617,7 @@ function DataGridInner<T extends Record<string, unknown>>({
     return filterConfig
       .filter((field) => !quickFilterKeys.has(field.key))
       .map(
-        (field: DataGridFilterField) =>
+        (field: DataGridFilterField<T>) =>
           ({
             key: field.key,
             label: field.label,
@@ -618,7 +663,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
     return localData.filter((row) =>
       filterEntries.every(([key, filterValue]) => {
-        const cellValue = row[key];
+        const cellValue = cellOf(row, key);
 
         if (Array.isArray(filterValue)) {
           return filterValue.includes(String(cellValue ?? ''));
@@ -647,8 +692,8 @@ function DataGridInner<T extends Record<string, unknown>>({
     if (onSortChange || !activeSort) return filteredData;
 
     return [...filteredData].sort((a, b) => {
-      const aVal = a[activeSort.key];
-      const bVal = b[activeSort.key];
+      const aVal = cellOf(a, activeSort.key);
+      const bVal = cellOf(b, activeSort.key);
 
       if (aVal == null && bVal == null) return 0;
       if (aVal == null) return 1;
@@ -784,7 +829,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
   // ── Editing helpers (preserved exactly) ────────────────────────────────────
   const isCellEditable = useCallback(
-    (col: DataGridColumn<T>): boolean => {
+    (col: InternalColumn<T>): boolean => {
       if (!editable) return false;
       if (col.type === 'readonly' || col.type === 'actions') return false;
       if (col.editable === false) return false;
@@ -793,7 +838,7 @@ function DataGridInner<T extends Record<string, unknown>>({
     [editable],
   );
 
-  const validateCell = useCallback((col: DataGridColumn<T>, value: unknown): string | null => {
+  const validateCell = useCallback((col: InternalColumn<T>, value: unknown): string | null => {
     if (col.required && (value === '' || value === null || value === undefined)) {
       return 'This field is required';
     }
@@ -822,7 +867,7 @@ function DataGridInner<T extends Record<string, unknown>>({
     localData.forEach((row, rowIndex) => {
       for (const col of columns) {
         if (!isCellEditable(col)) continue;
-        const error = validateCell(col, row[col.key]);
+        const error = validateCell(col, cellOf(row, col.key));
         if (error) errors[cellErrorKey(rowIndex, col.key)] = error;
       }
     });
@@ -942,8 +987,9 @@ function DataGridInner<T extends Record<string, unknown>>({
 
   // ── Cell click handler (preserved) ─────────────────────────────────────────
   const handleCellClick = useCallback(
-    (rowIndex: number, col: DataGridColumn<T>) => {
-      const value = localDataRef.current[rowIndex]?.[col.key];
+    (rowIndex: number, col: InternalColumn<T>) => {
+      const row = localDataRef.current[rowIndex];
+      const value = row === undefined ? undefined : cellOf(row, col.key);
 
       // Checkbox cells: toggle immediately - no "edit mode" UI needed
       if (col.type === 'checkbox') {
@@ -1006,7 +1052,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
         if (next) {
           setEditingCell(next);
-          setEditValue(localDataRef.current[next.rowIndex][next.colKey]);
+          setEditValue(cellOf(localDataRef.current[next.rowIndex], next.colKey));
           setEditError(cellErrors[cellErrorKey(next.rowIndex, next.colKey)] ?? null);
         } else {
           setEditingCell(null);
@@ -1040,11 +1086,11 @@ function DataGridInner<T extends Record<string, unknown>>({
     (keys: string[]) => {
       if (!isControlledSelection) setInternalSelectedKeys(new Set(keys));
       const rows = localDataRef.current.filter((row, idx) =>
-        keys.includes(String(row[rowKey as keyof T] ?? idx)),
+        keys.includes(String(cellOf(row, rowKeyField) ?? idx)),
       );
       onSelectionChange?.(keys, rows);
     },
-    [isControlledSelection, rowKey, onSelectionChange],
+    [isControlledSelection, rowKeyField, onSelectionChange],
   );
 
   const toggleRow = useCallback(
@@ -1094,7 +1140,10 @@ function DataGridInner<T extends Record<string, unknown>>({
         // Server-side: delegate to parent
         const newDir =
           currentSort?.key === colKey && currentSort?.direction === 'asc' ? 'desc' : 'asc';
-        onSortChange(colKey, newDir);
+        // `colKey` came from a rendered column, so it is a field of `T` by
+        // construction - the public callback is narrowed for the caller's
+        // benefit, which this internal string can't prove on its own.
+        onSortChange(colKey as RowKey<T>, newDir);
       } else {
         // Client-side: cycle asc → desc → unsorted (null)
         setInternalSort((prev) => {
@@ -1187,10 +1236,10 @@ function DataGridInner<T extends Record<string, unknown>>({
       if (!over || active.id === over.id) return;
 
       const oldIndex = localDataRef.current.findIndex(
-        (row, i) => String(row[rowKey as keyof T] ?? i) === String(active.id),
+        (row, i) => String(cellOf(row, rowKeyField) ?? i) === String(active.id),
       );
       const newIndex = localDataRef.current.findIndex(
-        (row, i) => String(row[rowKey as keyof T] ?? i) === String(over.id),
+        (row, i) => String(cellOf(row, rowKeyField) ?? i) === String(over.id),
       );
 
       if (oldIndex === -1 || newIndex === -1) return;
@@ -1200,12 +1249,12 @@ function DataGridInner<T extends Record<string, unknown>>({
       onChange?.(newData);
       onRowReorder?.(newData);
     },
-    [draggableRows, rowKey, setLocalData, onChange, onRowReorder],
+    [draggableRows, rowKeyField, setLocalData, onChange, onRowReorder],
   );
 
   // ── Cell content renderers (preserved exactly) ─────────────────────────────
   const renderViewCell = (
-    col: DataGridColumn<T>,
+    col: InternalColumn<T>,
     value: unknown,
     row: T,
     rowIndex: number,
@@ -1250,7 +1299,7 @@ function DataGridInner<T extends Record<string, unknown>>({
   // variant. Passing `undefined` here (rather than omitting the prop) is
   // equivalent to omitting it - falls back to each component's own default.
   const renderEditCell = (
-    col: DataGridColumn<T>,
+    col: InternalColumn<T>,
     value: unknown,
     row: T,
     rowIndex: number,
@@ -1346,12 +1395,12 @@ function DataGridInner<T extends Record<string, unknown>>({
   // either in a card's label:value field row or its header/subheader - both
   // stay just as editable as any table cell.
   const renderCardValue = (
-    col: DataGridColumn<T>,
+    col: InternalColumn<T>,
     row: T,
     localIndex: number,
     baseClassName: string,
   ): React.ReactNode => {
-    const value = row[col.key];
+    const value = cellOf(row, col.key);
     const isEditing = editingCell?.rowIndex === localIndex && editingCell?.colKey === col.key;
     const canEdit = isCellEditable(col);
     const isFlagged = cellErrorKey(localIndex, col.key) in cellErrors;
@@ -1398,7 +1447,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
   // Label-above-value field, stacked - used for every column that isn't the
   // card's header/subheader.
-  const renderCardField = (col: DataGridColumn<T>, row: T, localIndex: number): React.ReactNode => (
+  const renderCardField = (col: InternalColumn<T>, row: T, localIndex: number): React.ReactNode => (
     <div key={col.key} className="eidos-datagrid-card-field">
       <span className="eidos-datagrid-card-field-label">{col.header}</span>
       {renderCardValue(col, row, localIndex, 'eidos-datagrid-card-field-value')}
@@ -1477,7 +1526,7 @@ function DataGridInner<T extends Record<string, unknown>>({
 
   // Row IDs for SortableContext - must be the displayed rows (not full dataset)
   // so dnd-kit knows which items are currently rendered.
-  const rowIds = displayData.map((row, i) => String(row[rowKey as keyof T] ?? i));
+  const rowIds = displayData.map((row, i) => String(cellOf(row, rowKeyField) ?? i));
 
   const containerStyle: React.CSSProperties = {};
   if (stickyHeader && maxHeight) {
@@ -1796,7 +1845,7 @@ function DataGridInner<T extends Record<string, unknown>>({
           {displayData.length > 0 ? (
             displayData.map((row, displayIndex) => {
               const localIndex = localData.indexOf(row);
-              const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
+              const rowKeyValue = String(cellOf(row, rowKeyField) ?? displayIndex);
               const isRowSelected = selectable && selectedSet.has(rowKeyValue);
               const isRowExpanded = expandable && expandedSet.has(rowKeyValue);
               const canExpandRow = !isRowExpandable || isRowExpandable(row);
@@ -2062,7 +2111,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                         // (filter/sort/slice never clone row objects), so indexOf is O(n)
                         // but always accurate - even after edits that produce new row objects.
                         const localIndex = localData.indexOf(row);
-                        const rowKeyValue = String(row[rowKey as keyof T] ?? displayIndex);
+                        const rowKeyValue = String(cellOf(row, rowKeyField) ?? displayIndex);
                         const isRowSelected = selectable && selectedSet.has(rowKeyValue);
                         const isRowExpanded = expandable && expandedSet.has(rowKeyValue);
                         const canExpandRow = !isRowExpandable || isRowExpandable(row);
@@ -2182,7 +2231,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                                   )}
 
                                   {sortedColumns.map((col) => {
-                                    const value = row[col.key];
+                                    const value = cellOf(row, col.key);
                                     const isEditing =
                                       editingCell?.rowIndex === localIndex &&
                                       editingCell?.colKey === col.key;

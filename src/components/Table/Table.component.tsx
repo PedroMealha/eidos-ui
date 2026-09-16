@@ -23,7 +23,15 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import type { RowKey } from '../../utils';
 import type { TableColumn, TableProps, TableFilters, FilterValue } from './Table.types';
+
+// `TableColumn<T>` is a discriminated union, so `render` is a union of
+// function types and its parameter type is their intersection. The table
+// walks columns generically and looks values up by a runtime string key, so
+// it widens the renderer once here rather than narrowing the union at the
+// call site - the union is enforced where it matters, at the consumer's.
+type TableCellRenderer<T> = (value: unknown, item: T) => React.ReactNode;
 
 export type { TableColumn, TableProps, TableFilters, FilterValue };
 import { Button } from '../Button';
@@ -143,7 +151,7 @@ function SortableColumnHeader({
 
 // ── Table ─────────────────────────────────────────────────────────────────────
 
-export const Table = <T extends Record<string, unknown>>({
+export const Table = <T extends object>({
   data,
   columns,
   loading = false,
@@ -320,7 +328,10 @@ export const Table = <T extends Record<string, unknown>>({
   const handleSort = (key: string) => {
     const newDirection =
       currentSort?.key === key && currentSort?.direction === 'asc' ? 'desc' : 'asc';
-    onSortChange?.(key, newDirection);
+    // `key` came from a rendered column, so it is a field of `T` by
+    // construction - the public callback is narrowed for the caller's benefit,
+    // which this internal string can't prove on its own.
+    onSortChange?.(key as RowKey<T>, newDirection);
   };
 
   const handlePageChange = (page: number) => setCurrentPage(page);
@@ -865,7 +876,9 @@ export const Table = <T extends Record<string, unknown>>({
                           // above, for the same reason.
                           onClick={columnType === 'action' ? (e) => e.stopPropagation() : undefined}
                         >
-                          {column.render ? column.render(value, item) : String(value ?? '')}
+                          {column.render
+                            ? (column.render as TableCellRenderer<T>)(value, item)
+                            : String(value ?? '')}
                         </td>
                       );
                     })}

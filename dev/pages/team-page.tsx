@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   DataGrid,
+  type DataGridColumn,
   type DataGridFilterField,
   EmptyState,
   Input,
@@ -61,29 +62,33 @@ export const TeamPage: React.FC = () => {
     [showSuccess, showError, reload],
   );
 
-  const columns = useMemo(
+  // Annotated rather than inferred: the annotation is what contextually types
+  // each entry against `DataGridColumn<TeamMember>`, so `key` is checked
+  // against TeamMember's fields and `renderCell`'s `value` arrives typed. An
+  // un-annotated array widens every `key` to `string` and loses both.
+  const columns: DataGridColumn<TeamMember>[] = useMemo(
     () => [
-      { key: 'name', header: 'Name', type: 'text' as const, required: true, sortable: true },
-      { key: 'email', header: 'Email', type: 'readonly' as const, sortable: true },
+      { key: 'name', header: 'Name', type: 'text', required: true, sortable: true },
+      { key: 'email', header: 'Email', type: 'readonly', sortable: true },
       {
         key: 'role',
         header: 'Role',
-        type: 'select' as const,
+        type: 'select',
         width: 140,
         options: ROLE_OPTIONS,
       },
-      { key: 'active', header: 'Active', type: 'checkbox' as const, width: 100 },
+      { key: 'active', header: 'Active', type: 'checkbox', width: 100 },
       {
         key: 'joinedAt',
         header: 'Joined',
-        type: 'readonly' as const,
+        type: 'readonly',
         width: 130,
-        renderCell: (value: unknown) => new Date(String(value)).toLocaleDateString(),
+        // `value` is `string` here, straight from TeamMember['joinedAt'].
+        renderCell: (value) => new Date(value).toLocaleDateString(),
       },
       {
-        key: 'actions',
         header: 'Actions',
-        type: 'actions' as const,
+        type: 'actions',
         actions: [
           {
             label: 'Remove',
@@ -97,7 +102,7 @@ export const TeamPage: React.FC = () => {
     [removeMember],
   );
 
-  const filterConfig: DataGridFilterField[] = useMemo(
+  const filterConfig: DataGridFilterField<TeamMember>[] = useMemo(
     () => [
       {
         key: 'role',

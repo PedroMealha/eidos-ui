@@ -7,8 +7,9 @@ import { Menu } from '../Menu';
 import { Edit, Trash2, Eye, UserCircle, MoreVertical } from 'lucide-react';
 import type { TableColumn } from './Table.types';
 
-// Sample data type
-interface User extends Record<string, unknown> {
+// Sample data type. A plain interface: an index signature would widen
+// `keyof User` to `string` and disable column-key checking.
+interface User {
   id: number;
   name: string;
   email: string;
@@ -237,7 +238,7 @@ export const WithCustomRendering: Story = {
 // With sorting
 export const WithSorting: Story = {
   render: () => {
-    const [sortKey, setSortKey] = useState<string>('name');
+    const [sortKey, setSortKey] = useState<keyof User & string>('name');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
     const columns: TableColumn<User>[] = [
@@ -579,7 +580,7 @@ export const EmptyState: Story = {
 // Complete example
 export const Examples: Story = {
   render: () => {
-    const [sortKey, setSortKey] = useState<string>('name');
+    const [sortKey, setSortKey] = useState<keyof User & string>('name');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const [filters, setFilters] = useState({});
 

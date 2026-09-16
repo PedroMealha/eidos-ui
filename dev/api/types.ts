@@ -1,9 +1,14 @@
 /**
  * Domain model for the Meridian example app.
  *
- * These are declared as `type` aliases rather than `interface` on purpose:
- * `DataGrid<T>` constrains `T extends Record<string, unknown>`, and TypeScript
- * only grants implicit index signatures to object type aliases.
+ * `type` aliases here are just a style choice now. They used to be load-bearing:
+ * `DataGrid<T>` constrained `T extends Record<string, unknown>`, and TypeScript
+ * only grants implicit index signatures to object type aliases, so an
+ * `interface` had to write `extends Record<string, unknown>` to satisfy it -
+ * which then widened `keyof T` to `string` and silently disabled every
+ * column-key and per-key value check. Both components constrain
+ * `T extends object` as of v2, so either declaration style works and keeps its
+ * literal keys.
  */
 
 export type Role = 'admin' | 'member';

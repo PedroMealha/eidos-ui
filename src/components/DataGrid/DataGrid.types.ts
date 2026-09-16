@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { IconType } from '../../utils';
+import type { IconType, RowKey } from '../../utils';
 import type { ComboboxOption } from '../Combobox';
 import type { MenuItemType } from '../Menu';
 import type { SelectOption } from '../Select';
@@ -7,7 +7,10 @@ import type { SegmentedControlColorProps, SegmentedOption } from '../SegmentedCo
 import type { BulkAction, TableFilters } from '../Table/Table.types';
 
 export type DataGridCellType =
-  'text' | 'number' | 'select' | 'checkbox' | 'date' | 'readonly' | 'actions';
+  'text' | 'number' | 'select' | 'checkbox' | 'date' | 'readonly' | 'custom' | 'actions';
+
+/** Cell types that address a row field, i.e. everything but the two escape hatches. */
+export type DataGridValueCellType = Exclude<DataGridCellType, 'custom' | 'actions'>;
 
 export interface DataGridSelectOption {
   value: string;
@@ -21,9 +24,15 @@ export interface DataGridSelectOption {
  * field (including ones you don't display), without hunting through column
  * definitions to find which ones set a filter flag.
  */
-export interface DataGridFilterField {
-  /** Row data key this filter reads/writes. Does not need to match a `columns` entry. */
-  key: string;
+export interface DataGridFilterField<T extends object = Record<string, unknown>> {
+  /**
+   * Row data key this filter reads/writes. Does not need to match a `columns`
+   * entry - the decoupling from `columns` is intact, so filtering an
+   * undisplayed field still works. It does have to be a real field of `T`,
+   * because the filter evaluates `row[key]`: a name that isn't on the row
+   * type used to compile fine and then silently match nothing.
+   */
+  key: RowKey<T>;
   label: string;
   /** Filter UI type. @default 'text' */
   filterType?: 'text' | 'select' | 'date' | 'boolean';
@@ -42,9 +51,12 @@ export type DataGridQuickFilterSelectOption = Omit<SelectOption, 'id'>;
 export type DataGridQuickFilterComboboxOption = Omit<ComboboxOption, 'id'>;
 export type DataGridQuickFilterSegmentedOption = SegmentedOption;
 
-interface DataGridQuickFilterBase {
-  /** Row data key this filter reads/writes. Does not need to match a `columns` entry. */
-  key: string;
+interface DataGridQuickFilterBase<T extends object = Record<string, unknown>> {
+  /**
+   * Row data key this filter reads/writes. Does not need to match a `columns`
+   * entry, but must be a real field of `T` - the filter evaluates `row[key]`.
+   */
+  key: RowKey<T>;
   /**
    * Short label for the control. The toolbar has no room for a visible field
    * label, so this is used as the control's placeholder and its accessible
@@ -66,7 +78,9 @@ interface DataGridQuickFilterBase {
   defaultValue?: string | string[];
 }
 
-export interface DataGridQuickFilterSelect extends DataGridQuickFilterBase {
+export interface DataGridQuickFilterSelect<
+  T extends object = Record<string, unknown>,
+> extends DataGridQuickFilterBase<T> {
   type: 'select';
   options: DataGridQuickFilterSelectOption[];
   /** Select several values at once - writes a `string[]` filter value. @default false */
@@ -77,7 +91,9 @@ export interface DataGridQuickFilterSelect extends DataGridQuickFilterBase {
   placeholder?: string;
 }
 
-export interface DataGridQuickFilterCombobox extends DataGridQuickFilterBase {
+export interface DataGridQuickFilterCombobox<
+  T extends object = Record<string, unknown>,
+> extends DataGridQuickFilterBase<T> {
   type: 'combobox';
   /** Optional so options can be supplied asynchronously via `onSearch`. */
   options?: DataGridQuickFilterComboboxOption[];
@@ -92,7 +108,9 @@ export interface DataGridQuickFilterCombobox extends DataGridQuickFilterBase {
   loadingText?: string;
 }
 
-export interface DataGridQuickFilterSegmented extends DataGridQuickFilterBase {
+export interface DataGridQuickFilterSegmented<
+  T extends object = Record<string, unknown>,
+> extends DataGridQuickFilterBase<T> {
   type: 'segmented';
   /**
    * Rendered after the reset segment, which the grid always prepends - a
@@ -110,8 +128,8 @@ export interface DataGridQuickFilterSegmented extends DataGridQuickFilterBase {
  * `DataGridProps.quickFilters`. Discriminated on `type`, so each control only
  * accepts the props that actually apply to it.
  */
-export type DataGridQuickFilter =
-  DataGridQuickFilterSelect | DataGridQuickFilterCombobox | DataGridQuickFilterSegmented;
+export type DataGridQuickFilter<T extends object = Record<string, unknown>> =
+  DataGridQuickFilterSelect<T> | DataGridQuickFilterCombobox<T> | DataGridQuickFilterSegmented<T>;
 
 /** A single entry in a `type: 'actions'` column's menu - see `DataGridColumn.actions`. */
 export interface DataGridRowAction<T = Record<string, unknown>> {
@@ -127,26 +145,11 @@ export interface DataGridRowAction<T = Record<string, unknown>> {
   divider?: boolean;
 }
 
-export interface DataGridColumn<T = Record<string, unknown>> {
-  /** Matches the key in the data row object. Unused when `type: 'actions'`, but still required - any placeholder string works. */
-  key: string;
+/** Members every column variant shares, whether or not it addresses a row field. */
+interface DataGridColumnCommon {
   header: string;
-  /** @default 'text' */
-  type?: DataGridCellType;
   width?: number | string;
   minWidth?: number | string;
-  /** @default true */
-  editable?: boolean;
-  /** Show error if cell is left empty */
-  required?: boolean;
-  /** For type='select' */
-  options?: DataGridSelectOption[];
-  /** Return an error string or `true` if valid */
-  validate?: (value: unknown) => string | true;
-  renderCell?: (value: unknown, row: T, rowIndex: number) => React.ReactNode;
-  renderEditor?: (value: unknown, onChange: (v: unknown) => void, row: T) => React.ReactNode;
-
-  // ── Read/display features ──────────────────────────────────────────────────
   /** Enable click-to-sort on this column */
   sortable?: boolean;
   /**
@@ -161,7 +164,80 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   /** Lock this column to the left or right edge on horizontal scroll */
   pin?: 'left' | 'right';
 
-  // ── Actions column (type: 'actions') ───────────────────────────────────────
+  // ── Card view (see DataGridProps.hasCardView) ──────────────────────────────
+  /**
+   * Render this column's value as the card's title instead of a label:value
+   * field row. Only the first column with `cardHeader` set is used - if
+   * several are marked, the rest are silently ignored.
+   */
+  cardHeader?: boolean;
+  /**
+   * Render this column's value as the card's subtitle, directly under the
+   * `cardHeader` value. Only the first column with `cardSubheader` set is
+   * used. Has no effect without a `cardHeader` column also being set.
+   */
+  cardSubheader?: boolean;
+}
+
+/**
+ * A column bound to the row field named by `key`, which is what makes `value`
+ * knowable: every callback below receives `T[K]` rather than `unknown`.
+ *
+ * Not used directly - `DataGridColumn` distributes this over `keyof T` so each
+ * entry in a `columns` array correlates its own `key` with its own value type.
+ */
+export interface DataGridValueColumn<
+  T extends object,
+  K extends RowKey<T>,
+> extends DataGridColumnCommon {
+  /** Matches the key in the data row object. */
+  key: K;
+  /** @default 'text' */
+  type?: DataGridValueCellType;
+  /** @default true */
+  editable?: boolean;
+  /** Show error if cell is left empty */
+  required?: boolean;
+  /** For type='select' */
+  options?: DataGridSelectOption[];
+  /** Return an error string or `true` if valid */
+  validate?: (value: T[K]) => string | true;
+  renderCell?: (value: T[K], row: T, rowIndex: number) => React.ReactNode;
+  renderEditor?: (value: T[K], onChange: (v: T[K]) => void, row: T) => React.ReactNode;
+}
+
+/**
+ * A column that renders from the whole row rather than one field - a computed
+ * or composite value (`${row.first} ${row.last}`), a link, a status derived
+ * from several fields. `key` is free-form here because nothing reads
+ * `row[key]`: it's only an identity for React keys, sorting and `data-col-key`.
+ *
+ * This is the home for what used to be expressible by pointing `key` at a
+ * field that didn't exist. Not editable - there is no single field to write
+ * back to - so `editable`, `required`, `validate` and `renderEditor` are all
+ * absent by design.
+ */
+export interface DataGridCustomColumn<T extends object> extends DataGridColumnCommon {
+  /** Free-form - must only be unique within `columns`. */
+  key: string;
+  type: 'custom';
+  /**
+   * Required: a custom column has no field to fall back to rendering.
+   * `value` is always `undefined` and exists only to keep the parameter list
+   * aligned with `DataGridValueColumn.renderCell`, so `(_, row) => ...` reads
+   * the same on both.
+   */
+  renderCell: (value: undefined, row: T, rowIndex: number) => React.ReactNode;
+}
+
+/**
+ * The row-actions column. Addresses no field, so it needs no `key` at all -
+ * previously this had to carry a required placeholder string that nothing read.
+ */
+export interface DataGridActionsColumn<T extends object> extends DataGridColumnCommon {
+  /** Optional, and unused - only ever an identity for React keys. */
+  key?: string;
+  type: 'actions';
   /**
    * The menu items shown for this row. Required for the column to render
    * anything - a `type: 'actions'` column with no `actions` renders nothing.
@@ -182,27 +258,34 @@ export interface DataGridColumn<T = Record<string, unknown>> {
    * ignored.
    */
   renderActions?: (row: T, index: number) => MenuItemType[];
-
-  // ── Card view (see DataGridProps.hasCardView) ──────────────────────────────
-  /**
-   * Render this column's value as the card's title instead of a label:value
-   * field row. Only the first column with `cardHeader` set is used - if
-   * several are marked, the rest are silently ignored.
-   */
-  cardHeader?: boolean;
-  /**
-   * Render this column's value as the card's subtitle, directly under the
-   * `cardHeader` value. Only the first column with `cardSubheader` set is
-   * used. Has no effect without a `cardHeader` column also being set.
-   */
-  cardSubheader?: boolean;
 }
 
-export interface DataGridProps<T extends Record<string, unknown> = Record<string, unknown>> {
+/**
+ * One column definition. A union of three variants, discriminated on `type`:
+ *
+ * - **value column** (default, `type` omitted or a cell type) - `key` must be a
+ *   field of `T`, and `renderCell`/`renderEditor`/`validate` receive that
+ *   field's type instead of `unknown`.
+ * - **`type: 'custom'`** - renders from the whole row; `key` is free-form.
+ * - **`type: 'actions'`** - the row-actions menu; `key` is optional.
+ *
+ * The value variant is produced by distributing over `RowKey<T>`, which is
+ * what correlates `key` with the value type. Note this keeps a single public
+ * type parameter, so no consumer signature changes.
+ *
+ * With the untyped default `T`, `RowKey<T>` is `string` and `T[K]` is
+ * `unknown`, which is byte-identical to the pre-2.0 behaviour.
+ */
+export type DataGridColumn<T extends object = Record<string, unknown>> =
+  | { [K in RowKey<T>]: DataGridValueColumn<T, K> }[RowKey<T>]
+  | DataGridCustomColumn<T>
+  | DataGridActionsColumn<T>;
+
+export interface DataGridProps<T extends object = Record<string, unknown>> {
   columns: DataGridColumn<T>[];
   data: T[];
   /** Field name used as React key. @default 'id' */
-  rowKey?: string;
+  rowKey?: RowKey<T>;
   /** Called after each cell commit with the full updated dataset */
   onChange?: (data: T[]) => void;
   /** Returns a blank row object; if omitted, no Add-row button is shown */
@@ -223,9 +306,9 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
 
   // ── Sorting ────────────────────────────────────────────────────────────────
   /** Controlled sort state. When provided, component is in server-side sort mode. */
-  currentSort?: { key: string; direction: 'asc' | 'desc' };
+  currentSort?: { key: RowKey<T>; direction: 'asc' | 'desc' };
   /** Server-side sort callback. When omitted, sorting is handled client-side. */
-  onSortChange?: (key: string, direction: 'asc' | 'desc') => void;
+  onSortChange?: (key: RowKey<T>, direction: 'asc' | 'desc') => void;
 
   // ── Filtering ──────────────────────────────────────────────────────────────
   /** Show the filter button in the toolbar. */
@@ -236,7 +319,7 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
    * (including ones that aren't rendered as a column at all), rather than
    * columns each carrying their own filter flag.
    */
-  filterConfig?: DataGridFilterField[];
+  filterConfig?: DataGridFilterField<T>[];
   /** Controlled filter state (the current values, keyed by `filterConfig[].key`). When provided with onFiltersChange → server-side mode. */
   filters?: TableFilters;
   /** Filter change callback. When omitted, filtering is handled client-side. */
@@ -258,7 +341,7 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
    * Hidden while rows are selected - the selection count and bulk actions
    * occupy the same toolbar zone.
    */
-  quickFilters?: DataGridQuickFilter[];
+  quickFilters?: DataGridQuickFilter<T>[];
 
   // ── Pagination ─────────────────────────────────────────────────────────────
   showPagination?: boolean;
@@ -342,4 +425,7 @@ export interface DataGridProps<T extends Record<string, unknown> = Record<string
   cardMinWidth?: number;
 }
 
-export type EditingCell = { rowIndex: number; colKey: string } | null;
+export type EditingCell<T extends object = Record<string, unknown>> = {
+  rowIndex: number;
+  colKey: RowKey<T>;
+} | null;

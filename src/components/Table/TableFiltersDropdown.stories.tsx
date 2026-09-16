@@ -6,7 +6,7 @@ import type { TableColumn, TableFilters } from './Table.types';
 // ── Story-local row type ──────────────────────────────────────────────────────
 // Concrete type used across all stories so TypeScript can resolve column keys.
 
-interface StoryRow extends Record<string, unknown> {
+interface StoryRow {
   name: string;
   status: string;
   role: string;

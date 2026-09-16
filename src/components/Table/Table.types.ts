@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { IconType } from '../../utils';
+import type { IconType, RowKey } from '../../utils';
 import type { ButtonColorProps, ButtonVariantProps } from '../Button/Button.types';
 
 /** A secondary action inside a `type: 'split-button'` bulk action's dropdown. */
@@ -44,10 +44,9 @@ export interface BulkActionSplitButton<T> extends BulkActionCommon<T> {
 
 export type BulkAction<T> = BulkActionButton<T> | BulkActionSplitButton<T>;
 
-interface TableColumn<T> {
-  key: keyof T | string;
+/** Members shared by every column variant, field-addressing or not. */
+interface TableColumnCommon {
   label: string;
-  render?: (value: unknown, item: T) => ReactNode;
   sortable?: boolean;
   filterable?: boolean;
   filterType?: 'text' | 'select' | 'date' | 'boolean';
@@ -56,10 +55,60 @@ interface TableColumn<T> {
   dateFilterMode?: 'single' | 'multiple' | 'range';
   width?: string;
   align?: 'left' | 'center' | 'right';
-  type?: 'data' | 'icon' | 'action';
   /** Enables position:sticky on this column */
   pin?: 'left' | 'right';
 }
+
+/**
+ * A column bound to the row field named by `key`, which is what lets `render`
+ * receive `T[K]` rather than `unknown`.
+ *
+ * Not used directly - `TableColumn` distributes this over `keyof T` so each
+ * entry correlates its own `key` with its own value type.
+ */
+interface TableValueColumn<T extends object, K extends RowKey<T>> extends TableColumnCommon {
+  key: K;
+  /** @default 'data' */
+  type?: 'data';
+  render?: (value: T[K], item: T) => ReactNode;
+}
+
+/**
+ * A column that renders from the whole row rather than one field - an icon or
+ * action cell, or a computed/composite value. `key` is free-form here because
+ * nothing reads `row[key]`: it's only an identity for React keys, sorting and
+ * `data-col-key`.
+ *
+ * `'icon'` and `'action'` carry their existing cell styling; `'custom'` styles
+ * like a normal data cell but takes a free-form key, which is the home for a
+ * derived column (previously expressible only by pointing `key` at a field
+ * that didn't exist).
+ */
+interface TableCustomColumn<T extends object> extends TableColumnCommon {
+  /** Free-form - must only be unique within `columns`. */
+  key: string;
+  type: 'icon' | 'action' | 'custom';
+  /** `value` is always `undefined`; render from `item`. */
+  render?: (value: undefined, item: T) => ReactNode;
+}
+
+/**
+ * One column definition. A union of two variants, discriminated on `type`:
+ *
+ * - **value column** (default, `type` omitted or `'data'`) - `key` must be a
+ *   field of `T`, and `render` receives that field's type instead of `unknown`.
+ * - **`type: 'icon' | 'action' | 'custom'`** - renders from the whole row;
+ *   `key` is free-form.
+ *
+ * With the untyped default `T`, `RowKey<T>` is `string` and `T[K]` is
+ * `unknown`, which is byte-identical to the pre-2.0 behaviour.
+ *
+ * Replaces `key: keyof T | string`, which looked constrained but wasn't:
+ * `keyof T` is assignable to `string`, so that union collapsed to plain
+ * `string` and checked nothing.
+ */
+type TableColumn<T extends object = Record<string, unknown>> =
+  { [K in RowKey<T>]: TableValueColumn<T, K> }[RowKey<T>] | TableCustomColumn<T>;
 
 type FilterValue =
   string | string[] | boolean | { start: string | null; end: string | null } | undefined;
@@ -68,7 +117,7 @@ interface TableFilters {
   [key: string]: FilterValue;
 }
 
-interface TableProps<T> {
+interface TableProps<T extends object = Record<string, unknown>> {
   data: T[];
   columns: TableColumn<T>[];
   loading?: boolean;
@@ -82,9 +131,9 @@ interface TableProps<T> {
   pageSize?: number;
   pageSizeOptions?: number[];
   // Server-side sorting
-  onSortChange?: (sortBy: string, sortDirection: 'asc' | 'desc') => void;
+  onSortChange?: (sortBy: RowKey<T>, sortDirection: 'asc' | 'desc') => void;
   currentSort?: {
-    key: string;
+    key: RowKey<T>;
     direction: 'asc' | 'desc';
   };
   // Server-side filtering
@@ -94,7 +143,7 @@ interface TableProps<T> {
   showFilters?: boolean;
   // Row selection / bulk actions
   selectable?: boolean;
-  rowKey?: keyof T;
+  rowKey?: RowKey<T>;
   selectedRows?: string[];
   defaultSelectedRows?: string[];
   onSelectionChange?: (selectedKeys: string[], selectedRows: T[]) => void;
@@ -113,3 +162,4 @@ interface TableProps<T> {
 }
 
 export type { TableColumn, TableFilters, TableProps, FilterValue };
+export type { TableValueColumn, TableCustomColumn };

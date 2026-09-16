@@ -7,7 +7,7 @@ import * as DataGridStories from './DataGrid.stories';
 
 A feature-rich, spreadsheet-like grid for editing structured data inline. Columns are typed (`text`, `number`, `select`, `checkbox`, `readonly`, `actions`), and the grid supports sorting, filtering, pagination, row selection, drag-and-drop reordering, column pinning, per-cell validation, a row-actions menu, and a responsive card view for narrow containers - all opt-in via props.
 
-> **Note**: `DataGrid` is generic over your row type (`T extends Record<string, unknown>`). Pass the type parameter explicitly - e.g. `<DataGrid<Person> … />` - to get full type safety on `columns`, `onChange`, and callbacks.
+> **Note**: `DataGrid` is generic over your row type (`T extends object`). Pass the type parameter explicitly - e.g. `<DataGrid<Person> … />` - to get full type safety on `columns`, `onChange`, and callbacks. See [Typed row data](#typed-row-data) for what that buys you, and for the one declaration style that silently switches it off.
 
 ## Usage
 
@@ -15,7 +15,7 @@ A feature-rich, spreadsheet-like grid for editing structured data inline. Column
 import { DataGrid } from 'eidos-ui';
 import type { DataGridColumn } from 'eidos-ui';
 
-interface Person extends Record<string, unknown> {
+interface Person {
   id: number;
   name: string;
   role: string;
@@ -42,6 +42,42 @@ function TeamTable() {
   return <DataGrid<Person> columns={columns} data={data} rowKey="id" onChange={setData} />;
 }
 ```
+
+## Typed row data
+
+Everything that names a field of a row is checked against your row type: `columns[].key`, `filterConfig[].key`, `quickFilters[].key`, `rowKey`, and the sort keys in `currentSort`/`onSortChange`. A typo or a stale field name is a compile error rather than a control that renders and then silently does nothing.
+
+Because `key` and the value type are correlated, each column's callbacks receive that field's own type instead of `unknown` - no casts:
+
+```tsx
+interface Person {
+  name: string;
+  salary: number;
+  joinDate?: string;
+}
+
+const columns: DataGridColumn<Person>[] = [
+  {
+    key: 'salary',
+    header: 'Salary',
+    renderCell: (value) => `$${value.toLocaleString()}`, // value: number
+    validate: (value) => (value > 0 ? true : 'Must be positive'), // value: number
+  },
+  // value: string | undefined - optional fields stay optional
+  { key: 'joinDate', header: 'Joined', renderCell: (value) => value ?? '—' },
+  // @ts-expect-error - 'salry' is not a field of Person
+  { key: 'salry', header: 'Typo' },
+];
+```
+
+Two column variants address no field at all, and take a free-form `key`:
+
+- **`type: 'custom'`** - a computed or composite column, rendered from the whole row. `renderCell` is required (there's no field to fall back to) and receives `undefined` as its value, so write `(_, row) => …`. Not editable.
+- **`type: 'actions'`** - the row-actions menu. `key` is optional here, since nothing reads it.
+
+<Canvas of={DataGridStories.TypedColumns} />
+
+> **Note**: an index signature on your row type switches all of this off. `interface Person extends Record<string, unknown>` widens `keyof Person` to `string`, so every key check passes and every `value` degrades to `unknown`. This used to be required to satisfy the old `T extends Record<string, unknown>` constraint - it no longer is, and adding it back will quietly cost you the checking rather than failing loudly. Plain `interface` or `type` both work.
 
 ## Default
 

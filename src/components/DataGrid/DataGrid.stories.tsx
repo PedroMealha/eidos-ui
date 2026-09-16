@@ -8,10 +8,13 @@ import type { MenuItemType } from '../Menu';
 import { Chip } from '../Chip/Chip.component';
 
 // ─── Data model ───────────────────────────────────────────────────────────────
-// `extends Record<string, unknown>` is required so that Person satisfies the
-// DataGrid generic constraint `T extends Record<string, unknown>`.
+// A plain interface, deliberately: `DataGrid<T>` constrains `T extends object`,
+// so no index signature is needed. Adding one (`extends Record<string,
+// unknown>`, which used to be required) would widen `keyof Person` to `string`
+// and silently opt every column, filter and quick filter out of key checking
+// and per-key value typing.
 
-interface Person extends Record<string, unknown> {
+interface Person {
   id: number;
   name: string;
   role: string;
@@ -237,7 +240,7 @@ const FILTERABLE_COLUMNS: DataGridColumn<Person>[] = [
 // Filter schema is fully decoupled from `columns` - it lives in its own
 // dedicated array, so every filterable field is visible in one place instead
 // of scattered across each column's definition.
-const FILTER_CONFIG: DataGridFilterField[] = [
+const FILTER_CONFIG: DataGridFilterField<Person>[] = [
   { key: 'name', label: 'Name', filterType: 'text' },
   {
     key: 'role',
@@ -269,7 +272,7 @@ const FILTER_CONFIG: DataGridFilterField[] = [
 // dropdown. One of each control type: a segmented control for a handful of
 // mutually exclusive values, a multi-select for a medium list, and a
 // searchable combobox for a long one.
-const QUICK_FILTERS: DataGridQuickFilter[] = [
+const QUICK_FILTERS: DataGridQuickFilter<Person>[] = [
   {
     type: 'segmented',
     key: 'department',
@@ -300,7 +303,7 @@ const QUICK_FILTERS: DataGridQuickFilter[] = [
 // `department` is deliberately also in FILTER_CONFIG above: a key claimed by a
 // quick filter wins and is dropped from the filter dropdown, so the same field
 // is never editable from two controls at once.
-const FULL_FEATURED_QUICK_FILTERS: DataGridQuickFilter[] = [
+const FULL_FEATURED_QUICK_FILTERS: DataGridQuickFilter<Person>[] = [
   {
     type: 'segmented',
     key: 'department',
@@ -1419,6 +1422,83 @@ export const ColumnAlignment: Story = {
         data={data}
         rowKey="id"
         onChange={setData}
+        hasCardView={false}
+      />
+    );
+  },
+};
+
+// ─── 22. Typed columns + custom column ────────────────────────────────────────
+
+// `key` is checked against `Person`, and each callback's `value` arrives as
+// that field's own type - `salary` is a `number`, so `.toLocaleString()` is
+// available without a cast. The last entry is a `type: 'custom'` column: it
+// renders from the whole row, so its `key` is free-form and addresses no field.
+const TYPED_COLUMNS: DataGridColumn<Person>[] = [
+  { key: 'id', header: 'ID', type: 'readonly', width: 60 },
+  { key: 'name', header: 'Name', type: 'text', minWidth: 150 },
+  {
+    key: 'salary',
+    header: 'Salary',
+    type: 'number',
+    width: 130,
+    align: 'right',
+    sortable: true,
+    // `value: number` - inferred from Person['salary'], no cast needed.
+    renderCell: (value) => `$${value.toLocaleString('en-US')}`,
+    // Same for validate.
+    validate: (value) => (value > 0 ? true : 'Salary must be greater than 0'),
+  },
+  {
+    key: 'joinDate',
+    header: 'Tenure',
+    type: 'readonly',
+    width: 110,
+    // Optional field, so `value` is `string | undefined`.
+    renderCell: (value) =>
+      value ? `${new Date().getFullYear() - new Date(value).getFullYear()}y` : '—',
+  },
+  {
+    // Not a field of Person - a computed column, so it declares itself custom.
+    key: 'summary',
+    header: 'Summary',
+    type: 'custom',
+    minWidth: 200,
+    renderCell: (_value, row) => (
+      <Chip variant="outlined" size="sm">
+        {`${row.role} · ${row.department}`}
+      </Chip>
+    ),
+  },
+];
+
+export const TypedColumns: Story = {
+  name: 'TypedColumns',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '`DataGridColumn<Person>` checks `key` against `Person`, so a typo or a ' +
+          'stale field name is a compile error instead of a column that silently ' +
+          'renders nothing. Because `key` and the value type are correlated, every ' +
+          "callback receives the field's own type: `salary`'s `renderCell` and " +
+          '`validate` get a `number` (no cast for `.toLocaleString()`), and the ' +
+          "optional `joinDate` gets `string | undefined`. The Summary column isn't " +
+          "a field of `Person` at all - it's `type: 'custom'`, which renders from " +
+          'the whole row and therefore takes a free-form `key`. The same checking ' +
+          'applies to `filterConfig`, `quickFilters`, `rowKey` and the sort keys.',
+      },
+    },
+  },
+  render: function TypedColumnsStory() {
+    const [data, setData] = useState<Person[]>(makePeople());
+    return (
+      <DataGrid<Person>
+        columns={TYPED_COLUMNS}
+        data={data}
+        rowKey="id"
+        onChange={setData}
+        editable
         hasCardView={false}
       />
     );

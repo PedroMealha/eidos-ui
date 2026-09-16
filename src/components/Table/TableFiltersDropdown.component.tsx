@@ -14,7 +14,7 @@ export interface FilterRow {
   value: FilterValue;
 }
 
-interface TableFiltersDropdownProps<T> {
+interface TableFiltersDropdownProps<T extends object> {
   columns: TableColumn<T>[];
   filters: TableFilters;
   onFiltersChange: (filters: TableFilters) => void;
@@ -22,7 +22,7 @@ interface TableFiltersDropdownProps<T> {
   className?: string;
 }
 
-export const TableFiltersDropdown = <T extends Record<string, unknown>>({
+export const TableFiltersDropdown = <T extends object>({
   columns,
   filters,
   onFiltersChange,

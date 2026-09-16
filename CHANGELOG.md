@@ -13,6 +13,39 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Changed
+
+- **Breaking**: `DataGrid` and `Table` now check every field-addressing member
+  against the row type `T` - `columns[].key`, `filterConfig[].key`,
+  `quickFilters[].key`, `rowKey`, and the `currentSort`/`onSortChange` keys.
+  A key that isn't a field of `T` is now a compile error instead of a control
+  that silently matches nothing.
+- **Breaking**: a column's `key` and its value type are now correlated, so
+  `renderCell`, `renderEditor` and `validate` (and `Table`'s `render`) receive
+  `T[key]` instead of `unknown`. Existing `value as X` casts on a mismatched
+  type will now fail to compile; delete the cast.
+- **Breaking**: `TableColumn.key` was `keyof T | string`, which collapsed to
+  `string` and checked nothing. It is now `RowKey<T>`.
+- **Breaking**: columns that address no row field must declare it -
+  `type: 'custom'` on `DataGridColumn` (also `'icon' | 'action' | 'custom'` on
+  `TableColumn`), which is what permits a free-form `key`. Pointing a normal
+  column's `key` at a non-existent field no longer compiles.
+- `DataGrid` and `Table` constrain `T extends object` rather than
+  `T extends Record<string, unknown>`, so a plain `interface` row type is
+  accepted. Row types written as `interface Row extends Record<string,
+  unknown>` to satisfy the old constraint should drop the `extends`: an index
+  signature widens `keyof T` to `string` and silently disables all of the
+  checking above.
+
+### Added
+
+- `type: 'actions'` columns no longer require a placeholder `key`; it is now
+  optional on that variant.
+- `RowKey<T>` is exported - the row-field-name type shared by both components.
+- `DataGridValueColumn`, `DataGridCustomColumn`, `DataGridActionsColumn`,
+  `DataGridValueCellType`, `TableValueColumn` and `TableCustomColumn` are
+  exported for consumers that need to name a single column variant.
+
 ## [1.2.0] - 2026-09-16
 
 ### Added

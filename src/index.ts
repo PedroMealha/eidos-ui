@@ -158,6 +158,8 @@ export type {
 export type {
   TableProps,
   TableColumn,
+  TableValueColumn,
+  TableCustomColumn,
   TableFilters,
   FilterValue,
   BulkAction,
@@ -168,11 +170,16 @@ export type {
 
 export type { ColorPickerProps, ColorFormat, RGBColor, HSLColor } from './components/ColorPicker';
 export type { ComboboxProps, ComboboxOption } from './components/Combobox';
+export type { RowKey } from './utils';
 export type { CommandPaletteProps, CommandItem } from './components/CommandPalette';
 export type {
   DataGridProps,
   DataGridColumn,
   DataGridCellType,
+  DataGridValueCellType,
+  DataGridValueColumn,
+  DataGridCustomColumn,
+  DataGridActionsColumn,
   DataGridSelectOption,
   DataGridRowAction,
   DataGridFilterField,

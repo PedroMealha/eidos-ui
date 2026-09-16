@@ -9,6 +9,29 @@ Read-only data table with sorting, pagination, column filters, custom cell rende
 
 > **Note**: Table is for displaying data; DataGrid is for editing it. Read-only display: Table. Inline cell editing: DataGrid.
 
+## Typed row data
+
+`TableColumn<T>` checks `key` against your row type, and correlates it with the value type so `render` receives that field's own type instead of `unknown`:
+
+```tsx
+interface User {
+  name: string;
+  status: 'active' | 'inactive';
+}
+
+const columns: TableColumn<User>[] = [
+  { key: 'name', label: 'Name' },
+  // value: 'active' | 'inactive' - narrow enough to switch on directly
+  { key: 'status', label: 'Status', render: (value) => <Chip>{value}</Chip> },
+  // Columns that render from the whole row take a free-form key
+  { key: 'actions', label: '', type: 'icon', render: (_value, item) => <Menu … /> },
+];
+```
+
+`type: 'icon'`, `'action'` and `'custom'` columns address no field, so their `key` is free-form and `render` receives `undefined` as its value - use `(_, item) => …`. `'custom'` is the one to reach for when you want a computed column with normal data-cell styling.
+
+> **Note**: an index signature on your row type switches this off - `interface User extends Record<string, unknown>` widens `keyof User` to `string`, so every key passes and every value degrades to `unknown`. Plain `interface` or `type` both work.
+
 ## Usage
 
 ```tsx
