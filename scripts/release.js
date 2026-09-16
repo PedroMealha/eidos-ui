@@ -83,7 +83,26 @@ if (requested === 'approve') {
 
   console.log(`\n▶ Approving ${name}@${match.version} (staged ${match.date_staged ?? 'recently'})`);
   console.log(`  id ${match.id}\n`);
-  execSync(`npm stage approve ${match.id}`, { stdio: 'inherit' });
+
+  try {
+    execSync(`npm stage approve ${match.id}`, { stdio: 'inherit' });
+  } catch {
+    // stdio is inherited so npm's 2FA prompt stays interactive, which means its
+    // error text can't be captured and inspected here - hence guidance rather
+    // than a parsed message. The common case by far is E409: npm runs an
+    // automated review on every staged package and refuses approval until it
+    // finishes, which takes a few minutes.
+    fail(
+      'npm refused the approval.',
+      'If it mentioned "automated review hasn\'t finished" (E409), nothing is',
+      'wrong - npm scans every staged package first. Wait a few minutes and',
+      're-run; the stage is untouched either way.',
+      '',
+      '  npm run release -- approve',
+      `  npm stage view ${match.id}     # inspect what is queued`,
+    );
+  }
+
   process.exit(0);
 }
 const content = unreleasedContent();
