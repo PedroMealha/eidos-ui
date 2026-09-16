@@ -149,6 +149,49 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
 <Divider style={{ margin: '24px 0' }} />
 
 <ReleaseCard
+  version="1.2.0"
+  date="2026-09-16"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>DataGridColumn</Code> gains <Code>align</Code> (
+          <Code>'left' | 'center' | 'right'</Code>), matching <Code>TableColumn.align</Code>, to
+          align a column's header and cells together.
+        </>,
+        <>
+          <Code>Table</Code> and <Code>DataGrid</Code> show a badge with the number of applied
+          filters on the toolbar's filter button; <Code>DataGrid</Code>'s counts its dropdown
+          filters only, not quick filters.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>Pill</Code> no longer forces a bold label, inheriting the surrounding font weight
+          instead.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          The filter button's active-filter highlight now actually renders - it was being overridden
+          by <Code>Button</Code>'s own <Code>text</Code> variant styles.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
   version="1.1.0"
   date="2026-09-15"
   bump="minor"
