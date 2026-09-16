@@ -42,7 +42,21 @@ if (requested === 'approve') {
   try {
     staged = JSON.parse(execSync(`npm stage list ${name} --json`, { encoding: 'utf8' }));
   } catch (error) {
-    fail('Could not read the stage queue.', String(error.stderr || error.message).trim());
+    const detail = String(error.stderr || error.message);
+    // npm CLI sessions are short-lived, and approving is the only step in the
+    // whole release that needs npm auth at all - so an expired login shows up
+    // here and nowhere else. Say so plainly rather than relaying npm's wall.
+    if (/E401|Unable to authenticate/i.test(detail)) {
+      fail(
+        'Your npm session has expired.',
+        'Approving is the only step that needs npm auth, so this is the only',
+        'place it surfaces. Log in and re-run:',
+        '',
+        '  npm login',
+        '  npm run release -- approve',
+      );
+    }
+    fail('Could not read the stage queue.', detail.trim());
   }
 
   if (!Array.isArray(staged) || staged.length === 0) {
