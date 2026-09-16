@@ -138,6 +138,13 @@
   font-size: var(--font-size-base);
   color: var(--dark-color);
   flex: 1;
+  // Centres any inline node passed alongside the title text (see the same
+  // treatment on Header/Modal/Alert/Popover/EmptyState titles).
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
 }
 
 .eidos-drawer-close {

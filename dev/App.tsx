@@ -2,41 +2,58 @@ import React, { useEffect } from 'react';
 import { useAuth } from './auth/auth-context';
 import { SignInPage } from './auth/sign-in-page';
 import { AdminLayout } from './layouts/admin-layout';
+import { PageChromeProvider } from './layouts/page-chrome';
 import { PublicLayout } from './layouts/public-layout';
-import { DashboardPage } from './pages/dashboard-page';
 import { LandingPage } from './pages/landing-page';
 import { NotFoundPage } from './pages/not-found-page';
-import { SettingsPage } from './pages/settings-page';
-import { TeamPage } from './pages/team-page';
-import { TicketsPage } from './pages/tickets-page';
+import { ForbiddenPage } from './pages/forbidden-page';
 import { useRouter } from './routes/router';
 
-const APP_ROUTES: Record<string, React.ReactNode> = {
-  '/app/dashboard': <DashboardPage />,
-  '/app/tickets': <TicketsPage />,
-  '/app/team': <TeamPage />,
-  '/app/settings': <SettingsPage />,
-};
+const HOME_PATH = '/app/dashboard';
 
 export const App: React.FC = () => {
-  const { path, navigate } = useRouter();
+  const { path, match, navigate } = useRouter();
   const { session } = useAuth();
 
   const isAppRoute = path.startsWith('/app');
+  const redirectTo = match?.route.redirectTo;
 
   useEffect(() => {
     if (isAppRoute && !session) {
       navigate('/sign-in');
     } else if (session && (path === '/sign-in' || path === '/')) {
-      navigate('/app/dashboard');
+      navigate(HOME_PATH);
     }
   }, [isAppRoute, session, path, navigate]);
+
+  // Index routes (`/app/settings`) forward to their first child. Done here
+  // rather than in the route table's own resolution so the URL actually
+  // changes, keeping the visited path shareable and the back button honest.
+  useEffect(() => {
+    if (session && redirectTo) navigate(redirectTo);
+  }, [session, redirectTo, navigate]);
 
   if (isAppRoute) {
     // The redirect above is already queued; render nothing for that one frame.
     if (!session) return null;
+
+    const Page = match?.route.component;
+    // The navigation rail hides admin-only routes, but a pasted URL must
+    // still be refused - one guard here rather than repeated per page.
+    const forbidden = match?.route.adminOnly && session.role !== 'admin';
+
     return (
-      <AdminLayout>{APP_ROUTES[path] ?? <NotFoundPage homePath="/app/dashboard" />}</AdminLayout>
+      <PageChromeProvider>
+        <AdminLayout>
+          {redirectTo ? null : forbidden ? (
+            <ForbiddenPage />
+          ) : Page ? (
+            <Page />
+          ) : (
+            <NotFoundPage homePath={HOME_PATH} />
+          )}
+        </AdminLayout>
+      </PageChromeProvider>
     );
   }
 

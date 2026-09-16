@@ -1,15 +1,21 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { matchRoute, type RouteMatch, type RouteParams } from './routes';
 
 /**
  * Minimal hash-based router.
  *
- * Deliberately hand-rolled: the example app needs four routes and a redirect,
- * which is not worth adding a routing dependency to a component library's
- * devDependencies. Hash routing also means the app works when opened from a
- * static file server with no rewrite rules.
+ * Deliberately hand-rolled: the example app needs a handful of routes, a
+ * dynamic segment and a redirect, which is not worth adding a routing
+ * dependency to a component library's devDependencies. Hash routing also
+ * means the app works when opened from a static file server with no rewrite
+ * rules.
  */
 type RouterValue = {
   path: string;
+  /** The matched route and its params, or `null` for an unknown path. */
+  match: RouteMatch | null;
+  /** Captured `:param` segments of the current route; empty for static routes. */
+  params: RouteParams;
   navigate: (to: string) => void;
 };
 
@@ -34,7 +40,12 @@ export const RouterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     window.location.hash = to;
   }, []);
 
-  const value = useMemo<RouterValue>(() => ({ path, navigate }), [path, navigate]);
+  const match = useMemo(() => matchRoute(path), [path]);
+
+  const value = useMemo<RouterValue>(
+    () => ({ path, match, params: match?.params ?? {}, navigate }),
+    [path, match, navigate],
+  );
 
   return <RouterContext.Provider value={value}>{children}</RouterContext.Provider>;
 };

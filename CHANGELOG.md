@@ -13,6 +13,29 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `Toolbar` gains `user` - the signed-in user's avatar (`name`, `src`, `color`).
+- `Toolbar` gains `content`, a free-form slot for non-button app-bar content
+  such as an environment badge or org switcher.
+- `Toolbar`'s `breadcrumbs` and `userMenu` are now optional, so a bare
+  `<Toolbar />` is valid.
+- `title` accepts `React.ReactNode` on `Header`, `Alert`, `EmptyState`,
+  `Modal`, `Drawer` and `Popover`, so a status indicator can sit inline
+  beside the title text.
+
+### Fixed
+
+- `Toolbar` no longer renders a hardcoded "John Doe" avatar; it renders the
+  `user` you pass, or no avatar at all.
+- `PageLayout` now scrolls only its page body - tall content no longer
+  scrolls the toolbar and navigation rail out of view, and wide content no
+  longer stretches the layout horizontally.
+- `Popover` names its panel via `aria-labelledby` pointing at the visible
+  title instead of duplicating it into an `aria-label`.
+- `PageLayout` forwards every `Toolbar` prop it is given, instead of only the
+  four it listed explicitly.
+
 ## [2.0.0] - 2026-09-16
 
 ### Changed

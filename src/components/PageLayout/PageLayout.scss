@@ -26,10 +26,23 @@
     grid-area: content;
     display: grid;
     grid-template-rows: minmax(50px, auto) 1fr auto;
+    // A grid item's automatic minimum size is its content's size, so without
+    // these the `1fr` track can only grow: tall page content stretched the
+    // whole layout past the viewport and scrolled the toolbar and navigation
+    // rail away with it, and a wide table did the same horizontally. Pinning
+    // both to `0` is what lets `&__body` below actually become the scroll
+    // container instead of the document.
+    min-height: 0;
+    min-width: 0;
   }
 
   &__body {
     background-color: var(--gray-50);
+    // The single scroll region of the layout - the toolbar, navigation rail,
+    // header and footer all stay put while only the page content moves.
+    overflow: auto;
+    min-height: 0;
+    min-width: 0;
   }
 
   &__footer {
@@ -44,5 +57,12 @@
   &__body,
   &__footer {
     padding: var(--spacing-xl) var(--spacing-xl) 0;
+  }
+
+  // Overrides the shared `0` bottom padding above: now that the body is a
+  // scroll container, content scrolled to the end would otherwise sit flush
+  // against the clipping edge with no breathing room before the footer.
+  &__body {
+    padding-bottom: var(--spacing-xl);
   }
 }

@@ -20,7 +20,8 @@ export interface DrawerProps {
   onClose: () => void;
   /** Side from which the drawer slides in. Default: 'right'. */
   placement?: DrawerPlacement;
-  title?: string;
+  /** Panel heading. Accepts inline nodes alongside the text, not just a string. */
+  title?: ReactNode;
   children: ReactNode;
   /** Footer action buttons. */
   actions?: DrawerAction[];

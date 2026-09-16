@@ -37,9 +37,9 @@ const meta = {
     },
     title: {
       control: 'text',
-      description: 'Title displayed in the drawer header.',
+      description: 'Title displayed in the drawer header. Accepts inline nodes, not just a string.',
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'React.ReactNode' },
         defaultValue: { summary: 'undefined' },
       },
     },

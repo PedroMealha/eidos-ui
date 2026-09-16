@@ -52,6 +52,13 @@
   @include font-size(sm);
   color: var(--dark-color);
   flex: 1;
+  // Centres any inline node passed alongside the title text (see the same
+  // treatment on Header/Modal/Alert/Drawer/EmptyState titles).
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
 }
 
 .eidos-popover-close {

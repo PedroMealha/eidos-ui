@@ -25,8 +25,8 @@ const meta = {
     },
     title: {
       control: 'text',
-      description: 'Title of the modal',
-      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+      description: 'Title of the modal. Accepts inline nodes, not just a string.',
+      table: { type: { summary: 'React.ReactNode' }, defaultValue: { summary: 'undefined' } },
     },
     icon: {
       control: 'text',

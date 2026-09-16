@@ -13,6 +13,7 @@ import {
   type TicketPriority,
   type TicketStatus,
 } from '../api/types';
+import { usePageChrome } from '../layouts/page-chrome';
 import { useAsync } from '../lib/use-async';
 import { TicketDetailDrawer } from './ticket-detail-drawer';
 
@@ -72,6 +73,17 @@ export const TicketsPage: React.FC = () => {
 
   const tickets = data ?? [];
   const activeTicket = tickets.find((ticket) => ticket.id === activeId) ?? null;
+
+  // Only the subtitle is page-specific here - it reports the live queue size,
+  // which the route table can't know. The title comes from the route.
+  usePageChrome(
+    useMemo(
+      () => ({
+        subtitle: loading ? 'Loading the queue…' : `${tickets.length} ticket(s) in the queue.`,
+      }),
+      [loading, tickets.length],
+    ),
+  );
 
   const rowMenu = useCallback(
     (ticket: Ticket): MenuItemType[] => [
@@ -235,23 +247,18 @@ export const TicketsPage: React.FC = () => {
 
   return (
     <div className="mrd-page">
-      <div className="mrd-page__head">
-        <div>
-          <h1 className="mrd-page__title">Tickets</h1>
-          <p className="mrd-page__subtitle">
-            {loading ? 'Loading the queue…' : `${tickets.length} ticket(s) in the queue.`}
-          </p>
-        </div>
-        <Input
-          type="search"
-          placeholder="Search reference, subject, customer…"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          preIcon="search"
-          clearable
-          width={320}
-        />
-      </div>
+      {/* Sits with the table it filters rather than in the page header:
+          `Header.actions` takes button descriptors only, and a search field
+          belongs next to its results anyway. */}
+      <Input
+        type="search"
+        placeholder="Search reference, subject, customer…"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        preIcon="search"
+        clearable
+        width={320}
+      />
 
       {error && (
         <Alert

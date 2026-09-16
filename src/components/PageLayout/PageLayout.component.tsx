@@ -22,12 +22,14 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
   return (
     <div className={classes} {...rest}>
+      {/* Spread rather than forwarded field by field, so a prop added to
+          `Toolbar` reaches `PageLayout` consumers without a second edit
+          here - the previous per-field list silently dropped anything it
+          didn't know about. `className` is merged last so the layout's own
+          grid-area class can't be overwritten by the caller's. */}
       <Toolbar
-        breadcrumbs={toolbar?.breadcrumbs || { items: [], separator: <></> }}
-        cmdPaletteItems={toolbar?.cmdPaletteItems || []}
-        actions={toolbar?.actions || []}
-        userMenu={toolbar?.userMenu || []}
-        className="eidos-pagelayout__toolbar"
+        {...toolbar}
+        className={['eidos-pagelayout__toolbar', toolbar?.className].filter(Boolean).join(' ')}
       />
       <div className="eidos-pagelayout__navigation">
         {navigation && <Navigation {...navigation} />}

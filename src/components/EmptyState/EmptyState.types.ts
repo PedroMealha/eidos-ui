@@ -4,8 +4,8 @@ import type { ComponentSizeProps } from '../../utils';
 export interface EmptyStateProps {
   /** Large icon or illustration rendered at the top. Any ReactNode. */
   icon?: React.ReactNode;
-  /** Main heading. */
-  title: string;
+  /** Main heading. Accepts inline nodes alongside the text, not just a string. */
+  title: React.ReactNode;
   /** Supporting text below the title. */
   description?: string;
   /** Optional CTA - typically a Button. Any ReactNode. */

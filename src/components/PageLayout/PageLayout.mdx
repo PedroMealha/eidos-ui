@@ -41,6 +41,47 @@ import { LayoutDashboard, Settings } from 'lucide-react';
 </PageLayout>
 ```
 
+## One layout, many routes
+
+`PageLayout` is the shell for a whole authenticated area, not for one screen. Render **exactly one instance**, in your layout/route wrapper, and never nest a second one inside a page - every page would then repeat the full navigation, toolbar and footer config, and nested child routes (`/tickets/:id`) would stack two sets of chrome.
+
+The chrome each individual page needs (its `header`, and the leaf of the breadcrumb trail) therefore has to reach that single instance from the outside. Two sources feed it:
+
+1. **A route table** for the static parts - title, breadcrumb parent chain, which navigation item is active. Resolve this from the current path, so the correct chrome is present on the very first paint.
+2. **A context the page registers into** for the parts only the page knows - a title that depends on loaded data, an action's `loading` state, a status indicator.
+
+```tsx
+// One instance, in the layout - not in any page.
+const { route } = matchRoute(path);
+const pageChrome = useResolvedChrome(); // route defaults <- page overrides
+
+<PageLayout
+  navigation={{ brand, items: navItems }}
+  toolbar={{ breadcrumbs: { items: breadcrumbsFor(route) }, user, userMenu }}
+  header={pageChrome.header}
+>
+  {route.render(params)}
+</PageLayout>;
+
+// In a page - declares chrome, renders no layout.
+usePageChrome(
+  useMemo(
+    () => ({ title: member?.name, actions: [{ children: 'Save', onClick: save }] }),
+    [member, save],
+  ),
+);
+```
+
+The route table is what makes this pleasant: with page-registered context alone, the chrome updates one commit _after_ the page renders, so every navigation briefly shows the previous page's title. Seeding from the route and letting the page only refine it avoids that flash entirely.
+
+A nested route group (a settings area with its own tab bar, say) needs no second `PageLayout` either - its sub-layout renders the tabs plus the active child, and nothing else.
+
+> **Note**: `header` is a data prop, not a slot, so there is nothing to portal JSX into - a page's header content must travel as data (as above) rather than as rendered elements.
+
+## Scrolling
+
+The page body is the layout's only scroll region: the toolbar, navigation rail, header and footer stay fixed while content scrolls beneath them. `PageLayout` therefore fills its container rather than growing with its content, so give it a bounded height - a parent with a real height, or `100vh`/`100dvh` at the app root. Dropping it into an unbounded page will make it collapse to its minimum height instead.
+
 ## Responsive behaviour
 
 Every piece of `PageLayout`'s chrome adapts to a narrow viewport on its own, with no coordination required between them:

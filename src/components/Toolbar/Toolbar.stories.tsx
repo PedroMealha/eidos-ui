@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Toolbar } from './Toolbar.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
+import { Pill } from '../Pill';
+import { Switch } from '../Switch';
 
 const meta = {
   title: 'Layout/Components/Toolbar',
@@ -21,6 +23,7 @@ const meta = {
       separator: '/',
     },
     cmdPaletteItems: CMDP_ITEMS,
+    user: { name: 'John Doe', color: 'primary' },
     actions: [
       {
         tooltip: 'Notifications',
@@ -102,9 +105,27 @@ const meta = {
     },
     userMenu: {
       control: 'object',
-      description: 'User menu items to display in the toolbar.',
+      description:
+        'User menu items, opened from the `user` avatar. Omit to render the avatar as a plain mark.',
       table: {
         type: { summary: 'MenuItemType[]' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    user: {
+      control: 'object',
+      description: 'The signed-in user, rendered as the avatar at the far right.',
+      table: {
+        type: { summary: "Pick<AvatarProps, 'name' | 'src' | 'color'>" },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    content: {
+      control: false,
+      description:
+        'Free-form content rendered before the command palette trigger - an environment badge, an org switcher, a global toggle.',
+      table: {
+        type: { summary: 'React.ReactNode' },
         defaultValue: { summary: 'undefined' },
       },
     },
@@ -137,14 +158,35 @@ export const WithActions: Story = {
 };
 
 /**
- * A single breadcrumb and an empty `userMenu` - the minimum required shape
- * for `ToolbarProps`, with every optional prop omitted.
+ * `content` takes any node - unlike `actions`, which is a restricted button
+ * subset - for the things an app bar needs that aren't buttons: an
+ * environment badge, an org/tenant switcher, a global toggle.
+ */
+export const WithContent: Story = {
+  args: {
+    actions: undefined,
+    content: (
+      <>
+        <Pill color="warning" variant="outlined" size="sm">
+          Staging
+        </Pill>
+        <Switch label="Compact rows" size="sm" />
+      </>
+    ),
+  },
+};
+
+/**
+ * Every prop is optional - a bare `<Toolbar />` renders an empty bar. Here
+ * only a single breadcrumb is given, with no user, so no avatar is rendered
+ * at all (it used to be a hardcoded "John Doe" placeholder).
  */
 export const Minimal: Story = {
   args: {
     breadcrumbs: { items: [{ label: 'Home' }] },
     cmdPaletteItems: undefined,
     actions: undefined,
-    userMenu: [],
+    user: undefined,
+    userMenu: undefined,
   },
 };

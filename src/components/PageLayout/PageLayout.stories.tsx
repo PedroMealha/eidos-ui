@@ -45,6 +45,7 @@ const meta = {
         ],
       },
       cmdPaletteItems: CMDP_ITEMS,
+      user: { name: 'John Doe', color: 'primary' },
       actions: [
         {
           tooltip: 'Notifications',

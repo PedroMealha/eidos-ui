@@ -23,10 +23,10 @@ const gitArgs = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim()
 /**
  * Sources that end up in dist/.
  *
- * `.mdx` and `.stories.tsx` live under src/ but are Storybook-only - tsup builds
- * from each component's `index.ts`, so they never reach the tarball. Counting
- * them would flag doc-only edits as releasable, which is the exact
- * over-publishing this script exists to prevent.
+ * `.mdx`, `.stories.tsx` and `.docs.tsx` live under src/ but are
+ * Storybook-only - tsup builds from each component's `index.ts`, so they never
+ * reach the tarball. Counting them would flag doc-only edits as releasable,
+ * which is the exact over-publishing this script exists to prevent.
  */
 const BUILD_INPUTS = [
   'src',
@@ -35,6 +35,8 @@ const BUILD_INPUTS = [
   ':(exclude)*.mdx',
   ':(exclude)*.stories.tsx',
   ':(exclude)*.test.tsx',
+  // JSX a guide page needs but can't declare inline - see src/Releases.docs.tsx.
+  ':(exclude)*.docs.tsx',
   'tsup.config.ts',
   'scripts/build-styles.js',
 ];

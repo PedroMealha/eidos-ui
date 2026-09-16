@@ -20,8 +20,9 @@ const meta = {
     },
     title: {
       control: 'text',
-      description: 'Optional bold heading rendered above the body content',
-      table: { type: { summary: 'string' } },
+      description:
+        'Optional bold heading rendered above the body content. Accepts inline nodes, not just a string.',
+      table: { type: { summary: 'React.ReactNode' } },
     },
     children: {
       control: 'text',

@@ -10,7 +10,8 @@ export interface AlertAction {
 
 export interface AlertProps {
   variant?: 'info' | 'success' | 'warning' | 'danger';
-  title?: string;
+  /** Alert heading. Accepts inline nodes alongside the text, not just a string. */
+  title?: React.ReactNode;
   children?: React.ReactNode;
   /**
    * Icon control:

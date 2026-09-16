@@ -13,8 +13,8 @@ export interface PopoverProps {
   trigger: React.ReactNode;
   /** Content rendered inside the floating panel. */
   children: React.ReactNode;
-  /** Optional heading shown at the top of the panel. */
-  title?: string;
+  /** Optional heading shown at the top of the panel. Accepts inline nodes alongside the text, not just a string. */
+  title?: React.ReactNode;
   /** Preferred placement relative to the trigger. Flips automatically when it doesn't fit. Default: 'bottom'. */
   placement?: PopoverPlacement;
   /** Show a × close button in the panel header. Default: false. */

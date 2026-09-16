@@ -45,6 +45,21 @@
     flex-shrink: 0;
   }
 
+  // Free-form consumer content (`content`). Laid out as a centered row so an
+  // arbitrary node - a Switch, a Pill, a Select - sits on the same line as
+  // the search/actions/menu beside it, but deliberately given no padding,
+  // background or sizing of its own: the caller owns how their content
+  // looks, this only places it.
+  &__slot {
+    @include flex-center-y;
+    gap: var(--spacing-sm);
+    // Unlike the fixed-size controls beside it, arbitrary content can be
+    // wide enough to need to give way, so it - not the breadcrumb trail -
+    // is the first thing in this region allowed to shrink.
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
   &__actions {
     @include flex-center-y;
     gap: var(--spacing-sm);

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Header } from './Header.component';
+import { Pill } from '../Pill';
 
 const meta = {
   title: 'Layout/Components/Header',
@@ -19,17 +20,19 @@ const meta = {
   },
   argTypes: {
     title: {
+      // Kept as a text control even though the prop is a ReactNode - the
+      // string case is the one worth having editable in the Controls panel.
       control: 'text',
-      description: 'Title to display in the header.',
+      description: 'Title to display in the header. Accepts inline nodes, not just a string.',
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'React.ReactNode' },
       },
     },
     subtitle: {
       control: 'object',
       description: 'Subtitle to display in the header.',
       table: {
-        type: { summary: 'string | React.ReactNode' },
+        type: { summary: 'React.ReactNode' },
         defaultValue: { summary: 'undefined' },
       },
     },
@@ -82,5 +85,25 @@ export const TitleOnly: Story = {
   args: {
     subtitle: undefined,
     actions: undefined,
+  },
+};
+
+/**
+ * `title` takes any inline node, not only a string, so a status indicator can
+ * sit beside the text rather than being pushed into the subtitle. It is
+ * centered on the title's own line, and wraps below it when there isn't room
+ * for both.
+ */
+export const WithInlineTitleContent: Story = {
+  args: {
+    title: (
+      <>
+        Invoice #4823
+        <Pill color="warning" variant="outlined" size="sm">
+          Overdue
+        </Pill>
+      </>
+    ),
+    subtitle: 'Issued 12 March 2026 · Net 30',
   },
 };

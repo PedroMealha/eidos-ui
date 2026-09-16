@@ -7,6 +7,8 @@ import * as PopoverStories from './Popover.stories';
 
 Click-triggered floating panel with a configurable placement. Unlike Tooltip (hover-only, plain text), Popover is click-toggled and accepts rich content including forms and actions.
 
+> **Note**: `title` accepts any inline node, not just a string, and names the panel for assistive tech via `aria-labelledby` - an untitled popover falls back to a literal "Popover" label instead.
+
 ## Usage
 
 ```tsx

@@ -12,6 +12,13 @@ export const teamApi = {
   list: (): Promise<TeamMember[]> =>
     request('Loading the team', () => members.map((member) => ({ ...member }))),
 
+  get: (id: string): Promise<TeamMember> =>
+    request('Loading the member', () => {
+      const member = members.find((m) => m.id === id);
+      if (!member) throw new ApiError('That member no longer exists.', 404);
+      return { ...member };
+    }),
+
   invite: (input: { name: string; email: string; role: Role }): Promise<TeamMember> =>
     request('Sending the invitation', () => {
       if (!input.name.trim()) throw new ApiError('A name is required.', 400);

@@ -38,6 +38,15 @@
     font-size: var(--font-size-2xl);
     margin-bottom: var(--spacing-xs);
     overflow-wrap: break-word;
+    // `title` takes arbitrary inline nodes, so a status `Pill`/`Chip` beside
+    // the text needs to sit on the title's centre line rather than on the
+    // text baseline. `flex-wrap` keeps a long title + indicator from forcing
+    // horizontal overflow; the trade-off is that the indicator moves to its
+    // own line when it no longer fits, instead of flowing after the last word.
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
   }
 
   &__subtitle {

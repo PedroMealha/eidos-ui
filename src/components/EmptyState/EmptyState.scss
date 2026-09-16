@@ -72,6 +72,15 @@
   margin: 0;
   color: var(--dark-color);
   @include font-weight(medium);
+  // Centres any inline node passed alongside the title text (see the same
+  // treatment on Header/Modal/Alert/Drawer/Popover titles). `justify-content`
+  // is needed here specifically because the root's `text-align: center` no
+  // longer centres the line once this becomes a flex container.
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
 
   .eidos-empty-state--sm & {
     @include font-size(sm);

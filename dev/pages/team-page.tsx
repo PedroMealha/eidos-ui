@@ -1,23 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
-  Button,
   Card,
   DataGrid,
   type DataGridColumn,
   type DataGridFilterField,
-  EmptyState,
   Input,
   Modal,
   Pill,
   Select,
   useSnackbar,
 } from 'eidos-ui';
-import { ShieldOff, Trash2 } from 'lucide-react';
+import { Trash2, UserSearch } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { teamApi } from '../api/team';
 import type { Role, TeamMember } from '../api/types';
-import { useAuth } from '../auth/auth-context';
+import { usePageChrome } from '../layouts/page-chrome';
 import { useAsync } from '../lib/use-async';
 import { useRouter } from '../routes/router';
 
@@ -29,7 +27,6 @@ const ROLE_OPTIONS = [
 const emptyInvite = { name: '', email: '', role: 'member' as Role };
 
 export const TeamPage: React.FC = () => {
-  const { session } = useAuth();
   const { navigate } = useRouter();
   const { showSuccess, showError } = useSnackbar();
 
@@ -91,6 +88,13 @@ export const TeamPage: React.FC = () => {
         type: 'actions',
         actions: [
           {
+            // An explicit action rather than a row click: the grid's cells
+            // are inline-editable, so clicking a row already means "edit".
+            label: 'View details',
+            icon: UserSearch,
+            onClick: (member: TeamMember) => navigate(`/app/team/${member.id}`),
+          },
+          {
             label: 'Remove',
             icon: Trash2,
             danger: true,
@@ -99,7 +103,7 @@ export const TeamPage: React.FC = () => {
         ],
       },
     ],
-    [removeMember],
+    [removeMember, navigate],
   );
 
   const filterConfig: DataGridFilterField<TeamMember>[] = useMemo(
@@ -115,7 +119,9 @@ export const TeamPage: React.FC = () => {
     [],
   );
 
-  const saveChanges = async () => {
+  // Memoized because it is referenced by the page chrome below, which must
+  // be a stable object - see the contract on `usePageChrome`.
+  const saveChanges = useCallback(async () => {
     setSaving(true);
     try {
       await teamApi.saveAll(rows);
@@ -126,7 +132,7 @@ export const TeamPage: React.FC = () => {
     } finally {
       setSaving(false);
     }
-  };
+  }, [rows, reload, showSuccess, showError]);
 
   const sendInvite = async () => {
     setInviting(true);
@@ -143,60 +149,48 @@ export const TeamPage: React.FC = () => {
     }
   };
 
-  // The sidebar hides this page for members, but a pasted URL must still be guarded.
-  if (session?.role !== 'admin') {
-    return (
-      <div className="mrd-page">
-        <EmptyState
-          icon={<ShieldOff />}
-          title="Admins only"
-          description="Your account has the member role, which cannot manage the team. Switch to the admin role by signing in again."
-          action={
-            <Button variant="outlined" onClick={() => navigate('/app/dashboard')}>
-              Back to dashboard
-            </Button>
-          }
-        />
-      </div>
-    );
-  }
+  // The unsaved-changes indicator now sits inline in the shell's header
+  // title, which is what `title` accepting a ReactNode is for - it is page
+  // status, not an action, so it does not belong in `actions`.
+  usePageChrome(
+    useMemo(
+      () => ({
+        title: (
+          <>
+            Team
+            {dirty && (
+              <Pill color="warning" variant="outlined" size="sm">
+                Unsaved changes
+              </Pill>
+            )}
+          </>
+        ),
+        actions: [
+          {
+            children: 'Discard',
+            variant: 'outlined',
+            disabled: !dirty || saving,
+            onClick: () => setRows(data ?? []),
+          },
+          {
+            children: 'Save changes',
+            loading: saving,
+            disabled: !dirty,
+            onClick: () => void saveChanges(),
+          },
+          {
+            children: 'Invite',
+            preIcon: 'user-plus',
+            onClick: () => setInviteOpen(true),
+          },
+        ],
+      }),
+      [dirty, saving, data, saveChanges],
+    ),
+  );
 
   return (
     <div className="mrd-page">
-      <div className="mrd-page__head">
-        <div>
-          <h1 className="mrd-page__title">Team</h1>
-          <p className="mrd-page__subtitle">
-            Edit cells directly, then save. At least one active admin must remain.
-          </p>
-        </div>
-        <div className="mrd-page__actions">
-          {dirty && (
-            <Pill color="warning" variant="outlined" size="sm">
-              Unsaved changes
-            </Pill>
-          )}
-          <Button
-            variant="outlined"
-            disabled={!dirty || saving}
-            onClick={() => setRows(data ?? [])}
-          >
-            Discard
-          </Button>
-          <Button
-            loading={saving}
-            loadingText="Saving"
-            disabled={!dirty}
-            onClick={() => void saveChanges()}
-          >
-            Save changes
-          </Button>
-          <Button preIcon="user-plus" onClick={() => setInviteOpen(true)}>
-            Invite
-          </Button>
-        </div>
-      </div>
-
       {error && (
         <Alert
           variant="danger"

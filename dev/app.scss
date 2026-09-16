@@ -199,124 +199,22 @@ body {
   max-width: 420px;
 }
 
-/* ── Admin shell ────────────────────────────────────────────────────────── */
+/* ── Admin shell ────────────────────────────────────────────────────────────
+   The shell itself is the library's `PageLayout` (navigation rail, toolbar,
+   header, footer) - see `layouts/admin-layout.tsx`. Only the small pieces
+   slotted into it need styling here.
+   ────────────────────────────────────────────────────────────────────────── */
 
-.mrd-shell {
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-}
-
-.mrd-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
-  width: 232px;
-  flex-shrink: 0;
-  padding: var(--spacing-lg);
-  border-right: 1px solid var(--gray-200);
-  background: var(--white);
-}
-
-.mrd-sidenav {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-}
-
-.mrd-sidenav__item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--gray-600);
-  cursor: pointer;
-  transition:
-    background 0.12s ease,
-    color 0.12s ease;
-
-  &:hover {
-    background: var(--gray-100);
-    color: var(--dark-color);
-  }
-}
-
-.mrd-sidenav__item--active {
-  background: var(--primary-50);
-  color: var(--primary-color);
-  font-weight: var(--font-weight-semibold);
-}
-
-.mrd-sidebar__foot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
+/* Content of `navigation.footer` on PageLayout. Stacked rather than a
+   space-between row: the rail sizes itself to its own content (~160px), which
+   is too narrow to sit a label and a pill side by side comfortably. */
 .mrd-sidebar__role {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
   font-size: var(--font-size-xs);
   color: var(--gray-500);
-}
-
-.mrd-main {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-.mrd-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-lg);
-  height: 60px;
-  flex-shrink: 0;
-  padding: 0 var(--spacing-xl);
-  border-bottom: 1px solid var(--gray-200);
-  background: var(--white);
-}
-
-.mrd-topbar__right {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.mrd-topbar__switch {
-  display: flex;
-  align-items: center;
-}
-
-.mrd-cmdk {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--border-radius-md);
-  background: var(--gray-50);
-  color: var(--gray-500);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-
-  &:hover {
-    border-color: var(--gray-300);
-    color: var(--gray-700);
-  }
-}
-
-.mrd-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--spacing-xl);
 }
 
 .mrd-usercard {
@@ -335,36 +233,16 @@ body {
   color: var(--gray-500);
 }
 
-/* ── Page scaffold ──────────────────────────────────────────────────────── */
+/* ── Page scaffold ──────────────────────────────────────────────────────────
+   Pages render body content only. Their title, subtitle and actions are
+   declared with `usePageChrome` and drawn by the shell's single `Header`,
+   so there is no per-page header block to style.
+   ────────────────────────────────────────────────────────────────────────── */
 
 .mrd-page {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
-}
-
-.mrd-page__head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
-}
-
-.mrd-page__title {
-  font-size: var(--font-size-2xl);
-  margin: 0 0 var(--spacing-xs);
-}
-
-.mrd-page__subtitle {
-  color: var(--gray-500);
-  font-size: var(--font-size-sm);
-}
-
-.mrd-page__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
 }
 
 /* ── Dashboard ──────────────────────────────────────────────────────────── */
@@ -447,6 +325,31 @@ body {
 .mrd-subject__meta {
   font-size: var(--font-size-xs);
   color: var(--gray-500);
+}
+
+/* ── Team member detail (child route of /app/team) ──────────────────────── */
+
+.mrd-member {
+  display: flex;
+  gap: var(--spacing-2xl);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.mrd-member__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 240px;
+}
+
+.mrd-member__fact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  font-size: var(--font-size-sm);
 }
 
 /* ── Ticket detail drawer ───────────────────────────────────────────────── */

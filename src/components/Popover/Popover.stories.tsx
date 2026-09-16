@@ -37,9 +37,10 @@ const meta = {
     },
     title: {
       control: 'text',
-      description: 'Optional heading shown at the top of the panel',
+      description:
+        'Optional heading shown at the top of the panel. Accepts inline nodes, not just a string.',
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'React.ReactNode' },
       },
     },
     maxWidth: {

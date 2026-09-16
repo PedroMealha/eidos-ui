@@ -38,3 +38,9 @@ Icon-only and labeled actions can be freely mixed within the same `actions` arra
 `subtitle` and `actions` are both optional.
 
 <Canvas of={HeaderStories.TitleOnly} />
+
+## Inline content in the title
+
+`title` accepts any inline node, not just a string, so a status indicator belongs beside the title text rather than pushed down into the subtitle. It is centered on the title's own line and wraps below it when there isn't room for both. Keep the children inline-level - the title is a heading, and block content inside it will not lay out sensibly.
+
+<Canvas of={HeaderStories.WithInlineTitleContent} />

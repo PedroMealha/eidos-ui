@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { PopoverProps, PopoverState, PopoverPlacement } from './Popover.types';
@@ -30,6 +30,14 @@ export const Popover: React.FC<PopoverProps> = ({
     isPositioned: false,
     position: { top: 0, left: 0, placement: preferredPlacement },
   });
+
+  // Names the dialog by pointing at the rendered title, the same way `Modal`
+  // and `Drawer` do. This was an `aria-label={title ?? 'Popover'}`, which
+  // both duplicated the visible text into a second, invisible copy and hard
+  // limited `title` to a string - `aria-label` takes only a string, so a
+  // `ReactNode` title would have been stringified to "[object Object]" and
+  // silently destroyed the accessible name.
+  const titleId = useId();
 
   // ── Refs ──────────────────────────────────────────────────────────────────
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -281,7 +289,10 @@ export const Popover: React.FC<PopoverProps> = ({
             ref={contentRef}
             role="dialog"
             aria-modal="false"
-            aria-label={title ?? 'Popover'}
+            aria-labelledby={title ? titleId : undefined}
+            // Only the untitled case still needs a literal label - there is
+            // no visible text to point at.
+            aria-label={title ? undefined : 'Popover'}
             className={[
               'eidos-popover-content',
               `eidos-popover-content--${popoverState.position.placement}`,
@@ -298,7 +309,11 @@ export const Popover: React.FC<PopoverProps> = ({
           >
             {(title || showCloseButton) && (
               <div className="eidos-popover-header">
-                {title && <span className="eidos-popover-title">{title}</span>}
+                {title && (
+                  <span id={titleId} className="eidos-popover-title">
+                    {title}
+                  </span>
+                )}
                 {showCloseButton && (
                   <button
                     type="button"

@@ -232,9 +232,10 @@ entries have shipped and replaced them, don't delete them just to tidy up.
 
 ### Custom JSX directly in a top-level `.mdx` page needs fixed `px` sizing, not `rem`/`em`
 
-Applies specifically to inline JSX written directly in a top-level guide
-page's body (like `Releases.mdx`'s `Code`/`BumpTag`/`ReleaseCard`) - not to
-component stories rendered via `<Canvas>`, which are unaffected.
+Applies specifically to JSX written for a top-level guide page - its body, or
+its `*.docs.tsx` companion (like `Releases.docs.tsx`'s
+`Code`/`BumpTag`/`ReleaseCard`) - not to component stories rendered via
+`<Canvas>`, which are unaffected.
 
 Storybook's Docs page renders that JSX in the _manager_ frame, not the
 _preview_ iframe where `global.scss`'s `html { font-size: 14px }` reset
@@ -249,23 +250,46 @@ custom written directly in one of these pages instead; don't reuse a shared
 component there if the only way to size it correctly would be a local
 scale/font-size hack.
 
-### MDX top-level ESM block must be pure imports/exports, and avoid shorthand `<>...</>` as a component's sole top-level return
+### An `.mdx` file's top-level ESM block must be plain imports only - no JSX, no directory imports
 
-Two related but separate MDX gotchas hit while building `Releases.mdx`:
+A guide page that needs its own components (`Releases.mdx`'s
+`Code`/`BumpTag`/`VersionTag`/`CategoryLabel`/`ReleaseCard`) declares them in a
+sibling `Component.docs.tsx` (`src/Releases.docs.tsx`) and imports them, rather
+than defining them as `export const`s inside the `.mdx`. Two independent editor
+diagnostics, both verified against the parsers involved, force this - and
+neither shows up in `npm run build-storybook`, which compiles the same file
+without complaint:
 
-1. The _leading_ block of an `.mdx` file (before any prose/JSX body content)
-   must be entirely `import`/`export` statements, with nothing else mixed
-   in - Storybook's actual Vite/MDX pipeline tolerates a stray `<Meta />` in
-   the middle of that block, but stricter MDX tooling (e.g. an editor's MDX
-   language server) will not. Put `<Meta title="..." />` _after_ all
-   `export const` declarations, immediately before the first prose content.
-2. A component defined in that block whose sole top-level return value is a
-   shorthand fragment (`<>...</>`) - not fragments used elsewhere, e.g.
-   inside an array of JSX children - can trip the same class of tooling
-   with a misleading "unexpected closing slash" error. Use a real wrapping
-   element (a `<div>`) instead of a fragment in that specific position;
-   fragments used to group multiple children within an array entry are
-   fine and don't need this treatment.
+1. **No JSX in the ESM block.** The MDX language server recovers from a
+   half-written document by re-parsing its top-level import/export block with
+   `acorn-loose`, which cannot be extended with `acorn-jsx`
+   (`LooseParser.extend(jsx())` throws `this.curContext is not a function`, see
+   [mdx-analyzer#267](https://github.com/mdx-js/mdx-analyzer/issues/267)). So
+   any JSX there reports `Could not parse import/exports with acorn-loose` at
+   the first `<`, and - because the whole block then fails to parse - every
+   import in it reports as unresolved too. Those "cannot resolve" errors are a
+   symptom, not a second problem: fix the JSX and they disappear.
+2. **No directory imports.** `import { Divider } from './components/Divider'`
+   resolves through that folder's `index.ts`, which the same language server
+   doesn't do - it doesn't apply this project's `moduleResolution: bundler`.
+   Extension substitution _does_ work, so `'./Releases.docs'` is fine while
+   `'./components/Divider'` is not. Re-export or wrap the component in the
+   `.docs.tsx` file (`ReleaseDivider`) instead of importing it in the `.mdx`.
+
+`*.docs.tsx` is excluded from `BUILD_INPUTS` in both `release-needed.js` and
+`check-changelog.js` for the same reason `.mdx` and `.stories.tsx` are: it is
+Storybook-only and never reaches `dist/`, so editing one must not flag a
+release. Keep the two lists in sync.
+
+Two smaller, related notes:
+
+- Put `<Meta title="..." />` _after_ every import, immediately before the
+  first prose content - nothing but imports may sit above it.
+- A component whose sole top-level return value is a shorthand fragment
+  (`<>...</>`) can trip the same class of tooling with a misleading
+  "unexpected closing slash" error. Use a real wrapping element (a `<div>`)
+  in that specific position; fragments grouping children inside an array
+  entry (as `ReleaseCard`'s `items` use) are fine.
 
 If a fix here doesn't seem to stick, check whether an MDX-aware editor
 extension has format-on-save enabled for `.mdx` - one observed in the wild

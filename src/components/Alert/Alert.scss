@@ -105,6 +105,12 @@
   @include font-size(sm);
   @include font-weight(bold);
   line-height: 1.4;
+  // Centres any inline node passed alongside the title text (see the same
+  // treatment on Header/Modal/Drawer/Popover/EmptyState titles).
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .eidos-alert-content {

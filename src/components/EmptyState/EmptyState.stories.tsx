@@ -11,8 +11,8 @@ const meta = {
   argTypes: {
     title: {
       control: 'text',
-      description: 'Main heading.',
-      table: { type: { summary: 'string' } },
+      description: 'Main heading. Accepts inline nodes, not just a string.',
+      table: { type: { summary: 'React.ReactNode' } },
     },
     description: {
       control: 'text',

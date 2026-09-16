@@ -19,7 +19,8 @@ export interface ModalAction {
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
+  /** Dialog heading. Accepts inline nodes alongside the text, not just a string. */
+  title?: ReactNode;
   icon?: IconType;
   type?: 'info' | 'success' | 'warning' | 'danger';
   children: ReactNode;

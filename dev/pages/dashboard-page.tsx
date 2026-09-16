@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Alert, Button, Card, Pill, Progress, Skeleton, Timeline } from 'eidos-ui';
 import { ArrowUpRight, CircleCheck, CirclePlus, TriangleAlert, UserCheck } from 'lucide-react';
 import { ticketsApi } from '../api/tickets';
 import type { ActivityEntry, DashboardStats } from '../api/types';
+import { usePageChrome } from '../layouts/page-chrome';
 import { useAsync } from '../lib/use-async';
 import { useRouter } from '../routes/router';
 
@@ -62,23 +63,27 @@ export const DashboardPage: React.FC = () => {
       ? Math.round((stats.data.slaAttained / stats.data.slaTarget) * 100)
       : 0;
 
+  // Title and subtitle come from the route table; only the action, which
+  // depends on this page's own loading state, has to be registered here.
+  usePageChrome(
+    useMemo(
+      () => ({
+        actions: [
+          {
+            children: 'Refresh',
+            preIcon: 'refresh-cw',
+            variant: 'outlined',
+            loading: stats.loading,
+            onClick: stats.reload,
+          },
+        ],
+      }),
+      [stats.loading, stats.reload],
+    ),
+  );
+
   return (
     <div className="mrd-page">
-      <div className="mrd-page__head">
-        <div>
-          <h1 className="mrd-page__title">Dashboard</h1>
-          <p className="mrd-page__subtitle">Support performance for the current week.</p>
-        </div>
-        <Button
-          variant="outlined"
-          preIcon="refresh-cw"
-          onClick={stats.reload}
-          loading={stats.loading}
-        >
-          Refresh
-        </Button>
-      </div>
-
       {stats.error && (
         <Alert
           variant="danger"

@@ -77,6 +77,12 @@
     margin: 0;
     color: inherit;
     line-height: 1;
+    // Already `inline-flex` for the optional leading icon, but its default
+    // `align-items: stretch` would vertically stretch any inline node passed
+    // in `title` (a Pill/Chip) instead of centring it on the title line, and
+    // without wrapping a long title + indicator forces horizontal overflow.
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .eidos-modal-icon {
