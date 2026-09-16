@@ -602,9 +602,17 @@
 // `auto-fill` + `minmax` fits as many cards per row as the container allows
 // instead of forcing one per row; `align-items: start` keeps a shorter card
 // from being stretched to match a taller neighbour in the same row.
+// The `min()` is what keeps `minmax()`'s minimum from becoming a hard floor:
+// on a container narrower than `cardMinWidth` the track would otherwise stay
+// at that width and overflow - which, with no scroll container between here
+// and the page body, turned into a stray horizontal scroll on the whole page.
+// `min(…, 100%)` lets the single remaining column shrink with its container.
 .eidos-table-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--eidos-table-card-min-width, 280px), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(var(--eidos-table-card-min-width, 280px), 100%), 1fr)
+  );
   align-items: start;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);

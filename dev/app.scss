@@ -283,7 +283,10 @@ body {
 
 .mrd-grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  // `min(…, 100%)` so the last remaining column can shrink below 320px instead
+  // of overflowing on a narrow screen - see the same note on the components'
+  // own card grids.
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: var(--spacing-lg);
   align-items: start;
 }

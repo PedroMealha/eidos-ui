@@ -2,6 +2,7 @@
 
 .eidos-footer {
   display: flex;
+  background-color: var(--gray-50);
 
   // Default variant (`copyright`) - centered, muted small text.
   &--copyright {

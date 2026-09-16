@@ -65,6 +65,16 @@
 .eidos-tabs-list {
   display: flex;
   align-items: center;
+  // Tabs never wrap (`white-space: nowrap` below, and wrapping would break the
+  // `line` variant's sliding indicator), so a strip wider than its container
+  // has to scroll here - otherwise it overflows into whatever ancestor happens
+  // to be the nearest scroll container, which on a narrow screen means the
+  // page body scrolls sideways because of a tab strip.
+  //
+  // The indicator is positioned against this element (it's the offset parent),
+  // so it keeps tracking the active tab and scrolls along with it.
+  overflow-x: auto;
+  min-width: 0;
 
   &--fullWidth {
     .eidos-tab {

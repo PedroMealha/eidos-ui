@@ -32,6 +32,24 @@
     @include flex-center-y;
     gap: var(--spacing-sm);
     flex-shrink: 0;
+    // The row wraps onto extra lines rather than overflowing: an action row
+    // wider than the header otherwise had nowhere to go and widened the whole
+    // layout, since `PageLayout` scrolls only its body and nothing above it
+    // clips.
+    //
+    // `max-width` is what actually makes the wrap happen. `flex-shrink: 0`
+    // keeps this row's base size at its max-content width, and a flex
+    // container only wraps within its *own* width - so without the cap it
+    // stayed as wide as the buttons and never wrapped. Capping it at the line
+    // width lets the buttons wrap inside it; `> *` then keeps the buttons
+    // themselves unsquashed, which is the part `flex-shrink: 0` was for.
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 100%;
+
+    > * {
+      flex-shrink: 0;
+    }
   }
 
   &__title {

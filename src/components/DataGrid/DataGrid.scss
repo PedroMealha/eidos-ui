@@ -790,11 +790,16 @@
 // regardless of how much width is actually available; `align-items: start`
 // keeps a shorter card from being stretched to match a taller neighbour in
 // the same row.
+// The `min()` is what keeps `minmax()`'s minimum from becoming a hard floor:
+// on a container narrower than `cardMinWidth` the track would otherwise stay
+// at that width and overflow the grid (and, with no scroll container in
+// between, the page itself). `min(…, 100%)` lets the single remaining column
+// shrink with its container instead.
 .eidos-datagrid-cards {
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
-    minmax(var(--eidos-datagrid-card-min-width, 280px), 1fr)
+    minmax(min(var(--eidos-datagrid-card-min-width, 280px), 100%), 1fr)
   );
   align-items: start;
   gap: var(--spacing-sm);

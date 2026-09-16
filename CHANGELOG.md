@@ -51,6 +51,15 @@ Entries land here as work happens, not written retroactively at release time
 - The automatic card-view threshold now sums each column's real minimum width
   instead of charging every column 100px, so tables with icon or system
   columns no longer switch to cards while they still fit.
+- `Table`/`DataGrid` card grids now shrink below `cardMinWidth` rather than
+  overflowing a container narrower than it.
+- `Input`'s `width` now sizes the whole field and lets it shrink inside a
+  narrower parent, instead of pinning the inner `<input>` to a fixed width
+  that overflowed both its own wrapper and the page.
+- `Header` action rows now wrap onto extra lines instead of widening the
+  layout when they don't fit beside the title.
+- `Tabs` strips now scroll horizontally instead of overflowing their
+  container.
 
 - `Toolbar` no longer renders a hardcoded "John Doe" avatar; it renders the
   `user` you pass, or no avatar at all.

@@ -8,7 +8,7 @@
   // or squeezing the trailing content off to the side - the same pattern
   // `Header` already uses. `row-gap` only has any effect once it does wrap.
   flex-wrap: wrap;
-  row-gap: var(--spacing-sm);
+  row-gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-xl);
   // Not a fixed `height` - `min-height` keeps the common (single-line) case
   // looking exactly as before, while still letting the row grow when it

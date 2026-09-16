@@ -196,6 +196,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         className={`eidos-input-container ${fullWidth ? `eidos-input-container--fullWidth` : ''} ${className}`}
+        // `width` sizes the whole field, so it belongs on the container rather
+        // than on the inner <input> (which is a `flex: 1 1 0` child of the
+        // wrapper and only ever fills whatever the wrapper gives it). Applying
+        // it here also keeps it a *preferred* width: `max-width: 100%` lets the
+        // field shrink inside a narrower parent instead of overflowing it.
+        style={
+          width
+            ? { width: typeof width === 'number' ? `${width}px` : width, maxWidth: '100%' }
+            : undefined
+        }
       >
         {label && (
           <label htmlFor={inputId} className={labelClasses}>
@@ -229,15 +239,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             name={inputName}
             type={actualType}
             className={inputClasses}
-            style={
-              width
-                ? {
-                    width: typeof width === 'number' ? `${width}px` : width,
-                    minWidth: typeof width === 'number' ? `${width}px` : width,
-                    maxWidth: typeof width === 'number' ? `${width}px` : width,
-                  }
-                : undefined
-            }
             disabled={disabled || loading}
             onKeyDown={handleNumberInput}
             {...restInputProps}
