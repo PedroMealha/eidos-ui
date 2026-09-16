@@ -71,6 +71,8 @@ Pass `filterConfig` alongside `showFilters={true}` to show the filter-panel togg
 
 For `filterType: 'date'` fields, `dateFilterMode` (`'single' | 'multiple' | 'range'`, same shape as `TableColumn`) controls which date-picker mode the filter dropdown uses - it defaults to `'single'` if omitted.
 
+The toolbar's filter button highlights and carries a badge with the number of applied filters, so it's clear at a glance that a filter is narrowing the data while the panel is closed. The count reflects _applied_ filters only - staging a filter row without clicking **Apply Filters** doesn't change it.
+
 <Canvas of={DataGridStories.WithFiltering} />
 
 ## With quick filters
@@ -114,6 +116,7 @@ Both write to the same filter state, which means they compose - a quick filter a
 
 - A `key` claimed by a `quickFilters` entry **wins and is dropped from the dropdown**, so the same field is never editable from two controls at once. Keep the two key sets distinct unless that's what you want.
 - The dropdown's **Clear All** clears only the dropdown's own filters; the quick filters keep their values. The "no results found" empty state's **Clear filters** resets everything.
+- The filter button's badge counts the dropdown's own filters only. Quick filters are already visible with their state on show, and the badge exists to surface what a _closed_ panel is hiding - counting them would also imply the dropdown's **Clear All** would reset them, which it doesn't.
 
 Quick filters are hidden while rows are selected - the selection count and bulk actions take over the same toolbar zone.
 
@@ -168,6 +171,14 @@ When `data` is an empty array the grid displays the `emptyText` message centred 
 Pass `loading={true}` while data is in flight to render a centred spinner overlay and suppress the empty-state message.
 
 <Canvas of={DataGridStories.Loading} />
+
+## Column alignment
+
+Set `align` to `'left'` (default), `'center'` or `'right'` on a column - the same values as `TableColumn.align` - to align its header and cell content together. Typically `'right'` for numeric columns. On a sortable column the sort icon follows the alignment instead of staying pinned to the far edge.
+
+> **Note**: alignment applies in table mode only. Card view renders each field as a label above its value, where aligning the value away from its own label reads as a misalignment rather than a choice.
+
+<Canvas of={DataGridStories.ColumnAlignment} />
 
 ## Pinned columns
 

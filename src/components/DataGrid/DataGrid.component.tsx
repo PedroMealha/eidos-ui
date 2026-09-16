@@ -1996,6 +1996,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                       const isSortable = !!col.sortable;
                       const isCurrentlySorted = activeSort?.key === colKey;
                       const sortDir = isCurrentlySorted ? activeSort!.direction : null;
+                      const alignClass = `eidos-datagrid-align-${col.align ?? 'left'}`;
                       const { style: pinnedStyle, className: pinnedClass } =
                         getHeaderPinnedProps(colKey);
 
@@ -2006,6 +2007,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                             'eidos-data-grid-header-cell',
                             isSortable && 'eidos-datagrid-header-cell--sortable',
                             isCurrentlySorted && 'eidos-datagrid-header-cell--sorted',
+                            alignClass,
                             pinnedClass,
                           ]
                             .filter(Boolean)
@@ -2028,7 +2030,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                           data-col-key={colKey}
                           onClick={isSortable ? () => handleSortClick(colKey) : undefined}
                         >
-                          <div className="eidos-datagrid-header-content">
+                          <div className={`eidos-datagrid-header-content ${alignClass}`}>
                             <span className="eidos-datagrid-header-label">{col.header}</span>
                             {isSortable && (
                               <span className="eidos-datagrid-sort-icon">
@@ -2201,6 +2203,7 @@ function DataGridInner<T extends Record<string, unknown>>({
                                       isFlagged && !hasError && 'eidos-data-grid-cell--has-error',
                                       canEdit && !isEditing && 'eidos-data-grid-cell--editable',
                                       col.type === 'readonly' && 'eidos-data-grid-cell--readonly',
+                                      `eidos-datagrid-align-${col.align ?? 'left'}`,
                                       pinnedClass,
                                     ]
                                       .filter(Boolean)

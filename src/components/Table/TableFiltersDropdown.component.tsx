@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { Plus, X, Check, RotateCcw, Funnel } from 'lucide-react';
+import { Badge } from '../Badge';
 import { Button } from '../Button';
 import { DatePicker } from '../DatePicker';
 import { Dropdown } from '../Dropdown';
@@ -103,10 +104,18 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
     return JSON.stringify(filters) !== JSON.stringify(cleanedPendingFilters);
   }, [filters, pendingFilters]);
 
-  // Check if there are any active filters
-  const hasActiveFilters = useMemo(() => {
-    return Object.keys(filters).length > 0;
-  }, [filters]);
+  // How many filters are currently applied. Counts the `filters` prop - the
+  // applied set - not `pendingFilters`, so staging an unapplied filter row
+  // doesn't inflate it, and the `__temp_` placeholder keys never reach it.
+  //
+  // This is deliberately whatever the consumer hands us and nothing more.
+  // `DataGrid` passes only the keys this dropdown owns (its quick filters are
+  // a separate, always-visible surface with their own state), so the count
+  // stays scoped to what opening the dropdown would actually reveal - and
+  // what its own "Clear All" would actually clear. For `Table`, every filter
+  // is a dropdown filter, so it's the full count.
+  const activeFilterCount = useMemo(() => Object.keys(filters).length, [filters]);
+  const hasActiveFilters = activeFilterCount > 0;
 
   // Get all columns with disabled state for used ones
   const getAllColumnsWithDisabledState = (currentRowId?: string) => {
@@ -345,13 +354,19 @@ export const TableFiltersDropdown = <T extends Record<string, unknown>>({
 
   const canAddMore = filterRows.length < filterableColumns.length;
 
+  // Badge auto-hides at 0 (no `showZero`) and animates its own scale, so the
+  // indicator appears/disappears with the filters rather than being mounted
+  // conditionally. `max` keeps a large count from widening past the icon.
   const triggerButton = (
-    <Button
-      variant="text"
-      size="sm"
-      icon={Funnel}
-      className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''}
-    />
+    <Badge content={activeFilterCount} max={9}>
+      <Button
+        variant="text"
+        size="sm"
+        icon={Funnel}
+        aria-label={hasActiveFilters ? `Filters (${activeFilterCount} active)` : 'Filters'}
+        className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''}
+      />
+    </Badge>
   );
 
   const dropdownContent = (

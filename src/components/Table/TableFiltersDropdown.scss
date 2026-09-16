@@ -66,26 +66,21 @@
   justify-content: flex-end;
 }
 
-// Filter button styles
-.eidos-table-active-filter-button {
-  background: var(--primary-50);
-  border-color: var(--primary-200);
+// Filter trigger, while filters are applied - a second, non-numeric signal
+// alongside the count badge (see `activeFilterCount` in the component).
+//
+// Needs all three classes to land: Button's own `&--text` compiles to
+// `.eidos-button.eidos-button--text`, so a single-class rule here loses on
+// specificity and `background-color: transparent` wins - which is why the
+// active state silently never rendered. Deliberately still below the
+// variant's `:hover` rule (which adds two more pseudo-classes), so hovering
+// an active trigger keeps its normal hover feedback.
+//
+// No `border-color`: the text variant sets `border: none`, so there is no
+// border box to colour.
+.eidos-button.eidos-button--text.eidos-table-active-filter-button {
+  background-color: var(--primary-50);
   color: var(--primary-700);
-}
-
-.eidos-table-filter-count {
-  background: var(--primary-600);
-  color: var(--white);
-  border-radius: 50%;
-  padding: 2px 6px;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  margin-left: var(--spacing-xs);
-  min-width: 18px;
-  height: 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 // Responsive design

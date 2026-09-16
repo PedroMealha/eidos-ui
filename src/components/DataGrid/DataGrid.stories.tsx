@@ -193,6 +193,31 @@ const SORTABLE_COLUMNS: DataGridColumn<Person>[] = [
   { key: 'active', header: 'Active', type: 'checkbox', width: 80 },
 ];
 
+// `align` demo: one column per value, plus a centred `checkbox` column (which
+// needs more than `text-align` to move - see DataGrid.scss) and a sortable
+// right-aligned one, where the sort icon has to follow the alignment.
+const ALIGNED_COLUMNS: DataGridColumn<Person>[] = [
+  { key: 'id', header: 'ID', type: 'readonly', width: 60 },
+  { key: 'name', header: 'Name', type: 'text', minWidth: 160 },
+  {
+    key: 'department',
+    header: 'Department (center)',
+    type: 'select',
+    width: 170,
+    options: DEPARTMENT_OPTIONS,
+    align: 'center',
+  },
+  {
+    key: 'salary',
+    header: 'Salary (right)',
+    type: 'number',
+    width: 140,
+    align: 'right',
+    sortable: true,
+  },
+  { key: 'active', header: 'Active (center)', type: 'checkbox', width: 130, align: 'center' },
+];
+
 const FILTERABLE_COLUMNS: DataGridColumn<Person>[] = [
   { key: 'id', header: 'ID', type: 'readonly', width: 60 },
   { key: 'name', header: 'Name', type: 'text', minWidth: 160 },
@@ -1362,6 +1387,39 @@ export const WithQuickFilters: Story = {
         rowKey="id"
         onChange={setData}
         quickFilters={QUICK_FILTERS}
+      />
+    );
+  },
+};
+
+// ─── 21. Column alignment ─────────────────────────────────────────────────────
+
+export const ColumnAlignment: Story = {
+  name: 'ColumnAlignment',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Set `align` to `'left'` (the default), `'center'`, or `'right'` per " +
+          'column - same values as `TableColumn.align`. It aligns the header and ' +
+          'the cell content together, so a numeric column reads correctly ' +
+          'right-aligned without its header drifting out of line. On a sortable ' +
+          'column the sort icon follows the alignment rather than staying pinned ' +
+          'to the far edge (try sorting Salary). Alignment applies in table mode ' +
+          'only: card view renders each field as a label above its value, where ' +
+          'aligning the value away from its own label reads as a misalignment.',
+      },
+    },
+  },
+  render: function ColumnAlignmentStory() {
+    const [data, setData] = useState<Person[]>(makePeople());
+    return (
+      <DataGrid<Person>
+        columns={ALIGNED_COLUMNS}
+        data={data}
+        rowKey="id"
+        onChange={setData}
+        hasCardView={false}
       />
     );
   },

@@ -189,6 +189,61 @@
   }
 }
 
+// ─── Column alignment ─────────────────────────────────────────────────────────
+// `DataGridColumn.align` - same values and behaviour as `TableColumn.align`
+// (see `.eidos-table-align-*`). Set on the <th>, its inner header-content flex
+// row, and each <td>. Table mode only; see the prop's own docs for why card
+// view opts out.
+
+.eidos-datagrid-align-left {
+  text-align: left;
+}
+
+.eidos-datagrid-align-center {
+  text-align: center;
+}
+
+.eidos-datagrid-align-right {
+  text-align: right;
+}
+
+// The header's label + sort icon are a flex row, so they position with
+// justify-content rather than text-align. The label's `flex: 1` has to be
+// given up for center/right: it would otherwise absorb all the free space,
+// leaving justify-content nothing to distribute (and pinning the label left,
+// which is exactly the default `left` look). `flex: 0 1 auto` keeps
+// flex-shrink, so long headers still truncate with an ellipsis.
+.eidos-datagrid-header-content {
+  &.eidos-datagrid-align-center,
+  &.eidos-datagrid-align-right {
+    .eidos-datagrid-header-label {
+      flex: 0 1 auto;
+    }
+  }
+
+  &.eidos-datagrid-align-center {
+    justify-content: center;
+  }
+
+  &.eidos-datagrid-align-right {
+    justify-content: flex-end;
+  }
+}
+
+// A `type: 'checkbox'` column renders a block-level flex container
+// (`.eidos-checkbox-container`, `width: fit-content`), which `text-align`
+// cannot move - it isn't inline content. Same reason Table centres its own
+// checkbox column with a margin instead.
+.eidos-data-grid-cell {
+  &.eidos-datagrid-align-center > .eidos-checkbox-container {
+    margin-inline: auto;
+  }
+
+  &.eidos-datagrid-align-right > .eidos-checkbox-container {
+    margin-inline-start: auto;
+  }
+}
+
 // ─── Row ──────────────────────────────────────────────────────────────────────
 
 .eidos-data-grid-row {

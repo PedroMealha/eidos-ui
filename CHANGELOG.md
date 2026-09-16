@@ -13,6 +13,24 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `DataGridColumn` gains `align` (`'left' | 'center' | 'right'`), matching
+  `TableColumn.align`, to align a column's header and cells together.
+- `Table` and `DataGrid` show a badge with the number of applied filters on the
+  toolbar's filter button; `DataGrid`'s counts its dropdown filters only, not
+  quick filters.
+
+### Changed
+
+- `Pill` no longer forces a bold label, inheriting the surrounding font weight
+  instead.
+
+### Fixed
+
+- The filter button's active-filter highlight now actually renders - it was
+  being overridden by `Button`'s own `text` variant styles.
+
 ## [1.1.0] - 2026-09-15
 
 ### Added

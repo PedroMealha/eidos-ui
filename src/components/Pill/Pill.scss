@@ -2,7 +2,6 @@
 
 .eidos-pill {
   @include flex-center;
-  @include font-weight(bold);
   // Override flex-center's block flex to inline so pills flow within text/layouts
   display: inline-flex;
   line-height: 1;

@@ -19,9 +19,9 @@
   @include font-weight(bold);
   position: absolute;
   box-sizing: content-box;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 var(--spacing-xs);
+  // min-width: 18px;
+  // height: 18px;
+  padding: 0.35em 0.5em;
   border-radius: 9999px;
   border: 2px solid var(--white);
   font-size: var(--font-size-xs);
@@ -29,6 +29,7 @@
   white-space: nowrap;
   color: var(--white);
   pointer-events: none;
+  will-change: transform;
   transform: var(--eidos-badge-translate, translate(50%, -50%)) scale(var(--eidos-badge-scale, 1));
   transition:
     transform 0.2s ease,
@@ -86,26 +87,26 @@
   // ========================================================================
 
   &--top-right.eidos-badge--rectangular {
-    top: 0;
-    right: 0;
+    top: var(--badge-offset);
+    right: var(--badge-offset);
     --eidos-badge-translate: translate(50%, -50%);
   }
 
   &--top-left.eidos-badge--rectangular {
-    top: 0;
-    left: 0;
+    top: var(--badge-offset);
+    left: var(--badge-offset);
     --eidos-badge-translate: translate(-50%, -50%);
   }
 
   &--bottom-right.eidos-badge--rectangular {
-    bottom: 0;
-    right: 0;
+    bottom: var(--badge-offset);
+    right: var(--badge-offset);
     --eidos-badge-translate: translate(50%, 50%);
   }
 
   &--bottom-left.eidos-badge--rectangular {
-    bottom: 0;
-    left: 0;
+    bottom: var(--badge-offset);
+    left: var(--badge-offset);
     --eidos-badge-translate: translate(-50%, 50%);
   }
 

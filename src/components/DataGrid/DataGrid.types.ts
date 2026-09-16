@@ -149,6 +149,15 @@ export interface DataGridColumn<T = Record<string, unknown>> {
   // ── Read/display features ──────────────────────────────────────────────────
   /** Enable click-to-sort on this column */
   sortable?: boolean;
+  /**
+   * Horizontal alignment of this column's header and cell content - same
+   * values as `TableColumn.align`. Applies in table mode only: card view
+   * renders each field as a label above its value, where aligning the value
+   * away from its own label reads as a misalignment rather than a choice.
+   * Typically `'right'` for numeric columns.
+   * @default 'left'
+   */
+  align?: 'left' | 'center' | 'right';
   /** Lock this column to the left or right edge on horizontal scroll */
   pin?: 'left' | 'right';
 
