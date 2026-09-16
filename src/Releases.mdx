@@ -149,6 +149,85 @@ Current version: <VersionTag>v{pkg.version}</VersionTag>
 <Divider style={{ margin: '24px 0' }} />
 
 <ReleaseCard
+  version="2.0.0"
+  date="2026-09-16"
+  bump="major"
+  sections={[
+    {
+      category: 'changed',
+      items: [
+        <>
+          <strong>Breaking</strong>: <Code>DataGrid</Code> and <Code>Table</Code> now check every
+          field-addressing member against the row type <Code>T</Code> - <Code>columns[].key</Code>,{' '}
+          <Code>filterConfig[].key</Code>, <Code>quickFilters[].key</Code>, <Code>rowKey</Code>, and
+          the <Code>currentSort</Code>/<Code>onSortChange</Code> keys. A key that isn't a field of{' '}
+          <Code>T</Code> is now a compile error instead of a control that silently matches nothing.
+        </>,
+        <>
+          <strong>Breaking</strong>: a column's <Code>key</Code> and its value type are now
+          correlated, so <Code>renderCell</Code>, <Code>renderEditor</Code> and{' '}
+          <Code>validate</Code> (and <Code>Table</Code>'s <Code>render</Code>) receive{' '}
+          <Code>T[key]</Code> instead of <Code>unknown</Code>. Existing <Code>value as X</Code>{' '}
+          casts on a mismatched type will now fail to compile; delete the cast.
+        </>,
+        <>
+          <strong>Breaking</strong>: <Code>TableColumn.key</Code> was <Code>keyof T | string</Code>,
+          which collapsed to <Code>string</Code> and checked nothing. It is now{' '}
+          <Code>
+            RowKey{'<'}T{'>'}
+          </Code>
+          .
+        </>,
+        <>
+          <strong>Breaking</strong>: columns that address no row field must declare it -{' '}
+          <Code>type: 'custom'</Code> on <Code>DataGridColumn</Code> (also{' '}
+          <Code>'icon' | 'action' | 'custom'</Code> on <Code>TableColumn</Code>), which is what
+          permits a free-form <Code>key</Code>. Pointing a normal column's <Code>key</Code> at a
+          non-existent field no longer compiles.
+        </>,
+        <>
+          <Code>DataGrid</Code> and <Code>Table</Code> constrain <Code>T extends object</Code>{' '}
+          rather than{' '}
+          <Code>
+            T extends Record{'<'}string, unknown{'>'}
+          </Code>
+          , so a plain <Code>interface</Code> row type is accepted. Row types written as{' '}
+          <Code>
+            interface Row extends Record{'<'}string, unknown{'>'}
+          </Code>{' '}
+          to satisfy the old constraint should drop the <Code>extends</Code>: an index signature
+          widens <Code>keyof T</Code> to <Code>string</Code> and silently disables all of the
+          checking above.
+        </>,
+      ],
+    },
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>type: 'actions'</Code> columns no longer require a placeholder <Code>key</Code>; it
+          is now optional on that variant.
+        </>,
+        <>
+          <Code>
+            RowKey{'<'}T{'>'}
+          </Code>{' '}
+          is exported - the row-field-name type shared by both components.
+        </>,
+        <>
+          <Code>DataGridValueColumn</Code>, <Code>DataGridCustomColumn</Code>,{' '}
+          <Code>DataGridActionsColumn</Code>, <Code>DataGridValueCellType</Code>,{' '}
+          <Code>TableValueColumn</Code> and <Code>TableCustomColumn</Code> are exported for
+          consumers that need to name a single column variant.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<Divider style={{ margin: '24px 0' }} />
+
+<ReleaseCard
   version="1.2.0"
   date="2026-09-16"
   bump="minor"

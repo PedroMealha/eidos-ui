@@ -76,19 +76,29 @@ function parseSections(content) {
  * this project (CHANGELOG.md, GitHub, editors) that renders markdown. So
  * `**Breaking**:` (the marker `promote-changelog.js` itself greps for - see
  * the abort check below) needs converting to real `<strong>` here, same as
- * `` `Foo` `` needs `<Code>`. `{`/`}` are special in JSX children (an
- * expression container) - escape them to their literal-text form too, so
- * prose like `` `hasCardView={false}` `` doesn't get parsed as a JS
- * expression when pasted. The rest of a bullet is plain enough prose that no
- * further conversion has proven necessary in practice; this is a starting
- * point to paste and review, not a guaranteed-correct output. */
+ * `` `Foo` `` needs `<Code>`.
+ *
+ * `{`, `}`, `<` and `>` are all special in JSX children and must be escaped to
+ * their literal-text form, or MDX fails to parse the pasted card:
+ *
+ *   - braces open an expression container, so `` `hasCardView={false}` ``
+ *     would be evaluated as JS;
+ *   - angle brackets open a tag, so a generic like `` `RowKey<T>` `` reads as
+ *     an opening `<T>` element. This broke `Releases.mdx` on the 2.0.0 card,
+ *     with Storybook reporting only "Could not parse expression with acorn".
+ *
+ * Escaping runs FIRST, in one combined pass, and the order matters twice over:
+ * a second global replace would re-match the braces of the escapes it just
+ * inserted (`{'{'}` itself contains `{`/`}`), and escaping after tag insertion
+ * would mangle the `<strong>`/`<Code>` tags this function adds itself.
+ *
+ * The rest of a bullet is plain enough prose that no further conversion has
+ * proven necessary; this is a starting point to paste and review, not a
+ * guaranteed-correct output. */
 const toJsx = (text) =>
   text
+    .replace(/[{}<>]/g, (ch) => `{'${ch}'}`)
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    // Single combined pass, not two sequential ones - two separate global
-    // replaces would have the second one re-match braces the first one just
-    // inserted (`{'{'}` itself contains `{`/`}`), corrupting the escape.
-    .replace(/[{}]/g, (ch) => (ch === '{' ? "{'{'}" : "{'}'}"))
     .replace(/`([^`]+)`/g, '<Code>$1</Code>');
 
 function buildSnippet(version, date, bump, sections) {
