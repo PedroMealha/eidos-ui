@@ -18,7 +18,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
 }
 
 // ============================================================================
@@ -27,7 +27,7 @@
 
 .eidos-breadcrumb-item {
   @include flex-center-y;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   line-height: 1;
   will-change: transform;
 }
@@ -38,7 +38,7 @@
 
 .eidos-breadcrumb-link {
   @include flex-center-y;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   @include font-size(sm);
   color: var(--gray-500);
   text-decoration: none;
@@ -59,7 +59,7 @@
   &--button {
     @include button-reset;
     @include flex-center-y;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
     @include font-size(sm);
     color: var(--gray-500);
     text-decoration: none;
@@ -85,7 +85,7 @@
 
 .eidos-breadcrumb-current {
   @include flex-center-y;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
   @include font-size(sm);
   @include font-weight(medium);
   color: var(--dark-color);
@@ -110,7 +110,6 @@
 .eidos-breadcrumb-icon {
   @include flex-center;
   flex-shrink: 0;
-  margin-right: 2px;
 
   svg {
     width: 0.875em;

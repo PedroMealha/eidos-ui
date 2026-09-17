@@ -65,7 +65,7 @@ export const SignInPage: React.FC = () => {
           <p className="mrd-auth__subtitle">We use a one-time code instead of a password.</p>
         </div>
 
-        <Stepper steps={STEPS} activeStep={step} />
+        <Stepper steps={STEPS} activeStep={step} extendEnd />
 
         {step === 0 ? (
           <form
