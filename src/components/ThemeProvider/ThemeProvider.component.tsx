@@ -1,9 +1,21 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { devWarn } from '../../utils';
 import { ThemeContext } from './ThemeProvider.context';
 import { buildTokens, diffFromDefault, resolveTheme, themeToCss } from './ThemeProvider.tokens';
 import type { ThemeConfig, ThemeContextValue, ThemeProviderProps } from './ThemeProvider.types';
 
 const EMPTY_THEME: ThemeConfig = {};
+
+/**
+ * Number of providers currently mounted.
+ *
+ * Because tokens are written to `document.documentElement` (see the component
+ * comment for why), providers do not compose: two of them target the same
+ * element, so whichever applied a given token last wins for the entire page -
+ * including for the subtree of the other one. That looks like a broken theme
+ * rather than a misuse, so it is worth saying out loud.
+ */
+let mountedProviders = 0;
 
 /** Merges `patch` over `base` one level into `colors`/`typography`. */
 const mergeTheme = (base: ThemeConfig, patch: ThemeConfig): ThemeConfig => ({
@@ -40,6 +52,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     initialTheme ?? EMPTY_THEME,
   );
   const theme = isControlled ? controlledTheme : uncontrolledTheme;
+
+  useEffect(() => {
+    mountedProviders += 1;
+    if (mountedProviders > 1) {
+      devWarn(
+        'theme-multiple-providers',
+        `ThemeProvider: ${mountedProviders} providers are mounted at once. They all write to document.documentElement, so the last one to apply each token wins for the whole page - nested or sibling providers cannot theme separate subtrees. Use a single provider at your app root.`,
+      );
+    }
+    return () => {
+      mountedProviders -= 1;
+    };
+  }, []);
 
   const resolvedTheme = useMemo(() => resolveTheme(theme), [theme]);
   const tokens = useMemo(() => diffFromDefault(buildTokens(resolvedTheme)), [resolvedTheme]);

@@ -20,6 +20,23 @@ retroactively. See the "Changelog discipline" section in
 per bullet, no walls of text) and `scripts/check-changelog.js` for the
 automated gate that blocks a release if this was skipped.
 
+## Don't leave stale docs behind
+
+`README.md` and `GETTING_STARTED.md` duplicate the component list and the design
+tokens, and both have silently rotted before (a "49 components" claim when there
+were 57; a `--primary-color` example still showing a palette value replaced two
+majors earlier). Nothing in lint, tsc or Storybook reads prose.
+
+Run **`npm run check:docs`** after adding or renaming a component, or after
+changing anything in `src/styles/variables.scss`. It is also a step in
+`npm run verify`.
+
+It cannot check token _values_ - a `:root` block showing defaults is
+indistinguishable from one showing an override - so when a palette value
+changes, grep the docs for the old hex by hand. See the "Documentation
+freshness" section in `.devin/skills/eidos-ui-rules/SKILL.md` for the full list
+of files that carry duplicated facts.
+
 ## Git
 
 **NEVER run `git commit`, `git push`, or any command that writes to git history.**

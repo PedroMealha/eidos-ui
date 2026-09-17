@@ -44,10 +44,19 @@ const Swatches: React.FC = () => {
   );
 };
 
+/**
+ * `inline: false` for the same reason as `ThemeEditor`'s stories: a provider
+ * writes its tokens to `document.documentElement`, so several rendered inline
+ * on one Docs page would overwrite each other's colours. An iframe per story is
+ * the only way to give each its own root.
+ */
 const meta = {
   title: 'Theming/ThemeProvider',
   component: ThemeProvider,
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: { story: { inline: false, height: '420px' } },
+  },
   argTypes: {
     theme: {
       control: 'object',

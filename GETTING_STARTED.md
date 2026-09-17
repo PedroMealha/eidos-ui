@@ -1,6 +1,6 @@
 # Getting Started with Eidos UI
 
-A React component library with 49 components, a consistent design language, and full TypeScript support.
+A React component library with 57 components, a consistent design language, and full TypeScript support.
 
 ## Quick commands
 
@@ -63,7 +63,8 @@ Storybook docs for the full breakdown.
 
 ## Set up providers
 
-Most components work standalone. Two require a context provider at the app root.
+Most components work standalone. Three involve a context provider at the app
+root - one required, two optional.
 
 ### Snackbar (required for toast notifications)
 
@@ -102,6 +103,24 @@ import { DropdownProvider, Dropdown } from 'eidos-ui';
 </DropdownProvider>
 ```
 
+### Theme (optional - runtime theming only)
+
+Only needed if the palette or typography changes at runtime. Static theming
+needs no provider - just override the tokens in CSS.
+
+```tsx
+import { ThemeProvider } from 'eidos-ui';
+
+<ThemeProvider defaultTheme={{ colors: { primary: '#0ea5e9' } }}>
+  <App />
+</ThemeProvider>;
+```
+
+Use **one** provider, at the root. Tokens are written to
+`document.documentElement` so that portaled overlays are themed too, which means
+providers don't compose - two of them fight over the same element. A second one
+logs a development warning.
+
 ## Icons
 
 Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lucide-react`, which is listed as a regular dependency and auto-installed with the package - no extra install step needed.
@@ -124,6 +143,11 @@ import type { ButtonProps, InputProps, SelectOption } from 'eidos-ui';
 ## Theming
 
 All design tokens are CSS custom properties defined on `:root`. Override them after the library stylesheet import to customise the look globally.
+
+For a theme chosen at runtime rather than fixed at build time, use
+`ThemeProvider` (above) and optionally the `ThemeEditor` panel. It derives every
+shade, tint, ramp step and accessible foreground from one base colour per
+family; see the Theming pages in Storybook.
 
 ```css
 :root {
@@ -324,17 +348,23 @@ case up front.
 
 ## Component inventory
 
-49 components across 9 categories:
+57 component directories under `src/components/`, grouped exactly as the
+Storybook sidebar groups them - the sidebar is generated from the `title` in
+each `*.stories.tsx`, so that is the authoritative list:
 
-| Category     | Components                                                                                                                               |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Elements     | Accordion, Alert, Badge, Breadcrumb, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, SegmentedControl, SplitButton            |
-| Forms        | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
-| Feedback     | Alert, Progress, Skeleton, Spinner                                                                                                       |
-| Layout       | Stepper                                                                                                                                  |
-| Navigation   | Pagination, Tabs                                                                                                                         |
-| Overlays     | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip                                                   |
-| Data Display | Avatar, Timeline, TreeView                                                                                                               |
-| Data         | DataGrid, DatePicker, Table, TableFiltersDropdown, VirtualList                                                                           |
+| Group      | Components                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Layout     | PageLayout, Breadcrumb, Footer, Header, Navigation, Toolbar                                                                              |
+| Theming    | ThemeProvider, ThemeEditor                                                                                                               |
+| Elements   | Avatar, Badge, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, Pill, SegmentedControl, SplitButton                            |
+| Forms      | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
+| Navigation | Accordion, Pagination, Stepper, Tabs, TreeView                                                                                           |
+| Overlays   | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip                                                   |
+| Data       | DataGrid, DatePicker, Table, TableFiltersDropdown, Timeline, VirtualList                                                                 |
+| Feedback   | Alert, Progress, Skeleton, Spinner                                                                                                       |
+
+`TableFiltersDropdown` is exported from the `Table` directory rather than having
+one of its own, which is why the table lists one more name than there are
+directories.
 
 For full interactive documentation, run `npm run storybook`.

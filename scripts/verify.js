@@ -69,6 +69,9 @@ console.log('');
 step('lint', 'npm run lint');
 step('typecheck', 'npm run typecheck');
 step('prettier', 'npm run prettier:check');
+// README/GETTING_STARTED duplicate the component list and the token names, and
+// nothing else in the toolchain reads prose. Cheap, so it runs before the build.
+step('docs', 'node scripts/check-docs.js');
 step('build', 'npm run build');
 
 const mdx = mdxChanged();

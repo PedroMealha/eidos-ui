@@ -19,14 +19,14 @@
 
 ## Features
 
-|                     |                                                                                                                        |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Themeable**       | Every design token is a CSS custom property, so palette, spacing, and radii can be overridden without touching source. |
-| **Type-safe**       | Written in TypeScript with full prop typings exported for every component.                                             |
-| **Tree-shakeable**  | Per-component entry points (`eidos-ui/button`, `eidos-ui/table`, ...) keep bundles lean.                               |
-| **Icon-agnostic**   | Works with any icon library - Lucide, MUI Icons, Font Awesome, Remix Icons, or your own.                               |
-| **Accessible**      | Built with keyboard navigation and ARIA semantics in mind.                                                             |
-| **Optimized build** | Bundled with tsup, shipping both ESM and CJS with source maps and `.d.ts` files.                                       |
+|                     |                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Themeable**       | Every design token is a CSS custom property. Override them statically, or let users change the palette and typography at runtime with `ThemeProvider`. |
+| **Type-safe**       | Written in TypeScript with full prop typings exported for every component.                                                                             |
+| **Tree-shakeable**  | Per-component entry points (`eidos-ui/button`, `eidos-ui/table`, ...) keep bundles lean.                                                               |
+| **Icon-agnostic**   | Works with any icon library - Lucide, MUI Icons, Font Awesome, Remix Icons, or your own.                                                               |
+| **Accessible**      | Built with keyboard navigation and ARIA semantics in mind.                                                                                             |
+| **Optimized build** | Bundled with tsup, shipping both ESM and CJS with source maps and `.d.ts` files.                                                                       |
 
 ## Installation
 
@@ -92,6 +92,11 @@ These are the same groups used in Storybook, so the README and the docs sidebar 
 - Toolbar
 - Breadcrumb
 
+**Theming**
+
+- ThemeProvider
+- ThemeEditor
+
 **Elements**
 
 - Button
@@ -121,7 +126,6 @@ These are the same groups used in Storybook, so the README and the docs sidebar 
 - Switch
 - Slider
 - ColorPicker
-- DatePicker
 - OTPInput
 - TagInput
 - FileUpload
@@ -140,7 +144,9 @@ These are the same groups used in Storybook, so the README and the docs sidebar 
 **Data**
 
 - Table
+- TableFiltersDropdown
 - DataGrid
+- DatePicker
 - Timeline
 - VirtualList
 
@@ -181,15 +187,19 @@ npm run storybook
 
 ## Theming
 
-All design tokens are exposed as CSS custom properties, so themes can be overridden globally without touching component source.
+Every design token is a CSS custom property. There are two ways to change them, depending on whether the theme is fixed at build time or chosen by the user.
+
+### Static overrides
+
+Redeclare any token in your own stylesheet:
 
 ```css
 :root {
-  /* Colors */
-  --primary-color: #6366f1;
-  --secondary-color: #ec4899;
+  /* Colours - each family also has -dark, -light, -rgb and -contrast */
+  --primary-color: #5c5de8;
+  --secondary-color: #617087;
 
-  /* Spacing */
+  /* Spacing (em-based, so it scales with font size) */
   --spacing-md: 1em;
   --spacing-lg: 1.5em;
 
@@ -198,14 +208,53 @@ All design tokens are exposed as CSS custom properties, so themes can be overrid
 }
 ```
 
-Individual component styles can also be targeted directly, following each component's `eidos-<name>` BEM-style class names:
+Individual components can also be targeted directly, following each component's `eidos-<name>` BEM-style class names:
 
 ```css
 .eidos-button--filled.eidos-button--primary {
   border-radius: 20px;
-  background: linear-gradient(to right, #6366f1, #8b5cf6);
+  background: linear-gradient(to right, #5c5de8, #8b5cf6);
 }
 ```
+
+### Runtime theming
+
+`ThemeProvider` applies a theme at runtime — for a settings screen, a per-tenant palette, or a colour a user picks. Supply one base colour per family and the shades, tints, ramp steps and accessible foregrounds are derived from it:
+
+```tsx
+import { ThemeProvider, ThemeEditor } from 'eidos-ui';
+
+<ThemeProvider defaultTheme={{ colors: { primary: '#0ea5e9' } }}>
+  <App />
+</ThemeProvider>;
+```
+
+`ThemeEditor` is a ready-made panel for editing the active theme, with live WCAG contrast readouts per colour:
+
+```tsx
+<ThemeProvider theme={theme} onThemeChange={saveThemeForUser}>
+  <ThemeEditor />
+  <App />
+</ThemeProvider>
+```
+
+Ten things are editable — seven colour bases, two font stacks, and a font scale. Tokens are written through the CSSOM to `document.documentElement`, which needs **no Content Security Policy allowance** and covers portaled overlays too. A theme equal to the preset writes nothing at all.
+
+Use `useTheme()` to read or change it from your own UI, and `toCss()` to export the resolved tokens as a `:root` block you can paste into a stylesheet — useful for baking a theme in at build time.
+
+### Fonts
+
+The theme names Plus Jakarta Sans and JetBrains Mono, but a font stack only _names_ families — it cannot install them. Import the bundled copies to actually use them:
+
+```ts
+import 'eidos-ui/fonts';
+```
+
+This is a separate entry point because these are the only rules in the library that fetch a subresource; importing it means allowing `font-src 'self'` (already covered by `default-src 'self'`). Skip it and the stylesheet fetches nothing, falling back to system fonts.
+
+For a font of your own, `registerFontFace(family, arrayBuffer)` registers one at runtime with no CSP allowance at all.
+
+See the **Theming** and **Content Security Policy** pages in Storybook for the full reference.
 
 ## TypeScript
 

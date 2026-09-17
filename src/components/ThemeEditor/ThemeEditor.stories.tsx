@@ -47,10 +47,26 @@ const Preview: React.FC = () => (
   </Card>
 );
 
+/**
+ * Every story here mounts a `ThemeProvider`, and providers write their tokens to
+ * `document.documentElement` so that portaled overlays are themed too. That
+ * makes them global: rendered inline, the Docs page would mount six providers
+ * against one root and the last to apply each token would win for the whole
+ * page - showing, for instance, the `Controlled` story's teal primary inside
+ * the `Default` story.
+ *
+ * `inline: false` gives each story its own iframe, and therefore its own
+ * `documentElement`, which is the only real isolation available. Applied at the
+ * meta level so a story added later inherits it rather than silently
+ * contaminating its neighbours.
+ */
 const meta = {
   title: 'Theming/ThemeEditor',
   component: ThemeEditor,
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: { story: { inline: false, height: '720px' } },
+  },
   argTypes: {
     colors: {
       control: 'object',

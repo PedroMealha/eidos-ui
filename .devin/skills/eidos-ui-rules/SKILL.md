@@ -102,6 +102,37 @@ that doesn't share the same document root font-size as `global.scss`'s
 `html { font-size: 14px }` reset - see the `Releases.mdx` guide-page note
 above for the concrete case (Storybook's Docs manager frame) this bit.
 
+### A portaled element cannot be sized by an ancestor class
+
+Anything rendered through `Dropdown` (so: `Select`, `Combobox`, `Menu`,
+`Popover`, `ContextMenu`, `ColorPicker`'s panel, …) is portaled to
+`document.body`. A rule shaped like this therefore matches nothing:
+
+```scss
+.eidos-color-picker-canvas {
+  .eidos-color-picker--sm & {
+    height: 120px;
+  } // never matches once portaled
+}
+```
+
+The size modifier sits on the trigger, which stays put; the panel has left the
+subtree. This silently removed **the entire saturation/brightness canvas from
+every popover `ColorPicker`** - it collapsed to `height: 0`, leaving only the
+hue slider, which cannot change a colour's lightness at all. Only the `inline`
+variant worked, which is why it went unnoticed.
+
+Two rules follow:
+
+- Put the modifier on the **portaled element itself** (`ColorPicker` now emits
+  `eidos-color-picker-panel--{size}`) and scope inner rules to that.
+- Give dimensions an **unconditional fallback** before the modifiers, so a
+  selector that fails to match degrades to a usable size instead of to zero.
+
+Same silent-failure family as `rgb(var(--x-rgb) / 0.3)` and
+`@media (max-width: var(--breakpoint-lg))`: valid-looking CSS, no warning,
+element just gone.
+
 ### Dropdown viewport clamping
 
 `Dropdown`'s `calculateOptimalPosition` must clamp its position against **both**
@@ -115,6 +146,25 @@ edge with content wider than its trigger silently overflowed off-screen. The
 primary-axis flip (top↔bottom, left↔right when the preferred placement
 doesn't fit) is not a substitute for this - it only reacts to the _anchor_
 side, not to the _content_ size once positioned.
+
+### `document.fonts.check` cannot tell you whether a font exists
+
+It returns `true` when **no** matching face is present - vacuously, since all
+zero matching faces are loaded. Verified in a browser: it answers `true` for
+`'Totally Not A Real Font 12345'`, and therefore for every uninstalled system
+font. A check built on it can never fail.
+
+`isFontAvailable` measures the family on a canvas against two fallbacks
+instead. Two details that matter:
+
+- **Generic families must short-circuit.** Probing `monospace` would compare
+  `monospace, monospace` against `monospace` and report it unavailable.
+- **Cache positives only.** Web fonts load asynchronously - always, with
+  `font-display: swap` - so the first render legitimately sees them as missing.
+  Caching that negative pinned a permanent "not installed" warning on fonts
+  that had loaded fine. A loaded font never becomes unloaded, so positives are
+  safe to keep; misses are re-probed, and `subscribeToFontLoads` triggers the
+  re-render.
 
 ### Inline styles and CSP
 
@@ -174,6 +224,61 @@ in `'single'` mode even though the shared dropdown component fully supported
 `'range'`/`'multiple'`. When adding a field to one of the two column types
 because the shared component needs it, always check whether the adapter on
 the other side needs the same field added to its mapping.
+
+### Themeable fills must pair with `--x-contrast`, never a hardcoded `--white`
+
+Any rule painting `background: var(--x-color)` has to set
+`color: var(--x-contrast)` alongside it. The contrast token is computed per
+colour (white unless white drops below 3:1), so hardcoding `var(--white)`
+produces unreadable text the moment a consumer supplies a pale colour through
+`ThemeProvider`.
+
+Two structural traps when doing this:
+
+- **A shared `color` above per-colour backgrounds doesn't work.** `Pagination`,
+  `Badge` and `Avatar` each set `color: var(--white)` once on a parent while the
+  fills were set per colour modifier below it. `--x-contrast` is only meaningful
+  next to its own `--x-color`, so the declaration has to move into each colour
+  rule.
+- **Decorative fills count too.** `Radio`'s dot and `Switch`'s thumb are
+  `background: var(--white)` sitting on a coloured control - they vanish on a
+  pale colour exactly like text does. Both now take `currentColor` from the
+  checked parent's `--x-contrast`.
+
+`Badge` and `Avatar` originally carried a hand-written `color: var(--dark-color)`
+exception for `warning` only, which is the tell: someone hit the amber
+legibility problem, patched the two places they noticed, and left `success` and
+`info` equally illegible. If a fix like that is colour-specific, the problem is
+almost certainly systemic.
+
+### Palette bases carry two contrast requirements, not one
+
+`--x-color` is both a fill (white text on it) and a text colour on light
+surfaces - 292 declarations use `color: var(--x-color)` for `outlined`/`text`
+variants. A base therefore has to clear 4.5:1 against white _as text_, which is
+why every base sits at ~5:1 rather than merely being "dark enough for a button".
+
+`--x-dark` has its own pair of constraints: it must be **darker than its own
+base** (it is the hover fill) and **legible as text on white** (Snackbar and
+`global.scss`'s link hover use it as a foreground). Recomputing bases without
+recomputing `-dark` left five of seven families with a `-dark` _lighter_ than
+their new base, i.e. hovers that brightened.
+
+A yellow-ish `warning` cannot clear 4.5:1 against white at all - that is
+colour-space geometry, not tuning - so `--warning-color` is necessarily a dark
+gold. Don't "fix" it back to amber.
+
+### One `ThemeProvider`, at the root
+
+Tokens are written to `document.documentElement` because every overlay portals
+to `document.body` - a wrapper-scoped theme would leave every dropdown and modal
+rendering the preset. The consequence is that providers **do not compose**: two
+of them target the same element, so whichever applied a given token last wins
+for the whole page, including the other one's subtree. A second mounted provider
+logs a `devWarn`.
+
+This bites in Storybook specifically - see "Stories that mutate global state"
+below.
 
 ### Siblings with different capabilities must say so in both docs
 
@@ -338,6 +443,28 @@ _story preview content_ (the rendered eidos-ui components themselves) is
 still held to the library's real CSP posture; only Storybook's own chrome
 needs the exception.
 
+### Stories that mutate global state need `inline: false`
+
+A Docs page renders every story in the file into **one document**. For stories
+that only draw markup that is fine; for stories that write to
+`document.documentElement` it is not. Six `ThemeProvider` stories on the
+`ThemeEditor` docs page produced a page where the `Default` story showed the
+`Controlled` story's teal primary and the `ContrastDiagnostics` story's
+periwinkle success - last writer wins, globally.
+
+Set it at the **meta** level so a story added later inherits isolation instead
+of quietly contaminating its neighbours:
+
+```ts
+parameters: {
+  docs: { story: { inline: false, height: '720px' } },
+},
+```
+
+Each story then gets its own iframe and therefore its own `documentElement`.
+Cost: the iframe is narrower than the Docs container, so responsive components
+render their stacked layout there. The individual story view is unaffected.
+
 ### A large "Examples"-style story can freeze the Storybook tab under React 19
 
 Storybook's Docs "Show code" panel walks the _entire rendered element tree_
@@ -449,6 +576,65 @@ There is deliberately no dev-showcase step - see "Dev example app rules" above.
 
 ---
 
+## Documentation freshness
+
+Several files **duplicate** facts that live in code. Duplicated facts rot, and
+no compiler reads prose, so this has to be checked deliberately. Real examples
+found rotting in place:
+
+- `GETTING_STARTED.md` advertised "49 components" when there were 57, and its
+  inventory table omitted `Footer`, `Header`, `Navigation`, `PageLayout`,
+  `Pill`, `Toolbar` and the entire `Theming` group.
+- `README.md`'s theming example set `--primary-color: #6366f1` - the value
+  replaced in 3.0.0 - so anyone copying it installed the old, contrast-failing
+  palette.
+- `README.md` never listed `TableFiltersDropdown` at all.
+
+### What is enforced
+
+`npm run check:docs` (`scripts/check-docs.js`, and a `docs` step in
+`npm run verify`) checks `README.md` and `GETTING_STARTED.md` for:
+
+1. **Every component with a story is mentioned**, and every Storybook group
+   name appears. The source of truth is the `title` in each
+   `*.stories.tsx` - the same string that builds the sidebar.
+2. **Hard-coded component counts** match the number of directories in
+   `src/components`.
+3. **Every `--token:` the docs set still exists** in `variables.scss`, scoped
+   to token families the library owns so consumer-side examples like
+   `--app-header: 1100` in the z-index guidance are not flagged.
+
+It runs in `verify`, not `release:preflight`, for the same reason `prettier`
+does: these files never reach `dist/`, so a stale sentence must not be able to
+block a release.
+
+Two limits worth knowing rather than trusting blindly:
+
+- Check 1 tests **presence anywhere in the file**, not membership of the right
+  list. A component renamed in the table but still mentioned in prose passes.
+- **Token _values_ are deliberately not compared.** It was tried and removed:
+  nothing structurally separates "here are the defaults" from "override with
+  your own brand colour" - both are `:root` blocks assigning real token names -
+  so comparing values flags every legitimate override example.
+
+### What is convention
+
+Because of that second limit: **when a palette value changes, grep the docs for
+the old hex.** `grep -rn '6366f1' README.md GETTING_STARTED.md src/*.mdx`. This
+is the one part that cannot be automated precisely.
+
+And when adding a component, the docs that need touching are:
+
+| File                            | Holds                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `README.md`                     | component table (grouped as Storybook groups), Features table, Theming section |
+| `GETTING_STARTED.md`            | intro count, providers section, inventory table                                |
+| `src/Introduction.mdx`          | install/import steps                                                           |
+| `src/ContentSecurityPolicy.mdx` | anything that adds an inline style, a `<style>`, or a subresource fetch        |
+| `CHANGELOG.md`                  | see "Changelog discipline"                                                     |
+
+`src/Releases.mdx` is release-time only.
+
 ## Build & packaging
 
 ### Published package
@@ -466,6 +652,59 @@ There is deliberately no dev-showcase step - see "Dev example app rules" above.
 - `npm run build` = `tsup && node scripts/build-styles.js`
   - tsup produces ESM + CJS + DTS for all 49 component entry points
   - `build-styles.js` compiles `src/styles/index.scss` → `dist/index.css` and generates `dist/index.css.d.ts`
+
+### The declaration step has a heap ceiling that grows with the component count
+
+`npm run build` goes through `scripts/build.js`, which exists **only** to raise
+Node's heap limit (`HEAP_MB`, currently 8192) for tsup's `dts` step. That step
+bundles the type graph for every entry point in one worker thread, so its memory
+use scales with the number of components. At 49 entries it finished in ~22s; at
+51 it died with `ERR_WORKER_OUT_OF_MEMORY`.
+
+The failure is deliberately misleading and worth recognising: it happens **after
+the ESM and CJS bundles report success**, so it reads as a type error in
+whatever was added last. It is not - both of the entries that "caused" it built
+in 1-2.5s in isolation. Confirm by building `HEAD` in a throwaway worktree
+(`git worktree add /tmp/x HEAD`, symlink `node_modules`) before hunting for a
+type problem.
+
+**When it recurs, raise `HEAP_MB`.** The growth is inherent.
+
+A bare `NODE_OPTIONS=... tsup` prefix in the npm script would be shorter, but
+that syntax is invalid in Windows shells, hence the wrapper.
+
+### Bundled fonts (`eidos-ui/fonts`)
+
+A separate, opt-in entry point holding `@font-face` rules for Plus Jakarta Sans
+and JetBrains Mono. Things to keep straight:
+
+- **It must stay out of `index.css`.** These are the only rules in the library
+  that fetch a subresource. Folding them in would make every consumer inherit a
+  `font-src` requirement and would falsify the unqualified claim in
+  `ContentSecurityPolicy.mdx` that the stylesheet needs no allowance. `grep -c
+'url(' dist/index.css` must stay `0`.
+- **`@fontsource-variable/*` are devDependencies, not dependencies.**
+  `scripts/build-styles.js` copies the `.woff2` files into `dist/fonts/`, so
+  they ship inside the tarball and consumers never install the upstream
+  packages. Because of that, a version bump there _does_ change the tarball -
+  `release-needed.js` special-cases it as the one devDependency that reaches
+  `dist/`.
+- **Upstream filenames are preserved on purpose.** `fonts.scss` takes the font
+  directory as a Sass variable (`$jakarta-dir`, `$mono-dir`) so Storybook and
+  `dev/` can point it at `node_modules` while the published CSS points at
+  `./fonts`. Renaming the files would force a second copy of the `@font-face`
+  rules that could drift.
+- **Family names must match the tokens**, not upstream. `@fontsource-variable`
+  declares `'Plus Jakarta Sans Variable'`; `--font-family-primary` says
+  `'Plus Jakarta Sans'`. This is why the rules are written out rather than
+  re-exported.
+- **The OFL licences must travel with the font data** - both families are
+  OFL-1.1, which permits redistribution on that condition. They are copied to
+  `dist/fonts/*-OFL.txt`.
+- `build-styles.js` **fails the build** if `fonts.scss` references a file that
+  was not copied, or vice versa. A missing file would otherwise just fall back
+  to the next family in the stack - silently, which is the exact failure this
+  entry point exists to prevent.
 
 ### Entry points & code splitting
 

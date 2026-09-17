@@ -52,6 +52,7 @@
     "version": "node scripts/promote-changelog.js",
     "postversion": "git push --follow-tags",
     "release:needed": "node scripts/release-needed.js",
+    "check:docs": "node scripts/check-docs.js",
     "release:preflight": "node scripts/preflight-release.js && npm run lint && npm run typecheck && npm run prettier:check && npm run build"
   },
   "keywords": [

@@ -64,6 +64,9 @@ Entries land here as work happens, not written retroactively at release time
 - `ColorPicker` no longer shifts the colour it was given - it rounded its
   internal HSV state to whole percent, so `#5c5de8` displayed as `#5d5de8` and
   any interaction committed the drifted value.
+- `ThemeProvider` logs a development warning when more than one is mounted -
+  they all write to `document.documentElement`, so they cannot theme separate
+  subtrees and the last to apply each token wins for the whole page.
 - `ThemeEditor` no longer reports a web font as "not installed" after it has
   loaded - availability was probed once during the first render, before any
   `@font-face` had finished loading, and that negative result was cached.
