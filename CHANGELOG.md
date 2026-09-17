@@ -30,6 +30,8 @@ Entries land here as work happens, not written retroactively at release time
   to control what the select-all checkbox acts on.
 - `Table`/`DataGrid` card view gains a **Select all** checkbox in the toolbar,
   standing in for the header checkbox it has no header row for.
+- `Table`/`DataGrid` gain `onSelectAllMatching` - resolves the keys of every
+  matching row, so "Select all 1000" works when only one page is loaded.
 
 ### Changed
 
@@ -41,7 +43,9 @@ Entries land here as work happens, not written retroactively at release time
 ### Removed
 
 - The clear-selection (×) button on `Table`/`DataGrid` toolbars - the
-  select-all control clears the selection, as in MUI and AG Grid.
+  select-all control clears the selection, as in MUI and AG Grid. A
+  **Clear selection** action still appears while more rows are selected than
+  that control can reach.
 
 ### Fixed
 

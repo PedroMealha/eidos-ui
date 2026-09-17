@@ -159,9 +159,20 @@ const meta: Meta<typeof Table<User>> = {
         'Minimum width (px) a card can shrink to before the next one wraps to a new row.',
       table: { defaultValue: { summary: '280' } },
     },
+    selectAllScope: {
+      control: 'inline-radio',
+      options: ['all', 'page'],
+      description:
+        'What the select-all control acts on: every row in `data` across pages, or only the ' +
+        'rows currently rendered. Either way it only adds/removes the keys in its own scope.',
+      table: { defaultValue: { summary: "'all'" } },
+    },
     // Non-controllable props
     data: { control: false },
     columns: { control: false },
+    onSelectionChange: { control: false },
+    onSelectAllMatching: { control: false },
+    bulkActions: { control: false },
     onRowClick: { control: false },
     currentSort: { control: false },
     onSortChange: { control: false },
@@ -591,6 +602,88 @@ export const EmptyState: Story = {
           data={[]}
           columns={columns}
           emptyMessage="No users found. Try adjusting your filters or create a new user."
+        />
+      </div>
+    );
+  },
+};
+
+// With selection
+export const WithSelection: Story = {
+  name: 'With selection',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Enable `selectable` for row checkboxes and pass `bulkActions` for what to do with ' +
+          'them - each action receives the selected row objects. There is no separate "clear ' +
+          'selection" button: the header checkbox clears, since toggling it removes the keys ' +
+          "in its own scope. That scope is `selectAllScope` - `'all'` (the default) covers " +
+          "every row in `data` across pages, `'page'` only the rows currently rendered; try " +
+          'both against the 3-row pages below and watch the count as you page. ' +
+          '`onSelectionChange` reports keys and rows separately: keys are authoritative, rows ' +
+          'are every selected row the table has seen.',
+      },
+    },
+  },
+  render: function WithSelectionStory() {
+    const [selection, setSelection] = useState<{ keys: string[]; rows: User[] }>({
+      keys: [],
+      rows: [],
+    });
+    const [scope, setScope] = useState<'all' | 'page'>('all');
+
+    const columns: TableColumn<User>[] = [
+      { key: 'name', label: 'Name', sortable: true },
+      { key: 'email', label: 'Email' },
+      { key: 'role', label: 'Role' },
+      { key: 'status', label: 'Status', render: (value) => <Chip size="sm">{value}</Chip> },
+    ];
+
+    return (
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 13 }}>
+          <Button
+            size="sm"
+            variant="outlined"
+            onClick={() => setScope((prev) => (prev === 'all' ? 'page' : 'all'))}
+          >
+            selectAllScope: {scope}
+          </Button>
+          <span style={{ color: 'var(--gray-700)' }}>
+            <strong>{selection.keys.length}</strong> selectedKeys ·{' '}
+            <strong>{selection.rows.length}</strong> selectedRows
+          </span>
+        </div>
+
+        <Table
+          data={sampleUsers}
+          columns={columns}
+          rowKey="id"
+          selectable
+          selectAllScope={scope}
+          onSelectionChange={(keys, rows) => setSelection({ keys, rows })}
+          showFooter
+          showPagination
+          pageSize={3}
+          pageSizeOptions={[3, 5, 10]}
+          bulkActions={[
+            {
+              id: 'deactivate',
+              label: 'Deactivate',
+              icon: Trash2,
+              color: 'danger',
+              variant: 'outlined',
+              onClick: (rows) =>
+                alert(`Deactivate ${rows.length} user(s): ${rows.map((r) => r.name).join(', ')}`),
+            },
+            {
+              id: 'email',
+              label: 'Email',
+              icon: Eye,
+              onClick: (rows) => alert(`Email ${rows.length} user(s)`),
+            },
+          ]}
         />
       </div>
     );

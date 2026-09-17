@@ -202,6 +202,7 @@ export const Table = <T extends object>({
   defaultSelectedRows = [],
   onSelectionChange,
   selectAllScope = 'all',
+  onSelectAllMatching,
   bulkActions = [],
   // New features
   density = 'comfortable',
@@ -487,6 +488,42 @@ export const Table = <T extends object>({
         ? [...selectedSet].filter((key) => !inScope.has(key))
         : [...new Set([...selectedSet, ...selectAllKeys])],
     );
+  };
+
+  // Only reachable from the "all N matching" state below - the select-all
+  // control is what clears an ordinary selection.
+  const clearSelection = () => commitSelection([]);
+
+  // ── "Select all N matching" (see `onSelectAllMatching`) ───────────────────
+  // The table can only enumerate the keys it has been given, so selecting
+  // everything behind a larger query has to come from the caller.
+  const [isSelectingAllMatching, setIsSelectingAllMatching] = useState(false);
+
+  const totalItemCount = totalItems ?? data.length;
+  const holdsEveryRow = totalItemCount <= data.length;
+  const hasSelectedAllMatching = !holdsEveryRow && selectedSet.size >= totalItemCount;
+  // Offered once everything the table holds is selected, so the select-all
+  // control has nothing left to give - but not once every matching row is
+  // already selected, where it would be a no-op sitting next to "Clear
+  // selection".
+  const canSelectAllMatching =
+    !!onSelectAllMatching && selectable && !holdsEveryRow && allSelected && !hasSelectedAllMatching;
+
+  const selectAllMatching = async () => {
+    if (!onSelectAllMatching) return;
+    setIsSelectingAllMatching(true);
+    try {
+      // Replaces rather than merges: the caller is returning the full
+      // matching set, so anything not in it is by definition not a match.
+      commitSelection(await onSelectAllMatching());
+    } catch (error) {
+      devWarn(
+        'table-select-all-matching-failed',
+        `Table: onSelectAllMatching() rejected, so the selection was left untouched. ${String(error)}`,
+      );
+    } finally {
+      setIsSelectingAllMatching(false);
+    }
   };
 
   // `'all'` can only ever select the rows the table holds. `totalItems` is the
@@ -908,6 +945,29 @@ export const Table = <T extends object>({
             {selectable && hasSelection && (
               <>
                 <span className="eidos-table-selection-count">{selectedSet.size} selected</span>
+
+                {/* The select-all control can only reach the rows in `data`,
+                    so reaching past them is an explicit action - and undoing
+                    it has to be explicit too: with more rows selected than
+                    that control's own scope, toggling it would strip the
+                    in-scope keys and leave the rest selected, which reads as
+                    a no-op. */}
+                {canSelectAllMatching && (
+                  <Button
+                    variant="text"
+                    size="sm"
+                    loading={isSelectingAllMatching}
+                    onClick={() => void selectAllMatching()}
+                  >
+                    {`Select all ${totalItemCount}`}
+                  </Button>
+                )}
+
+                {hasSelectedAllMatching && (
+                  <Button variant="text" size="sm" color="secondary" onClick={clearSelection}>
+                    Clear selection
+                  </Button>
+                )}
 
                 {bulkActions.length > 0 && (
                   <div className="eidos-table-bulk-actions">

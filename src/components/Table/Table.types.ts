@@ -197,6 +197,20 @@ interface TableProps<T extends object = Record<string, unknown>> {
    * @default 'all'
    */
   selectAllScope?: 'all' | 'page';
+  /**
+   * Resolves the keys of **every** row matching the current query, including
+   * rows not present in `data`. Supplying it adds a "Select all N" action to
+   * the toolbar once everything the table does hold is selected.
+   *
+   * Only relevant when `data` is a subset of a larger set and `totalItems`
+   * describes the whole - a table paginating its own `data` already has every
+   * key. Called with no arguments, may be async (the action shows a loading
+   * state), and whatever it returns replaces the selection.
+   *
+   * Matches `DataGrid.onSelectAllMatching`, which is where this mostly earns
+   * its keep: `DataGrid` has a real server-side pagination mode.
+   */
+  onSelectAllMatching?: () => string[] | Promise<string[]>;
   bulkActions?: BulkAction<T>[];
   // Feature 1: Row density
   density?: 'compact' | 'comfortable' | 'spacious';

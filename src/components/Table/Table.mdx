@@ -114,7 +114,11 @@ Enable `selectable` to add row checkboxes, and pass `bulkActions` to expose acti
 
 `selectAllScope` decides what that control acts on: `'all'` (the default) is every row in `data`, across pages; `'page'` is only the rows currently rendered. Either way it only adds or removes the keys in its own scope, so a selection made on another page survives toggling it.
 
-`onSelectionChange(selectedKeys, selectedRows)` gives `selectedKeys` as authoritative and `selectedRows` as best-effort - the row behind each selected key is cached, so a row still resolves after `data` has moved on. If `data` is one page of a larger set (with `totalItems` describing the whole), `selectAllScope="all"` can only reach the rows actually present, and says so with a dev-only warning; `DataGrid` documents the same contract in more depth for its server-side mode.
+`onSelectionChange(selectedKeys, selectedRows)` gives `selectedKeys` as authoritative and `selectedRows` as best-effort - the row behind each selected key is cached, so a row still resolves after `data` has moved on. If `data` is one page of a larger set (with `totalItems` describing the whole), `selectAllScope="all"` can only reach the rows actually present, and says so with a dev-only warning.
+
+`onSelectAllMatching` covers that case: it resolves the keys of every matching row, including ones not in `data`, and adds a **Select all N** action to the toolbar once everything the table holds is selected. It earns its keep mainly on `DataGrid`, which has a real server-side pagination mode - see [its docs](?path=/docs/data-datagrid--docs) for the full contract and a live example.
+
+<Canvas of={TableStories.WithSelection} />
 
 ## Responsive toolbar
 

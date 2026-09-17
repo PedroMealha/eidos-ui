@@ -352,6 +352,7 @@ function DataGridInner<T extends object>({
   defaultSelectedRows,
   onSelectionChange,
   selectAllScope = 'all',
+  onSelectAllMatching,
   bulkActions,
   // ── Row expansion ────────────────────────────────────────────────────────────
   expandable = false,
@@ -1206,6 +1207,37 @@ function DataGridInner<T extends object>({
     [selectedSet, commitSelection],
   );
 
+  // ── "Select all N matching" (see `onSelectAllMatching`) ───────────────────
+  // The grid can only enumerate the keys it has been given, so selecting
+  // everything behind a server-side query has to come from the caller.
+  const [isSelectingAllMatching, setIsSelectingAllMatching] = useState(false);
+
+  const holdsEveryRow = totalItemCount <= localData.length;
+  const hasSelectedAllMatching = !holdsEveryRow && selectedSet.size >= totalItemCount;
+  // Offered once everything the grid holds is selected, so the select-all
+  // checkbox has nothing left to give - but not once every matching row is
+  // already selected, where it would be a no-op sitting next to "Clear
+  // selection".
+  const canSelectAllMatching =
+    !!onSelectAllMatching && selectable && !holdsEveryRow && allSelected && !hasSelectedAllMatching;
+
+  const selectAllMatching = useCallback(async () => {
+    if (!onSelectAllMatching) return;
+    setIsSelectingAllMatching(true);
+    try {
+      // Replaces rather than merges: the caller is returning the full
+      // matching set, so anything not in it is by definition not a match.
+      commitSelection(await onSelectAllMatching());
+    } catch (error) {
+      devWarn(
+        'datagrid-select-all-matching-failed',
+        `DataGrid: onSelectAllMatching() rejected, so the selection was left untouched. ${String(error)}`,
+      );
+    } finally {
+      setIsSelectingAllMatching(false);
+    }
+  }, [onSelectAllMatching, commitSelection]);
+
   // Adds or removes only the keys in scope, so a selection made on another
   // page (or outside `'page'` scope) is never silently dropped by toggling
   // the select-all control.
@@ -1217,6 +1249,10 @@ function DataGridInner<T extends object>({
         : [...new Set([...selectedSet, ...selectAllKeys])],
     );
   }, [allSelected, selectAllKeys, selectedSet, commitSelection]);
+
+  // Only reachable from the "all N matching" state below - the select-all
+  // checkbox is what clears an ordinary selection.
+  const clearSelection = useCallback(() => commitSelection([]), [commitSelection]);
 
   // ── Row expansion handlers ───────────────────────────────────────────────────
   const commitExpanded = useCallback(
@@ -1845,6 +1881,28 @@ function DataGridInner<T extends object>({
             {selectable && hasSelection && (
               <>
                 <span className="eidos-datagrid-selection-count">{selectedSet.size} selected</span>
+
+                {/* The select-all checkbox can only reach the loaded rows, so
+                    reaching past them is an explicit action - and undoing it
+                    has to be explicit too: with more rows selected than the
+                    checkbox's own scope, toggling it would strip the page and
+                    leave the rest selected, which reads as a no-op. */}
+                {canSelectAllMatching && (
+                  <Button
+                    variant="text"
+                    size="sm"
+                    loading={isSelectingAllMatching}
+                    onClick={() => void selectAllMatching()}
+                  >
+                    {`Select all ${totalItemCount}`}
+                  </Button>
+                )}
+
+                {hasSelectedAllMatching && (
+                  <Button variant="text" size="sm" color="secondary" onClick={clearSelection}>
+                    Clear selection
+                  </Button>
+                )}
 
                 {bulkActions && bulkActions.length > 0 && (
                   <div className="eidos-datagrid-bulk-actions">

@@ -388,6 +388,23 @@ export interface DataGridProps<T extends object = Record<string, unknown>> {
    * @default 'all'
    */
   selectAllScope?: 'all' | 'page';
+  /**
+   * Resolves the keys of **every** row matching the current query - the rows
+   * the grid cannot see, not just the loaded page. Supplying it adds a
+   * "Select all N" action to the toolbar once everything the grid does hold is
+   * selected, which is the only way to express "all 1000" when the grid only
+   * ever receives 20 of them.
+   *
+   * Called with no arguments and may be async (the action shows a loading
+   * state while it resolves); whatever it returns replaces the selection. It
+   * is up to you to apply the current filters/sort when resolving - the grid
+   * does not pass them, because in server-side mode you already own that
+   * query.
+   *
+   * Only rendered when the grid can tell it is holding a subset, i.e. when
+   * `totalRows` exceeds the number of loaded rows.
+   */
+  onSelectAllMatching?: () => string[] | Promise<string[]>;
   bulkActions?: BulkAction<T>[];
 
   // ── Row expansion ──────────────────────────────────────────────────────────

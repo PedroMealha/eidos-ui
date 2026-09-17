@@ -504,6 +504,15 @@ const meta: Meta<typeof DataGrid<Person>> = {
     selectedRows: { control: false },
     defaultSelectedRows: { control: false },
     onSelectionChange: { control: false },
+    onSelectAllMatching: { control: false },
+    selectAllScope: {
+      control: 'inline-radio',
+      options: ['all', 'page'],
+      description:
+        'What the select-all control acts on: every row in `data` across pages, or only the ' +
+        'rows currently rendered. Either way it only adds/removes the keys in its own scope.',
+      table: { defaultValue: { summary: "'all'" } },
+    },
     bulkActions: { control: false },
     onRowReorder: { control: false },
     onPageChange: { control: false },
@@ -745,6 +754,80 @@ export const ServerSidePagination: Story = {
                 window.alert(
                   `Handler received ${selectedRows.length} row object(s):\n` +
                     selectedRows.map((row) => `#${row.id} ${row.name}`).join('\n'),
+                ),
+            },
+          ]}
+        />
+      </div>
+    );
+  },
+};
+
+// ─── 5c. Select all matching (server-side) ───────────────────────────────────
+
+export const SelectAllMatching: Story = {
+  name: 'Select all matching (server-side)',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A grid holding one page of 87 rows cannot enumerate the other 82 keys, so ' +
+          '"select all 87" has to come from the server. Supply `onSelectAllMatching` and the ' +
+          'toolbar offers it as an explicit action once everything the grid *does* hold is ' +
+          'selected: tick the header checkbox, then use **Select all 87**. The action shows a ' +
+          'loading state while the callback resolves (400ms here, standing in for a request ' +
+          'that returns ids for the current query), and whatever it returns replaces the ' +
+          'selection. While more rows are selected than the checkbox can reach, a **Clear ' +
+          'selection** action appears too - toggling the checkbox in that state would only ' +
+          'strip the current page and leave the other 82 selected, which would read as a ' +
+          'broken no-op.',
+      },
+    },
+  },
+  render: function SelectAllMatchingStory() {
+    const pageSize = 5;
+    const [page, setPage] = useState(1);
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+
+    const pageRows = SERVER_SIDE_ROWS.slice((page - 1) * pageSize, page * pageSize);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ fontSize: 13, color: 'var(--gray-700)' }}>
+          <strong>{selectedKeys.length}</strong> of {SERVER_SIDE_ROWS.length} selected ·{' '}
+          <strong>{pageRows.length}</strong> loaded
+        </div>
+
+        <DataGrid<Person>
+          columns={BASE_COLUMNS}
+          data={pageRows}
+          rowKey="id"
+          onChange={() => {}}
+          showPagination
+          pageSize={pageSize}
+          totalRows={SERVER_SIDE_ROWS.length}
+          onPageChange={setPage}
+          selectable
+          selectAllScope="page"
+          selectedRows={selectedKeys}
+          onSelectionChange={(keys) => setSelectedKeys(keys)}
+          // Stands in for "ask the server for every id matching this query".
+          onSelectAllMatching={() =>
+            new Promise<string[]>((resolve) =>
+              setTimeout(() => resolve(SERVER_SIDE_ROWS.map((row) => String(row.id))), 400),
+            )
+          }
+          bulkActions={[
+            {
+              id: 'archive-selected',
+              type: 'button',
+              label: 'Archive selected',
+              icon: FolderInput,
+              variant: 'outlined',
+              onClick: (selectedRows) =>
+                window.alert(
+                  `${selectedKeys.length} key(s) selected; ${selectedRows.length} row object(s) ` +
+                    'resolved (only loaded rows have one).',
                 ),
             },
           ]}
