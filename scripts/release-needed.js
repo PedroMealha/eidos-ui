@@ -39,6 +39,9 @@ const BUILD_INPUTS = [
   ':(exclude)*.docs.tsx',
   'tsup.config.ts',
   'scripts/build-styles.js',
+  // The build entry point - it sets the heap limit tsup's declaration step
+  // needs, so a change here can change whether dist/ is produced at all.
+  'scripts/build.js',
 ];
 
 /**

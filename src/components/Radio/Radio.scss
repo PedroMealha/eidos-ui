@@ -72,6 +72,7 @@
     .eidos-radio-control--checked {
       background: var(--primary-color);
       border-color: var(--primary-color);
+      color: var(--primary-contrast);
     }
   }
 
@@ -84,6 +85,7 @@
     .eidos-radio-control--checked {
       background: var(--secondary-color);
       border-color: var(--secondary-color);
+      color: var(--secondary-contrast);
     }
   }
 
@@ -96,6 +98,7 @@
     .eidos-radio-control--checked {
       background: var(--success-color);
       border-color: var(--success-color);
+      color: var(--success-contrast);
     }
   }
 
@@ -108,6 +111,7 @@
     .eidos-radio-control--checked {
       background: var(--danger-color);
       border-color: var(--danger-color);
+      color: var(--danger-contrast);
     }
   }
 
@@ -120,6 +124,7 @@
     .eidos-radio-control--checked {
       background: var(--warning-color);
       border-color: var(--warning-color);
+      color: var(--warning-contrast);
     }
   }
 
@@ -132,6 +137,7 @@
     .eidos-radio-control--checked {
       background: var(--info-color);
       border-color: var(--info-color);
+      color: var(--info-contrast);
     }
   }
 
@@ -179,7 +185,10 @@
 
 .eidos-radio-dot {
   border-radius: 50%;
-  background: var(--white);
+  // Tracks the checked control's --x-contrast foreground, so the dot stays
+  // visible against a consumer-supplied colour instead of being fixed white.
+  // Only ever visible while checked (scale(0) otherwise).
+  background: currentColor;
   flex-shrink: 0;
   transform: scale(0);
   transition: transform 0.2s ease;

@@ -28,6 +28,7 @@ const BUILD_INPUTS = [
   ':(exclude)*.docs.tsx',
   'tsup.config.ts',
   'scripts/build-styles.js',
+  'scripts/build.js',
 ];
 
 /**

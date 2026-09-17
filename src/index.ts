@@ -54,10 +54,22 @@ export { ColorPicker } from './components/ColorPicker';
 export { CommandPalette } from './components/CommandPalette';
 export { VirtualList } from './components/VirtualList';
 export { DataGrid } from './components/DataGrid';
+export { ThemeProvider, defaultTheme } from './components/ThemeProvider';
+export {
+  registerFontFace,
+  registerFontFile,
+  isFontAvailable,
+  isFontStackAvailable,
+  familyNameFromFile,
+  toFontStack,
+  FONT_ACCEPT,
+} from './components/ThemeProvider';
+export { ThemeEditor } from './components/ThemeEditor';
 
 // Hooks
 export { useDropdownContext } from './components/Dropdown';
 export { useSnackbar, useSnackbarContext } from './components/Snackbar';
+export { useTheme } from './components/ThemeProvider';
 
 // Types
 export type { CardProps } from './components/Card';
@@ -197,6 +209,19 @@ export type { SpinnerProps, SpinnerColorProps } from './components/Spinner';
 export type { TagInputProps } from './components/TagInput';
 export type { TreeViewProps, TreeNode } from './components/TreeView';
 export type { VirtualListProps } from './components/VirtualList';
+export type {
+  ThemeConfig,
+  ThemeColors,
+  ThemeColorKey,
+  ThemeColorValue,
+  ThemeFontOption,
+  ThemeTypography,
+  ResolvedTheme,
+  ThemeContextValue,
+  ThemeProviderProps,
+  RegisteredFont,
+} from './components/ThemeProvider';
+export type { ThemeEditorProps } from './components/ThemeEditor';
 
 // Shared types (used across many components)
 export type { IconType, ComponentSizeProps } from './utils';

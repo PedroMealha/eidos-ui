@@ -172,32 +172,32 @@
   &.eidos-stepper-step--primary .eidos-stepper-dot {
     background: var(--primary-color);
     border-color: var(--primary-color);
-    color: var(--white);
+    color: var(--primary-contrast);
   }
   &.eidos-stepper-step--secondary .eidos-stepper-dot {
     background: var(--secondary-color);
     border-color: var(--secondary-color);
-    color: var(--white);
+    color: var(--secondary-contrast);
   }
   &.eidos-stepper-step--success .eidos-stepper-dot {
     background: var(--success-color);
     border-color: var(--success-color);
-    color: var(--white);
+    color: var(--success-contrast);
   }
   &.eidos-stepper-step--danger .eidos-stepper-dot {
     background: var(--danger-color);
     border-color: var(--danger-color);
-    color: var(--white);
+    color: var(--danger-contrast);
   }
   &.eidos-stepper-step--warning .eidos-stepper-dot {
     background: var(--warning-color);
     border-color: var(--warning-color);
-    color: var(--white);
+    color: var(--warning-contrast);
   }
   &.eidos-stepper-step--info .eidos-stepper-dot {
     background: var(--info-color);
     border-color: var(--info-color);
-    color: var(--white);
+    color: var(--info-contrast);
   }
 }
 
@@ -206,32 +206,32 @@
   &.eidos-stepper-step--primary .eidos-stepper-dot {
     background: var(--primary-color);
     border-color: var(--primary-color);
-    color: var(--white);
+    color: var(--primary-contrast);
   }
   &.eidos-stepper-step--secondary .eidos-stepper-dot {
     background: var(--secondary-color);
     border-color: var(--secondary-color);
-    color: var(--white);
+    color: var(--secondary-contrast);
   }
   &.eidos-stepper-step--success .eidos-stepper-dot {
     background: var(--success-color);
     border-color: var(--success-color);
-    color: var(--white);
+    color: var(--success-contrast);
   }
   &.eidos-stepper-step--danger .eidos-stepper-dot {
     background: var(--danger-color);
     border-color: var(--danger-color);
-    color: var(--white);
+    color: var(--danger-contrast);
   }
   &.eidos-stepper-step--warning .eidos-stepper-dot {
     background: var(--warning-color);
     border-color: var(--warning-color);
-    color: var(--white);
+    color: var(--warning-contrast);
   }
   &.eidos-stepper-step--info .eidos-stepper-dot {
     background: var(--info-color);
     border-color: var(--info-color);
-    color: var(--white);
+    color: var(--info-contrast);
   }
 
   // Connector after completed step is also colored. `extendEnd`'s connector
@@ -295,7 +295,7 @@
   .eidos-stepper-dot {
     background: var(--danger-color);
     border-color: var(--danger-color);
-    color: var(--white);
+    color: var(--danger-contrast);
   }
 }
 

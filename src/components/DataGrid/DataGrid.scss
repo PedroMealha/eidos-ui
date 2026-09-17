@@ -493,7 +493,7 @@
 .eidos-data-grid-cell-error {
   position: fixed;
   font-size: 10px;
-  color: var(--white);
+  color: var(--danger-contrast);
   background: var(--danger-color);
   white-space: nowrap;
   z-index: var(--z-index-tooltip);

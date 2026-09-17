@@ -56,29 +56,38 @@
   // Colors
   // ========================================================================
 
+  // Each colour pairs its fill with its own --x-contrast foreground. This
+  // replaces a hardcoded `var(--white)` plus a hand-written dark-text
+  // exception for `warning`, which was the only colour anyone had noticed
+  // was illegible - success and info were equally bad.
   &--primary {
     background-color: var(--primary-color);
+    color: var(--primary-contrast);
   }
 
   &--secondary {
     background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
   }
 
   &--success {
     background-color: var(--success-color);
+    color: var(--success-contrast);
   }
 
   &--danger {
     background-color: var(--danger-color);
+    color: var(--danger-contrast);
   }
 
   &--warning {
     background-color: var(--warning-color);
-    color: var(--dark-color);
+    color: var(--warning-contrast);
   }
 
   &--info {
     background-color: var(--info-color);
+    color: var(--info-contrast);
   }
 
   // ========================================================================

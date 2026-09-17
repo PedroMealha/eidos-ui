@@ -52,7 +52,7 @@
 
       &--active {
         background: var(--primary-color);
-        color: var(--white);
+        color: var(--primary-contrast);
       }
     }
   }
@@ -169,7 +169,7 @@
 
   &.eidos-tabs--pills .eidos-tab--active {
     background: var(--primary-color);
-    color: var(--white);
+    color: var(--primary-contrast);
   }
 
   .eidos-tab:focus-visible {
@@ -188,7 +188,7 @@
 
   &.eidos-tabs--pills .eidos-tab--active {
     background: var(--secondary-color);
-    color: var(--white);
+    color: var(--secondary-contrast);
   }
 
   .eidos-tab:focus-visible {
@@ -207,7 +207,7 @@
 
   &.eidos-tabs--pills .eidos-tab--active {
     background: var(--success-color);
-    color: var(--white);
+    color: var(--success-contrast);
   }
 
   .eidos-tab:focus-visible {
@@ -226,7 +226,7 @@
 
   &.eidos-tabs--pills .eidos-tab--active {
     background: var(--danger-color);
-    color: var(--white);
+    color: var(--danger-contrast);
   }
 
   .eidos-tab:focus-visible {
@@ -245,7 +245,7 @@
 
   &.eidos-tabs--pills .eidos-tab--active {
     background: var(--warning-color);
-    color: var(--white);
+    color: var(--warning-contrast);
   }
 
   .eidos-tab:focus-visible {
@@ -264,7 +264,7 @@
 
   &.eidos-tabs--pills .eidos-tab--active {
     background: var(--info-color);
-    color: var(--white);
+    color: var(--info-contrast);
   }
 
   .eidos-tab:focus-visible {

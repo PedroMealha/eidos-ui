@@ -117,26 +117,33 @@
   // Active / current page - filled, editable input
   &--active {
     border-color: transparent;
-    color: var(--white);
     cursor: text;
 
+    // The foreground is set per colour rather than once here: --x-contrast is
+    // only meaningful next to the matching --x-color fill.
     &.eidos-pagination-page--primary {
       background: var(--primary-color);
+      color: var(--primary-contrast);
     }
     &.eidos-pagination-page--secondary {
       background: var(--secondary-color);
+      color: var(--secondary-contrast);
     }
     &.eidos-pagination-page--success {
       background: var(--success-color);
+      color: var(--success-contrast);
     }
     &.eidos-pagination-page--danger {
       background: var(--danger-color);
+      color: var(--danger-contrast);
     }
     &.eidos-pagination-page--warning {
       background: var(--warning-color);
+      color: var(--warning-contrast);
     }
     &.eidos-pagination-page--info {
       background: var(--info-color);
+      color: var(--info-contrast);
     }
 
     &:focus {

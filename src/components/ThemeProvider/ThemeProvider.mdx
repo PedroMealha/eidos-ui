@@ -1,0 +1,162 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ThemeProviderStories from './ThemeProvider.stories';
+
+<Meta of={ThemeProviderStories} />
+
+# ThemeProvider
+
+Applies a runtime theme by writing CSS custom properties to `document.documentElement`. Supply one base colour per family and the shades, tints, ramp steps and accessible foregrounds are derived from it.
+
+> **Note**: needs no Content Security Policy allowance, including under SSR. Properties are set through the CSSOM (`style.setProperty`), which `style-src` and `style-src-attr` do not gate - no `<style>` element is created and no `style` attribute is written.
+
+## Usage
+
+```tsx
+import { ThemeProvider } from 'eidos-ui';
+
+<ThemeProvider defaultTheme={{ colors: { primary: '#0ea5e9' } }}>
+  <App />
+</ThemeProvider>;
+```
+
+## What is themeable
+
+Ten knobs, not sixty tokens. Each colour is a single base; everything else is computed.
+
+| Knob                                                       | Writes                                                                        |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `colors.primary`                                           | `--primary-color`, `-rgb`, `-dark`, `-light`, `-contrast`, `--primary-50…900` |
+| `colors.secondary` `.success` `.danger` `.warning` `.info` | `--x-color`, `-rgb`, `-dark`, `-light`, `-contrast`                           |
+| `colors.hyperlink`                                         | `--hyperlink-color`, `-rgb`, `-dark`, `-light`                                |
+| `typography.fontFamily`                                    | `--font-family-primary`                                                       |
+| `typography.monoFamily`                                    | `--font-family-mono`                                                          |
+| `typography.fontScale`                                     | all eight `--font-size-*`                                                     |
+
+Only `primary` has a `50…900` ramp because it is the only family that has one in the stylesheet. `hyperlink` has no `-contrast` because it is link text on a surface, never a fill.
+
+Deliberately **not** themeable: the gray ramp and `--dark-color` / `--light-color` (420 usages across surfaces, borders and body text - a free hue there wrecks text contrast), `--z-index-*` (the ordering invariant that keeps anchored popups above modals is load-bearing), and `--breakpoint-*` (compiled into media queries, so it cannot change at runtime). Override any of them in your own CSS if you need to.
+
+Note that `--spacing-*` is declared in `em`, so `fontScale` moves most padding and gaps along with the text rather than only the glyphs.
+
+## Default
+
+With no theme supplied the provider writes **nothing at all** - `isDefault` is `true` and `dist/index.css` stays authoritative, so there is no behavioural difference from not using it.
+
+<Canvas of={ThemeProviderStories.Default} />
+
+<Controls of={ThemeProviderStories.Default} />
+
+## Custom primary
+
+<Canvas of={ThemeProviderStories.CustomPrimary} />
+
+The ramp is generated in OKLab by interpolating toward white and near-black, with the curve rescaled to whatever lightness headroom your colour leaves and a minimum separation enforced between steps. That matters for light colours: a naive implementation clips `50`–`300` to pure white.
+
+A colour too close to white or black to generate a usable scale logs a development warning, because several steps genuinely cannot be told apart. The base itself is always emitted verbatim at `--x-color` and `--primary-500`, so what you pick is what renders.
+
+## Typography
+
+<Canvas of={ThemeProviderStories.Typography} />
+
+## Making a font available
+
+`--font-family-primary` only _names_ families. To use a font the browser doesn't have, register the data itself:
+
+```tsx
+import { registerFontFace, isFontAvailable, toFontStack } from 'eidos-ui';
+
+const data = await fetch('/fonts/brand-sans.woff2').then((r) => r.arrayBuffer());
+await registerFontFace('Brand Sans', data);
+
+setTheme({ typography: { fontFamily: toFontStack('Brand Sans') } });
+isFontAvailable('Brand Sans'); // true
+```
+
+`registerFontFace` takes an `ArrayBuffer` and goes through the CSS Font Loading API. CSP's `font-src` governs _fetching_ a font by URL, so passing binary data needs no allowance at all - and notably avoids `blob:` URLs, which would require `font-src blob:`. Fetching the file yourself is your app's request to declare (`connect-src`).
+
+`isFontAvailable` measures the family on a canvas against two fallbacks. Note that `document.fonts.check` cannot answer this question: per spec it reports whether _matching faces in the FontFaceSet_ are loaded, so with no matching face it returns `true` - it answers `true` for a font that does not exist.
+
+**Font data cannot live in a `ThemeConfig`.** It is JSON, so only the family name is stored; registration has to happen on every load, before or alongside applying the theme.
+
+## Accessible foregrounds
+
+`--x-contrast` is the colour to place on each fill. It resolves to white unless white would drop below 3:1, in which case the better of white and near-black wins. Every preset base clears 4.5:1 against white, so the preset resolves to white throughout.
+
+This uses WCAG 2.1 contrast rather than APCA: APCA models perception better but is still a draft targeted at WCAG 3, while WCAG 2 is what audits measure against. Its known weakness is mis-ranking some mid-tone blues and greens.
+
+## Pinned contrast
+
+<Canvas of={ThemeProviderStories.PinnedContrast} />
+
+Pass an object to override the computed foreground:
+
+```tsx
+<ThemeProvider defaultTheme={{ colors: { primary: { base: '#0ea5e9', contrast: '#00263a' } } }}>
+```
+
+This exists because the provider writes tokens _inline_ on `documentElement`, and inline styles beat author stylesheets - without it, overriding `--primary-contrast` from your own CSS would require `!important`.
+
+## Controlled mode and persistence
+
+There is no `storageKey` prop. Persistence belongs in your app, because the reconciliation rules (revision vs. timestamp, behaviour on a failed fetch, conflict policy) are application decisions, and a provider-owned cache sitting next to a controlled `theme` prop would be a second source of truth.
+
+For a theme stored per user on a server, with `localStorage` as a first-paint cache:
+
+```tsx
+const STORAGE_KEY = 'app:theme';
+
+function AppThemeProvider({ children }) {
+  // Read synchronously during the first render so the cached theme is applied
+  // on first paint rather than flashing the preset.
+  const [theme, setTheme] = useState<ThemeConfig>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}');
+    } catch {
+      return {};
+    }
+  });
+
+  // The server is authoritative once the user is known; only correct the cache
+  // when the two actually differ, to avoid a pointless repaint.
+  useEffect(() => {
+    if (!session) return;
+    fetchTheme(session.userId).then((remote) => {
+      setTheme((local) => (JSON.stringify(local) === JSON.stringify(remote) ? local : remote));
+    });
+  }, [session]);
+
+  const persist = useCallback((next: ThemeConfig) => {
+    setTheme(next);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    void saveTheme(next);
+  }, []);
+
+  return (
+    <ThemeProvider theme={theme} onThemeChange={persist}>
+      {children}
+    </ThemeProvider>
+  );
+}
+```
+
+## Server-side rendering
+
+The server sends the preset from `dist/index.css` and the theme is applied on hydration, so a non-preset theme causes one repaint on load. Nothing here breaks under SSR - `useLayoutEffect` is guarded and never runs on the server.
+
+To avoid the repaint entirely, bake the theme into CSS at build time with `useTheme().toCss()` (or the editor's "Copy as CSS" button) and skip the provider:
+
+```css
+:root {
+  --primary-color: #0ea5e9;
+  --primary-rgb: 14, 165, 233;
+  /* … */
+}
+```
+
+## Reading the theme
+
+`useTheme()` returns `{ theme, resolvedTheme, setTheme, updateTheme, resetTheme, isDefault, toCss }` and throws outside a provider. `theme` is what was supplied, with gaps; `resolvedTheme` has every field filled in from the preset.
+
+`updateTheme` merges one level into `colors`/`typography`. To _remove_ an override and fall back to the preset, use `setTheme` with the key absent - a merge would keep the old value.
+
+<Canvas of={ThemeProviderStories.ReadingThePreset} />

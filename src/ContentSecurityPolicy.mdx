@@ -50,6 +50,30 @@ Content-Security-Policy: style-src 'self'; style-src-attr 'unsafe-inline';
 
 Note this only relaxes the attribute directive, not `style-src` as a whole - external stylesheets and any future `<style>`/`<script>` elements stay fully locked down.
 
+## Theming
+
+`ThemeProvider` needs no allowance at all, under any circumstance - including SSR. It applies a theme by calling `element.style.setProperty('--primary-color', …)` on `document.documentElement`, which is CSSOM mutation: the same mechanism described above that `style-src` and `style-src-attr` do not gate. It never creates a `<style>` element, never writes a `style` attribute, and never needs a nonce.
+
+Under SSR the first paint uses the preset from `dist/index.css` and the theme is applied on hydration, so a non-preset theme costs one repaint. If you want a themed first paint with no repaint and no JavaScript, use `useTheme().toCss()` (or the "Copy as CSS" button in `ThemeEditor`) to generate a `:root { … }` block and paste it into your own same-origin stylesheet - which `style-src 'self'` already covers.
+
+### Fonts
+
+`registerFontFace` (and the `ThemeEditor` upload control built on it) needs no `font-src` allowance either. It hands an `ArrayBuffer` to the CSS Font Loading API, and `font-src` governs _fetching_ a font resource by URL - there is no request to check.
+
+It is worth being explicit that this is the **strictest** of the available options, not a shortcut around a stricter one. Registering a font can be done four ways, and they are not equivalent under CSP:
+
+| Approach                                                     | Requires                                                  |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| `new FontFace(family, arrayBuffer)` — what this library does | nothing                                                   |
+| `new FontFace(family, 'url(/f.woff2)')`                      | `font-src` for that origin                                |
+| A `@font-face` rule in a same-origin stylesheet              | `font-src 'self'`                                         |
+| A `@font-face` rule injected at runtime in a `<style>` tag   | `font-src` **and** a nonce or `style-src 'unsafe-inline'` |
+| A `@font-face` rule with a `data:` or `blob:` URL            | `font-src data:` / `font-src blob:`                       |
+
+So a "CSS file with `@font-face`" is not more CSP-friendly than the binary form - it is strictly less so, because it reintroduces a fetch. It is still a perfectly good way to ship fonts you control (`font-src 'self'` is a mild allowance), and it is the right choice for a font your app always uses. The `ArrayBuffer` form exists for font data that arrives at runtime, where writing a stylesheet would mean either injecting a `<style>` element or encoding the font into a `data:` URL - both of which need an allowance the buffer does not.
+
+If you fetch font files yourself before registering them, that request is your app's to declare under `connect-src`; the library never fetches a font.
+
 ## Consumer-supplied `style` props
 
 `Input`, `Textarea`, and a few other form components accept and forward a `style` prop from your own code. If _you_ pass `style={{...}}` into one of them, that's your app's markup choice, subject to the same SSR/CSR reasoning above - it's outside this library's control either way.

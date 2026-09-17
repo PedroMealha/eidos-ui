@@ -6,6 +6,7 @@ const TABS = [
   { value: 'profile', label: 'Profile', icon: 'user' },
   { value: 'notifications', label: 'Notifications', icon: 'bell' },
   { value: 'advanced', label: 'Advanced', icon: 'triangle-alert' },
+  { value: 'theme', label: 'Theme', icon: 'palette' },
 ] as const;
 
 /**

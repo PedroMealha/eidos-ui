@@ -1,0 +1,115 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ThemeEditorStories from './ThemeEditor.stories';
+
+<Meta of={ThemeEditorStories} />
+
+# ThemeEditor
+
+A ready-made panel for editing the active `ThemeProvider` theme, with live WCAG contrast readouts per colour. Drop it into a settings screen to let users theme your app.
+
+> **Note**: must be rendered inside a `ThemeProvider` - it throws otherwise. It renders no preview of its own, because the provider writes tokens to `document.documentElement`, which makes the surrounding page the preview.
+
+## Usage
+
+```tsx
+import { ThemeProvider, ThemeEditor } from 'eidos-ui';
+
+<ThemeProvider onThemeChange={saveThemeForUser}>
+  <ThemeEditor />
+  <YourApp />
+</ThemeProvider>;
+```
+
+## Default
+
+<Canvas of={ThemeEditorStories.Default} />
+
+<Controls of={ThemeEditorStories.Default} />
+
+## Restricting what is editable
+
+Pass `colors` to show a subset, in the order given, and `hideTypography` to drop the typography section - useful when only the brand colour should be user-controlled.
+
+<Canvas of={ThemeEditorStories.ColoursOnly} />
+
+## Starting from a theme
+
+<Canvas of={ThemeEditorStories.WithStartingTheme} />
+
+## Contrast diagnostics
+
+Each row reports two independent things, because they fail independently:
+
+- **Text legibility** - the achieved ratio between the fill and its `--x-contrast` foreground, graded AA (4.5:1), AA-large (3:1) or failing. `hyperlink` is graded as link text against the page background instead, since it is never a fill.
+- **Edge legibility** - the ratio between the fill and the page behind it. A near-white fill is unusable no matter what colour its text is, and nothing about the text ratio reveals that.
+
+<Canvas of={ThemeEditorStories.ContrastDiagnostics} />
+
+These are **diagnostics only**: a failing colour is still applied exactly as picked. Silently adjusting a chosen colour would mean rendering something other than what the user selected, so the editor reports the problem and leaves the decision to them.
+
+The badges themselves are styled from the gray ramp and signal severity with an icon rather than a hue. The theme being edited also styles this editor, so a themed badge would become unreadable at exactly the moment it is reporting that a colour is unreadable.
+
+Note that the preset `hyperlink` reports AA-large only - `#007b84` as link text on white is 5.04:1 for normal text but the token is also used at small sizes. The preset `primary` reports AA.
+
+## Fonts
+
+A font stack is only a list of _names_ - it cannot make a font available. Choosing "Plus Jakarta Sans" on a machine that doesn't have it installed silently renders the next entry in the stack instead, with nothing to indicate why.
+
+Three things address that:
+
+- **The built-in list is deliberately short.** It holds generic families, `system-ui`, and the few genuinely web-safe faces - not fonts like Inter that are installed almost nowhere by default. A dropdown implies its entries work; offering one that silently does nothing on most machines breaks that.
+- **Unavailable options are labelled "not installed"** rather than hidden or disabled. A theme is shared across machines, so a font present for one user may be absent for the next - filtering by _this_ browser would hide choices someone legitimately wants, and show choices that will fail elsewhere. The label keeps every option selectable while dropping the implication that a name is a guarantee. Detection measures the family on a canvas against two fallbacks; `document.fonts.check` cannot be used, because per spec it returns `true` when _no_ matching face exists - it answers `true` for fonts that certifiably aren't there.
+- **`Upload`** loads a `.woff2`/`.woff`/`.ttf`/`.otf` and registers it, so it renders immediately.
+
+<Canvas of={ThemeEditorStories.FontOptions} />
+
+Pass `fontOptions` / `monoFontOptions` to list the fonts your app actually ships, and `allowFontUpload={false}` to remove the upload control.
+
+```tsx
+<ThemeEditor
+  fontOptions={[
+    { label: 'Brand Sans', value: "'Brand Sans', system-ui, sans-serif" },
+    { label: 'System UI', value: 'system-ui, sans-serif' },
+  ]}
+  allowFontUpload={false}
+/>
+```
+
+> **Note**: `eidos-ui` does not ship the Plus Jakarta Sans file, so the theme's own default font renders only where you provide it. It is listed because it is the shipped default and has to be representable - and it will show as "not installed" until you serve it.
+
+### Making an upload permanent
+
+Upload alone is a **preview**. The theme records only the family _name_, so after a reload the name resolves to nothing and the stack falls back - the choice looks saved but has quietly stopped working. `onFontUpload` is the hook that closes that gap:
+
+```tsx
+<ThemeEditor
+  fontOptions={brandFonts} // includes fonts already stored server-side
+  onFontUpload={async (file, family) => {
+    await uploadFontToServer(file, family); // your endpoint
+  }}
+/>
+```
+
+Then register it again on startup, before or alongside applying the theme:
+
+```tsx
+for (const font of await fetchBrandFonts()) {
+  await registerFontFace(font.family, await (await fetch(font.url)).arrayBuffer());
+}
+```
+
+The full loop is: user uploads → `onFontUpload` persists the file → your font list includes it → startup registers it → the theme's family name resolves. Without the middle steps the font only lives for the current session.
+
+The font row uses `Select`, not `Combobox`. `Combobox` filters its options against the text in the field, and that field holds a full stack (`'Plus Jakarta Sans', -apple-system, …`) which matches no option label - so the list read "No results found" until the text was manually cleared. Picking a font is a choice from a known set, not a search.
+
+## Copy as CSS
+
+"Copy as CSS" writes the resolved theme to the clipboard as a `:root { … }` block. Paste it into your own stylesheet to bake the theme in at build time - that removes the provider, the JavaScript, and the brief flash of the preset that any runtime theme has when its value arrives after first paint.
+
+## Controlled mode
+
+The editor writes only the `base` of each colour. A `contrast` pinned in the theme is preserved rather than overwritten, so a forced foreground survives edits made through the UI.
+
+<Canvas of={ThemeEditorStories.Controlled} />
+
+See `ThemeProvider` for the recommended server-authoritative persistence pattern.

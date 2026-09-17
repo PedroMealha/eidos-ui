@@ -16,12 +16,55 @@ Entries land here as work happens, not written retroactively at release time
 ### Added
 
 - `--breakpoint-2xl` (`1536px`) token, completing the breakpoint scale.
+- `--primary-contrast`, `--secondary-contrast`, `--success-contrast`,
+  `--danger-contrast`, `--warning-contrast` and `--info-contrast` - the
+  foreground colour to pair with each themeable fill.
+- `ThemeProvider` component - applies a runtime theme (7 colour bases, 2 font
+  stacks, a font scale) by writing CSS custom properties via the CSSOM.
+- `ThemeProvider` derives `-rgb`, `-dark`, `-light`, `-contrast` and the
+  `--primary-50…900` ramp in OKLab from each base colour.
+- `useTheme` hook and the `defaultTheme` preset object.
+- `ThemeEditor` component - a settings panel for editing the active theme, with
+  per-colour WCAG contrast and page-legibility diagnostics.
+- `ThemeEditor` gains `fontOptions`, `monoFontOptions`, `allowFontUpload` and
+  `onFontUpload`, and warns when the selected font stack won't actually render.
+- `ThemeEditor` labels font options that aren't installed, rather than offering
+  them as though a stack could guarantee a font.
+- `registerFontFace`, `registerFontFile`, `isFontAvailable`,
+  `isFontStackAvailable`, `familyNameFromFile` and `toFontStack` - register a
+  font from an `ArrayBuffer` (no CSP `font-src` allowance needed) and detect
+  whether a family resolves.
+
+### Changed
+
+- **Breaking**: every palette base colour is darkened so white text on it
+  clears WCAG AA (4.5:1); six of the seven previously failed, `warning` at
+  2.15:1.
+- **Breaking**: `--warning-color` is consequently a dark gold rather than an
+  amber - no yellow-ish hue can clear 4.5:1 against white.
+- **Breaking**: every `--x-dark` is recomputed so it stays darker than its own
+  base and is legible as text on white.
+- Components painting a themeable fill now pair it with `var(--x-contrast)`
+  instead of a hardcoded `var(--white)`.
 
 ### Fixed
 
 - `PageLayout`'s responsive `header`/`body`/`footer` padding now actually
   applies - its media queries used `var(--breakpoint-*)`, which is invalid in a
   media query condition and was dropped by every browser.
+- `Button`'s `primary` filled variant hovers to `--primary-dark` instead of
+  `--secondary-dark`.
+- `Radio`'s dot and `Switch`'s thumb follow their fill's contrast colour, so
+  neither disappears against a light one.
+- `Badge` and `Avatar` no longer carry a hand-written dark-text exception for
+  `warning` only, which left `success` and `info` equally illegible.
+- `ColorPicker` no longer shifts the colour it was given - it rounded its
+  internal HSV state to whole percent, so `#5c5de8` displayed as `#5d5de8` and
+  any interaction committed the drifted value.
+- `ColorPicker`'s saturation/brightness canvas now renders in popover mode - it
+  sized itself off an ancestor class that the portaled panel never had, so it
+  collapsed to zero height and left only the hue slider, which cannot change a
+  colour's lightness.
 
 ## [2.1.0] - 2026-09-17
 

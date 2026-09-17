@@ -1,0 +1,161 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// ThemeEditor
+// ============================================================================
+
+.eidos-theme-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.eidos-theme-editor-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.eidos-theme-editor-section__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.eidos-theme-editor-section__title {
+  @include font-size(lg);
+  @include font-weight(semibold);
+  color: var(--dark-color);
+}
+
+.eidos-theme-editor-section__hint {
+  @include font-size(sm);
+  color: var(--gray-500);
+
+  code {
+    @include font-mono;
+    @include font-size(xs);
+    background-color: var(--gray-100);
+    border-radius: var(--border-radius-xs);
+    padding: 0 0.25em;
+  }
+}
+
+.eidos-theme-editor-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+// One row per token: label, control, diagnostics, actions.
+//
+// Diagnostics are occasional (a contrast warning, a missing font) while the
+// action is permanent (reset, upload). They therefore must not share a box:
+// the action is pushed to the far edge with `margin-left: auto` so a badge
+// appearing or disappearing changes nothing about where it sits. Having the
+// upload button shift sideways as a warning came and went was the reason for
+// this split.
+//
+// The label is fixed-width so controls line up into a column; below `md` the
+// row stacks instead of squeezing the diagnostics off the edge.
+.eidos-theme-editor-row {
+  @include flex-center-y;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+
+  &__label {
+    @include font-size(sm);
+    @include font-weight(medium);
+    color: var(--dark-color);
+    flex: 0 0 auto;
+    min-width: 6.5em;
+  }
+
+  &__diagnostics {
+    @include flex-center-y;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    // Absorbs the free space, so it is the diagnostics area that resizes
+    // rather than anything around it.
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__actions {
+    @include flex-center-y;
+    gap: var(--spacing-xs);
+    flex: 0 0 auto;
+    // Pins the action to the trailing edge independently of the content
+    // before it, which is what keeps it still.
+    margin-left: auto;
+  }
+
+  // Rows whose control should take the remaining width (typography).
+  &--wide > .eidos-theme-editor-row__control {
+    flex: 1 1 18em;
+    min-width: 0;
+  }
+}
+
+// Contrast badges.
+//
+// Styled entirely from the gray ramp, which is not themeable. The theme being
+// edited also styles this editor, so a themed badge would turn illegible at
+// exactly the moment it is reporting that a colour is illegible. Severity is
+// carried by the icon and the label instead of by hue, which also keeps it out
+// of WCAG 1.4.1 (colour alone) territory.
+.eidos-theme-editor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  white-space: nowrap;
+  border-radius: 9999px;
+  padding: 0.15em 0.6em;
+  @include font-size(xs);
+  @include font-weight(medium);
+  border: 1px solid var(--gray-300);
+  background-color: var(--gray-50);
+  color: var(--gray-700);
+
+  &__icon {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+  }
+
+  // Weight rises with severity without changing hue.
+  &--aa-large {
+    border-color: var(--gray-400);
+    color: var(--gray-800);
+  }
+
+  &--fail {
+    border-color: var(--gray-700);
+    background-color: var(--gray-800);
+    color: var(--gray-50);
+  }
+}
+
+// The font upload input is driven by the adjacent button, so it is hidden
+// rather than rendered. `display: none` would make it unreachable to some
+// assistive tech and to programmatic `.click()` in older engines.
+.eidos-theme-editor-file {
+  @include visually-hidden;
+}
+
+.eidos-theme-editor-actions {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+@include media-down('md') {
+  .eidos-theme-editor-row {
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+
+    &__label {
+      min-width: 100%;
+    }
+  }
+}

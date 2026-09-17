@@ -47,22 +47,22 @@
   .eidos-timeline-item--primary & {
     border-color: var(--primary-color);
     background: var(--primary-color);
-    color: var(--white);
+    color: var(--primary-contrast);
   }
   .eidos-timeline-item--secondary & {
     border-color: var(--secondary-color);
     background: var(--secondary-color);
-    color: var(--white);
+    color: var(--secondary-contrast);
   }
   .eidos-timeline-item--success & {
     border-color: var(--success-color);
     background: var(--success-color);
-    color: var(--white);
+    color: var(--success-contrast);
   }
   .eidos-timeline-item--danger & {
     border-color: var(--danger-color);
     background: var(--danger-color);
-    color: var(--white);
+    color: var(--danger-contrast);
   }
 
   // Filled circle fallback (when no icon)

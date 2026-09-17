@@ -94,7 +94,14 @@ function rgbToHsv(r: number, g: number, b: number): HSVColor {
     if (h < 0) h += 360;
   }
 
-  return { h: Math.round(h), s: Math.round(s), v: Math.round(v) };
+  // Deliberately NOT rounded. HSV is this component's internal state, and
+  // rounding s/v to whole percent makes the hex -> HSV -> hex round trip lossy:
+  // `#5c5de8` came back as `#5d5de8`, so a controlled `value` displayed a
+  // different colour than the one passed in, and any interaction committed the
+  // drifted value. `hsvToRgb` already rounds to whole channels at the end, so
+  // precision is only needed in between. Every consumer of these floats (the
+  // hue gradient, the thumb offsets, the hue slider) accepts them.
+  return { h, s, v };
 }
 
 function rgbToHex(r: number, g: number, b: number): string {
@@ -468,8 +475,18 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   };
 
   // ── Picker panel (shared between inline and popover modes) ────────────────
+  //
+  // The size modifier has to live on the panel itself, not only on the root:
+  // in popover mode the panel is portaled to document.body by Dropdown, so
+  // anything inside it that sized itself off a `.eidos-color-picker--{size}`
+  // ancestor matched nothing and collapsed. That is what removed the
+  // saturation/brightness canvas entirely from every non-inline picker.
   const panel = (
-    <div className={`eidos-color-picker-panel${inline ? ' eidos-color-picker-panel--inline' : ''}`}>
+    <div
+      className={`eidos-color-picker-panel eidos-color-picker-panel--${size}${
+        inline ? ' eidos-color-picker-panel--inline' : ''
+      }`}
+    >
       {/* 2-D sat / brightness canvas */}
       <div
         ref={canvasRef}
@@ -486,8 +503,10 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         <div
           className="eidos-color-picker-thumb"
           style={{
-            left: `${hsv.s}%`,
-            top: `${100 - hsv.v}%`,
+            // Rounded for display only - hsv.s/v are unrounded floats so the
+            // hex round trip stays lossless (see rgbToHsv).
+            left: `${hsv.s.toFixed(2)}%`,
+            top: `${(100 - hsv.v).toFixed(2)}%`,
             background: currentHex,
           }}
         />

@@ -84,6 +84,7 @@
     .eidos-checkbox-control--indeterminate {
       background: var(--primary-color);
       border-color: var(--primary-color);
+      color: var(--primary-contrast);
     }
   }
 
@@ -97,6 +98,7 @@
     .eidos-checkbox-control--indeterminate {
       background: var(--secondary-color);
       border-color: var(--secondary-color);
+      color: var(--secondary-contrast);
     }
   }
 
@@ -110,6 +112,7 @@
     .eidos-checkbox-control--indeterminate {
       background: var(--success-color);
       border-color: var(--success-color);
+      color: var(--success-contrast);
     }
   }
 
@@ -123,6 +126,7 @@
     .eidos-checkbox-control--indeterminate {
       background: var(--danger-color);
       border-color: var(--danger-color);
+      color: var(--danger-contrast);
     }
   }
 
@@ -136,6 +140,7 @@
     .eidos-checkbox-control--indeterminate {
       background: var(--warning-color);
       border-color: var(--warning-color);
+      color: var(--warning-contrast);
     }
   }
 
@@ -149,6 +154,7 @@
     .eidos-checkbox-control--indeterminate {
       background: var(--info-color);
       border-color: var(--info-color);
+      color: var(--info-contrast);
     }
   }
 
@@ -202,7 +208,10 @@
 // ============================================================================
 
 .eidos-checkbox-icon {
-  color: var(--white);
+  // Inherits the foreground the checked control sets per colour variant
+  // (--x-contrast). A literal colour here would win over that inherited
+  // value, since this selector targets the icon element directly.
+  color: inherit;
   flex-shrink: 0;
   // Width/height injected by wrapper size modifier (see above)
 }

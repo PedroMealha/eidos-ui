@@ -7,6 +7,7 @@ import { TicketsPage } from '../pages/tickets-page';
 import { AdvancedPage } from '../pages/settings/advanced-page';
 import { NotificationsPage } from '../pages/settings/notifications-page';
 import { ProfilePage } from '../pages/settings/profile-page';
+import { ThemePage } from '../pages/settings/theme-page';
 
 /**
  * The authenticated route table - the single source of truth for what exists
@@ -125,6 +126,14 @@ export const ROUTES: RouteDef[] = [
     breadcrumb: 'Advanced',
     parent: '/app/settings',
     component: AdvancedPage,
+  },
+  {
+    pattern: '/app/settings/theme',
+    title: 'Settings',
+    subtitle: 'Customize your theme.',
+    breadcrumb: 'Theme',
+    parent: '/app/settings',
+    component: ThemePage,
   },
 ];
 

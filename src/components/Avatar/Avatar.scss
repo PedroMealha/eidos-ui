@@ -51,25 +51,31 @@
   // Colors - used for initials backgrounds
   // ========================================================================
 
+  // Each colour pairs its fill with its own --x-contrast foreground, replacing
+  // the hand-written dark-text exception that `warning` alone used to carry.
   &--primary {
     background-color: var(--primary-color);
+    color: var(--primary-contrast);
   }
   &--secondary {
     background-color: var(--secondary-color);
+    color: var(--secondary-contrast);
   }
   &--success {
     background-color: var(--success-color);
+    color: var(--success-contrast);
   }
   &--danger {
     background-color: var(--danger-color);
+    color: var(--danger-contrast);
   }
-  // Warning is a light yellow - use dark text for contrast
   &--warning {
     background-color: var(--warning-color);
-    color: var(--dark-color);
+    color: var(--warning-contrast);
   }
   &--info {
     background-color: var(--info-color);
+    color: var(--info-contrast);
   }
   &--gray {
     background-color: var(--gray-400);

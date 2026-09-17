@@ -8,7 +8,6 @@
   white-space: nowrap;
   border-radius: 9999px;
   border: 1px solid transparent;
-  will-change: transform;
 
   // ========================================================================
   // Sizes
@@ -16,22 +15,20 @@
 
   &--sm {
     min-width: 16px;
-    height: 2.2em;
     padding: var(--spacing-sm) var(--spacing-md);
     font-size: var(--font-size-xs);
   }
 
   &--md {
     min-width: 20px;
-    height: 2.2em;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     font-size: var(--font-size-sm);
   }
 
   &--lg {
     min-width: 24px;
-    height: 2.2em;
-    padding: var(--spacing-md) var(--spacing-lg);
+
+    padding: var(--spacing-sm) var(--spacing-md);
     font-size: var(--font-size-base);
   }
 
@@ -85,32 +82,32 @@
   &--filled {
     &.eidos-pill--primary {
       background-color: var(--primary-color);
-      color: var(--white);
+      color: var(--primary-contrast);
     }
 
     &.eidos-pill--secondary {
       background-color: var(--secondary-color);
-      color: var(--white);
+      color: var(--secondary-contrast);
     }
 
     &.eidos-pill--success {
       background-color: var(--success-color);
-      color: var(--white);
+      color: var(--success-contrast);
     }
 
     &.eidos-pill--danger {
       background-color: var(--danger-color);
-      color: var(--white);
+      color: var(--danger-contrast);
     }
 
     &.eidos-pill--warning {
       background-color: var(--warning-color);
-      color: var(--white);
+      color: var(--warning-contrast);
     }
 
     &.eidos-pill--info {
       background-color: var(--info-color);
-      color: var(--white);
+      color: var(--info-contrast);
     }
   }
 

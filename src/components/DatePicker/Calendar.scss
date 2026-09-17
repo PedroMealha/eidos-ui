@@ -161,7 +161,10 @@
     // Today + Selected combination
     &.eidos-calendar-selected {
       background-color: var(--primary-600);
-      color: var(--white);
+      // --primary-contrast is computed against --primary-color (the 500 step).
+      // Safe here because 600 is always darker than 500, so a foreground that
+      // is legible on the base is at least as legible on this fill.
+      color: var(--primary-contrast);
       border-color: var(--primary-300);
 
       &:hover:not(.eidos-calendar-disabled) {
@@ -187,7 +190,7 @@
   // Selected date
   &.eidos-calendar-selected {
     background-color: var(--primary-600);
-    color: var(--white);
+    color: var(--primary-contrast);
     font-weight: var(--font-weight-semibold);
 
     &:hover:not(.eidos-calendar-disabled) {
@@ -210,7 +213,7 @@
   // Range styling
   &.eidos-calendar-range-start {
     background-color: var(--primary-600);
-    color: var(--white);
+    color: var(--primary-contrast);
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 
@@ -221,7 +224,7 @@
 
   &.eidos-calendar-range-end {
     background-color: var(--primary-600);
-    color: var(--white);
+    color: var(--primary-contrast);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 

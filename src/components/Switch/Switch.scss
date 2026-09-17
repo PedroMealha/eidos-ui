@@ -81,6 +81,7 @@
   &--primary {
     .eidos-switch-track--checked {
       background: var(--primary-color);
+      color: var(--primary-contrast);
     }
 
     .eidos-switch-input:focus-visible + .eidos-switch-track {
@@ -91,6 +92,7 @@
   &--secondary {
     .eidos-switch-track--checked {
       background: var(--secondary-color);
+      color: var(--secondary-contrast);
     }
 
     .eidos-switch-input:focus-visible + .eidos-switch-track {
@@ -101,6 +103,7 @@
   &--success {
     .eidos-switch-track--checked {
       background: var(--success-color);
+      color: var(--success-contrast);
     }
 
     .eidos-switch-input:focus-visible + .eidos-switch-track {
@@ -111,6 +114,7 @@
   &--danger {
     .eidos-switch-track--checked {
       background: var(--danger-color);
+      color: var(--danger-contrast);
     }
 
     .eidos-switch-input:focus-visible + .eidos-switch-track {
@@ -121,6 +125,7 @@
   &--warning {
     .eidos-switch-track--checked {
       background: var(--warning-color);
+      color: var(--warning-contrast);
     }
 
     .eidos-switch-input:focus-visible + .eidos-switch-track {
@@ -131,6 +136,7 @@
   &--info {
     .eidos-switch-track--checked {
       background: var(--info-color);
+      color: var(--info-contrast);
     }
 
     .eidos-switch-input:focus-visible + .eidos-switch-track {
@@ -194,4 +200,12 @@
   background: var(--white);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   transition: left 0.2s ease;
+
+  // While checked the thumb sits on the colour fill, so it follows that
+  // fill's --x-contrast foreground rather than staying fixed white - a pale
+  // consumer-supplied colour would otherwise make the thumb disappear. The
+  // unchecked thumb keeps the literal white above, since its track is gray.
+  .eidos-switch-track--checked & {
+    background: currentColor;
+  }
 }

@@ -110,13 +110,23 @@
   user-select: none;
   // Background is set via inline style (hue-dependent gradient)
 
-  .eidos-color-picker--sm & {
+  // Unconditional fallback. Without it, a size modifier that fails to match
+  // leaves the canvas at height 0 - it disappears silently, taking saturation
+  // and brightness control with it and leaving only the hue slider, which
+  // cannot change a colour's lightness at all. That was the state of every
+  // popover picker until the selectors below were corrected.
+  height: 160px;
+
+  // Scoped to the PANEL, not the root: the panel is portaled to document.body
+  // in popover mode, so a `.eidos-color-picker--{size}` ancestor is not in the
+  // canvas's DOM chain there. The panel always is, in both modes.
+  .eidos-color-picker-panel--sm & {
     height: 120px;
   }
-  .eidos-color-picker--md & {
+  .eidos-color-picker-panel--md & {
     height: 160px;
   }
-  .eidos-color-picker--lg & {
+  .eidos-color-picker-panel--lg & {
     height: 200px;
   }
 }
@@ -161,6 +171,7 @@
 
 %range-thumb-webkit {
   -webkit-appearance: none;
+  appearance: none;
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -359,7 +370,7 @@
 
   &--active {
     background: var(--primary-color);
-    color: var(--white);
+    color: var(--primary-contrast);
   }
 
   &:disabled {
@@ -418,7 +429,7 @@
   &--copied {
     background: var(--success-color);
     border-color: var(--success-color);
-    color: var(--white);
+    color: var(--success-contrast);
   }
 
   &:disabled {
