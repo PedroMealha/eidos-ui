@@ -35,6 +35,7 @@
     "verify": "node scripts/verify.js",
     "release": "node scripts/release.js",
     "release:approve": "npm run release -- approve",
+    "version:check": "npm view eidos-ui version",
     "build": "tsup && node scripts/build-styles.js",
     "build-storybook": "storybook build",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",

@@ -184,7 +184,7 @@ execSync('git add CHANGELOG.md');
 
 console.log(`✓ CHANGELOG.md: [Unreleased] → [${newVersion}] - ${date}`);
 
-const snippet = `<Divider style={{ margin: '24px 0' }} />\n\n${buildSnippet(newVersion, date, bump, sections)}\n`;
+const snippet = `<ReleaseDivider />\n\n${buildSnippet(newVersion, date, bump, sections)}\n`;
 
 // Also written to disk, not just printed: a long bullet wraps at the terminal
 // width, and copying a wrapped line out of scrollback silently breaks a word in

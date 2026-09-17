@@ -15,6 +15,177 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="2.1.0"
+  date="2026-09-17"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>Toolbar</Code> gains <Code>user</Code> - the signed-in user's avatar (
+          <Code>name</Code>, <Code>src</Code>, <Code>color</Code>).
+        </>,
+        <>
+          <Code>Toolbar</Code> gains <Code>content</Code>, a free-form slot for non-button app-bar
+          content such as an environment badge or org switcher.
+        </>,
+        <>
+          <Code>Toolbar</Code>'s <Code>breadcrumbs</Code> and <Code>userMenu</Code> are now
+          optional, so a bare{' '}
+          <Code>
+            {'<'}Toolbar /{'>'}
+          </Code>{' '}
+          is valid.
+        </>,
+        <>
+          <Code>title</Code> accepts <Code>React.ReactNode</Code> on <Code>Header</Code>,{' '}
+          <Code>Alert</Code>, <Code>EmptyState</Code>, <Code>Modal</Code>, <Code>Drawer</Code> and{' '}
+          <Code>Popover</Code>, so a status indicator can sit inline beside the title text.
+        </>,
+        <>
+          <Code>Table</Code> gains <Code>DataGrid</Code>'s responsive card view -{' '}
+          <Code>hasCardView</Code> (on by default), <Code>cardViewBreakpoint</Code>,{' '}
+          <Code>cardMinWidth</Code>, and <Code>cardHeader</Code> / <Code>cardSubheader</Code> on
+          columns.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> gain <Code>selectAllScope</Code> (
+          <Code>'all'</Code> by default, or <Code>'page'</Code>) to control what the select-all
+          checkbox acts on.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> card view gains a <strong>Select all</strong>{' '}
+          checkbox in the toolbar, standing in for the header checkbox it has no header row for.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> gain <Code>onSelectAllMatching</Code> - resolves
+          the keys of every matching row, so "Select all 1000" works when only one page is loaded.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>density</Code> now also scales card view on <Code>Table</Code> and{' '}
+          <Code>DataGrid</Code> - card padding and gaps, not just cell padding.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> select-all now only adds or removes the keys in
+          its own scope, so a selection made on another page survives toggling it.
+        </>,
+      ],
+    },
+    {
+      category: 'removed',
+      items: [
+        <>
+          The clear-selection (×) button on <Code>Table</Code>/<Code>DataGrid</Code> toolbars - the
+          select-all control clears the selection, as in MUI and AG Grid. A{' '}
+          <strong>Clear selection</strong> action still appears while more rows are selected than
+          that control can reach.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          The shared table/grid filter dropdown no longer leaves its value control narrower than its
+          column select on small screens.
+        </>,
+        <>
+          <Code>DatePicker</Code>'s <Code>fullWidth</Code> now actually stretches the field, instead
+          of stopping at the dropdown's trigger wrapper.
+        </>,
+        <>
+          <Code>Table</Code> no longer renders a blank page-size select when <Code>pageSize</Code>{' '}
+          isn't one of <Code>pageSizeOptions</Code>.
+        </>,
+        <>Card view's empty state now spans the full card grid instead of one column.</>,
+        <>
+          Single-control columns (<Code>Table</Code>'s <Code>type: 'icon'</Code>/
+          <Code>'action'</Code>, <Code>DataGrid</Code>'s actions/selection/drag/expand/row-number
+          columns) now hold one control's width instead of stretching or being widened by{' '}
+          <Code>density</Code>.
+        </>,
+        <>
+          <Code>Table</Code> no longer ignores <Code>column.width</Code> on{' '}
+          <Code>type: 'icon'</Code>/<Code>'action'</Code> columns - a <Code>type: 'action'</Code>{' '}
+          column was pinned at 120px regardless.
+        </>,
+        <>
+          <Code>Table</Code> now always centres <Code>type: 'icon'</Code>/<Code>'action'</Code>{' '}
+          columns, so <Code>align</Code> can no longer sit their single control flush against the
+          table's edge.
+        </>,
+        <>
+          The automatic card-view threshold now sums each column's real minimum width instead of
+          charging every column 100px, so tables with icon or system columns no longer switch to
+          cards while they still fit.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> card grids now shrink below{' '}
+          <Code>cardMinWidth</Code> rather than overflowing a container narrower than it.
+        </>,
+        <>
+          <Code>Input</Code>'s <Code>width</Code> now sizes the whole field and lets it shrink
+          inside a narrower parent, instead of pinning the inner{' '}
+          <Code>
+            {'<'}input{'>'}
+          </Code>{' '}
+          to a fixed width that overflowed both its own wrapper and the page.
+        </>,
+        <>
+          <Code>Header</Code> action rows now wrap onto extra lines instead of widening the layout
+          when they don't fit beside the title.
+        </>,
+        <>
+          <Code>Tabs</Code> strips now scroll horizontally instead of overflowing their container.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> toolbars now wrap instead of letting the
+          selection count and bulk actions overlap the density/columns/export/filter buttons.
+        </>,
+        <>
+          <Code>Table</Code>/<Code>DataGrid</Code> toolbar buttons go icon-only (with tooltips)
+          below a 560px container width, and <Code>DataGrid</Code>'s <Code>quickFilters</Code>{' '}
+          stretch to one per row.
+        </>,
+        <>
+          <Code>onSelectionChange</Code> and <Code>bulkActions</Code> no longer receive fewer rows
+          than the selection count claims - previously zero rows once the user paged away from a
+          server-side selection.
+        </>,
+        <>
+          <Code>Pagination</Code>'s page-size select no longer collapses to just its chevron.
+        </>,
+        <>
+          <Code>Toolbar</Code> no longer renders a hardcoded "John Doe" avatar; it renders the{' '}
+          <Code>user</Code> you pass, or no avatar at all.
+        </>,
+        <>
+          <Code>PageLayout</Code> now scrolls only its page body - tall content no longer scrolls
+          the toolbar and navigation rail out of view, and wide content no longer stretches the
+          layout horizontally.
+        </>,
+        <>
+          <Code>Popover</Code> names its panel via <Code>aria-labelledby</Code> pointing at the
+          visible title instead of duplicating it into an <Code>aria-label</Code>.
+        </>,
+        <>
+          <Code>PageLayout</Code> forwards every <Code>Toolbar</Code> prop it is given, instead of
+          only the four it listed explicitly.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="2.0.0"
   date="2026-09-16"
   bump="major"
