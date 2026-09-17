@@ -1,10 +1,9 @@
-import { useState, useMemo, useLayoutEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import React from 'react';
 import {
   ChevronsUpDown,
   ArrowUp,
   ArrowDown,
-  X,
   Check,
   Download,
   Columns3,
@@ -23,6 +22,7 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { devWarn } from '../../utils';
 import type { RowKey } from '../../utils';
 import type { TableColumn, TableProps, TableFilters, FilterValue } from './Table.types';
 
@@ -201,6 +201,7 @@ export const Table = <T extends object>({
   selectedRows: controlledSelected,
   defaultSelectedRows = [],
   onSelectionChange,
+  selectAllScope = 'all',
   bulkActions = [],
   // New features
   density = 'comfortable',
@@ -403,10 +404,43 @@ export const Table = <T extends object>({
     return String(index);
   };
 
+  /** Every row currently in `data`, by key - the freshest copy of each row. */
+  const rowsByKey = useMemo(() => {
+    const map = new Map<string, T>();
+    data.forEach((item, idx) => map.set(getRowKey(item, idx), item));
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, rowKey]);
+
+  // Row objects for selected keys, kept across changes to `data`. Filtering
+  // `data` alone silently handed `bulkActions` and `onSelectionChange` fewer
+  // rows than the selection count claimed, whenever a selected row was no
+  // longer in `data` - see `onSelectionChange`'s own docs. Always prefers the
+  // copy in `data` over the cached one, so an edited row is never stale.
+  const selectedRowCacheRef = useRef(new Map<string, T>());
+
+  const rowsForKeys = (keys: string[]): T[] => {
+    const cache = selectedRowCacheRef.current;
+    return keys
+      .map((key) => rowsByKey.get(key) ?? cache.get(key))
+      .filter((row): row is T => row !== undefined);
+  };
+
+  // Prunes as well as fills: an entry only survives while its key is still
+  // selected, so the cache can't grow without bound.
+  useEffect(() => {
+    const cache = selectedRowCacheRef.current;
+    const next = new Map<string, T>();
+    selectedSet.forEach((key) => {
+      const row = rowsByKey.get(key) ?? cache.get(key);
+      if (row) next.set(key, row);
+    });
+    selectedRowCacheRef.current = next;
+  }, [rowsByKey, selectedSet]);
+
   const commitSelection = (keys: string[]) => {
     if (!isControlledSelection) setInternalSelected(keys);
-    const rows = data.filter((item, idx) => keys.includes(getRowKey(item, idx)));
-    onSelectionChange?.(keys, rows);
+    onSelectionChange?.(keys, rowsForKeys(keys));
   };
 
   const toggleRow = (key: string) => {
@@ -415,21 +449,6 @@ export const Table = <T extends object>({
       : [...selectedSet, key];
     commitSelection(next);
   };
-
-  const allKeys = useMemo(
-    () => data.map((item, idx) => getRowKey(item, idx)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, rowKey],
-  );
-
-  const allSelected = allKeys.length > 0 && allKeys.every((k) => selectedSet.has(k));
-  const someSelected = !allSelected && allKeys.some((k) => selectedSet.has(k));
-
-  const toggleAll = () => {
-    commitSelection(allSelected ? [] : allKeys);
-  };
-
-  const clearSelection = () => commitSelection([]);
 
   // ── Pagination ────────────────────────────────────────────────────────────
   const [currentPage, setCurrentPage] = useState(1);
@@ -442,6 +461,49 @@ export const Table = <T extends object>({
   }, [data, showPagination, currentPage, currentPageSize]);
 
   const totalPages = Math.ceil(data.length / currentPageSize);
+
+  // ── Select-all (scope-aware) ──────────────────────────────────────────────
+  // Defined after `displayData` because `'page'` scope is exactly that set.
+  const selectAllKeys = useMemo(() => {
+    if (selectAllScope === 'page') {
+      const offset = showPagination ? (currentPage - 1) * currentPageSize : 0;
+      return displayData.map((item, idx) => getRowKey(item, offset + idx));
+    }
+    return data.map((item, idx) => getRowKey(item, idx));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectAllScope, displayData, data, showPagination, currentPage, currentPageSize, rowKey]);
+
+  const allSelected =
+    selectAllKeys.length > 0 && selectAllKeys.every((key) => selectedSet.has(key));
+  const someSelected = !allSelected && selectAllKeys.some((key) => selectedSet.has(key));
+
+  // Adds or removes only the keys in scope, so a selection made on another
+  // page (or outside `'page'` scope) is never silently dropped by toggling
+  // the select-all control.
+  const toggleAll = () => {
+    const inScope = new Set(selectAllKeys);
+    commitSelection(
+      allSelected
+        ? [...selectedSet].filter((key) => !inScope.has(key))
+        : [...new Set([...selectedSet, ...selectAllKeys])],
+    );
+  };
+
+  // `'all'` can only ever select the rows the table holds. `totalItems` is the
+  // caller telling us the full set is bigger than `data`, which means the
+  // remaining keys are unknowable here - warn rather than quietly selecting a
+  // subset and calling it "all".
+  useEffect(() => {
+    if (!selectable || selectAllScope !== 'all') return;
+    if (totalItems === undefined || totalItems <= data.length) return;
+    devWarn(
+      `table-select-all-scope:${data.length}/${totalItems}`,
+      `Table: selectAllScope="all" can only select the ${data.length} row(s) in \`data\`, but ` +
+        `\`totalItems\` is ${totalItems}. The keys of rows the table has never received cannot ` +
+        'be known here - pass the full dataset, or use selectAllScope="page" to make the scope ' +
+        'explicit.',
+    );
+  }, [selectable, selectAllScope, totalItems, data.length]);
 
   const handleSort = (key: string) => {
     const newDirection =
@@ -460,17 +522,20 @@ export const Table = <T extends object>({
 
   // ── Derived UI state ──────────────────────────────────────────────────────
   const hasSelection = selectedSet.size > 0;
+  // In card view the toolbar carries the select-all checkbox (there's no
+  // header row to hold it), so it has to be there before anything is
+  // selected - unlike table mode, where it only appears with a selection.
   const showToolbar =
     (showFilters && !!onFiltersChange) ||
     showColumnVisibility ||
     showExport ||
     showDensity ||
-    (selectable && hasSelection);
+    (selectable && (hasSelection || isCardView));
 
   const selectedItems = useMemo(
-    () => data.filter((item, idx) => selectedSet.has(getRowKey(item, idx))),
+    () => rowsForKeys([...selectedSet]),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, selectedSet, rowKey],
+    [rowsByKey, selectedSet],
   );
 
   // ── Cell values ───────────────────────────────────────────────────────────
@@ -821,6 +886,25 @@ export const Table = <T extends object>({
         <div className="eidos-table-toolbar">
           {/* Left - bulk actions / selection info */}
           <div className="eidos-table-toolbar-left">
+            {/* Card view's stand-in for the header checkbox, which doesn't
+                exist without a header row. Also the way out of selection
+                mode there: clicking it while checked clears the selection,
+                exactly as the header checkbox does in table mode. */}
+            {selectable && isCardView && (
+              <Checkbox
+                size="sm"
+                checked={allSelected}
+                indeterminate={someSelected}
+                onChange={toggleAll}
+                // Labelled even in the compact toolbar, unlike the buttons
+                // beside it: those keep a recognisable icon, whereas a bare
+                // checkbox floating in a toolbar says nothing about what it
+                // selects - and a tooltip is no help on touch.
+                label="Select all"
+                aria-label="Select all rows"
+              />
+            )}
+
             {selectable && hasSelection && (
               <>
                 <span className="eidos-table-selection-count">{selectedSet.size} selected</span>
@@ -882,14 +966,6 @@ export const Table = <T extends object>({
                     })}
                   </div>
                 )}
-
-                <button
-                  className="eidos-table-clear-selection"
-                  onClick={clearSelection}
-                  aria-label="Clear selection"
-                >
-                  <X size={14} />
-                </button>
               </>
             )}
           </div>

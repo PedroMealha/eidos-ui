@@ -26,11 +26,22 @@ Entries land here as work happens, not written retroactively at release time
 - `Table` gains `DataGrid`'s responsive card view - `hasCardView` (on by
   default), `cardViewBreakpoint`, `cardMinWidth`, and `cardHeader` /
   `cardSubheader` on columns.
+- `Table`/`DataGrid` gain `selectAllScope` (`'all'` by default, or `'page'`)
+  to control what the select-all checkbox acts on.
+- `Table`/`DataGrid` card view gains a **Select all** checkbox in the toolbar,
+  standing in for the header checkbox it has no header row for.
 
 ### Changed
 
 - `density` now also scales card view on `Table` and `DataGrid` - card
   padding and gaps, not just cell padding.
+- `Table`/`DataGrid` select-all now only adds or removes the keys in its own
+  scope, so a selection made on another page survives toggling it.
+
+### Removed
+
+- The clear-selection (×) button on `Table`/`DataGrid` toolbars - the
+  select-all control clears the selection, as in MUI and AG Grid.
 
 ### Fixed
 
@@ -65,6 +76,10 @@ Entries land here as work happens, not written retroactively at release time
 - `Table`/`DataGrid` toolbar buttons go icon-only (with tooltips) below a
   560px container width, and `DataGrid`'s `quickFilters` stretch to one per
   row.
+- `onSelectionChange` and `bulkActions` no longer receive fewer rows than the
+  selection count claims - previously zero rows once the user paged away from
+  a server-side selection.
+- `Pagination`'s page-size select no longer collapses to just its chevron.
 
 - `Toolbar` no longer renders a hardcoded "John Doe" avatar; it renders the
   `user` you pass, or no avatar at all.

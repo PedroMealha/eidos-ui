@@ -217,7 +217,12 @@ export const Pagination: React.FC<PaginationProps> = ({
               }))}
               clearable={false}
               disabled={disabled}
-              inputProps={{ size: 'sm', width: '3ch' }}
+              // Sizes the whole field, chevron and padding included - wide
+              // enough for a 3-digit page size. `'3ch'` used to work here only
+              // because `Input.width` sized the inner <input> and let the
+              // chrome overflow it; now that it sizes the field, 3ch left no
+              // room for the value at all.
+              inputProps={{ size: 'sm', width: 72 }}
             />
           </div>
         )}

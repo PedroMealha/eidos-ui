@@ -176,7 +176,21 @@ Enable `selectable={true}` to add row checkboxes. Nothing is rendered by default
 
 Set `type: 'split-button'` (default is `'button'`) to render a primary action plus a dropdown of secondary `options`, instead of a plain button. Omit `label` on a `'button'` action to render an icon-only button.
 
+There's no "clear selection" button: the select-all control is the way out, exactly as it is in MUI or AG Grid - clicking it while it's checked deselects. In table mode that's the header checkbox; in card view (no header row) it's a **Select all** checkbox in the toolbar, which is why the toolbar is present there even before anything is selected.
+
 <Canvas of={DataGridStories.WithSelection} />
+
+### What select-all selects
+
+`selectAllScope` decides what the select-all control acts on: `'all'` (the default) is every row in `data`, across pages; `'page'` is only the rows currently rendered. Either way it only ever adds or removes the keys in its own scope, so a selection made on another page is never silently discarded by toggling it.
+
+`'all'` can only ever reach the rows the grid holds. With server-side pagination that's a single page - the grid cannot know the keys of rows it has never received - so "all" means "all 20 loaded", not "all 1000 matching". A dev-only warning names the numbers when that happens; use `selectAllScope="page"` to make the scope explicit, or resolve the full key set yourself and pass it as `selectedRows`.
+
+### Selection with server-side pagination
+
+`onSelectionChange(selectedKeys, selectedRows)` has two halves with different guarantees. `selectedKeys` is authoritative. `selectedRows` is best-effort: the grid caches the row object behind every selected key, so rows selected on a page you've since left still come back - a key seeded via `defaultSelectedRows`, for a row the grid has never seen, has no row to hand back. Without that cache a bulk action taken after paging away received an empty array while the toolbar still read "20 selected".
+
+<Canvas of={DataGridStories.ServerSidePagination} />
 
 ## With draggable rows
 

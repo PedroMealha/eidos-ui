@@ -31,8 +31,11 @@
   ],
   "scripts": {
     "dev": "vite --config vite.dev.config.ts",
-    "build": "tsup && node scripts/build-styles.js",
     "storybook": "storybook dev -p 6007",
+    "verify": "node scripts/verify.js",
+    "release": "node scripts/release.js",
+    "release:approve": "npm run release -- approve",
+    "build": "tsup && node scripts/build-styles.js",
     "build-storybook": "storybook build",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit",
@@ -41,10 +44,8 @@
     "prepublishOnly": "npm run build",
     "version": "node scripts/promote-changelog.js",
     "postversion": "git push --follow-tags",
-    "verify": "node scripts/verify.js",
     "release:needed": "node scripts/release-needed.js",
-    "release:preflight": "node scripts/preflight-release.js && npm run lint && npm run typecheck && npm run prettier:check && npm run build",
-    "release": "node scripts/release.js"
+    "release:preflight": "node scripts/preflight-release.js && npm run lint && npm run typecheck && npm run prettier:check && npm run build"
   },
   "keywords": [
     "react",

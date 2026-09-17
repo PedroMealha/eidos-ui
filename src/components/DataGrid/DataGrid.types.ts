@@ -358,7 +358,36 @@ export interface DataGridProps<T extends object = Record<string, unknown>> {
   /** Controlled selected row keys. */
   selectedRows?: string[];
   defaultSelectedRows?: string[];
+  /**
+   * Fires with every selected key, plus the row object for each of those keys.
+   *
+   * `selectedKeys` is authoritative; `selectedRows` is best-effort. The row
+   * for each selected key is cached, so a row selected on a previous page
+   * still comes back after `data` has moved on (which is what makes selection
+   * usable with server-side pagination) - but a key that was selected before
+   * the grid ever saw its row (seeded via `defaultSelectedRows`, say) has no
+   * row to hand back.
+   */
   onSelectionChange?: (selectedKeys: string[], selectedRows: T[]) => void;
+  /**
+   * What the select-all control acts on - the header checkbox in table mode,
+   * or the toolbar checkbox in card view (where there is no header row):
+   *
+   * - `'all'` - every row in `data`, across pages.
+   * - `'page'` - only the rows currently rendered.
+   *
+   * Either way it only ever adds to or removes from the rows in its own
+   * scope, so a selection made on another page survives.
+   *
+   * `'all'` can only reach the rows the grid actually holds. Under
+   * server-side pagination (`onPageChange` + `totalRows`) that is a single
+   * page: the grid cannot know the keys of rows it has never received, so
+   * "all" means "all 20 loaded", not "all 1000 matching", and it says so with
+   * a dev-only warning. Matches `Table.selectAllScope`.
+   *
+   * @default 'all'
+   */
+  selectAllScope?: 'all' | 'page';
   bulkActions?: BulkAction<T>[];
 
   // ── Row expansion ──────────────────────────────────────────────────────────

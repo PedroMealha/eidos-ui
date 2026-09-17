@@ -108,6 +108,14 @@ Pass `onRowClick` to make every row interactive - the callback receives the full
 
 <Canvas of={TableStories.WithClickableRows} />
 
+## Row selection
+
+Enable `selectable` to add row checkboxes, and pass `bulkActions` to expose actions over the selection. There's no "clear selection" button: the select-all control is the way out, exactly as it is in MUI or AG Grid - clicking it while it's checked deselects. In table mode that's the header checkbox; in card view (no header row) it's a **Select all** checkbox in the toolbar, which is why the toolbar is present there even before anything is selected.
+
+`selectAllScope` decides what that control acts on: `'all'` (the default) is every row in `data`, across pages; `'page'` is only the rows currently rendered. Either way it only adds or removes the keys in its own scope, so a selection made on another page survives toggling it.
+
+`onSelectionChange(selectedKeys, selectedRows)` gives `selectedKeys` as authoritative and `selectedRows` as best-effort - the row behind each selected key is cached, so a row still resolves after `data` has moved on. If `data` is one page of a larger set (with `totalItems` describing the whole), `selectAllScope="all"` can only reach the rows actually present, and says so with a dev-only warning; `DataGrid` documents the same contract in more depth for its server-side mode.
+
 ## Responsive toolbar
 
 The toolbar wraps at every level - the row itself, both zones, and the bulk-action row - so a full toolbar (density picker, column visibility, export, filter button, and a selection count with bulk actions) can never overlap or overflow no matter how narrow its container gets. Wrapping, not shrinking, is the guarantee: `bulkActions` labels are yours, and no threshold can promise they fit.

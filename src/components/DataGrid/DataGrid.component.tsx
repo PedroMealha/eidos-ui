@@ -6,7 +6,6 @@ import {
   ArrowDown,
   ChevronsUpDown,
   ChevronRight,
-  X,
   Plus,
   AlignJustify,
   Check,
@@ -54,7 +53,7 @@ import type {
   DataGridSelectOption,
   EditingCell,
 } from './DataGrid.types';
-import { renderIcon } from '../../utils';
+import { renderIcon, devWarn } from '../../utils';
 import type { RowKey } from '../../utils';
 import './DataGrid.scss';
 
@@ -352,6 +351,7 @@ function DataGridInner<T extends object>({
   selectedRows: controlledSelectedRows,
   defaultSelectedRows,
   onSelectionChange,
+  selectAllScope = 'all',
   bulkActions,
   // ── Row expansion ────────────────────────────────────────────────────────────
   expandable = false,
@@ -625,18 +625,50 @@ function DataGridInner<T extends object>({
     [isControlledSelection, controlledSelectedRows, internalSelectedKeys],
   );
 
-  const allKeys = useMemo(
-    () => localData.map((row, idx) => String(cellOf(row, rowKeyField) ?? idx)),
-    [localData, rowKeyField],
-  );
-
-  const allSelected = allKeys.length > 0 && allKeys.every((k) => selectedSet.has(k));
-  const someSelected = !allSelected && allKeys.some((k) => selectedSet.has(k));
   const hasSelection = selectedSet.size > 0;
 
+  // Row objects for selected keys, kept across changes to `data`. Filtering
+  // the current rows alone silently handed `bulkActions` and
+  // `onSelectionChange` fewer rows than the selection count claimed - and
+  // under server-side pagination, none at all once the user paged away from
+  // everything they had selected. Always prefers the row currently in `data`
+  // over the cached copy, so an edited row is never stale.
+  const selectedRowCacheRef = useRef(new Map<string, T>());
+
+  const rowsForKeys = useCallback(
+    (keys: string[]): T[] => {
+      const current = new Map<string, T>();
+      localDataRef.current.forEach((row, idx) =>
+        current.set(String(cellOf(row, rowKeyField) ?? idx), row),
+      );
+      const cache = selectedRowCacheRef.current;
+      return keys
+        .map((key) => current.get(key) ?? cache.get(key))
+        .filter((row): row is T => row !== undefined);
+    },
+    [rowKeyField],
+  );
+
+  // Prunes as well as fills: an entry only survives while its key is still
+  // selected, so the cache can't grow without bound.
+  useEffect(() => {
+    const cache = selectedRowCacheRef.current;
+    const current = new Map<string, T>();
+    localData.forEach((row, idx) => current.set(String(cellOf(row, rowKeyField) ?? idx), row));
+    const next = new Map<string, T>();
+    selectedSet.forEach((key) => {
+      const row = current.get(key) ?? cache.get(key);
+      if (row) next.set(key, row);
+    });
+    selectedRowCacheRef.current = next;
+  }, [localData, selectedSet, rowKeyField]);
+
   const selectedItems = useMemo(
-    () => localData.filter((row, idx) => selectedSet.has(String(cellOf(row, rowKeyField) ?? idx))),
-    [localData, selectedSet, rowKeyField],
+    () => rowsForKeys([...selectedSet]),
+    // `localData` isn't read directly here - `rowsForKeys` reads it through a
+    // ref - but it must still retrigger this when the loaded rows change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rowsForKeys, selectedSet, localData],
   );
 
   // ── Row expansion derived state ─────────────────────────────────────────────
@@ -762,6 +794,36 @@ function DataGridInner<T extends object>({
 
   const totalItemCount = totalRowsProp ?? sortedData.length;
   const totalPages = Math.max(1, Math.ceil(totalItemCount / currentPageSize));
+
+  // ── Select-all (scope-aware) ──────────────────────────────────────────────
+  // Defined after `displayData` because `'page'` scope is exactly that set.
+  const selectAllKeys = useMemo(
+    () =>
+      (selectAllScope === 'page' ? displayData : localData).map((row, idx) =>
+        String(cellOf(row, rowKeyField) ?? idx),
+      ),
+    [selectAllScope, displayData, localData, rowKeyField],
+  );
+
+  const allSelected =
+    selectAllKeys.length > 0 && selectAllKeys.every((key) => selectedSet.has(key));
+  const someSelected = !allSelected && selectAllKeys.some((key) => selectedSet.has(key));
+
+  // `'all'` can only ever select the rows the grid holds. With server-side
+  // pagination that's one page, and the keys of rows it has never received
+  // are unknowable here - warn rather than quietly selecting a page and
+  // calling it "all".
+  useEffect(() => {
+    if (!selectable || selectAllScope !== 'all') return;
+    if (totalItemCount <= localData.length) return;
+    devWarn(
+      `datagrid-select-all-scope:${localData.length}/${totalItemCount}`,
+      `DataGrid: selectAllScope="all" can only select the ${localData.length} row(s) currently ` +
+        `loaded, but there are ${totalItemCount} in total. The keys of rows the grid has never ` +
+        `received cannot be known here - use selectAllScope="page" to make the scope explicit, ` +
+        'or resolve the full key set yourself and pass it as `selectedRows`.',
+    );
+  }, [selectable, selectAllScope, totalItemCount, localData.length]);
 
   // Reset to page 1 when filters change (client-side and server-side).
   // Depend on the serialized *value* of activeFilters, not the object
@@ -1129,12 +1191,9 @@ function DataGridInner<T extends object>({
   const commitSelection = useCallback(
     (keys: string[]) => {
       if (!isControlledSelection) setInternalSelectedKeys(new Set(keys));
-      const rows = localDataRef.current.filter((row, idx) =>
-        keys.includes(String(cellOf(row, rowKeyField) ?? idx)),
-      );
-      onSelectionChange?.(keys, rows);
+      onSelectionChange?.(keys, rowsForKeys(keys));
     },
-    [isControlledSelection, rowKeyField, onSelectionChange],
+    [isControlledSelection, onSelectionChange, rowsForKeys],
   );
 
   const toggleRow = useCallback(
@@ -1147,11 +1206,17 @@ function DataGridInner<T extends object>({
     [selectedSet, commitSelection],
   );
 
+  // Adds or removes only the keys in scope, so a selection made on another
+  // page (or outside `'page'` scope) is never silently dropped by toggling
+  // the select-all control.
   const toggleAll = useCallback(() => {
-    commitSelection(allSelected ? [] : allKeys);
-  }, [allSelected, allKeys, commitSelection]);
-
-  const clearSelection = useCallback(() => commitSelection([]), [commitSelection]);
+    const inScope = new Set(selectAllKeys);
+    commitSelection(
+      allSelected
+        ? [...selectedSet].filter((key) => !inScope.has(key))
+        : [...new Set([...selectedSet, ...selectAllKeys])],
+    );
+  }, [allSelected, selectAllKeys, selectedSet, commitSelection]);
 
   // ── Row expansion handlers ───────────────────────────────────────────────────
   const commitExpanded = useCallback(
@@ -1745,6 +1810,25 @@ function DataGridInner<T extends object>({
         <div className="eidos-datagrid-toolbar">
           {/* Left zone: quick filters, or selection count + bulk actions */}
           <div className="eidos-datagrid-toolbar-left">
+            {/* Card view's stand-in for the header checkbox, which doesn't
+                exist without a header row. Also the way out of selection mode
+                there: clicking it while checked clears the selection, exactly
+                as the header checkbox does in table mode. */}
+            {selectable && isCardView && (
+              <Checkbox
+                size="sm"
+                checked={allSelected}
+                indeterminate={someSelected}
+                onChange={toggleAll}
+                // Labelled even in the compact toolbar, unlike the buttons
+                // beside it: those keep a recognisable icon, whereas a bare
+                // checkbox floating in a toolbar says nothing about what it
+                // selects - and a tooltip is no help on touch.
+                label="Select all"
+                aria-label="Select all rows"
+              />
+            )}
+
             {showQuickFilters && (
               <div
                 className={[
@@ -1819,15 +1903,6 @@ function DataGridInner<T extends object>({
                     })}
                   </div>
                 )}
-
-                <button
-                  type="button"
-                  className="eidos-datagrid-clear-selection"
-                  onClick={clearSelection}
-                  aria-label="Clear selection"
-                >
-                  <X size={14} />
-                </button>
               </>
             )}
           </div>

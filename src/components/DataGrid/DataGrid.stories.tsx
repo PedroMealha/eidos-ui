@@ -669,6 +669,91 @@ export const WithPagination: Story = {
   },
 };
 
+// ─── 5b. Server-side pagination + selection ──────────────────────────────────
+
+// Stands in for a paginated API: 87 rows exist, but only ever one page of them
+// is handed to the grid - which is the case row selection has to survive.
+const SERVER_SIDE_ROWS: Person[] = Array.from({ length: 87 }, (_, index) => ({
+  id: index + 1,
+  name: `Person ${index + 1}`,
+  role: ROLE_OPTIONS[index % ROLE_OPTIONS.length].value,
+  department: DEPARTMENT_OPTIONS[index % DEPARTMENT_OPTIONS.length].value,
+  salary: 70000 + (index % 12) * 5000,
+  active: index % 3 !== 0,
+}));
+
+export const ServerSidePagination: Story = {
+  name: 'Server-side pagination + selection',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'With `onPageChange` + `totalRows` the grid holds one page at a time - here 5 of 87 ' +
+          'rows - which is what makes selection interesting. Select a few rows, page away, and ' +
+          'page back: the keys stay selected, and the row objects behind them stay resolvable, ' +
+          'because the grid caches the row for every selected key rather than filtering the ' +
+          'page it currently holds (which used to hand `bulkActions` an empty array the moment ' +
+          'you left the page you selected on). The readout below is fed straight from ' +
+          '`onSelectionChange`, so it shows both halves of that contract: `selectedKeys` is ' +
+          'authoritative, `selectedRows` is every row the grid has seen. ' +
+          '`selectAllScope="page"` is the honest setting here - the grid cannot know the keys ' +
+          'of the other 82 rows, and says so with a dev-only warning if you leave the default ' +
+          "`'all'` in place.",
+      },
+    },
+  },
+  render: function ServerSidePaginationStory() {
+    const pageSize = 5;
+    const [page, setPage] = useState(1);
+    const [selection, setSelection] = useState<{ keys: string[]; rows: Person[] }>({
+      keys: [],
+      rows: [],
+    });
+
+    // A real implementation would fetch here; slicing a fixed array keeps the
+    // story deterministic while behaving identically from the grid's side.
+    const pageRows = SERVER_SIDE_ROWS.slice((page - 1) * pageSize, page * pageSize);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ fontSize: 13, color: 'var(--gray-700)' }}>
+          <strong>{selection.keys.length}</strong> selectedKeys ·{' '}
+          <strong>{selection.rows.length}</strong> selectedRows resolved
+          {selection.keys.length > 0 && <> · ids {selection.keys.join(', ')}</>}
+        </div>
+
+        <DataGrid<Person>
+          columns={BASE_COLUMNS}
+          data={pageRows}
+          rowKey="id"
+          onChange={() => {}}
+          showPagination
+          pageSize={pageSize}
+          totalRows={SERVER_SIDE_ROWS.length}
+          onPageChange={setPage}
+          selectable
+          selectAllScope="page"
+          onSelectionChange={(keys, rows) => setSelection({ keys, rows })}
+          bulkActions={[
+            {
+              id: 'email-selected',
+              type: 'button',
+              label: 'Email selected',
+              icon: Mail,
+              variant: 'outlined',
+              onClick: (selectedRows) =>
+                window.alert(
+                  `Handler received ${selectedRows.length} row object(s):\n` +
+                    selectedRows.map((row) => `#${row.id} ${row.name}`).join('\n'),
+                ),
+            },
+          ]}
+        />
+      </div>
+    );
+  },
+};
+
 // ─── 6. WithSelection ─────────────────────────────────────────────────────────
 
 export const WithSelection: Story = {
