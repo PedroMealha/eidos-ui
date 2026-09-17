@@ -56,7 +56,56 @@ if (status) {
   );
 }
 
-// ── 2. Root barrel export completeness ──────────────────────────────────────
+// ── 2. Git can actually create the version commit ───────────────────────────
+// `npm version` bumps package.json, runs the `version` hook (which promotes
+// CHANGELOG.md and writes the release card), and only THEN commits. A commit
+// that fails at that point strands the release: bumped and promoted but
+// untagged, needing manual recovery.
+//
+// One cause has already done this twice: a GUI client (GitKraken) rewrites
+// ~/.gitconfig and re-adds empty-valued signing keys. Git then hard-fails
+// every commit with `invalid value for 'gpg.format'` - nothing to do with this
+// repo, and invisible until the release is already half-done.
+//
+// Checked by reading the keys rather than by attempting a signature: git has no
+// dry-run that exercises signing, and a real test commit here would be worse
+// than the problem. This catches the observed failure; a key that is configured
+// but missing from disk would still only surface at commit time.
+const EMPTY_BREAKS_COMMIT = [
+  'gpg.format',
+  'user.signingKey',
+  'gpg.ssh.program',
+  'gpg.ssh.allowedSignersFile',
+];
+
+const emptyKeys = EMPTY_BREAKS_COMMIT.filter((key) => {
+  try {
+    // Exit 0 with no output means the key is SET but empty - the state that
+    // breaks git. An unset key exits non-zero and is perfectly fine.
+    return run(`git config --get ${key}`) === '';
+  } catch {
+    return false;
+  }
+});
+
+if (emptyKeys.length > 0) {
+  fail(
+    `${emptyKeys.length} git config key(s) are set but empty.`,
+    'Git refuses to commit at all in this state, so `npm version` would bump',
+    'the version, promote the changelog, and only then fail - leaving the',
+    'release half-done.',
+    '',
+    ...emptyKeys.map((key) => `  ${key}`),
+    '',
+    'Remove them, then re-run. A GUI client (GitKraken) re-adds these when it',
+    'rewrites ~/.gitconfig, so check its commit-signing preferences if this',
+    'keeps coming back:',
+    '',
+    ...emptyKeys.map((key) => `  git config --global --unset ${key}`),
+  );
+}
+
+// ── 3. Root barrel export completeness ──────────────────────────────────────
 // Every type/value a component's own index.ts exports must also be reachable
 // from the root barrel (src/index.ts) - otherwise consumers importing from
 // `eidos-ui` hit a type they can see in the deep entry point but not
@@ -75,7 +124,7 @@ if (missingExports.length > 0) {
   );
 }
 
-// ── 3. Changelog is up to date ───────────────────────────────────────────────
+// ── 4. Changelog is up to date ───────────────────────────────────────────────
 // Enforces the "Changelog discipline" convention in
 // `.devin/skills/eidos-ui-rules/SKILL.md` - entries should land as work
 // happens, not get written retroactively right before a release.
