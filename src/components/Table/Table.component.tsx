@@ -59,6 +59,18 @@ const MIN_DATA_COLUMN_WIDTH_PX = 100;
 const ICON_COLUMN_WIDTH_PX = 48;
 const CHECKBOX_COLUMN_WIDTH_PX = 40;
 
+// Container width (px) below which the toolbar's own buttons drop their labels
+// and render icon-only (with tooltips). Roughly the point at which the built-in
+// controls stop fitting on one line beside a selection count - measured off the
+// container, not the viewport, so a table in a narrow pane compacts too.
+//
+// This only ever affects the library's own buttons. Everything a consumer puts
+// in the toolbar (`bulkActions`, and `DataGrid`'s `quickFilters`) is rendered
+// as given and relies on the toolbar wrapping instead - which is the part that
+// actually guarantees nothing overlaps, since arbitrary content can always be
+// wider than any threshold. Same value in DataGrid.
+const COMPACT_TOOLBAR_WIDTH_PX = 560;
+
 type Density = 'compact' | 'comfortable' | 'spacious';
 
 const DENSITY_OPTIONS: { value: Density; label: string }[] = [
@@ -250,22 +262,22 @@ export const Table = <T extends object>({
   // a consumer whose `loading` starts `true` would otherwise measure nothing on
   // mount and never re-measure once the real container replaces it. Mirrors
   // DataGrid's `setContainerRef`, which has the same constraint.
-  const setContainerRef = useCallback(
-    (el: HTMLDivElement | null) => {
-      resizeObserverRef.current?.disconnect();
-      resizeObserverRef.current = null;
+  // Deliberately NOT gated on `hasCardView`: the same measurement also drives
+  // `isCompactToolbar` below, which a table with `hasCardView={false}` still
+  // needs - it has a toolbar to fit into a narrow container either way.
+  const setContainerRef = useCallback((el: HTMLDivElement | null) => {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
 
-      if (!el || !hasCardView) return;
+    if (!el) return;
 
-      const observer = new ResizeObserver((entries) => {
-        const width = entries[0]?.contentRect.width;
-        if (width != null) setContainerWidth(width);
-      });
-      observer.observe(el);
-      resizeObserverRef.current = observer;
-    },
-    [hasCardView],
-  );
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width;
+      if (width != null) setContainerWidth(width);
+    });
+    observer.observe(el);
+    resizeObserverRef.current = observer;
+  }, []);
 
   // Narrowest width the table can render at without overflowing - the sum of
   // every visible column's own minimum (see the constants above).
@@ -290,6 +302,11 @@ export const Table = <T extends object>({
     hasCardView &&
     containerWidth !== null &&
     (containerWidth < cardViewBreakpoint || containerWidth < minTableWidth);
+
+  // Independent of card view on purpose: card view can also trigger on column
+  // count in a container that's still plenty wide for labelled buttons, and a
+  // `hasCardView={false}` table still needs its toolbar to fit.
+  const isCompactToolbar = containerWidth !== null && containerWidth < COMPACT_TOOLBAR_WIDTH_PX;
 
   // Only the first matching column is honored (see TableColumnCommon.cardHeader
   // / cardSubheader).
@@ -879,15 +896,21 @@ export const Table = <T extends object>({
 
           {/* Right - density, column visibility, export, filter */}
           <div className="eidos-table-toolbar-right">
+            {/* Icon-only below `COMPACT_TOOLBAR_WIDTH_PX`, with the label moved
+                into a tooltip so the control stays identifiable. */}
             {showDensity && (
               <Dropdown
                 placement="bottom"
                 align="end"
                 autoWidth={false}
                 trigger={
-                  <Button variant="text" size="sm" preIcon={AlignJustify}>
-                    Density
-                  </Button>
+                  isCompactToolbar ? (
+                    <Button variant="text" size="sm" icon={AlignJustify} tooltip="Density" />
+                  ) : (
+                    <Button variant="text" size="sm" preIcon={AlignJustify}>
+                      Density
+                    </Button>
+                  )
                 }
                 content={densityPanel}
               />
@@ -899,9 +922,13 @@ export const Table = <T extends object>({
                 align="end"
                 autoWidth={false}
                 trigger={
-                  <Button variant="text" size="sm" preIcon={Columns3}>
-                    Columns
-                  </Button>
+                  isCompactToolbar ? (
+                    <Button variant="text" size="sm" icon={Columns3} tooltip="Columns" />
+                  ) : (
+                    <Button variant="text" size="sm" preIcon={Columns3}>
+                      Columns
+                    </Button>
+                  )
                 }
                 content={columnVisibilityPanel}
               />

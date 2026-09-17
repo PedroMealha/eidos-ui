@@ -21,12 +21,24 @@
 
 // ─── Toolbar ──────────────────────────────────────────────────────────────────
 
+// Wraps at every level - the toolbar itself, both zones, the quick-filter row
+// and the bulk-action row. `min-width: 0` on a zone only lets its *box*
+// shrink; its children are `white-space: nowrap` buttons and fixed-width
+// filter controls that don't, so without wrapping the left zone's content
+// spilled out of its box and painted over the right zone's buttons.
+//
+// Wrapping (rather than shrinking or compacting) is what makes this safe for
+// arbitrary content: `bulkActions` labels and `quickFilters` controls are the
+// consumer's, and no width threshold can promise they fit. The icon-only
+// compaction in the component (see `COMPACT_TOOLBAR_WIDTH_PX`) is an
+// optimisation on top of this, not the mechanism that prevents overlap.
 .eidos-datagrid-toolbar {
   position: relative;
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--gray-50);
   border-bottom: 1px solid var(--gray-200);
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-sm);
@@ -35,17 +47,26 @@
 
 .eidos-datagrid-toolbar-left {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
-  flex: 1;
+  gap: var(--spacing-xs) var(--spacing-sm);
+  flex: 1 1 auto;
   min-width: 0;
+  max-width: 100%;
 }
 
 .eidos-datagrid-toolbar-right {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  gap: var(--spacing-xs) var(--spacing-sm);
   flex-shrink: 0;
+  max-width: 100%;
+  // Keeps the zone hugging the right edge even once it wraps onto a line of
+  // its own, where `justify-content: space-between` above no longer applies
+  // (a single item per line sits at the start).
+  margin-left: auto;
 }
 
 // ─── Quick filters ────────────────────────────────────────────────────────────
@@ -59,6 +80,23 @@
   // picker and filter button, and stays this narrow in card view too.
   flex-wrap: wrap;
   min-width: 0;
+  max-width: 100%;
+
+  // Below `COMPACT_TOOLBAR_WIDTH_PX` there isn't room for two controls side by
+  // side, and a row of 160px boxes in a ~300px toolbar reads as ragged
+  // leftovers - so each filter takes a full row instead. Matches how the
+  // filter dropdown lays its rows out at the same sort of width.
+  &--compact {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+
+    // Two classes, so this beats the per-type `width` below (one class each)
+    // regardless of source order.
+    .eidos-datagrid-quick-filter {
+      width: 100%;
+    }
+  }
 }
 
 .eidos-datagrid-quick-filter {
@@ -89,8 +127,11 @@
 
 .eidos-datagrid-bulk-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-xs);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .eidos-datagrid-clear-selection {

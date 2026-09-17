@@ -76,6 +76,18 @@ const ROW_NUMBER_COLUMN_WIDTH_PX = 40;
 const DRAG_HANDLE_COLUMN_WIDTH_PX = 32;
 const EXPAND_COLUMN_WIDTH_PX = 32;
 
+// Container width (px) below which the toolbar's own buttons drop their labels
+// and render icon-only (with tooltips), and quick filters stretch to one per
+// row. Measured off the container, not the viewport, so a grid in a narrow pane
+// compacts too.
+//
+// Compaction only ever applies to what this component renders itself. A
+// consumer's `bulkActions` are rendered exactly as given and rely on the
+// toolbar wrapping instead - which is the part that actually guarantees
+// nothing overlaps, since arbitrary content can always be wider than any
+// threshold. Same value in Table.
+const COMPACT_TOOLBAR_WIDTH_PX = 560;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Internal column + row access
 //
@@ -486,22 +498,22 @@ function DataGridInner<T extends object>({
   // triggered a re-run, leaving `containerWidth` (and therefore card view)
   // permanently stuck. A callback ref sidesteps that entirely: whichever
   // container div actually mounts, this runs for it.
-  const setContainerRef = useCallback(
-    (el: HTMLDivElement | null) => {
-      resizeObserverRef.current?.disconnect();
-      resizeObserverRef.current = null;
+  // Deliberately NOT gated on `hasCardView`: the same measurement also drives
+  // `isCompactToolbar` below, which a grid with `hasCardView={false}` still
+  // needs - it has a toolbar to fit into a narrow container either way.
+  const setContainerRef = useCallback((el: HTMLDivElement | null) => {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
 
-      if (!el || !hasCardView) return;
+    if (!el) return;
 
-      const observer = new ResizeObserver((entries) => {
-        const width = entries[0]?.contentRect.width;
-        if (width != null) setContainerWidth(width);
-      });
-      observer.observe(el);
-      resizeObserverRef.current = observer;
-    },
-    [hasCardView],
-  );
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width;
+      if (width != null) setContainerWidth(width);
+    });
+    observer.observe(el);
+    resizeObserverRef.current = observer;
+  }, []);
   // Narrowest width the grid can render at without overflowing: the sum of
   // every column's own minimum (see the constants above). Computed directly
   // from props, so it's available here without waiting on the `dataColumns`/
@@ -528,6 +540,11 @@ function DataGridInner<T extends object>({
     hasCardView &&
     containerWidth !== null &&
     (containerWidth < cardViewBreakpoint || containerWidth < minTableWidth);
+
+  // Independent of card view on purpose: card view can also trigger on column
+  // count in a container that's still plenty wide for labelled buttons, and a
+  // `hasCardView={false}` grid still needs its toolbar to fit.
+  const isCompactToolbar = containerWidth !== null && containerWidth < COMPACT_TOOLBAR_WIDTH_PX;
 
   // Card view header/subheader: only the first matching column is honored
   // (see DataGridColumn.cardHeader/cardSubheader).
@@ -1589,6 +1606,10 @@ function DataGridInner<T extends object>({
               size="sm"
               color={quickFilter.color}
               disabled={disabled}
+              // Select/Combobox are already `fullWidth` and just fill their
+              // box; a SegmentedControl sizes itself to its segments, so it
+              // needs telling to fill the row once quick filters stack.
+              fullWidth={isCompactToolbar}
               // The reset segment is always prepended: a SegmentedControl
               // always has exactly one segment selected, so without it the
               // filter could never be cleared.
@@ -1725,7 +1746,14 @@ function DataGridInner<T extends object>({
           {/* Left zone: quick filters, or selection count + bulk actions */}
           <div className="eidos-datagrid-toolbar-left">
             {showQuickFilters && (
-              <div className="eidos-datagrid-quick-filters">
+              <div
+                className={[
+                  'eidos-datagrid-quick-filters',
+                  isCompactToolbar && 'eidos-datagrid-quick-filters--compact',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
                 {quickFilters.map(renderQuickFilter)}
               </div>
             )}
@@ -1806,15 +1834,21 @@ function DataGridInner<T extends object>({
 
           {/* Right zone: density picker + filter button + add-row button */}
           <div className="eidos-datagrid-toolbar-right">
+            {/* Icon-only below `COMPACT_TOOLBAR_WIDTH_PX`, with the label moved
+                into a tooltip so the control stays identifiable. */}
             {showDensity && (
               <Dropdown
                 placement="bottom"
                 align="end"
                 autoWidth={false}
                 trigger={
-                  <Button variant="text" size="sm" preIcon={AlignJustify}>
-                    Density
-                  </Button>
+                  isCompactToolbar ? (
+                    <Button variant="text" size="sm" icon={AlignJustify} tooltip="Density" />
+                  ) : (
+                    <Button variant="text" size="sm" preIcon={AlignJustify}>
+                      Density
+                    </Button>
+                  )
                 }
                 content={
                   <div className="eidos-table-menu-panel">
@@ -1854,11 +1888,20 @@ function DataGridInner<T extends object>({
               />
             )}
 
-            {onRowAdd && (
-              <Button variant="outlined" size="sm" preIcon={Plus} onClick={handleRowAdd}>
-                Add row
-              </Button>
-            )}
+            {onRowAdd &&
+              (isCompactToolbar ? (
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  icon={Plus}
+                  tooltip="Add row"
+                  onClick={handleRowAdd}
+                />
+              ) : (
+                <Button variant="outlined" size="sm" preIcon={Plus} onClick={handleRowAdd}>
+                  Add row
+                </Button>
+              ))}
           </div>
         </div>
       )}

@@ -26,6 +26,7 @@
     grid-area: content;
     display: grid;
     grid-template-rows: minmax(50px, auto) 1fr auto;
+    background-color: var(--gray-50);
     // A grid item's automatic minimum size is its content's size, so without
     // these the `1fr` track can only grow: tall page content stretched the
     // whole layout past the viewport and scrolled the toolbar and navigation
@@ -37,7 +38,6 @@
   }
 
   &__body {
-    background-color: var(--gray-50);
     // The single scroll region of the layout - the toolbar, navigation rail,
     // header and footer all stay put while only the page content moves.
     overflow: auto;

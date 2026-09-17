@@ -60,6 +60,11 @@ Entries land here as work happens, not written retroactively at release time
   layout when they don't fit beside the title.
 - `Tabs` strips now scroll horizontally instead of overflowing their
   container.
+- `Table`/`DataGrid` toolbars now wrap instead of letting the selection count
+  and bulk actions overlap the density/columns/export/filter buttons.
+- `Table`/`DataGrid` toolbar buttons go icon-only (with tooltips) below a
+  560px container width, and `DataGrid`'s `quickFilters` stretch to one per
+  row.
 
 - `Toolbar` no longer renders a hardcoded "John Doe" avatar; it renders the
   `user` you pass, or no avatar at all.

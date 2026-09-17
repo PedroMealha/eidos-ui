@@ -13,12 +13,24 @@
   overflow-x: auto;
 }
 
+// Wraps at every level - the toolbar itself, both zones, and the bulk-action
+// row inside the left zone. `min-width: 0` on a zone only lets its *box*
+// shrink; its children are `white-space: nowrap` buttons that don't, so
+// without wrapping the left zone's content spilled out of its box and painted
+// over the right zone's buttons.
+//
+// Wrapping (rather than shrinking or compacting) is what makes this safe for
+// arbitrary content: `bulkActions` labels are the consumer's, and no width
+// threshold can promise they fit. The icon-only compaction in the component
+// (see `COMPACT_TOOLBAR_WIDTH_PX`) is an optimisation on top of this, not the
+// mechanism that prevents overlap.
 .eidos-table-toolbar {
   position: relative;
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--gray-50);
   border-bottom: 1px solid var(--gray-200);
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-sm);
@@ -27,17 +39,26 @@
 
 .eidos-table-toolbar-left {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
-  flex: 1;
+  gap: var(--spacing-xs) var(--spacing-sm);
+  flex: 1 1 auto;
   min-width: 0;
+  max-width: 100%;
 }
 
 .eidos-table-toolbar-right {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  gap: var(--spacing-xs) var(--spacing-sm);
   flex-shrink: 0;
+  max-width: 100%;
+  // Keeps the zone hugging the right edge even once it wraps onto a line of
+  // its own, where `justify-content: space-between` above no longer applies
+  // (a single item per line sits at the start).
+  margin-left: auto;
 }
 
 .eidos-table-selection-count {
@@ -49,8 +70,11 @@
 
 .eidos-table-bulk-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-xs);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .eidos-table-clear-selection {

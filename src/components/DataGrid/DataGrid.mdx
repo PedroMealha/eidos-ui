@@ -158,6 +158,12 @@ Quick filters are hidden while rows are selected - the selection count and bulk 
 
 <Canvas of={DataGridStories.WithQuickFilters} />
 
+### Responsive toolbar
+
+The toolbar wraps at every level - the row itself, both zones, the quick-filter row and the bulk-action row - so a full toolbar (quick filters, filter button, density picker, add-row, and a selection count with bulk actions) can never overlap or overflow no matter how narrow its container gets. Wrapping, not shrinking, is the guarantee: `bulkActions` labels and `quickFilters` controls are yours, and no threshold can promise they fit.
+
+On top of that, once the grid's measured container width drops below 560px the controls the grid renders itself compact: the density picker and add-row button go icon-only with tooltips, and quick filters stretch to one per row (a `'segmented'` filter becomes `fullWidth`, since it sizes to its segments rather than filling its box). Anything you pass in is rendered exactly as given and only wraps. `Table`'s toolbar behaves identically.
+
 ## With pagination
 
 Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `pageSizeOptions` to let users switch between page sizes. For server-side pagination supply `totalRows` and `onPageChange`.
