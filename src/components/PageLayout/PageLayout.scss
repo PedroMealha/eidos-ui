@@ -57,6 +57,18 @@
   &__body,
   &__footer {
     padding: var(--spacing-xl) var(--spacing-xl) 0;
+
+    @include media-down('xl') {
+      padding: var(--spacing-lg) var(--spacing-lg) 0;
+    }
+
+    @include media-down('lg') {
+      padding: var(--spacing-md) var(--spacing-md) 0;
+    }
+
+    @include media-down('md') {
+      padding: var(--spacing-sm) var(--spacing-sm) 0;
+    }
   }
 
   // Overrides the shared `0` bottom padding above: now that the body is a
@@ -64,5 +76,17 @@
   // against the clipping edge with no breathing room before the footer.
   &__body {
     padding-bottom: var(--spacing-xl);
+
+    @include media-down('xl') {
+      padding-bottom: var(--spacing-lg);
+    }
+
+    @include media-down('lg') {
+      padding-bottom: var(--spacing-md);
+    }
+
+    @include media-down('md') {
+      padding-bottom: var(--spacing-sm);
+    }
   }
 }

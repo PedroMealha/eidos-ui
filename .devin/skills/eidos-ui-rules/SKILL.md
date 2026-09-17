@@ -49,6 +49,29 @@ Every colour needs a matching `--x-rgb` token in `variables.scss` for these
 mixins to work - `--gray-rgb` was missing, which silently broke
 `focus-ring(gray)` in Snackbar.
 
+### Media queries: never `var(--breakpoint-*)`
+
+Every media query goes through the `media-up($name)` / `media-down($name)`
+mixins in `mixins.scss`, whose thresholds come from the `$breakpoints` Sass map
+in `src/styles/_breakpoints.scss` - the single source of truth. The
+`--breakpoint-*` custom properties are **generated from that map** and exist
+only for JS reading a threshold via `getComputedStyle`.
+
+**Never write `@media (max-width: var(--breakpoint-lg))`.** A media query
+condition is evaluated before custom properties are substituted (substitution is
+per-element; a media query has no element), so the condition is invalid and every
+browser drops it. Sass passes it through untouched and nothing warns - the same
+silent-failure shape as the `rgb(var(--x-rgb) / 0.3)` bug above. This one had
+killed all of `PageLayout`'s responsive `header`/`body`/`footer` padding, and
+Meridian's `.mrd-page` gap, until it was found in 2026-09.
+
+`media-down` insets its threshold by `0.02px` (`max-width: 1023.98px`) so
+`media-down('lg')` and `media-up('lg')` can never both match at exactly 1024px.
+
+A consumer of the published package cannot use these mixins - only
+`dist/index.css` ships - so `dev/app.scss` deliberately writes the px values out
+with a comment, mirroring what a real consumer has to do.
+
 ### Size naming
 
 Always: `sm | md | lg` - abbreviated forms that match the CSS variable convention (`--component-size-sm`, `--spacing-sm`, etc.).

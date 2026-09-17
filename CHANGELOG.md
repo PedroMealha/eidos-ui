@@ -13,6 +13,16 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `--breakpoint-2xl` (`1536px`) token, completing the breakpoint scale.
+
+### Fixed
+
+- `PageLayout`'s responsive `header`/`body`/`footer` padding now actually
+  applies - its media queries used `var(--breakpoint-*)`, which is invalid in a
+  media query condition and was dropped by every browser.
+
 ## [2.1.0] - 2026-09-17
 
 ### Added

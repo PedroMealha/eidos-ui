@@ -209,12 +209,7 @@ body {
    space-between row: the rail sizes itself to its own content (~160px), which
    is too narrow to sit a label and a pill side by side comfortably. */
 .mrd-sidebar__role {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-xs);
-  font-size: var(--font-size-xs);
-  color: var(--gray-500);
+  display: grid;
 }
 
 .mrd-usercard {
@@ -243,6 +238,23 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
+
+  /* The `--breakpoint-*` tokens deliberately cannot be used here: a media
+     query condition is evaluated before custom properties are substituted, so
+     `max-width: var(--breakpoint-xl)` is invalid and browsers drop it. The
+     library's own SCSS mixins aren't published either (only `dist/index.css`
+     ships), so a consumer writes the px values out - as Meridian does here. */
+  @media (max-width: 1279.98px) {
+    gap: var(--spacing-lg);
+  }
+
+  @media (max-width: 1023.98px) {
+    gap: var(--spacing-md);
+  }
+
+  @media (max-width: 767.98px) {
+    gap: var(--spacing-sm);
+  }
 }
 
 /* ── Dashboard ──────────────────────────────────────────────────────────── */

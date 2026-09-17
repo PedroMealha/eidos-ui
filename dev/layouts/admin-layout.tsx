@@ -148,15 +148,12 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         brand: { name: 'Meridian', onClick: () => navigate(HOME_PATH) },
         items: navigationItems,
         footer: (
-          <>
+          <div className="mrd-sidebar__role">
             <Divider />
-            <div className="mrd-sidebar__role">
-              <span>Signed in as</span>
-              <Pill color={isAdmin ? 'primary' : 'secondary'} variant="outlined" size="sm">
-                {isAdmin ? 'Admin' : 'Member'}
-              </Pill>
-            </div>
-          </>
+            <Pill color={isAdmin ? 'primary' : 'secondary'} variant="outlined" size="sm">
+              {isAdmin ? 'Admin' : 'Member'}
+            </Pill>
+          </div>
         ),
         collapseBelow: 1024,
       }}

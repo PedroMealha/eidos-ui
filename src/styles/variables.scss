@@ -1,3 +1,5 @@
+@use './breakpoints' as bp;
+
 :root {
   // Primary brand colors
   --primary-color: #6366f1;
@@ -163,4 +165,14 @@
   --z-index-command-palette: 1500;
   --z-index-snackbar: 1600;
   --z-index-tooltip: 1700;
+
+  // Breakpoints
+  //
+  // Generated from the Sass `$breakpoints` map in `_breakpoints.scss`, which is
+  // the source of truth. These exist for JS that reads a threshold via
+  // `getComputedStyle`; they CANNOT be used in a media query condition - use
+  // the `media-up`/`media-down` mixins there instead.
+  @each $name, $width in bp.$breakpoints {
+    --breakpoint-#{$name}: #{$width};
+  }
 }

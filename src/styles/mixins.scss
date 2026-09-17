@@ -1,3 +1,8 @@
+// Re-exported so a component doing `@use '../../styles/mixins.scss' as *` also
+// gets `$breakpoints` and `breakpoint()` without a second `@use`.
+@forward './breakpoints';
+@use './breakpoints' as bp;
+
 // ============================================================================
 // COLOR MANIPULATION MIXINS
 // ============================================================================
@@ -197,37 +202,59 @@
 // RESPONSIVE MIXINS
 // ============================================================================
 
-// Mobile first breakpoint
+// Every media query in the library must go through one of these two mixins -
+// see `_breakpoints.scss` for why the `--breakpoint-*` custom properties can
+// never be used in a media query condition.
+
+// Both mixins resolve the width into a local variable first rather than calling
+// `bp.breakpoint()` inline in the condition. Sass accepts either form, but the
+// SCSS language service behind VS Code's built-in diagnostics cannot parse a
+// namespaced function call inside a media feature value and reports a bogus
+// `) expected` on the whole rule - editor-only noise with no build signal.
+
+// Viewport is at least as wide as the named breakpoint (mobile-first).
+@mixin media-up($name) {
+  $min-width: bp.breakpoint($name);
+
+  @media (min-width: $min-width) {
+    @content;
+  }
+}
+
+// Viewport is narrower than the named breakpoint.
+//
+// The 0.02px inset keeps `media-down` and `media-up` mutually exclusive: a
+// plain `max-width: 1024px` would both match at exactly 1024px, so a value
+// declared in each would resolve by source order instead of by viewport.
+@mixin media-down($name) {
+  $max-width: bp.breakpoint($name) - 0.02px;
+
+  @media (max-width: $max-width) {
+    @content;
+  }
+}
+
+// Named aliases, kept for the existing call sites.
 @mixin mobile-up {
-  @media (min-width: 768px) {
+  @include media-up('md') {
     @content;
   }
 }
 
-// Tablet up
 @mixin tablet-up {
-  @media (min-width: 1024px) {
+  @include media-up('lg') {
     @content;
   }
 }
 
-// Desktop up
 @mixin desktop-up {
-  @media (min-width: 1280px) {
+  @include media-up('xl') {
     @content;
   }
 }
 
-// Large desktop up
 @mixin large-desktop-up {
-  @media (min-width: 1536px) {
-    @content;
-  }
-}
-
-// Custom breakpoint
-@mixin breakpoint($min-width) {
-  @media (min-width: #{$min-width}px) {
+  @include media-up('2xl') {
     @content;
   }
 }

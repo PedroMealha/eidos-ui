@@ -1,0 +1,38 @@
+@use 'sass:map';
+
+// ============================================================================
+// BREAKPOINTS
+// ============================================================================
+//
+// The single source of truth for every viewport threshold in the library.
+//
+// These are Sass values, not CSS custom properties, and they have to be: a
+// media query condition is evaluated before custom properties are substituted
+// (substitution is per-element, and a media query has no element), so
+// `@media (max-width: var(--breakpoint-lg))` is an invalid condition that every
+// browser drops. Sass passes it through untouched and nothing warns, so the
+// rule simply never applies - which is exactly what had happened to
+// `PageLayout`'s and Meridian's responsive padding.
+//
+// The `--breakpoint-*` custom properties in `variables.scss` are generated from
+// this map, so they stay useful for JS reading a token through
+// `getComputedStyle` while the media queries themselves always come from here,
+// via the `media-up`/`media-down` mixins in `mixins.scss`.
+
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px,
+);
+
+// Resolves a breakpoint name to its width, failing loudly on a typo rather
+// than emitting `max-width: null` (which Sass drops silently).
+@function breakpoint($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Expected one of: #{map.keys($breakpoints)}.';
+  }
+
+  @return map.get($breakpoints, $name);
+}
