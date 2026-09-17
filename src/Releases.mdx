@@ -15,6 +15,138 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.0.0"
+  date="2026-09-17"
+  bump="major"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>--breakpoint-2xl</Code> (<Code>1536px</Code>) token, completing the breakpoint
+          scale.
+        </>,
+        <>
+          <Code>--primary-contrast</Code>, <Code>--secondary-contrast</Code>,{' '}
+          <Code>--success-contrast</Code>, <Code>--danger-contrast</Code>,{' '}
+          <Code>--warning-contrast</Code> and <Code>--info-contrast</Code> - the foreground colour
+          to pair with each themeable fill.
+        </>,
+        <>
+          <Code>ThemeProvider</Code> component - applies a runtime theme (7 colour bases, 2 font
+          stacks, a font scale) by writing CSS custom properties via the CSSOM.
+        </>,
+        <>
+          <Code>ThemeProvider</Code> derives <Code>-rgb</Code>, <Code>-dark</Code>,{' '}
+          <Code>-light</Code>, <Code>-contrast</Code> and the <Code>--primary-50…900</Code> ramp in
+          OKLab from each base colour.
+        </>,
+        <>
+          <Code>useTheme</Code> hook and the <Code>defaultTheme</Code> preset object.
+        </>,
+        <>
+          <Code>ThemeEditor</Code> component - a settings panel for editing the active theme, with
+          per-colour WCAG contrast and page-legibility diagnostics.
+        </>,
+        <>
+          <Code>ThemeEditor</Code> gains <Code>fontOptions</Code>, <Code>monoFontOptions</Code>,{' '}
+          <Code>allowFontUpload</Code> and <Code>onFontUpload</Code>, and warns when the selected
+          font stack won't actually render.
+        </>,
+        <>
+          <Code>ThemeEditor</Code> labels font options that aren't installed, rather than offering
+          them as though a stack could guarantee a font.
+        </>,
+        <>
+          <Code>eidos-ui/fonts</Code> entry point - bundles Plus Jakarta Sans and JetBrains Mono
+          (variable, latin + latin-ext, ~102 KB) so the theme's default families render everywhere
+          rather than only where they happen to be installed.
+        </>,
+        <>
+          <Code>registerFontFace</Code>, <Code>registerFontFile</Code>, <Code>isFontAvailable</Code>
+          , <Code>isFontStackAvailable</Code>, <Code>familyNameFromFile</Code> and{' '}
+          <Code>toFontStack</Code> - register a font from an <Code>ArrayBuffer</Code> (no CSP{' '}
+          <Code>font-src</Code> allowance needed) and detect whether a family resolves.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <strong>Breaking</strong>: every palette base colour is darkened so white text on it
+          clears WCAG AA (4.5:1); six of the seven previously failed, <Code>warning</Code> at
+          2.15:1.
+        </>,
+        <>
+          <strong>Breaking</strong>: <Code>--warning-color</Code> is consequently a dark gold rather
+          than an amber - no yellow-ish hue can clear 4.5:1 against white.
+        </>,
+        <>
+          <strong>Breaking</strong>: every <Code>--x-dark</Code> is recomputed so it stays darker
+          than its own base and is legible as text on white.
+        </>,
+        <>
+          Components painting a themeable fill now pair it with <Code>var(--x-contrast)</Code>{' '}
+          instead of a hardcoded <Code>var(--white)</Code>.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>PageLayout</Code>'s responsive <Code>header</Code>/<Code>body</Code>/
+          <Code>footer</Code> padding now actually applies - its media queries used{' '}
+          <Code>var(--breakpoint-*)</Code>, which is invalid in a media query condition and was
+          dropped by every browser.
+        </>,
+        <>
+          <Code>Button</Code>'s <Code>primary</Code> filled variant hovers to{' '}
+          <Code>--primary-dark</Code> instead of <Code>--secondary-dark</Code>.
+        </>,
+        <>
+          <Code>Radio</Code>'s dot and <Code>Switch</Code>'s thumb follow their fill's contrast
+          colour, so neither disappears against a light one.
+        </>,
+        <>
+          <Code>Badge</Code> and <Code>Avatar</Code> no longer carry a hand-written dark-text
+          exception for <Code>warning</Code> only, which left <Code>success</Code> and{' '}
+          <Code>info</Code> equally illegible.
+        </>,
+        <>
+          <Code>ColorPicker</Code> no longer shifts the colour it was given - it rounded its
+          internal HSV state to whole percent, so <Code>#5c5de8</Code> displayed as{' '}
+          <Code>#5d5de8</Code> and any interaction committed the drifted value.
+        </>,
+        <>
+          <Code>ThemeProvider</Code> logs a development warning when more than one is mounted - they
+          all write to <Code>document.documentElement</Code>, so they cannot theme separate subtrees
+          and the last to apply each token wins for the whole page.
+        </>,
+        <>
+          <Code>ThemeEditor</Code> no longer reports a web font as "not installed" after it has
+          loaded - availability was probed once during the first render, before any{' '}
+          <Code>@font-face</Code> had finished loading, and that negative result was cached.
+        </>,
+        <>
+          <Code>ThemeEditor</Code>'s middle contrast grade now reads "Too low for body text" instead
+          of "AA large only", which implied a pass; WCAG's 3:1 tier only applies at 24px and this
+          library's labels are ~12px.
+        </>,
+        <>
+          <Code>ColorPicker</Code>'s saturation/brightness canvas now renders in popover mode - it
+          sized itself off an ancestor class that the portaled panel never had, so it collapsed to
+          zero height and left only the hue slider, which cannot change a colour's lightness.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="2.1.0"
   date="2026-09-17"
   bump="minor"
