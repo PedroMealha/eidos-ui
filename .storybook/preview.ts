@@ -1,5 +1,9 @@
 import type { Preview } from '@storybook/react-vite';
+// Mirrors what a consumer importing both `eidos-ui/styles` and the optional
+// `eidos-ui/fonts` gets. Without the second import the docs render in the
+// system fallback rather than the theme's own Plus Jakarta Sans.
 import '../src/styles/index.scss';
+import './preview-fonts.scss';
 
 const preview: Preview = {
   parameters: {

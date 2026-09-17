@@ -60,7 +60,9 @@ A colour too close to white or black to generate a usable scale logs a developme
 
 ## Making a font available
 
-`--font-family-primary` only _names_ families. To use a font the browser doesn't have, register the data itself:
+`--font-family-primary` only _names_ families. The theme's two defaults ship with the package - `import 'eidos-ui/fonts'` once at your app root and both resolve.
+
+For any **other** font, register the data yourself:
 
 ```tsx
 import { registerFontFace, isFontAvailable, toFontStack } from 'eidos-ui';

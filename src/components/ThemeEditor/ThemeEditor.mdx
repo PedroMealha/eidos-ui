@@ -75,7 +75,7 @@ Pass `fontOptions` / `monoFontOptions` to list the fonts your app actually ships
 />
 ```
 
-> **Note**: `eidos-ui` does not ship the Plus Jakarta Sans file, so the theme's own default font renders only where you provide it. It is listed because it is the shipped default and has to be representable - and it will show as "not installed" until you serve it.
+> **Note**: the theme's own defaults - Plus Jakarta Sans and JetBrains Mono - ship with the package but must be imported: `import 'eidos-ui/fonts'`. Without that import they show as "not installed", because a stack only names a font.
 
 ### Making an upload permanent
 

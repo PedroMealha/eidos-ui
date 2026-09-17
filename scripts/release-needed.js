@@ -45,6 +45,20 @@ const BUILD_INPUTS = [
 ];
 
 /**
+ * `@fontsource-variable/*` are devDependencies whose `.woff2` files are copied
+ * into `dist/fonts/` at build time, so bumping one DOES change the tarball even
+ * though it is a devDependency. This is the sole exception to the rule below
+ * that devDependencies are inert for consumers.
+ */
+const FONT_DEPENDENCIES = /^@fontsource-variable\//;
+
+/** The subset of devDependencies whose versions reach `dist/`. */
+const fontDeps = (manifest) =>
+  Object.fromEntries(
+    Object.entries(manifest.devDependencies ?? {}).filter(([name]) => FONT_DEPENDENCIES.test(name)),
+  );
+
+/**
  * package.json is always in the tarball, but only these fields affect how the
  * package resolves or installs. `scripts`, `devDependencies` and friends are
  * inert for consumers.
@@ -98,6 +112,10 @@ const after = JSON.parse(readFileSync('./package.json', 'utf8'));
 const fieldChanges = CONSUMER_FIELDS.filter(
   (f) => JSON.stringify(before[f]) !== JSON.stringify(after[f]),
 );
+
+if (JSON.stringify(fontDeps(before)) !== JSON.stringify(fontDeps(after))) {
+  fieldChanges.push('devDependencies (@fontsource-variable → dist/fonts)');
+}
 
 const commits = git(`log --oneline ${lastTag}..HEAD`).split('\n').filter(Boolean);
 const uncommitted = gitArgs(['status', '--porcelain', '--', ...BUILD_INPUTS])

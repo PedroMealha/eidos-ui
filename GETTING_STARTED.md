@@ -41,6 +41,26 @@ Once at your app root (`main.tsx` or equivalent). Without it, components render 
 import 'eidos-ui/styles';
 ```
 
+### Fonts (optional)
+
+The theme names Plus Jakarta Sans and JetBrains Mono, but a font stack only
+_names_ families - it cannot install them. Add this import to use the bundled
+copies (~102 KB of `woff2`, latin + latin-ext):
+
+```ts
+import 'eidos-ui/fonts';
+```
+
+Without it the stacks fall back to `-apple-system` / `monospace`, which is a
+perfectly reasonable look - just not the intended one.
+
+It is a separate entry point on purpose: these are the only rules in the library
+that fetch a subresource, so importing them is also opting into a `font-src`
+requirement. `default-src 'self'` or `font-src 'self'` covers it; skip the
+import and the stylesheet still fetches nothing at all. See
+[Content Security Policy](https://github.com/PedroMealha/eidos-ui#readme) in the
+Storybook docs for the full breakdown.
+
 ## Set up providers
 
 Most components work standalone. Two require a context provider at the app root.

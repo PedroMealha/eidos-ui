@@ -56,7 +56,21 @@ Note this only relaxes the attribute directive, not `style-src` as a whole - ext
 
 Under SSR the first paint uses the preset from `dist/index.css` and the theme is applied on hydration, so a non-preset theme costs one repaint. If you want a themed first paint with no repaint and no JavaScript, use `useTheme().toCss()` (or the "Copy as CSS" button in `ThemeEditor`) to generate a `:root { … }` block and paste it into your own same-origin stylesheet - which `style-src 'self'` already covers.
 
-### Fonts
+### The bundled fonts entry point
+
+`eidos-ui/fonts` is the **one** part of this library that fetches a subresource. It ships `@font-face` rules for Plus Jakarta Sans and JetBrains Mono pointing at same-origin `.woff2` files, so importing it means:
+
+```css
+content-security-policy: style-src 'self'; font-src 'self';
+```
+
+`font-src 'self'` is a resource declaration, not a relaxation - unlike `style-src 'unsafe-inline'`, it grants no ability to inject anything. And if your policy sets `default-src 'self'`, **you need no new directive at all**: `font-src` falls back to `default-src` when unspecified.
+
+This is why it is a separate entry point rather than part of `eidos-ui/styles`. Skip the import and `dist/index.css` fetches nothing whatsoever - it contains no `url()`, no `@font-face` and no `@import` - so the guarantee at the top of this page holds unconditionally for anyone who doesn't opt in.
+
+One deployment note: bundlers emit the `.woff2` files into your own build output, which is what makes `'self'` the right origin. If you serve `dist/` directly from a CDN, the fonts come from that origin and it must be listed instead.
+
+### Fonts you supply at runtime
 
 `registerFontFace` (and the `ThemeEditor` upload control built on it) needs no `font-src` allowance either. It hands an `ArrayBuffer` to the CSS Font Loading API, and `font-src` governs _fetching_ a font resource by URL - there is no request to check.
 

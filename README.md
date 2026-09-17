@@ -45,6 +45,7 @@ npm install lucide-react
 ```tsx
 import { Button, Tooltip } from 'eidos-ui';
 import 'eidos-ui/styles';
+import 'eidos-ui/fonts'; // optional - bundled Plus Jakarta Sans + JetBrains Mono
 
 function App() {
   return (

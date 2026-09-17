@@ -16,6 +16,10 @@
       "types": "./dist/index.css.d.ts",
       "default": "./dist/index.css"
     },
+    "./fonts": {
+      "types": "./dist/fonts.css.d.ts",
+      "default": "./dist/fonts.css"
+    },
     "./*": {
       "types": "./dist/*/index.d.ts",
       "import": "./dist/*/index.js",
@@ -24,7 +28,9 @@
   },
   "sideEffects": [
     "dist/index.css",
-    "dist/index.css.d.ts"
+    "dist/index.css.d.ts",
+    "dist/fonts.css",
+    "dist/fonts.css.d.ts"
   ],
   "files": [
     "dist"
@@ -70,6 +76,8 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@eslint/js": "^10.0.1",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@storybook/addon-docs": "^10.6.0",
     "@storybook/addon-links": "^10.6.0",
     "@storybook/addon-vitest": "^10.6.0",

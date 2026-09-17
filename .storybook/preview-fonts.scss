@@ -1,0 +1,10 @@
+// Loads the bundled fonts for Storybook, from the same source of truth the
+// published `eidos-ui/fonts` entry point is built from.
+//
+// Only the directory differs: in the tarball the `.woff2` files sit beside
+// `fonts.css`, whereas here they are still in `node_modules` and Vite resolves
+// the package specifier. The `@font-face` rules themselves are not duplicated.
+@use '../src/styles/fonts.scss' with (
+  $jakarta-dir: '@fontsource-variable/plus-jakarta-sans/files',
+  $mono-dir: '@fontsource-variable/jetbrains-mono/files'
+);

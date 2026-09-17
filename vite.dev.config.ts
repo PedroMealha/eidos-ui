@@ -28,6 +28,15 @@ export default defineConfig({
         replacement: `${repoRoot}src/styles/index.scss`,
       },
       {
+        /**
+         * `src/styles/fonts.scss` defaults its font paths to `./fonts`, which
+         * only exists in the built package. This shim supplies the
+         * `node_modules` directories instead, exactly as `.storybook` does.
+         */
+        find: /^eidos-ui\/fonts$/,
+        replacement: `${repoRoot}.storybook/preview-fonts.scss`,
+      },
+      {
         find: /^eidos-ui$/,
         replacement: `${repoRoot}src/index.ts`,
       },

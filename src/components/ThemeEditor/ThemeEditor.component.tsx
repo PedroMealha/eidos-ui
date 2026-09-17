@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { CircleCheck, CircleX, TriangleAlert } from 'lucide-react';
 import { Alert } from '../Alert';
 import { Button, IconButton } from '../Button';
@@ -25,6 +25,7 @@ import {
   FONT_ACCEPT,
   isFontStackAvailable,
   registerFontFile,
+  subscribeToFontLoads,
   toFontStack,
 } from '../ThemeProvider/ThemeProvider.fonts';
 import type { ThemeEditorProps } from './ThemeEditor.types';
@@ -89,6 +90,13 @@ type Grade = 'aa' | 'aa-large' | 'fail';
 
 const gradeFor = (ratio: number): Grade => (ratio >= 4.5 ? 'aa' : ratio >= 3 ? 'aa-large' : 'fail');
 
+/** Spelled out for the middle grade, which is the one that misleads. */
+const GRADE_CAVEAT: Partial<Record<Grade, string>> = {
+  'aa-large':
+    ' WCAG AA needs 4.5:1 for normal text and allows 3:1 only at 24px or larger - button and label text here is around 12px, so this does not pass.',
+  fail: ' Below 3:1, which fails WCAG AA at every text size.',
+};
+
 /**
  * Severity is carried by an icon and the label text, not by colour.
  *
@@ -105,7 +113,12 @@ const GRADE_BADGE: Record<
   { label: string; icon: React.ComponentType<{ className?: string }> }
 > = {
   aa: { label: 'AA', icon: CircleCheck },
-  'aa-large': { label: 'AA large only', icon: TriangleAlert },
+  // Named for what it means in practice, not just for the threshold it clears.
+  // WCAG's relaxed 3:1 tier applies only to text at 24px (or 18.7px bold) and
+  // above, and nothing in this library is that large - `--font-size-sm` is
+  // ~12.25px at the default root size. A bare "AA large only" reads as a pass
+  // when for every component here it is a fail.
+  'aa-large': { label: 'Too low for body text', icon: TriangleAlert },
   fail: { label: 'Fails AA', icon: CircleX },
 };
 
@@ -122,10 +135,11 @@ const diagnose = (key: ThemeColorKey, base: string, explicitContrast?: string): 
   if (!isFill(key)) {
     // Link text sits on the page, so the page is what it must contrast with.
     const ratio = contrastRatio(base, PAGE_SURFACE);
+    const grade = gradeFor(ratio);
     return {
-      grade: gradeFor(ratio),
+      grade,
       ratio,
-      detail: `Link text on the page background. ${ratio.toFixed(2)}:1 against white.`,
+      detail: `Link text on the page background: ${ratio.toFixed(2)}:1 against white.${GRADE_CAVEAT[grade] ?? ''}`,
     };
   }
 
@@ -134,12 +148,14 @@ const diagnose = (key: ThemeColorKey, base: string, explicitContrast?: string): 
   const name = foreground.toLowerCase() === CONTRAST_DARK ? 'dark' : 'white';
   const edge = contrastRatio(base, PAGE_SURFACE);
 
+  const grade = gradeFor(ratio);
+
   return {
-    grade: gradeFor(ratio),
+    grade,
     ratio,
     detail: `${name === 'white' ? 'White' : 'Near-black'} text on this fill is ${ratio.toFixed(2)}:1.${
       explicitContrast ? ' Foreground pinned via the theme.' : ''
-    }`,
+    }${GRADE_CAVEAT[grade] ?? ''}`,
     edgeWarning:
       edge < EDGE_MIN_RATIO
         ? `Only ${edge.toFixed(2)}:1 against the page background - this fill is barely distinguishable from the page it sits on.`
@@ -187,26 +203,35 @@ const FontRow: React.FC<FontRowProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const selectOptions = useMemo(() => {
+  // Web fonts load asynchronously, so the first render always sees them as
+  // unavailable. Without re-checking once they arrive, the row would sit on a
+  // stale "not installed" warning for a font that is rendering perfectly.
+  // The reducer exists only to schedule that re-render; its value is unused.
+  const [, onFontsLoaded] = useReducer((count: number) => count + 1, 0);
+  useEffect(() => subscribeToFontLoads(onFontsLoaded), [onFontsLoaded]);
+
+  const baseOptions = useMemo(() => {
     // A stack the theme carries but that isn't in the list (loaded by the host
     // app, or set programmatically) still needs to be selectable, labelled with
     // its own first family so the row names the font actually in use.
     const known = options.some((o) => o.value === value);
-    const all = known ? options : [...options, { label: `${firstFamily(value)} (custom)`, value }];
-
-    // Availability is annotated per option rather than filtered or disabled.
-    //
-    // Filtering would be wrong: a theme is shared across machines, so a font
-    // present here may be absent for the next user - and vice versa, which
-    // means hiding a font someone legitimately wants to select. Disabling has
-    // the same flaw. Annotating keeps every choice available while making the
-    // list stop implying that a name is a guarantee.
-    return all.map((o) => ({
-      id: o.value,
-      label: isFontStackAvailable(o.value) ? o.label : `${o.label} - not installed`,
-      value: o.value,
-    }));
+    return known ? options : [...options, { label: `${firstFamily(value)} (custom)`, value }];
   }, [options, value]);
+
+  // Probed on every render rather than memoised: availability changes over time
+  // as fonts load, so a cached answer is a wrong answer. Four canvas
+  // measurements are far cheaper than getting this wrong.
+  //
+  // Availability is annotated per option rather than filtered or disabled. A
+  // theme is shared across machines, so a font present here may be absent for
+  // the next user - and vice versa, which would mean hiding a font someone
+  // legitimately wants. Annotating keeps every choice selectable while making
+  // the list stop implying that a name is a guarantee.
+  const selectOptions = baseOptions.map((option) => ({
+    id: option.value,
+    label: isFontStackAvailable(option.value) ? option.label : `${option.label} - not installed`,
+    value: option.value,
+  }));
 
   const handleFile = useCallback(
     async (file: File | undefined) => {

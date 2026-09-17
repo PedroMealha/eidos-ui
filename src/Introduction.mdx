@@ -120,9 +120,15 @@ import pkg from '../package.json';
     </p>
     <p style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
       Once at your app root - <code style={{ fontSize: '0.8125rem' }}>main.tsx</code> or equivalent.
-      Without it, components render unstyled.
+      Without it, components render unstyled. The second import is optional: it supplies the bundled
+      Plus Jakarta Sans and JetBrains Mono, which the theme names by default but which a browser can
+      only use if something provides the files.
     </p>
-    <Source dark language="ts" code={`import 'eidos-ui/styles';`} />
+    <Source
+      dark
+      language="ts"
+      code={`import 'eidos-ui/styles';\nimport 'eidos-ui/fonts'; // optional`}
+    />
   </div>
 </div>
 

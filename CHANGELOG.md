@@ -30,6 +30,9 @@ Entries land here as work happens, not written retroactively at release time
   `onFontUpload`, and warns when the selected font stack won't actually render.
 - `ThemeEditor` labels font options that aren't installed, rather than offering
   them as though a stack could guarantee a font.
+- `eidos-ui/fonts` entry point - bundles Plus Jakarta Sans and JetBrains Mono
+  (variable, latin + latin-ext, ~102 KB) so the theme's default families render
+  everywhere rather than only where they happen to be installed.
 - `registerFontFace`, `registerFontFile`, `isFontAvailable`,
   `isFontStackAvailable`, `familyNameFromFile` and `toFontStack` - register a
   font from an `ArrayBuffer` (no CSP `font-src` allowance needed) and detect
@@ -61,6 +64,12 @@ Entries land here as work happens, not written retroactively at release time
 - `ColorPicker` no longer shifts the colour it was given - it rounded its
   internal HSV state to whole percent, so `#5c5de8` displayed as `#5d5de8` and
   any interaction committed the drifted value.
+- `ThemeEditor` no longer reports a web font as "not installed" after it has
+  loaded - availability was probed once during the first render, before any
+  `@font-face` had finished loading, and that negative result was cached.
+- `ThemeEditor`'s middle contrast grade now reads "Too low for body text"
+  instead of "AA large only", which implied a pass; WCAG's 3:1 tier only
+  applies at 24px and this library's labels are ~12px.
 - `ColorPicker`'s saturation/brightness canvas now renders in popover mode - it
   sized itself off an ancestor class that the portaled panel never had, so it
   collapsed to zero height and left only the hue slider, which cannot change a

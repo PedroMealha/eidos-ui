@@ -90,8 +90,9 @@ export const registerFontFace = async (family: string, data: ArrayBuffer): Promi
   const face = new FontFace(family, data);
   await face.load();
   document.fonts.add(face);
-  // This family's availability has just changed, so any cached probe is stale.
-  availabilityCache.delete(family);
+  // No cache invalidation needed: only positive results are cached, and this
+  // family could not have been cached positive while it was still unavailable.
+  // `document.fonts.add` also fires `loadingdone`, which wakes subscribers.
   return family;
 };
 
@@ -138,10 +139,45 @@ const PROBE_TEXT = 'mmmmmmmmmmlliI0OWw@';
 const PROBE_FALLBACKS = ['monospace', 'serif'] as const;
 
 /**
- * Cached per family. Probing is cheap but runs during render, and the answer
- * only changes when a font is registered - which clears the entry.
+ * Cached per family - **positive results only**.
+ *
+ * A negative answer is not stable: web fonts load asynchronously (always, with
+ * `font-display: swap`), so a family probed during the first render is
+ * legitimately unavailable and becomes available moments later. Caching that
+ * `false` pinned the answer forever, which showed a permanent "not installed"
+ * warning for fonts that had in fact loaded.
+ *
+ * A positive answer cannot go stale the same way - a loaded font is not
+ * unloaded - so those are worth keeping. Re-probing the misses costs one canvas
+ * measurement each.
  */
-const availabilityCache = new Map<string, boolean>();
+const availabilityCache = new Map<string, true>();
+
+/**
+ * Notifies when the set of usable fonts changes, so a caller rendering an
+ * availability state can re-check.
+ *
+ * Both signals are needed: `loadingdone` covers fonts that begin loading after
+ * subscription, while `ready` covers those already in flight when the listener
+ * was attached - which is the common case for a stylesheet's `@font-face`
+ * rules, since they start loading before any component mounts.
+ */
+export const subscribeToFontLoads = (onChange: () => void): (() => void) => {
+  if (typeof document === 'undefined' || !document.fonts) return () => {};
+
+  let active = true;
+  const handler = () => {
+    if (active) onChange();
+  };
+
+  document.fonts.addEventListener('loadingdone', handler);
+  void document.fonts.ready.then(handler);
+
+  return () => {
+    active = false;
+    document.fonts.removeEventListener('loadingdone', handler);
+  };
+};
 
 /**
  * Whether a font family will actually render, rather than silently falling
@@ -165,8 +201,7 @@ export const isFontAvailable = (family: string): boolean => {
   if (GENERIC_FAMILIES.has(name.toLowerCase())) return true;
   if (typeof document === 'undefined') return true;
 
-  const cached = availabilityCache.get(name);
-  if (cached !== undefined) return cached;
+  if (availabilityCache.get(name)) return true;
 
   try {
     const context = document.createElement('canvas').getContext('2d');
@@ -181,7 +216,7 @@ export const isFontAvailable = (family: string): boolean => {
       return Math.abs(context.measureText(PROBE_TEXT).width - baseline) > 0.5;
     });
 
-    availabilityCache.set(name, available);
+    if (available) availabilityCache.set(name, true);
     return available;
   } catch {
     // Never report a font missing because probing itself failed - and don't
