@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [2.1.0] - 2026-09-17
+
 ### Added
 
 - `Toolbar` gains `user` - the signed-in user's avatar (`name`, `src`, `color`).
