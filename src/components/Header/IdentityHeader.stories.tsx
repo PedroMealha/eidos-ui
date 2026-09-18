@@ -158,11 +158,11 @@ export const CustomMedia: Story = {
 };
 
 /**
- * `variant="default"` opts out of the hero band while keeping the avatar and
- * metadata layout - for an identity header that sits inline on a page which
- * already has its own surface, such as inside a `Card`.
+ * `variant="default"` drops back to the standard title size while keeping the
+ * avatar and metadata layout - for an identity header that shouldn't dominate
+ * the page it sits on.
  */
-export const WithoutHeroSurface: Story = {
+export const AtDefaultProminence: Story = {
   args: {
     variant: 'default',
   },

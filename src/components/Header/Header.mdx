@@ -61,9 +61,11 @@ Icon-only and labeled actions can be freely mixed within the same `actions` arra
 
 ## Hero variant
 
-`variant="hero"` puts the header on its own padded, bordered surface with a larger title, for account and profile landing areas. The band is `--white` with a `--gray-200` border, matching `Card`'s surface convention - so it reads as a raised panel on `PageLayout`'s gray content area. It is deliberately not a themed tint: a `--x-50` background behind text is 4.49:1 for the shipped palette - under AA - and far worse for a pale themed base.
+`variant="hero"` raises the header's prominence with a larger title, for account and profile landing areas.
 
-`IdentityHeader` is this combination preconfigured, and is usually what you want for an account or profile page.
+> **Note**: it paints **no surface** - no background, border or padding of its own. That is deliberate. The header is normally rendered inside a region that already has padding (`PageLayout` pads `.eidos-pagelayout__header`), so adding a second inset here pushed the title out of alignment with everything else on the page, and a bordered box inside a padded region reads as a double border on three sides. If you want the header on a surface, that belongs to the page - wrap it in a `Card` - where the padding is actually known.
+
+`IdentityHeader` is this variant plus the avatar wiring, and is usually what you want for an account or profile page.
 
 <Canvas of={HeaderStories.Hero} />
 
@@ -71,7 +73,10 @@ Icon-only and labeled actions can be freely mixed within the same `actions` arra
 
 `Header` reflows against **its own width**, not the viewport - so it behaves correctly in a narrow column on a wide screen, which is exactly the case inside `PageLayout`, where it shares a grid row with a collapsible navigation rail. Both headers in the story below are in the same window; only their container widths differ.
 
-At 640px or narrower the title stack and the actions stack vertically, the retained actions stretch to fill the line, and every action past `actionsVisibleWhenCollapsed` (default `1`) folds into an overflow popover. The **last** actions are the ones kept inline, since a primary call to action is conventionally rightmost. Buttons stay at `md` rather than shrinking to fit, so they stay clear of WCAG 2.5.8's 24x24 minimum target size.
+There are two steps, both measured against the header's own width:
+
+- **640px and under** - the title stack and the actions stack vertically, the retained actions stretch to fill the line, and every action past `actionsVisibleWhenCollapsed` (default `1`) folds into an overflow popover. The **last** actions are the ones kept inline, since a primary call to action is conventionally rightmost. Buttons stay at `md` rather than shrinking to fit, so they stay clear of WCAG 2.5.8's 24x24 minimum target size.
+- **480px and under** - `media` moves onto its own row, centred, with the title stack full-width beneath it. Side by side, the media takes a third of a phone-width line and leaves the title wrapping over three or four lines next to it.
 
 <Canvas of={HeaderStories.ResponsiveCollapse} />
 

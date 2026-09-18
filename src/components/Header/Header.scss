@@ -21,23 +21,22 @@
   flex-wrap: wrap;
   will-change: transform;
 
-  // The hero band. Only the paint lives here - see `&__content` for why the
-  // padding cannot.
+  // `--hero` paints nothing on purpose, and has no padding of its own - it is
+  // a prominence variant (a larger title), not a surface.
   //
-  // Two deliberate choices:
+  // It was briefly a bordered, padded band. Two things were wrong with that,
+  // both only visible once it was rendered in `PageLayout` rather than in
+  // isolation:
   //
-  // - **`--white`, matching `Card`'s surface convention**, not `--gray-50`.
-  //   The band's main home is inside `PageLayout`, whose content area is
-  //   itself `--gray-50` - painting the band the same colour made it
-  //   invisible apart from its border, which is how this was caught.
-  // - **Not a themed tint.** A `--x-50` background behind text is 4.49:1 for
-  //   the shipped indigo and far worse for a pale themed base, so a themed
-  //   band would fail AA the moment a consumer overrides `--primary-color`.
-  &--hero {
-    background-color: var(--white);
-    border: 1px solid var(--gray-200);
-    @include border-radius(lg);
-  }
+  // - **Padding misaligned the page.** `PageLayout` already pads the header
+  //   region (`.eidos-pagelayout__header`), so a second inset here pushed the
+  //   title and avatar further in than every card below them.
+  // - **A box inside a padded region reads as a double border**, since the
+  //   region's own edges sit just outside it on three sides.
+  //
+  // So there is deliberately no `&--hero` paint rule. If a surface is wanted,
+  // it belongs to the *page* - wrap the header in a `Card` - not in here,
+  // where it cannot know what padding it has been given.
 
   &__content {
     display: flex;
@@ -51,30 +50,6 @@
     // pushed `&__actions` off to the side (or past the edge) instead of the
     // title/subtitle wrapping or truncating first on a narrow viewport.
     min-width: 0;
-
-    // The hero's padding lives on this descendant rather than on
-    // `.eidos-header--hero` itself because **an element is never matched by
-    // its own container query** - only its descendants are. On the root it
-    // could not step down with the ladder below. The band's background and
-    // border stay on the root, where nothing needs to query them, so the
-    // result is visually identical and needs no extra wrapper - which is
-    // also why `meta` renders inside `__titles`, so this element really does
-    // contain the whole header.
-    //
-    // Don't "tidy" this back onto `&--hero`; it silently loses every step.
-    .eidos-header--hero > & {
-      padding: var(--spacing-lg);
-
-      @include container-down('md', 'eidos-header') {
-        padding: var(--spacing-md);
-      }
-
-      // Matches PageLayout's own `md`-down gutter, so the band doesn't eat a
-      // 375px viewport from both sides at once.
-      @include container-down('sm', 'eidos-header') {
-        padding: var(--spacing-sm);
-      }
-    }
 
     // Below `sm` the actions go under the title block instead of
     // `space-between`-ing into a ragged right-aligned scrap beside it.
@@ -101,11 +76,31 @@
       align-items: flex-start;
       gap: var(--spacing-sm);
     }
+
+    // At phone widths the side-by-side arrangement stops working: the media
+    // takes a third of the line and leaves the title wrapping over three or
+    // four lines beside it. The media moves onto its own row instead.
+    //
+    // `stretch` rather than the `flex-start` above, so the title stack still
+    // gets the full width once this is a column - `flex-start` would shrink
+    // it to its content and make the wrapping worse, not better.
+    @include container-down('xs', 'eidos-header') {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--spacing-md);
+    }
   }
 
   &__media {
     display: flex;
     flex-shrink: 0;
+
+    // Centred on its own row, while the title stack below stays
+    // left-aligned - centring the text too would leave the ragged edges of a
+    // wrapped subtitle and a multi-item meta row fighting each other.
+    @include container-down('xs', 'eidos-header') {
+      align-self: center;
+    }
   }
 
   &__titles {
@@ -196,12 +191,15 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--spacing-xs) var(--spacing-md);
+    // The column gap has to be clearly larger than the gap *inside* an item,
+    // or adjacent facts read as one run of text - "Owner ana@… Renews 01/01…"
+    // with nothing separating the value of one from the label of the next.
+    gap: var(--spacing-xs) var(--spacing-lg);
     margin-top: var(--spacing-sm);
     font-size: var(--font-size-sm);
 
     @include container-down('sm', 'eidos-header') {
-      gap: var(--spacing-xs) var(--spacing-sm);
+      gap: var(--spacing-xs) var(--spacing-md);
     }
   }
 
@@ -221,17 +219,24 @@
   &__meta-icon {
     width: var(--font-size-sm);
     height: var(--font-size-sm);
-    color: var(--gray-500);
+    // A step lighter than the label: the icon is the least informative part
+    // of a fact and shouldn't compete with its value.
+    color: var(--gray-400);
     flex-shrink: 0;
   }
 
+  // Label and value are separated by weight, not just by colour. Two spans of
+  // the same size and weight, a few pixels apart, read as one phrase however
+  // the colours differ - which is what made this row look mushed.
   &__meta-label {
     color: var(--gray-500);
+    font-weight: var(--font-weight-normal);
     flex-shrink: 0;
   }
 
   &__meta-value {
     color: var(--gray-700);
+    font-weight: var(--font-weight-medium);
     min-width: 0;
     // The break belongs on the value, not the row: an item wraps as a whole
     // unit, but a long single value (an email) still has to be breakable or

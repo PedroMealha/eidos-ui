@@ -58,6 +58,30 @@ export type Session = {
   role: Role;
 };
 
+export type Plan = 'starter' | 'business' | 'enterprise';
+
+/**
+ * The workspace itself, as opposed to the person signed into it.
+ *
+ * Deliberately separate from `Session`: `/app/account` is about the
+ * organisation (plan, seats, billing), while `/app/settings/profile` is about
+ * the signed-in user. Keeping them apart is what stops the two screens from
+ * becoming two editors of the same thing.
+ *
+ * Seat *usage* is not stored here - it is derived from the team list, so
+ * inviting or deactivating someone on `/app/team` is reflected here
+ * immediately instead of drifting from a duplicated count.
+ */
+export type Organization = {
+  id: string;
+  name: string;
+  slug: string;
+  plan: Plan;
+  renewsAt: string;
+  ownerEmail: string;
+  createdAt: string;
+};
+
 export type DashboardStats = {
   openTickets: number;
   resolvedThisWeek: number;

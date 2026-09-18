@@ -157,7 +157,10 @@ export const ROUTES: RouteDef[] = [
   {
     pattern: '/app/account',
     title: 'Account',
-    subtitle: 'Manage your account settings.',
+    // The workspace, not the signed-in user - `/app/settings/profile` owns
+    // the person. The page replaces both of these with the organisation's own
+    // name and seat count once it has loaded.
+    subtitle: 'Plan, seats and billing for this workspace.',
     component: AccountPage,
   },
 ];

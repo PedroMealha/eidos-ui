@@ -8,6 +8,15 @@ let nextId = members.length + 1;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * Active members currently occupying a seat.
+ *
+ * Read by `accountApi` so the workspace's seat usage is derived from the one
+ * team list rather than duplicated into the organisation record, where it
+ * would drift the first time someone is invited or deactivated.
+ */
+export const activeMemberCount = (): number => members.filter((member) => member.active).length;
+
 export const teamApi = {
   list: (): Promise<TeamMember[]> =>
     request('Loading the team', () => members.map((member) => ({ ...member }))),

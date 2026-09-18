@@ -2,9 +2,14 @@ import type { IconType } from '../../utils';
 import { TextButtonProps, IconButtonProps } from '../Button';
 
 /**
- * `hero` renders the header on its own padded, bordered surface with a larger
- * title - the account/profile landing-area treatment. `default` is the bare
- * header that sits directly on the page.
+ * `hero` raises the header's prominence with a larger title - the
+ * account/profile landing-area treatment. `default` is the standard page
+ * header.
+ *
+ * Neither paints a surface: no background, border or padding. The header is
+ * normally rendered inside an already-padded region (`PageLayout` pads its
+ * header area), so a second inset here would misalign it against the rest of
+ * the page. Wrap the header in a `Card` if a surface is wanted.
  */
 export type HeaderVariant = 'default' | 'hero';
 

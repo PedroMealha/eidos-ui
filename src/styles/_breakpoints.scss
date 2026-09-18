@@ -19,7 +19,13 @@
 // `getComputedStyle` while the media queries themselves always come from here,
 // via the `media-up`/`media-down` mixins in `mixins.scss`.
 
+// `sm` upwards matches Tailwind's scale, which is what most consuming apps
+// already think in. `xs` is the one addition: it is a *component*-level
+// threshold, for the point where a horizontal arrangement stops fitting a
+// phone at all and has to stack - `Header` moves its leading media onto its
+// own row there. Nothing in the library uses it as a page breakpoint.
 $breakpoints: (
+  'xs': 480px,
   'sm': 640px,
   'md': 768px,
   'lg': 1024px,

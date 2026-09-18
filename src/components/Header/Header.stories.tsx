@@ -196,12 +196,14 @@ export const WithMetadata: Story = {
 };
 
 /**
- * `variant="hero"` puts the header on its own padded, bordered surface with a
- * larger title - the treatment account and profile landing areas want. The
- * band matches `Card`'s surface (`--white` with a `--gray-200` border), so it
- * reads as a raised panel on `PageLayout`'s gray content area. It is
- * deliberately not a themed tint: a `--x-50` background behind text is under
- * AA even for the shipped palette, and far worse for a pale themed base.
+ * `variant="hero"` raises the header's prominence with a larger title - the
+ * treatment account and profile landing areas want.
+ *
+ * It paints no surface of its own (no background, border or padding): the
+ * header is normally rendered inside a region that is already padded, so a
+ * second inset here misaligns it against the rest of the page, and a
+ * bordered box inside a padded region reads as a double border. A surface,
+ * if wanted, belongs to the page - wrap the header in a `Card`.
  *
  * `IdentityHeader` is this combination preconfigured.
  */

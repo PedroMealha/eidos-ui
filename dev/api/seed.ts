@@ -1,4 +1,11 @@
-import type { ActivityEntry, TeamMember, Ticket, TicketPriority, TicketStatus } from './types';
+import type {
+  ActivityEntry,
+  Organization,
+  TeamMember,
+  Ticket,
+  TicketPriority,
+  TicketStatus,
+} from './types';
 
 /**
  * Seeded PRNG (mulberry32) so the dataset is identical on every reload.
@@ -150,6 +157,22 @@ export const seedTeam = (): TeamMember[] => [
     joinedAt: daysAgo(30),
   },
 ];
+
+/**
+ * `createdAt` matches Ana's `joinedAt` above - she is the owner, so the
+ * workspace cannot predate her. `renewsAt` is a fixed date rather than an
+ * offset because the whole seeded world is pinned to `daysAgo`'s 2026-08-28
+ * base, and a renewal date has to sit in that fiction's future.
+ */
+export const seedOrganization = (): Organization => ({
+  id: 'org_1',
+  name: 'Meridian Support',
+  slug: 'meridian-support',
+  plan: 'business',
+  renewsAt: '2027-01-01T00:00:00.000Z',
+  ownerEmail: 'ana@meridian.test',
+  createdAt: daysAgo(420),
+});
 
 export const seedActivity = (): ActivityEntry[] => [
   // References must match the seeded tickets above: reference = MER-(1200 + index * 7).

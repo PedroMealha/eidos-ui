@@ -5,7 +5,7 @@ import * as IdentityHeaderStories from './IdentityHeader.stories';
 
 # IdentityHeader
 
-`Header` preconfigured for the "this page is about one person or entity" shape - an avatar beside the name, supporting facts below it, actions on the end, on a hero surface. Account and profile pages both want exactly this.
+`Header` preconfigured for the "this page is about one person or entity" shape - an avatar beside the name, supporting facts below it, actions on the end, at hero prominence. Account and profile pages both want exactly this.
 
 > **Note**: this is deliberately one component rather than an `AccountHeader` and a `ProfileHeader`. An account leads with the organisation and a profile with the person, but the structure is identical, so two exports would render the same markup under names that suggest otherwise. A settings-style page is the genuinely different case - it has no identity to lead with, so it wants a plain `Header`.
 
@@ -43,15 +43,15 @@ A profile page leads with the person. `title` takes inline nodes, so an account-
 
 ## Custom media
 
-`avatar` is a shorthand that renders an `Avatar` at `lg` (48px). Pass `media` instead for anything else - a logo, an icon block, or an avatar at the larger size a hero band usually wants, which `Avatar` cannot currently express. If both are given, `media` wins and a development warning is logged.
+`avatar` is a shorthand that renders an `Avatar` at `lg` (48px). Pass `media` instead for anything else - a logo, an icon block, or an avatar at the larger size a hero header usually wants, which `Avatar` cannot currently express. If both are given, `media` wins and a development warning is logged.
 
 <Canvas of={IdentityHeaderStories.CustomMedia} />
 
-## Without the hero surface
+## At default prominence
 
-`variant="default"` keeps the avatar and metadata layout but drops the band - for an identity header sitting on a page that already has its own surface, such as inside a `Card`.
+`variant="default"` keeps the avatar and metadata layout but drops back to the standard title size - for an identity header that shouldn't dominate the page it sits on.
 
-<Canvas of={IdentityHeaderStories.WithoutHeroSurface} />
+<Canvas of={IdentityHeaderStories.AtDefaultProminence} />
 
 ## Everything else is Header
 

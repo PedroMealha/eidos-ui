@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import type { HeaderActionProps, HeaderProps } from 'eidos-ui';
+import type { HeaderProps } from 'eidos-ui';
 import { useRouter } from '../routes/router';
 
 /**
@@ -23,15 +23,25 @@ import { useRouter } from '../routes/router';
  * array of button descriptors), not as children - there is no DOM slot to
  * portal into, and portalled markup would bypass `Header`'s own layout.
  */
-export type PageChrome = {
-  /** Overrides the route's static title - for titles that depend on loaded data. */
-  title?: React.ReactNode;
-  subtitle?: React.ReactNode;
-  /** Page-level actions, rendered in the shell's `Header`. */
-  actions?: HeaderActionProps[];
+export type PageChrome = PageHeaderChrome & {
   /** Overrides the last breadcrumb label - the counterpart to a dynamic `title`. */
   breadcrumb?: string;
 };
+
+/**
+ * Every `Header` field a page may set, derived from `HeaderProps` rather than
+ * restated field by field.
+ *
+ * Restating them is how this drifts: the list here used to be
+ * `title | subtitle | actions`, so when `Header` gained `media`, `meta` and
+ * `variant`, no Meridian page could reach them - an identity/hero header was
+ * simply unavailable through the shell, with nothing to signal why. Deriving
+ * the type means a field added to `Header` is available here the same day.
+ *
+ * `className` is excluded because the shell owns it: `PageLayout` merges its
+ * own layout class into whatever it is given.
+ */
+type PageHeaderChrome = Partial<Omit<HeaderProps, 'className'>>;
 
 type Registration = { path: string; chrome: PageChrome };
 
@@ -122,13 +132,22 @@ export const useResolvedChrome = (): ResolvedChrome => {
   // applied to the incoming one.
   const override = registration?.path === path ? registration.chrome : undefined;
   const route = match?.route;
+  const { breadcrumb, ...headerOverride } = override ?? {};
 
   return {
     header: {
+      // Spread rather than copied field by field, for the same reason
+      // `PageLayout` spreads its own `toolbar`/`header` config: a hand-written
+      // list silently drops anything it doesn't know about, so a page setting
+      // `media` or `meta` would have them vanish here with no error. This is
+      // the same failure the library's own `DataGrid`->`Table` filter adapter
+      // hit when it forgot to forward `dateFilterMode`.
+      ...headerOverride,
+      // Applied after the spread: these two fall back to the route table, and
+      // an override that didn't set them must not blank the route's value.
       title: override?.title ?? route?.title ?? 'Not found',
       subtitle: override?.subtitle ?? route?.subtitle,
-      actions: override?.actions,
     },
-    breadcrumb: override?.breadcrumb,
+    breadcrumb,
   };
 };

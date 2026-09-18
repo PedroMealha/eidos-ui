@@ -20,8 +20,10 @@ Entries land here as work happens, not written retroactively at release time
 - `Header` takes `media` for leading content (an `Avatar`, a logo, an icon
   block) before the title stack.
 - `Header` takes `meta` for a row of supporting facts below the subtitle.
-- `Header` takes `variant="hero"`, rendering it on a padded, bordered surface
-  with a larger title.
+- `Header` takes `variant="hero"`, raising its prominence with a larger title.
+- `xs` (480px) breakpoint, for the point where a component's horizontal
+  arrangement has to stack on a phone - `Header` moves its leading media onto
+  its own row there.
 - `Header` folds surplus actions into an overflow popover on a narrow header,
   controlled by `collapseActionsBelow` (default `640`) and
   `actionsVisibleWhenCollapsed` (default `1`).
