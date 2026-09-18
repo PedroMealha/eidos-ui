@@ -221,4 +221,4 @@ if (formatted) {
 } else {
   console.log('then `npm run prettier:fix` (auto-format failed) and `npm run verify`.\n');
 }
-console.log(snippet);
+// console.log(snippet);

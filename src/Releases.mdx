@@ -15,6 +15,100 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.1.0"
+  date="2026-09-18"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>--scrollbar-size</Code> and <Code>--scrollbar-thumb</Code> tokens, which style every
+          scrollbar via <Code>global.scss</Code> and can be overridden to opt out.
+        </>,
+        <>
+          <Code>Tabs</Code> gains <Code>scrollButtons</Code> (<Code>'auto' | 'none'</Code>, default{' '}
+          <Code>'auto'</Code>) - previous/ next buttons that appear only while the strip overflows,
+          replacing the native scrollbar as the affordance.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>PageLayout</Code> scrolls its whole <Code>main</Code> content area: the header and
+          footer now scroll with the page body instead of staying fixed above and below it. The
+          toolbar and navigation rail still stay put.
+        </>,
+        <>
+          <Code>global.scss</Code> no longer puts a <Code>margin-bottom</Code> on <Code>body</Code>{' '}
+          - it gave any full-height layout a document-level scrollbar of exactly that size.
+        </>,
+        <>
+          <Code>Tabs</Code> renders its tab list inside a new <Code>.eidos-tabs-bar</Code> row,
+          which also holds the scroll buttons.
+        </>,
+        <>
+          <Code>Tabs</Code>' <Code>size</Code> now sizes the tab strip rather than each tab, so all
+          three variants are the same height for a given size: <Code>enclosed</Code> strips lose the
+          8px their padding used to add, and <Code>pills</Code> tabs hug their label (centred in the
+          strip) instead of filling a 40px box.
+        </>,
+        <>
+          <Code>Tabs</Code>' scroll buttons float over the strip's edges instead of sitting beside
+          it, and each one is shown only while its direction can still scroll rather than being
+          rendered disabled at the end.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>PageLayout</Code> page content no longer overlaps the footer - its content area is a
+          real scroll container instead of a fixed three-row grid whose body track could not grow
+          past the scrollport.
+        </>,
+        <>
+          <Code>PageLayout</Code> no longer stretches the footer into the leftover vertical space
+          when <Code>header</Code> is omitted.
+        </>,
+        <>
+          <Code>Checkbox</Code>, <Code>Radio</Code>, <Code>Switch</Code>, <Code>NumberInput</Code>{' '}
+          and <Code>ThemeEditor</Code> no longer add a phantom scrollbar to the page. Their
+          visually-hidden native inputs are <Code>position: absolute</Code> with no positioned
+          ancestor, so they escaped every scroll container and were counted into the document's
+          scrollable height - a long list of them produced a second scrollbar revealing only empty
+          space.
+        </>,
+        <>
+          <Code>Tabs</Code> no longer shows a permanent vertical scrollbar on its tab strip - its
+          horizontal scroll container also scrolls vertically per spec, and the <Code>line</Code>{' '}
+          indicator hung 2px below the box.
+        </>,
+        <>
+          <Code>Tabs</Code>' <Code>line</Code> indicator is visible again instead of being clipped
+          by that scroll container; the 2px rule is now an inset shadow with the indicator covering
+          it.
+        </>,
+        <>
+          <Code>Tabs</Code>' keyboard focus ring is visible again - the outward ring was clipped
+          away on all four sides by the scroll container, so focus was invisible in the{' '}
+          <Code>line</Code> and <Code>pills</Code> variants.
+        </>,
+        <>
+          <Code>Tabs</Code> scrolls the active tab into view when it is selected outside the visible
+          part of an overflowing strip.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.0.0"
   date="2026-09-17"
   bump="major"
