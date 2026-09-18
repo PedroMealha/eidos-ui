@@ -395,7 +395,18 @@
 // ============================================================================
 
 .eidos-textarea {
-  flex: 1;
+  // `flex-basis: auto`, not the `0` that plain `flex: 1` implies. The wrapper
+  // is a *column* flex container, so the main axis here is the height - and
+  // with a basis of `0` the used height comes entirely from the flex
+  // algorithm, which means the `height` the browser writes onto the element
+  // when you drag the resize grabber is ignored. `resize: vertical` was
+  // applied correctly all along; dragging it simply did nothing (measured:
+  // setting `height: 300px` left the box at 90px).
+  //
+  // `auto` makes the element's own height its flex base size, so both the
+  // resize handle and any explicit height work, while `flex-grow: 1` still
+  // lets it fill a wrapper that has been given a fixed height.
+  flex: 1 1 auto;
   width: 100%;
   @include input-reset;
   color: var(--dark-color);

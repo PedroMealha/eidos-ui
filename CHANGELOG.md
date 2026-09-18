@@ -51,6 +51,9 @@ Entries land here as work happens, not written retroactively at release time
 - `Tabs` and `SegmentedControl` scroll buttons no longer take focus when
   clicked, which the browser reported as focus trapped inside an
   `aria-hidden` subtree.
+- `Textarea` can actually be resized by dragging its grabber; the element was
+  a `flex: 1` item of a column wrapper, so the height the browser sets while
+  dragging was ignored in favour of the flex base size.
 - `Navigation` honours `defaultCollapsed` (and a controlled `collapsed`) on a
   viewport wider than `collapseBelow`; the breakpoint used to apply its own
   answer on mount, so a rail asked to start collapsed sprang open immediately.
