@@ -15,6 +15,46 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.1.1"
+  date="2026-09-18"
+  bump="patch"
+  sections={[
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>Navigation</Code>'s item hover uses the <Code>--primary-50</Code> tint rather than a
+          fixed <Code>--gray-100</Code>, so the rail responds to the theme.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Navigation</Code>'s active item is legible on any theme colour: it is now a filled{' '}
+          <Code>--primary-color</Code>/<Code>--primary-contrast</Code> pill instead of a{' '}
+          <Code>--primary-50</Code> tint behind <Code>--primary-color</Code> text, which was 4.49:1
+          - under AA - even for the preset palette.
+        </>,
+        <>
+          <Code>Navigation</Code>'s active item keeps its own styling on hover; the inactive hover
+          rule was more specific and repainted it.
+        </>,
+        <>
+          <Code>ThemeProvider</Code> generates real tints for a dark base colour: the ramp's ends
+          were positioned relative to the base, so a dark navy primary produced{' '}
+          <Code>--primary-50: #8a8a8c</Code> - a mid grey - and every component painting that token
+          turned muddy. The ends are now absolute, and the preset ramp is unchanged.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.1.0"
   date="2026-09-18"
   bump="minor"
