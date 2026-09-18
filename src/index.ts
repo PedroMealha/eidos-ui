@@ -2,7 +2,7 @@
 export { Card } from './components/Card';
 export { PageLayout } from './components/PageLayout';
 export { Toolbar } from './components/Toolbar';
-export { Header } from './components/Header';
+export { Header, IdentityHeader } from './components/Header';
 export { Footer } from './components/Footer';
 export { Navigation } from './components/Navigation';
 export { Badge } from './components/Badge';
@@ -75,7 +75,13 @@ export { useTheme } from './components/ThemeProvider';
 export type { CardProps } from './components/Card';
 export type { PageLayoutProps } from './components/PageLayout';
 export type { ToolbarProps, ToolbarActionProps } from './components/Toolbar';
-export type { HeaderProps, HeaderActionProps } from './components/Header';
+export type {
+  HeaderProps,
+  HeaderActionProps,
+  HeaderMetaItem,
+  HeaderVariant,
+  IdentityHeaderProps,
+} from './components/Header';
 export type { FooterProps, FooterCopyrightProps, FooterComponentProps } from './components/Footer';
 export type {
   NavigationProps,

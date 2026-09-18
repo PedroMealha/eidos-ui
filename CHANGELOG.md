@@ -13,6 +13,39 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `IdentityHeader` component - `Header` preconfigured for account and profile
+  pages, with an avatar beside the name and a metadata row below it.
+- `Header` takes `media` for leading content (an `Avatar`, a logo, an icon
+  block) before the title stack.
+- `Header` takes `meta` for a row of supporting facts below the subtitle.
+- `Header` takes `variant="hero"`, rendering it on a padded, bordered surface
+  with a larger title.
+- `Header` folds surplus actions into an overflow popover on a narrow header,
+  controlled by `collapseActionsBelow` (default `640`) and
+  `actionsVisibleWhenCollapsed` (default `1`).
+- `container-up` / `container-down` SCSS mixins, the element-relative
+  counterparts of `media-up` / `media-down`, reading the same breakpoint map.
+
+### Fixed
+
+- `Footer`'s `component` slot fills the footer's width instead of collapsing to
+  its content width, so a `space-between` footer bar no longer needs a
+  `width: 100%` of its own.
+- `PageLayout` no longer paints a stray 1px rule down the page edge when
+  `navigation` is omitted; the empty rail column now really collapses to
+  nothing.
+
+### Changed
+
+- `Header` reflows against its own width rather than the viewport, so it lays
+  out correctly beside `PageLayout`'s navigation rail and in any narrow column.
+- `Header`'s action row stacks full-width at 640px and under, and its surplus
+  actions now collapse by default - mobile rendering differs from 3.1.1 without
+  any prop change, though nothing needs updating on the consumer side. Pass
+  `collapseActionsBelow={0}` to keep every action inline.
+
 ## [3.1.1] - 2026-09-18
 
 ### Changed

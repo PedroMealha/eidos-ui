@@ -90,11 +90,13 @@ When the page content is shorter than the scroll region, the body absorbs the le
 
 ## Responsive behaviour
 
-Every piece of `PageLayout`'s chrome adapts to a narrow viewport on its own, with no coordination required between them:
+Every piece of `PageLayout`'s chrome adapts on its own, with no coordination required between them - though they don't all measure the same thing, which matters here specifically because the navigation rail makes the content column narrower than the window:
 
-- **`Navigation`** can auto-collapse to icon-only via `navigation.collapseBelow` (or be driven manually/externally - see its own docs) - the grid column narrows smoothly along with it, since that column is sized to `Navigation`'s own rendered width rather than a fixed reservation (see the note above).
-- **`Toolbar`** wraps its breadcrumb trail onto its own line rather than clipping it or squeezing the search/actions/user menu aside, once there isn't room for both on one line.
-- **`Header`** wraps its actions below the title/subtitle once there isn't room for both side by side.
+- **`Navigation`** can auto-collapse to icon-only via `navigation.collapseBelow` (or be driven manually/externally - see its own docs) - the grid column narrows smoothly along with it, since that column is sized to `Navigation`'s own rendered width rather than a fixed reservation (see the note above). This one is keyed off the **viewport**, via `window.matchMedia`.
+- **`Toolbar`** wraps its breadcrumb trail onto its own line rather than clipping it or squeezing the search/actions/user menu aside, once there isn't room for both on one line. Pure CSS wrapping, no breakpoint.
+- **`Header`** is keyed off **its own width**, not the viewport - which is what makes it correct inside this layout, where its column is the window minus a rail that is itself collapsible. At 640px of header width it stacks the actions below the title stack, stretches them to fill the line, and folds everything past the first into an overflow popover. See the `Header` docs for the full ladder.
+
+Because of that last point, a 800px window with an expanded rail gives `Header` roughly 610px to work with, and it reflows to its narrow layout even though the window is nowhere near 640px. That is deliberate, and it is the behaviour a viewport breakpoint gets wrong.
 
 ## Default
 
@@ -105,3 +107,37 @@ Every piece of `PageLayout`'s chrome adapts to a narrow viewport on its own, wit
 ## Narrow viewport
 
 <Canvas of={PageLayoutStories.NarrowViewport} />
+
+## An identity page
+
+An account or profile screen gets the same treatment `IdentityHeader` provides - but note what is being passed. `header` is a data prop, so the `IdentityHeader` **component** cannot go here; `PageLayout` always renders a `Header`. The shape travels as data instead, because `media`, `meta` and `variant` live on `Header` itself rather than only inside the preset:
+
+```tsx
+<PageLayout
+  header={{
+    variant: 'hero',
+    title: 'Ana Ferreira',
+    subtitle: 'Customer Support · Lisbon',
+    media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
+    meta: [{ label: 'Role', value: 'Admin', icon: 'shield' }],
+  }}
+>
+  ...
+</PageLayout>
+```
+
+The only thing `IdentityHeader` adds over this is its `avatar` shorthand. Reach for the component directly when a page renders its own header rather than feeding a shared layout.
+
+<Canvas of={PageLayoutStories.IdentityPageHeader} />
+
+## Without a navigation rail
+
+`navigation` is optional, and omitting it collapses the rail's column to nothing rather than leaving an empty gutter - the column is sized to `Navigation`'s own rendered width, so with no content there is no width. The toolbar then spans the full layout.
+
+<Canvas of={PageLayoutStories.WithoutNavigation} />
+
+## Custom footer
+
+`footer` is a discriminated union - pass `copyright` for the default centered notice or `component` to replace it entirely. `PageLayout` applies its own vertical footer spacing only to the `copyright` variant, so a custom component owns its own padding.
+
+<Canvas of={PageLayoutStories.CustomFooter} />

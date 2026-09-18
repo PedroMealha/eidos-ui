@@ -5,7 +5,9 @@ import * as HeaderStories from './Header.stories';
 
 # Header
 
-Page-level header combining a title with an optional subtitle and a set of right-aligned action buttons. Typically rendered inside `PageLayout`'s content area, above the page body.
+Page-level header combining a title with an optional subtitle, leading media, a metadata row and a set of right-aligned action buttons. Typically rendered inside `PageLayout`'s content area, above the page body.
+
+For an account or profile page - avatar beside the name, facts below it, on a hero surface - reach for `IdentityHeader`, which is this component preconfigured for that shape. A settings-style page wants a plain `Header`; it has no identity to lead with.
 
 > **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `HeaderActionProps`.
 
@@ -44,3 +46,35 @@ Icon-only and labeled actions can be freely mixed within the same `actions` arra
 `title` accepts any inline node, not just a string, so a status indicator belongs beside the title text rather than pushed down into the subtitle. It is centered on the title's own line and wraps below it when there isn't room for both. Keep the children inline-level - the title is a heading, and block content inside it will not lay out sensibly.
 
 <Canvas of={HeaderStories.WithInlineTitleContent} />
+
+## With media
+
+`media` renders any node on the leading edge, centered against the title stack. It takes a node rather than an `Avatar` config so it can equally hold a logo or an icon block - and so it can hold identity media larger than `Avatar`'s own `lg` size (48px), which `Avatar` cannot currently express.
+
+<Canvas of={HeaderStories.WithMedia} />
+
+## With metadata
+
+`meta` is a row of supporting facts below the subtitle - role, plan, joined date. Each entry is a `label`/`value` pair with an optional `icon`. The row wraps one whole item at a time rather than splitting a fact across lines, while a single long value such as an email can still break on its own.
+
+<Canvas of={HeaderStories.WithMetadata} />
+
+## Hero variant
+
+`variant="hero"` puts the header on its own padded, bordered surface with a larger title, for account and profile landing areas. The band is `--white` with a `--gray-200` border, matching `Card`'s surface convention - so it reads as a raised panel on `PageLayout`'s gray content area. It is deliberately not a themed tint: a `--x-50` background behind text is 4.49:1 for the shipped palette - under AA - and far worse for a pale themed base.
+
+`IdentityHeader` is this combination preconfigured, and is usually what you want for an account or profile page.
+
+<Canvas of={HeaderStories.Hero} />
+
+## Responsive behaviour
+
+`Header` reflows against **its own width**, not the viewport - so it behaves correctly in a narrow column on a wide screen, which is exactly the case inside `PageLayout`, where it shares a grid row with a collapsible navigation rail. Both headers in the story below are in the same window; only their container widths differ.
+
+At 640px or narrower the title stack and the actions stack vertically, the retained actions stretch to fill the line, and every action past `actionsVisibleWhenCollapsed` (default `1`) folds into an overflow popover. The **last** actions are the ones kept inline, since a primary call to action is conventionally rightmost. Buttons stay at `md` rather than shrinking to fit, so they stay clear of WCAG 2.5.8's 24x24 minimum target size.
+
+<Canvas of={HeaderStories.ResponsiveCollapse} />
+
+Set `collapseActionsBelow={0}` to switch the overflow behaviour off and always render every action inline. The collapse is measured client-side, so a server-rendered header emits the full action row and collapses on hydration.
+
+> **Note**: `Header` declares itself a CSS container (`container-type: inline-size`), which applies layout containment. Every overlay in this library is portalled to `document.body`, so tooltips and popovers on actions are unaffected - but if you absolutely-position your own content inside `media` or `title`, the header is its containing block rather than the page.

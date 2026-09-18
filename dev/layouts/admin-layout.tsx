@@ -125,6 +125,13 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
       { type: 'separator', id: 'sep-1' },
       {
         type: 'item',
+        id: 'account',
+        label: 'Account',
+        icon: 'user',
+        onClick: () => navigate('/app/account'),
+      },
+      {
+        type: 'item',
         id: 'settings',
         label: 'Settings',
         icon: 'settings',

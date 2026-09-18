@@ -1,0 +1,58 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as IdentityHeaderStories from './IdentityHeader.stories';
+
+<Meta of={IdentityHeaderStories} />
+
+# IdentityHeader
+
+`Header` preconfigured for the "this page is about one person or entity" shape - an avatar beside the name, supporting facts below it, actions on the end, on a hero surface. Account and profile pages both want exactly this.
+
+> **Note**: this is deliberately one component rather than an `AccountHeader` and a `ProfileHeader`. An account leads with the organisation and a profile with the person, but the structure is identical, so two exports would render the same markup under names that suggest otherwise. A settings-style page is the genuinely different case - it has no identity to lead with, so it wants a plain `Header`.
+
+## Usage
+
+```tsx
+import { IdentityHeader } from 'eidos-ui';
+
+<IdentityHeader
+  title="Ana Ferreira"
+  subtitle="ana.ferreira@meridian.app"
+  avatar={{ name: 'Ana Ferreira', color: 'primary' }}
+  meta={[{ label: 'Role', value: 'Admin', icon: 'shield' }]}
+  actions={[{ children: 'Edit profile', preIcon: 'pencil', variant: 'outlined' }]}
+/>;
+```
+
+## Default
+
+<Canvas of={IdentityHeaderStories.Default} />
+
+<Controls of={IdentityHeaderStories.Default} />
+
+## Account header
+
+An account page leads with the organisation. A `square` avatar reads better for an org than the default circle.
+
+<Canvas of={IdentityHeaderStories.AccountHeader} />
+
+## Profile header
+
+A profile page leads with the person. `title` takes inline nodes, so an account-state indicator sits beside the name rather than being pushed into the subtitle.
+
+<Canvas of={IdentityHeaderStories.ProfileHeader} />
+
+## Custom media
+
+`avatar` is a shorthand that renders an `Avatar` at `lg` (48px). Pass `media` instead for anything else - a logo, an icon block, or an avatar at the larger size a hero band usually wants, which `Avatar` cannot currently express. If both are given, `media` wins and a development warning is logged.
+
+<Canvas of={IdentityHeaderStories.CustomMedia} />
+
+## Without the hero surface
+
+`variant="default"` keeps the avatar and metadata layout but drops the band - for an identity header sitting on a page that already has its own surface, such as inside a `Card`.
+
+<Canvas of={IdentityHeaderStories.WithoutHeroSurface} />
+
+## Everything else is Header
+
+`IdentityHeaderProps` extends `HeaderProps`, so `meta`, `actions`, `collapseActionsBelow` and the rest behave exactly as documented on `Header` - including the responsive reflow, which is keyed off the header's own width rather than the viewport. See [Header](?path=/docs/layout-components-header--docs) for those.

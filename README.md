@@ -87,6 +87,7 @@ These are the same groups used in Storybook, so the README and the docs sidebar 
 
 - PageLayout
 - Header
+- IdentityHeader
 - Footer
 - Navigation
 - Toolbar

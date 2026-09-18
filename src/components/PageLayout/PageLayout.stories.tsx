@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
+import { Avatar } from '../Avatar';
 import { Divider } from '../Divider';
 import { Pill } from '../Pill';
 
@@ -189,8 +190,10 @@ export const Scrolling: Story = {
 /**
  * At a narrow width, `Toolbar` wraps its breadcrumb trail onto its own line
  * (rather than clipping it or squeezing the search/actions/user menu off to
- * the side) and `Header` wraps its actions below the title/subtitle - both
- * driven by plain CSS, with no JS breakpoint of their own.
+ * the side) with plain CSS and no breakpoint of its own, while `Header`
+ * stacks its actions below the title stack once **its own** column - not the
+ * window - drops to 640px. Note that the rail's width counts against that,
+ * so the header reflows here at a window width well above 640px.
  *
  * `navigation.collapseBelow` is also set here - resize your actual browser
  * window (not this canvas frame) past `1024px` to see the rail itself
@@ -214,4 +217,120 @@ export const NarrowViewport: Story = {
       </div>
     ),
   ],
+};
+
+/**
+ * An account or profile screen, with the identity treatment `IdentityHeader`
+ * provides.
+ *
+ * Note what is passed: **`header` is a data prop, not a slot**, so the
+ * `IdentityHeader` component itself cannot go here - `PageLayout` always
+ * renders a `Header`. The shape is fully expressible as data all the same,
+ * because `media`, `meta` and `variant` live on `Header` rather than only
+ * inside the preset. The only thing the preset adds on top is its `avatar`
+ * shorthand, which is two lines to write out by hand:
+ *
+ * ```tsx
+ * header={{
+ *   variant: 'hero',
+ *   media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
+ *   meta: [{ label: 'Role', value: 'Admin', icon: 'shield' }],
+ * }}
+ * ```
+ *
+ * Use `IdentityHeader` directly when a page renders its own header instead of
+ * feeding a shared layout.
+ */
+export const IdentityPageHeader: Story = {
+  args: {
+    navigation: {
+      ...meta.args.navigation,
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'tickets', label: 'Tickets', icon: Ticket },
+        { id: 'team', label: 'Team', icon: Users, active: true },
+        { id: 'settings', label: 'Settings', icon: Settings },
+      ],
+    },
+    toolbar: {
+      ...meta.args.toolbar,
+      breadcrumbs: {
+        separator: <ChevronRight size={14} />,
+        items: [{ label: 'Home' }, { label: 'Team' }, { label: 'Ana Ferreira' }],
+      },
+    },
+    header: {
+      variant: 'hero',
+      title: (
+        <>
+          Ana Ferreira
+          <Pill color="success" variant="outlined" size="sm">
+            Active
+          </Pill>
+        </>
+      ),
+      subtitle: 'Customer Support · Lisbon',
+      media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
+      meta: [
+        { label: 'Role', value: 'Admin', icon: 'shield' },
+        { label: 'Email', value: 'ana.ferreira@meridian.app', icon: 'mail' },
+        { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+      ],
+      actions: [
+        { children: 'Message', preIcon: 'message-square', variant: 'outlined' },
+        { children: 'Edit profile', preIcon: 'pencil' },
+      ],
+    },
+    children: <p>Profile content goes here.</p>,
+  },
+};
+
+/**
+ * `navigation` is optional, and omitting it collapses the rail's grid column
+ * to nothing rather than leaving an empty gutter - the column is sized to
+ * `Navigation`'s own rendered width, so with no content there is no width.
+ *
+ * The toolbar then spans the full layout, which is the shape a public or
+ * single-area app wants.
+ */
+export const WithoutNavigation: Story = {
+  args: {
+    navigation: undefined,
+  },
+};
+
+/**
+ * `footer` is a discriminated union: pass `copyright` for the default
+ * centered notice, or `component` to replace it entirely. `PageLayout` only
+ * applies its own vertical footer spacing to the `copyright` variant - a
+ * custom component is expected to own its spacing, which is why this one
+ * brings its own padding.
+ */
+export const CustomFooter: Story = {
+  args: {
+    footer: {
+      component: (
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 'var(--spacing-md)',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: 'var(--spacing-md) var(--spacing-xl)',
+            borderTop: '1px solid var(--gray-200)',
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--gray-500)',
+          }}
+        >
+          <span>© 2026 Acme Inc.</span>
+          <span style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
+            <a href="#status">Status</a>
+            <a href="#privacy">Privacy</a>
+            <a href="#terms">Terms</a>
+          </span>
+        </div>
+      ),
+    },
+  },
 };

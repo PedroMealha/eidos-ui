@@ -1,12 +1,43 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-header {
+  // Everything responsive in here is keyed off the header's *own* inline
+  // size, not the viewport. Inside PageLayout the header shares a grid row
+  // with the navigation rail, so its real width is the viewport minus a rail
+  // that the consumer can collapse - a viewport query would reflow at the
+  // wrong moment, and by a different amount before and after that collapse.
+  // It also has to agree with the ResizeObserver driving the action collapse
+  // in Header.component.tsx, which measures this same box.
+  //
+  // Named on purpose: an unnamed `@container` query binds to the nearest
+  // ancestor container, which a consumer can introduce above the header just
+  // by setting `container-type` on a wrapper of their own.
+  container: eidos-header / inline-size;
+
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
   will-change: transform;
+
+  // The hero band. Only the paint lives here - see `&__content` for why the
+  // padding cannot.
+  //
+  // Two deliberate choices:
+  //
+  // - **`--white`, matching `Card`'s surface convention**, not `--gray-50`.
+  //   The band's main home is inside `PageLayout`, whose content area is
+  //   itself `--gray-50` - painting the band the same colour made it
+  //   invisible apart from its border, which is how this was caught.
+  // - **Not a themed tint.** A `--x-50` background behind text is 4.49:1 for
+  //   the shipped indigo and far worse for a pale themed base, so a themed
+  //   band would fail AA the moment a consumer overrides `--primary-color`.
+  &--hero {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    @include border-radius(lg);
+  }
 
   &__content {
     display: flex;
@@ -20,6 +51,61 @@
     // pushed `&__actions` off to the side (or past the edge) instead of the
     // title/subtitle wrapping or truncating first on a narrow viewport.
     min-width: 0;
+
+    // The hero's padding lives on this descendant rather than on
+    // `.eidos-header--hero` itself because **an element is never matched by
+    // its own container query** - only its descendants are. On the root it
+    // could not step down with the ladder below. The band's background and
+    // border stay on the root, where nothing needs to query them, so the
+    // result is visually identical and needs no extra wrapper - which is
+    // also why `meta` renders inside `__titles`, so this element really does
+    // contain the whole header.
+    //
+    // Don't "tidy" this back onto `&--hero`; it silently loses every step.
+    .eidos-header--hero > & {
+      padding: var(--spacing-lg);
+
+      @include container-down('md', 'eidos-header') {
+        padding: var(--spacing-md);
+      }
+
+      // Matches PageLayout's own `md`-down gutter, so the band doesn't eat a
+      // 375px viewport from both sides at once.
+      @include container-down('sm', 'eidos-header') {
+        padding: var(--spacing-sm);
+      }
+    }
+
+    // Below `sm` the actions go under the title block instead of
+    // `space-between`-ing into a ragged right-aligned scrap beside it.
+    @include container-down('sm', 'eidos-header') {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  // Only rendered when there is `media` to group with the titles: the two
+  // need a tighter gap than the titles and actions do, and a flex container
+  // has exactly one.
+  &__lead {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1 1 auto;
+    min-width: 0;
+
+    // Anchors the media to the title's *first line* rather than leaving it
+    // floating at the vertical centre of a title that has wrapped onto three
+    // lines - the worst-looking artefact of a narrow hero header.
+    @include container-down('md', 'eidos-header') {
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+    }
+  }
+
+  &__media {
+    display: flex;
+    flex-shrink: 0;
   }
 
   &__titles {
@@ -49,6 +135,32 @@
     > * {
       flex-shrink: 0;
     }
+
+    // Stretched rather than shrunk: the buttons stay at `md` (36px tall
+    // labelled, 31px square icon-only - measured, since Button sizes from its
+    // padding rather than from `--component-size-md`) so they stay clear of
+    // WCAG 2.5.8's 24x24 minimum, and they fill the line instead of leaving a
+    // lone button right-aligned under a left-aligned title.
+    @include container-down('sm', 'eidos-header') {
+      > * {
+        flex: 1 1 auto;
+      }
+
+      // The overflow trigger is the one action that must *not* stretch:
+      // it is icon-only, and `.eidos-button--icon-only` carries
+      // `aspect-ratio: 1`, so widening it makes it equally taller - a 172px
+      // square button, measured in the browser before this rule existed. It
+      // keeps its intrinsic size and the labelled actions take the slack.
+      > .eidos-header__overflow-trigger {
+        flex: 0 0 auto;
+      }
+    }
+  }
+
+  // Popover's own trigger wrapper is `inline-flex`; this makes it a plain
+  // flex box so it contributes no inline-level baseline spacing to the row.
+  &__overflow-trigger {
+    display: flex;
   }
 
   &__title {
@@ -64,11 +176,83 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--spacing-sm);
+
+    .eidos-header--hero & {
+      font-size: var(--font-size-3xl);
+
+      @include container-down('md', 'eidos-header') {
+        font-size: var(--font-size-2xl);
+      }
+    }
   }
 
   &__subtitle {
     font-size: var(--font-size-sm);
     color: var(--gray-500);
     overflow-wrap: break-word;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+
+    @include container-down('sm', 'eidos-header') {
+      gap: var(--spacing-xs) var(--spacing-sm);
+    }
+  }
+
+  &__meta-item {
+    // `inline-flex` per the library's convention for small inline elements,
+    // though note it is blockified to `flex` in practice: an item of a flex
+    // container (`&__meta`) has its display value blockified by the spec, so
+    // this only bites if the class is ever reused outside that row. The
+    // no-stretch behaviour inside the row comes from the items not growing,
+    // not from this declaration.
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-width: 0;
+  }
+
+  &__meta-icon {
+    width: var(--font-size-sm);
+    height: var(--font-size-sm);
+    color: var(--gray-500);
+    flex-shrink: 0;
+  }
+
+  &__meta-label {
+    color: var(--gray-500);
+    flex-shrink: 0;
+  }
+
+  &__meta-value {
+    color: var(--gray-700);
+    min-width: 0;
+    // The break belongs on the value, not the row: an item wraps as a whole
+    // unit, but a long single value (an email) still has to be breakable or
+    // it forces horizontal overflow on its own.
+    overflow-wrap: break-word;
+  }
+
+  // Portalled to `document.body` by Popover, so this has to be a top-level
+  // class rather than a descendant of `.eidos-header` - it has left the
+  // subtree by the time it renders.
+  &__overflow-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+
+    // `Button` has no `fullWidth` prop, so the stack is widened here.
+    // Targeted as direct children rather than through `.eidos-button`, which
+    // would couple this stylesheet to Button's own class names.
+    > * {
+      width: 100%;
+      justify-content: flex-start;
+    }
   }
 }

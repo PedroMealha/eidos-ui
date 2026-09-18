@@ -9,6 +9,7 @@ import { NotificationsPage } from '../pages/settings/notifications-page';
 import { ProfilePage } from '../pages/settings/profile-page';
 import { SettingsLayout } from '../pages/settings/settings-layout';
 import { ThemePage } from '../pages/settings/theme-page';
+import { AccountPage } from '../pages/account-page';
 
 /**
  * The authenticated route table - the single source of truth for what exists
@@ -152,6 +153,12 @@ export const ROUTES: RouteDef[] = [
     parent: '/app/settings',
     layout: SettingsLayout,
     component: ThemePage,
+  },
+  {
+    pattern: '/app/account',
+    title: 'Account',
+    subtitle: 'Manage your account settings.',
+    component: AccountPage,
   },
 ];
 

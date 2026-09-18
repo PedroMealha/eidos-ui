@@ -20,6 +20,15 @@
   &__navigation {
     grid-area: navigation;
     border-right: 1px solid var(--gray-200);
+
+    // `navigation` is optional, and the region renders as an empty div when
+    // it is omitted - at which point this border was the column's entire
+    // width, leaving a stray 1px rule down the edge of a layout that is
+    // documented as collapsing "to nothing". `:empty` matches because the
+    // region has no child nodes at all in that case.
+    &:empty {
+      border-right: none;
+    }
   }
 
   &__content {

@@ -234,6 +234,74 @@
   }
 }
 
+// ----------------------------------------------------------------------------
+// Container queries
+// ----------------------------------------------------------------------------
+//
+// The element-relative counterparts of `media-up`/`media-down`, reading the
+// same `$breakpoints` map so there is still exactly one set of thresholds in
+// the library.
+//
+// Reach for these over the viewport mixins whenever a component can be laid
+// out in something narrower than the window - `Header` sits in a grid column
+// beside `PageLayout`'s navigation rail, so its own width is the viewport
+// minus a rail that is itself collapsible, and a viewport query fires at the
+// wrong moment by exactly that rail's width. `DataGrid` measures its own
+// width with a `ResizeObserver` for the same reason; these do it with no JS.
+//
+// Two things to know before using them:
+//
+// - A container query condition has the identical custom-property restriction
+//   as a media query condition (see `_breakpoints.scss`): it is evaluated
+//   before substitution, so `@container (max-width: var(--breakpoint-sm))` is
+//   invalid and every browser drops it silently. Going through these mixins
+//   makes that unrepresentable.
+// - **An element is never matched by its own container query**, only its
+//   descendants. Anything that has to change on the container itself has to
+//   move onto an inner element (`Header` puts its hero padding on
+//   `&__content` for exactly this reason).
+//
+// `$container` is the container *name* to query. Always pass it: an unnamed
+// query resolves to the nearest ancestor container, which a consumer can
+// introduce above the component just by setting `container-type` themselves.
+
+// Container is at least as wide as the named breakpoint.
+//
+// The branch is duplicated rather than built as a string through `if()`,
+// whose function form Sass has deprecated in favour of the CSS `if()` syntax.
+@mixin container-up($name, $container: null) {
+  $min-width: bp.breakpoint($name);
+
+  @if $container {
+    @container #{$container} (min-width: #{$min-width}) {
+      @content;
+    }
+  } @else {
+    @container (min-width: #{$min-width}) {
+      @content;
+    }
+  }
+}
+
+// Container is narrower than the named breakpoint.
+//
+// Carries the same 0.02px inset as `media-down`, and for the same reason: a
+// plain `max-width: 640px` would match at exactly 640px alongside
+// `container-up('sm')`, leaving source order to decide.
+@mixin container-down($name, $container: null) {
+  $max-width: bp.breakpoint($name) - 0.02px;
+
+  @if $container {
+    @container #{$container} (max-width: #{$max-width}) {
+      @content;
+    }
+  } @else {
+    @container (max-width: #{$max-width}) {
+      @content;
+    }
+  }
+}
+
 // Named aliases, kept for the existing call sites.
 @mixin mobile-up {
   @include media-up('md') {

@@ -1,2 +1,4 @@
 export { Header } from './Header.component';
-export type { HeaderProps, HeaderActionProps } from './Header.types';
+export { IdentityHeader } from './IdentityHeader.component';
+export type { HeaderProps, HeaderActionProps, HeaderMetaItem, HeaderVariant } from './Header.types';
+export type { IdentityHeaderProps } from './IdentityHeader.types';

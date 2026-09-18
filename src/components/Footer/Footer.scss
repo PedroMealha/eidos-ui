@@ -9,4 +9,18 @@
     color: var(--gray-500);
     font-size: var(--font-size-sm);
   }
+
+  // `component` is a slot, so it gets the footer's full width. Without this
+  // its content is a flex item of `.eidos-footer` above and sizes to itself,
+  // so the typical footer bar - text left, links right via
+  // `justify-content: space-between` - silently collapsed to content width
+  // and every consumer had to pass `width: 100%` of their own.
+  //
+  // Scoped to `:only-child` deliberately: that is the single-wrapper case
+  // this affects, and it leaves a multi-child slot laying out as the flex
+  // row it already was.
+  &--component > *:only-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
 }

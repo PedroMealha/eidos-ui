@@ -48,6 +48,9 @@ export const Default: Story = {
 /**
  * `component` accepts any `ReactNode` in place of `copyright`, giving full
  * control over layout and content (links, socials, multi-column content...).
+ *
+ * The slot is given the footer's full width, so a `space-between` bar like
+ * this one needs no `width: 100%` of its own.
  */
 export const WithCustomComponent: Story = {
   args: {
@@ -56,7 +59,6 @@ export const WithCustomComponent: Story = {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          width: '100%',
           fontSize: 'var(--font-size-sm)',
           color: 'var(--gray-500)',
         }}

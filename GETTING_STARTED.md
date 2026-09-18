@@ -354,7 +354,7 @@ each `*.stories.tsx`, so that is the authoritative list:
 
 | Group      | Components                                                                                                                               |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Layout     | PageLayout, Breadcrumb, Footer, Header, Navigation, Toolbar                                                                              |
+| Layout     | PageLayout, Breadcrumb, Footer, Header, IdentityHeader, Navigation, Toolbar                                                              |
 | Theming    | ThemeProvider, ThemeEditor                                                                                                               |
 | Elements   | Avatar, Badge, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, Pill, SegmentedControl, SplitButton                            |
 | Forms      | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
