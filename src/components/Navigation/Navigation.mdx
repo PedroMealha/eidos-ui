@@ -95,6 +95,10 @@ Pass `collapsible={false}` to hide the built-in toggle button entirely - useful 
 <Navigation brand={{ name: 'Acme' }} items={items} collapseBelow={1024} />
 ```
 
+**On mount it can only collapse, never expand.** Loading on a viewport narrower than the breakpoint collapses the rail; loading on a wider one leaves `defaultCollapsed` (or a controlled `collapsed`) exactly as you set it. Only an actual crossing re-expands. Without that asymmetry `defaultCollapsed` is unusable on a desktop viewport - the rail starts collapsed and then springs open one commit after the first paint, which is what it used to do.
+
+<Canvas of={NavigationStories.CollapseDisabled} />
+
 This uses `window.matchMedia` internally, so it does nothing until mounted client-side (SSR-safe), and it works the same way whether `Navigation` is controlled or not:
 
 - **Uncontrolled** (the example above): it drives `Navigation`'s own internal state directly.

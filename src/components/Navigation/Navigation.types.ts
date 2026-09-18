@@ -91,6 +91,14 @@ export interface NavigationProps {
    * still narrower than this) is respected until the viewport crosses the
    * breakpoint again. Pass `collapseBelow={0}` to opt out entirely (no
    * viewport is ever narrower than `0px`).
+   *
+   * **On mount it can only collapse, never expand.** Loading on a viewport
+   * narrower than this collapses the rail; loading on a wider one leaves
+   * `defaultCollapsed` (or a controlled `collapsed`) exactly as given. The
+   * re-expansion above only happens on an actual crossing - applying the
+   * breakpoint's answer on mount instead made `defaultCollapsed` useless on
+   * any wide viewport, since the rail sprang open one commit after the
+   * first paint.
    * @default 768
    */
   collapseBelow?: number;

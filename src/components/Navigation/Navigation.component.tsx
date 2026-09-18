@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SquareChevronLeft, SquareChevronRight } from 'lucide-react';
 import type { NavigationLogo, NavigationProps } from './Navigation.types';
 import { Avatar } from '../Avatar';
@@ -59,22 +59,43 @@ export const Navigation: React.FC<NavigationProps> = ({
     applyCollapsed(!collapsed);
   }, [applyCollapsed, collapsed]);
 
+  // Read by the breakpoint effect below so it does not depend on
+  // `applyCollapsed`'s identity. A consumer passing an inline
+  // `onCollapsedChange` gives that callback a new identity every render,
+  // which would re-run the effect - and re-apply the media query's answer -
+  // on every render, overriding any manual toggle made in between crossings.
+  // That is the one thing `collapseBelow` is documented not to do.
+  const applyCollapsedRef = useRef(applyCollapsed);
+  useEffect(() => {
+    applyCollapsedRef.current = applyCollapsed;
+  });
+
   // Auto-collapse/expand at a viewport breakpoint. `matchMedia`'s `change`
   // event only fires exactly at the crossing point, not on every resize
   // tick, so a manual toggle in between crossings is left alone until the
   // viewport actually crosses the breakpoint again.
   useEffect(() => {
-    if (collapseBelow === undefined) return;
+    // `0` opts out, as documented - and it has to be checked here rather
+    // than relying on `(max-width: 0px)` never matching, because the mount
+    // pass below would otherwise still run.
+    if (!collapseBelow) return;
     if (typeof window === 'undefined' || !window.matchMedia) return;
 
     const query = window.matchMedia(`(max-width: ${collapseBelow}px)`);
 
-    applyCollapsed(query.matches);
+    // On mount this may only *collapse*, never expand. `defaultCollapsed`
+    // (or a controlled `collapsed`) is the consumer's stated starting point,
+    // and applying `query.matches` unconditionally threw it away one commit
+    // after the first paint: on any viewport wider than the breakpoint the
+    // rail visibly started collapsed and then sprang open. Crossings below
+    // still drive both directions, which is what "collapses and re-expands"
+    // refers to.
+    if (query.matches) applyCollapsedRef.current(true);
 
-    const handleChange = (e: MediaQueryListEvent) => applyCollapsed(e.matches);
+    const handleChange = (event: MediaQueryListEvent) => applyCollapsedRef.current(event.matches);
     query.addEventListener('change', handleChange);
     return () => query.removeEventListener('change', handleChange);
-  }, [collapseBelow, applyCollapsed]);
+  }, [collapseBelow]);
 
   const classes = ['eidos-navigation', collapsed && 'eidos-navigation--collapsed', className]
     .filter(Boolean)

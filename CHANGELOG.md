@@ -51,6 +51,14 @@ Entries land here as work happens, not written retroactively at release time
 - `Tabs` and `SegmentedControl` scroll buttons no longer take focus when
   clicked, which the browser reported as focus trapped inside an
   `aria-hidden` subtree.
+- `Navigation` honours `defaultCollapsed` (and a controlled `collapsed`) on a
+  viewport wider than `collapseBelow`; the breakpoint used to apply its own
+  answer on mount, so a rail asked to start collapsed sprang open immediately.
+- `Navigation`'s `collapseBelow={0}` now really opts out - it previously still
+  forced the rail expanded on mount.
+- `Navigation` no longer re-applies the breakpoint on every render when
+  `onCollapsedChange` is an inline function, which overrode manual toggles
+  made in between crossings.
 - `PageLayout`'s toolbar, header, body and footer share one horizontal gutter
   at every breakpoint; the toolbar previously kept a fixed inset and the
   footer's was pinned by a more specific rule, leaving them 42px and 36.75px

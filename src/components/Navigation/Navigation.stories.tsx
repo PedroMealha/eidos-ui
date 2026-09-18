@@ -268,6 +268,33 @@ export const CollapseBelowBreakpoint = {
 };
 
 /**
+ * `collapseBelow={0}` opts out of the responsive behaviour entirely - no
+ * viewport is narrower than `0px`, so the rail keeps whatever state it was
+ * given and only the toggle button changes it.
+ *
+ * Paired with `defaultCollapsed` here, which is the combination that used to
+ * be impossible: the breakpoint applied its answer on mount regardless, so a
+ * rail asked to start collapsed sprang open on the first commit.
+ */
+export const CollapseDisabled = {
+  render: () => (
+    <Navigation
+      brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
+      items={useDemoItems()}
+      collapseBelow={0}
+      defaultCollapsed
+    />
+  ),
+  parameters: {
+    docs: {
+      source: {
+        code: `<Navigation brand={{ name: 'Acme' }} items={items} collapseBelow={0} defaultCollapsed />`,
+      },
+    },
+  },
+};
+
+/**
  * Pass `collapsed` (+ `onCollapsedChange`) for full external control - e.g.
  * to persist the preference, or to auto-collapse below a viewport
  * breakpoint. `collapsible={false}` also hides the built-in toggle button
