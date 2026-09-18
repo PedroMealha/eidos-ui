@@ -226,3 +226,47 @@ export const FullWidth: Story = {
     );
   },
 };
+
+// ─── Overflow ─────────────────────────────────────────────────────────────────
+
+export const Overflow: Story = {
+  name: 'Overflow',
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A track wider than its container scrolls instead of overflowing the ' +
+          'page, with chevron buttons at either end - the same treatment `Tabs` ' +
+          'uses. Each button is rendered only while its own direction has ' +
+          'somewhere to go, so neither appears when every segment fits. Native ' +
+          'scrolling (touch swipe, trackpad, shift+wheel) works too, and ' +
+          'selecting a segment off screen scrolls it into view. Pass ' +
+          '`scrollButtons="none"` to keep the native scrollbar instead.',
+      },
+    },
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 320 }}>
+        <Story />
+      </div>
+    ),
+  ],
+  render: function OverflowStory() {
+    const [range, setRange] = useState('quarter');
+    return (
+      <SegmentedControl
+        value={range}
+        onChange={setRange}
+        options={[
+          { value: 'today', label: 'Today' },
+          { value: 'week', label: 'This week' },
+          { value: 'month', label: 'This month' },
+          { value: 'quarter', label: 'This quarter' },
+          { value: 'year', label: 'This year' },
+          { value: 'all', label: 'All time' },
+        ]}
+      />
+    );
+  },
+};

@@ -301,10 +301,12 @@ export const WithoutNavigation: Story = {
 
 /**
  * `footer` is a discriminated union: pass `copyright` for the default
- * centered notice, or `component` to replace it entirely. `PageLayout` only
- * applies its own vertical footer spacing to the `copyright` variant - a
- * custom component is expected to own its spacing, which is why this one
- * brings its own padding.
+ * centered notice, or `component` to replace it entirely.
+ *
+ * The custom content only brings its own **vertical** spacing: the left and
+ * right inset is the layout's shared page gutter, which the footer region
+ * already has, so adding horizontal padding here would inset the text twice
+ * and pull it out of line with the page content above.
  */
 export const CustomFooter: Story = {
   args: {
@@ -317,7 +319,7 @@ export const CustomFooter: Story = {
             gap: 'var(--spacing-md)',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: 'var(--spacing-md) var(--spacing-xl)',
+            paddingBlock: 'var(--spacing-md)',
             borderTop: '1px solid var(--gray-200)',
             fontSize: 'var(--font-size-sm)',
             color: 'var(--gray-500)',

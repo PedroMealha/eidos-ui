@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useId } from 'react';
 import { CircleAlert } from 'lucide-react';
-import { renderIcon } from '../../utils';
+import { renderIcon, fullWidthModifier } from '../../utils';
 import type { TextareaProps } from './Textarea.types';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 
@@ -60,7 +60,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     const containerClasses = [
       'eidos-textarea-container',
-      fullWidth && 'eidos-textarea-container--fullWidth',
+      fullWidth && fullWidthModifier('eidos-textarea-container'),
       className,
     ]
       .filter(Boolean)
@@ -71,7 +71,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       `eidos-textarea-wrapper--${variant}`,
       `eidos-textarea-wrapper--${color}`,
       `eidos-textarea-wrapper--${size}`,
-      fullWidth && 'eidos-textarea-wrapper--fullWidth',
+      fullWidth && fullWidthModifier('eidos-textarea-wrapper'),
       loading && 'eidos-textarea-wrapper--loading',
       isFocused && 'eidos-textarea-wrapper--focused',
       error && 'eidos-textarea-wrapper--error',
@@ -85,7 +85,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       `eidos-textarea--${color}`,
       `eidos-textarea--${size}`,
       `eidos-textarea--resize-${resize}`,
-      fullWidth && 'eidos-textarea--fullWidth',
+      fullWidth && fullWidthModifier('eidos-textarea'),
       loading && 'eidos-textarea--loading',
       error && 'eidos-textarea--error',
     ]

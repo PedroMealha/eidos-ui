@@ -236,6 +236,7 @@ export type {
   SegmentedControlProps,
   SegmentedOption,
   SegmentedControlColorProps,
+  SegmentedControlScrollButtonsProps,
 } from './components/SegmentedControl';
 export type { SplitButtonProps, SplitButtonOption } from './components/SplitButton';
 export type { ContextMenuProps } from './components/ContextMenu';

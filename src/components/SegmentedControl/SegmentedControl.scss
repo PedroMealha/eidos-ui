@@ -5,6 +5,31 @@
 // white "chip" that lifts with a subtle shadow, giving the impression of a
 // physical selected state.
 
+// The active chip's lift. Kept in a variable because the focus rings below
+// have to re-declare it: `box-shadow` is a single property, so a ring set on
+// the active segment would otherwise drop its elevation while focused.
+$chip-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+// ─── Bar ──────────────────────────────────────────────────────────────────────
+// Wrapper around the track, holding the scroll buttons. It exists because
+// `role="radiogroup"` accepts only radios, so the buttons cannot live inside
+// the track - the same reason `Tabs` has `.eidos-tabs-bar`.
+
+.eidos-segmented-bar {
+  display: inline-flex;
+  align-items: stretch;
+  // Lets the track shrink and scroll instead of pushing the bar past its
+  // container.
+  min-width: 0;
+  max-width: 100%;
+  position: relative; // containing block for the scroll buttons
+
+  &--full-width {
+    display: flex;
+    width: 100%;
+  }
+}
+
 .eidos-segmented {
   display: inline-flex;
   align-items: center;
@@ -13,9 +38,36 @@
   padding: 3px;
   gap: 2px;
 
+  // Segments never wrap (`white-space: nowrap` below), so a track wider than
+  // its container has to scroll here - otherwise it overflows into whatever
+  // ancestor happens to be the nearest scroll container, which on a narrow
+  // screen means the page scrolls sideways because of a picker.
+  //
+  // INVARIANT: nothing inside this element may *lay out* outside its padding
+  // box. `overflow-x: auto` makes this a scroll container on both axes
+  // (`overflow-y: visible` computes to `auto` when the other axis isn't
+  // visible), so anything below or right of the box becomes scrollable
+  // overflow - which is how `Tabs` earned a permanent vertical scrollbar from
+  // a 2px indicator. Ink overflow (the chip's `box-shadow`) is exempt: it is
+  // clipped at the padding box but never creates a scrollbar, which is why
+  // the 3px padding only has to be roughly enough for it.
+  //
+  // It also clips outward focus rings, so the rings below are inset.
+  overflow-x: auto;
+  min-width: 0;
+  // Required, not decorative: it makes this element the `offsetParent` of the
+  // segments, so their `offsetLeft` is measured from *this* box and is
+  // directly comparable with `scrollLeft` in the scroll-into-view effect.
+  // Without it the offsets are measured from `.eidos-segmented-bar` instead
+  // and the comparison is silently off by this element's own offset.
+  position: relative;
+
   &--full-width {
     display: flex;
     width: 100%;
+    // A flex item of the bar in this mode, so it needs to be allowed to
+    // shrink below its content width for the scroll to ever engage.
+    flex: 1;
 
     > .eidos-segmented-item {
       flex: 1;
@@ -26,6 +78,90 @@
     opacity: 0.5;
     pointer-events: none;
   }
+
+  // The buttons are the affordance when they are rendered; a native scrollbar
+  // across the bottom of a compact pill would also break its shape. Native
+  // scrolling (touch, trackpad, shift+wheel) is unaffected - only the
+  // scrollbar is hidden.
+  &--hide-scrollbar {
+    scrollbar-width: none; // Firefox
+
+    &::-webkit-scrollbar {
+      display: none; // Chromium, WebKit
+    }
+  }
+}
+
+// ─── Scroll buttons - only while there is somewhere to scroll ─────────────────
+
+.eidos-segmented-scroll-button {
+  @include button-reset;
+  @include flex-center;
+  // Floated over the segments rather than placed beside them, so the track
+  // keeps the full width of its container and a button appearing at one end
+  // never shifts the segments sideways.
+  //
+  // Inset by the track's own 3px padding rather than pinned to its edge: the
+  // track is a pill, and a round button flush with the border box would sit
+  // outside the curve. Staying inside also keeps it from counting towards an
+  // ancestor's scrollable overflow, which is what put a stray horizontal
+  // scrollbar across `PageLayout` when `Tabs` let its buttons overhang.
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1; // above the segments it overlaps; local, so no token needed
+  // Opaque, because it sits on top of whatever segment scrolls under it.
+  background: rgba(var(--white-rgb), 0.95);
+  border: 1px solid var(--gray-200);
+  border-radius: 50%;
+  @include elevation(1);
+  color: var(--gray-500);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &--prev {
+    left: 3px;
+  }
+
+  &--next {
+    right: 3px;
+  }
+
+  &:hover {
+    color: var(--gray-700);
+    background: var(--gray-100);
+  }
+
+  // Sized to fit inside the track's content box at each size - the segment
+  // min-heights below (24/30/38px) less the 6px of track padding.
+  &--sm {
+    width: 18px;
+    height: 18px;
+  }
+
+  &--md {
+    width: 24px;
+    height: 24px;
+  }
+
+  &--lg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+// Left interactive while the control is disabled, deliberately: the options
+// behind the overflow are still worth reading even when none can be chosen,
+// and `pointer-events: none` on the track has already taken native scrolling
+// away.
+.eidos-segmented-bar--disabled .eidos-segmented-scroll-button {
+  opacity: 0.5;
+}
+
+.eidos-segmented-scroll-button-icon {
+  width: 1.1em;
+  height: 1.1em;
 }
 
 // ─── Individual segment ───────────────────────────────────────────────────────
@@ -100,11 +236,23 @@
     cursor: not-allowed;
   }
 
+  // ── Focus ──────────────────────────────────────────────────────────────────
+  //
+  // The colour comes from the per-colour blocks at the bottom of this file.
+  // Suppressing the UA outline is only safe *because* those exist: the track
+  // is a scroll container, which clips an outward ring (and `outline` is no
+  // escape - it is clipped identically), so a default outline here would be
+  // silently invisible on an overflowing control. Same reason `Tabs` uses an
+  // inset ring.
+  &:focus-visible {
+    outline: none;
+  }
+
   // ── Active (selected) chip ─────────────────────────────────────────────────
 
   &--active {
     background: var(--white);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: $chip-shadow;
 
     // Color variants: active segment text matches the chosen color token.
     .eidos-segmented--primary & {
@@ -130,5 +278,89 @@
     .eidos-segmented--info & {
       color: var(--info-color);
     }
+  }
+}
+
+// ─── Focus rings, per colour ──────────────────────────────────────────────────
+//
+// Inset, because the track clips outward rings (see the invariant on
+// `.eidos-segmented`). Each colour needs two rules: the active segment
+// re-declares `$chip-shadow` alongside its ring, since `box-shadow` is a
+// single property and would otherwise drop the chip's elevation while focused.
+//
+// Written out per colour rather than looped, matching every other component in
+// the library - and `rgba(var(--x-rgb), 0.5)` rather than the modern slash
+// form, which is invalid against these comma-separated triples and would be
+// dropped silently.
+
+.eidos-segmented--primary {
+  .eidos-segmented-item:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+  }
+
+  .eidos-segmented-item--active:focus-visible {
+    box-shadow:
+      $chip-shadow,
+      inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+  }
+}
+
+.eidos-segmented--secondary {
+  .eidos-segmented-item:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--secondary-rgb), 0.5);
+  }
+
+  .eidos-segmented-item--active:focus-visible {
+    box-shadow:
+      $chip-shadow,
+      inset 0 0 0 2px rgba(var(--secondary-rgb), 0.5);
+  }
+}
+
+.eidos-segmented--success {
+  .eidos-segmented-item:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--success-rgb), 0.5);
+  }
+
+  .eidos-segmented-item--active:focus-visible {
+    box-shadow:
+      $chip-shadow,
+      inset 0 0 0 2px rgba(var(--success-rgb), 0.5);
+  }
+}
+
+.eidos-segmented--danger {
+  .eidos-segmented-item:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--danger-rgb), 0.5);
+  }
+
+  .eidos-segmented-item--active:focus-visible {
+    box-shadow:
+      $chip-shadow,
+      inset 0 0 0 2px rgba(var(--danger-rgb), 0.5);
+  }
+}
+
+.eidos-segmented--warning {
+  .eidos-segmented-item:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--warning-rgb), 0.5);
+  }
+
+  .eidos-segmented-item--active:focus-visible {
+    box-shadow:
+      $chip-shadow,
+      inset 0 0 0 2px rgba(var(--warning-rgb), 0.5);
+  }
+}
+
+.eidos-segmented--info {
+  .eidos-segmented-item:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(var(--info-rgb), 0.5);
+  }
+
+  .eidos-segmented-item--active:focus-visible {
+    box-shadow:
+      $chip-shadow,
+      inset 0 0 0 2px rgba(var(--info-rgb), 0.5);
   }
 }

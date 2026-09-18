@@ -7,7 +7,7 @@
   will-change: transform;
   position: relative;
 
-  &--fullWidth {
+  &--full-width {
     width: 100%;
   }
 }
@@ -457,7 +457,7 @@
     @include font-size(lg);
   }
 
-  &--fullWidth {
+  &--full-width {
     width: 100%;
   }
 

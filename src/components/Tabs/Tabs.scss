@@ -212,7 +212,7 @@
     height: var(--component-size-lg);
   }
 
-  &--fullWidth {
+  &--full-width {
     .eidos-tab {
       flex: 1;
     }
@@ -220,7 +220,7 @@
 
   // Set when the scroll buttons own the affordance. Native scrolling (touch
   // swipe, trackpad, shift+wheel) still works - only the scrollbar is hidden.
-  &--hideScrollbar {
+  &--hide-scrollbar {
     scrollbar-width: none; // Firefox
 
     &::-webkit-scrollbar {
@@ -288,7 +288,7 @@
 
   // ── Full-width content centering ─────────────────────────────────────────
 
-  &--fullWidth {
+  &--full-width {
     justify-content: center;
   }
 

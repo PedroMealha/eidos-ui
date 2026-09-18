@@ -73,26 +73,31 @@
   &__footer {
     // Only the default `copyright` variant gets the extra vertical spacing - a
     // custom `component` is expected to fully own its own layout/spacing.
+    // Vertical only: the left/right inset is the shared page gutter below, and
+    // setting it here as well is what used to pin the footer's horizontal
+    // padding, since this selector outranks the gutter's media queries.
     &.eidos-footer--copyright {
-      padding: var(--spacing-md) var(--spacing-xl);
+      padding-block: var(--spacing-md);
     }
   }
 
+  // Vertical rhythm, per region. Horizontal insets are deliberately absent -
+  // see the page gutter below.
   &__header,
   &__body,
   &__footer {
-    padding: var(--spacing-xl) var(--spacing-xl) 0;
+    padding-block: var(--spacing-xl) 0;
 
     @include media-down('xl') {
-      padding: var(--spacing-lg) var(--spacing-lg) 0;
+      padding-block: var(--spacing-lg) 0;
     }
 
     @include media-down('lg') {
-      padding: var(--spacing-md) var(--spacing-md) 0;
+      padding-block: var(--spacing-md) 0;
     }
 
     @include media-down('md') {
-      padding: var(--spacing-sm) var(--spacing-sm) 0;
+      padding-block: var(--spacing-sm) 0;
     }
   }
 
@@ -100,18 +105,66 @@
   // content would otherwise sit flush against the footer with no breathing
   // room between the two.
   &__body {
-    padding-bottom: var(--spacing-xl);
+    padding-block-end: var(--spacing-xl);
 
     @include media-down('xl') {
-      padding-bottom: var(--spacing-lg);
+      padding-block-end: var(--spacing-lg);
     }
 
     @include media-down('lg') {
-      padding-bottom: var(--spacing-md);
+      padding-block-end: var(--spacing-md);
     }
 
     @include media-down('md') {
-      padding-bottom: var(--spacing-sm);
+      padding-block-end: var(--spacing-sm);
+    }
+  }
+}
+
+// ============================================================================
+// PAGE GUTTER - one left/right inset shared by every region
+// ============================================================================
+//
+// The toolbar, header, body and footer all sit on the same vertical edges at
+// every width. Three separate things used to stop that happening:
+//
+// 1. `Toolbar` brings its own `padding` and no breakpoints, so it stayed at
+//    the widest inset while the body stepped down - 42px against 7px at a
+//    700px viewport, measured.
+// 2. The footer's `copyright` rule above is a two-class selector, so it
+//    outranked the media queries in the ladder and never stepped down either.
+// 3. **`--spacing-*` are `em`.** Even with both of those fixed the regions
+//    would still not line up: the footer renders at `--font-size-sm`, so the
+//    same `--spacing-xl` resolved to 36.75px there against the body's 42px.
+//
+// Hence `rem` here rather than the spacing tokens - a page gutter has to be
+// one distance, not a multiple of whatever text each region happens to
+// contain. The values are the spacing scale at the library's own 14px root
+// (`global.scss`), so the desktop gutter is exactly what it was.
+//
+// Written as a descendant selector on purpose: at `.eidos-pagelayout__toolbar`
+// alone this would tie with `.eidos-toolbar`'s own padding and lose on source
+// order, because `Toolbar.scss` is imported after this file. The extra class
+// makes the layout win regardless of import order, which is the right
+// outcome - a layout owns the page's edges, and a standalone `Toolbar` keeps
+// its own padding untouched.
+.eidos-pagelayout {
+  .eidos-pagelayout__toolbar,
+  .eidos-pagelayout__header,
+  .eidos-pagelayout__body,
+  .eidos-pagelayout__footer {
+    padding-inline: 3rem;
+
+    @include media-down('xl') {
+      padding-inline: 1.5rem;
+    }
+
+    @include media-down('lg') {
+      padding-inline: 1rem;
+    }
+
+    @include media-down('md') {
+      padding-inline: 0.5rem;
     }
   }
 }

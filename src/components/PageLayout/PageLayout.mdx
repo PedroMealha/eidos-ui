@@ -88,6 +88,14 @@ When the page content is shorter than the scroll region, the body absorbs the le
 
 <Canvas of={PageLayoutStories.Scrolling} />
 
+## The page gutter
+
+The toolbar, header, body and footer share one left/right inset, so everything on the page sits on the same two vertical edges. It steps down with the viewport - 3rem, then 1.5rem below `xl`, 1rem below `lg`, 0.5rem below `md`.
+
+It is expressed in `rem` rather than the `--spacing-*` tokens on purpose. Those are `em`, so they resolve against each region's own font-size: the footer renders at `--font-size-sm`, which made the same token 36.75px there against the body's 42px, and the two regions drifted apart. A page gutter has to be one distance, not a multiple of whatever text a region happens to contain.
+
+The practical consequence for custom content: **give a custom `footer.component` vertical padding only.** The region already carries the horizontal inset, so adding your own would indent the content twice and pull it out of line with the page above.
+
 ## Responsive behaviour
 
 Every piece of `PageLayout`'s chrome adapts on its own, with no coordination required between them - though they don't all measure the same thing, which matters here specifically because the navigation rail makes the content column narrower than the window:

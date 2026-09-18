@@ -7,6 +7,7 @@ import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Calendar } from './Calendar.component';
 import { TimeInput } from './TimeInput.component';
+import { fullWidthModifier } from '../../utils';
 import type {
   DatePickerProps,
   DateSelectionMode,
@@ -494,7 +495,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   const triggerElement = (
     <div
       ref={triggerRef}
-      className={`eidos-date-picker-trigger${fullWidth ? ' eidos-date-picker-trigger--fullWidth' : ''}`}
+      className={`eidos-date-picker-trigger${fullWidth ? ` ${fullWidthModifier('eidos-date-picker-trigger')}` : ''}`}
     >
       <Input
         value={displayValue}
@@ -680,7 +681,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
   return (
     <div
-      className={`eidos-date-picker-container${fullWidth ? ' eidos-date-picker-container--fullWidth' : ''} ${className}`.trim()}
+      className={`eidos-date-picker-container${fullWidth ? ` ${fullWidthModifier('eidos-date-picker-container')}` : ''} ${className}`.trim()}
     >
       <Dropdown
         key={dropdownKey}

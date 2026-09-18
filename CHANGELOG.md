@@ -29,6 +29,14 @@ Entries land here as work happens, not written retroactively at release time
   `actionsVisibleWhenCollapsed` (default `1`).
 - `container-up` / `container-down` SCSS mixins, the element-relative
   counterparts of `media-up` / `media-down`, reading the same breakpoint map.
+- `SegmentedControl` scrolls an overflowing track with chevron buttons at
+  either end, matching `Tabs`, controlled by `scrollButtons` (default
+  `'auto'`, `'none'` to keep the native scrollbar).
+- `SegmentedControl` segments have a visible focus ring, drawn inset so the
+  scrolling track cannot clip it.
+- `SegmentedControl` supports the WAI-ARIA radiogroup keyboard pattern: a
+  single tab stop, with arrow keys, `Home` and `End` moving the selection and
+  skipping disabled segments.
 
 ### Fixed
 
@@ -38,9 +46,28 @@ Entries land here as work happens, not written retroactively at release time
 - `PageLayout` no longer paints a stray 1px rule down the page edge when
   `navigation` is omitted; the empty rail column now really collapses to
   nothing.
+- `SegmentedControl` no longer pushes the page sideways when its segments are
+  wider than their container.
+- `Tabs` and `SegmentedControl` scroll buttons no longer take focus when
+  clicked, which the browser reported as focus trapped inside an
+  `aria-hidden` subtree.
+- `PageLayout`'s toolbar, header, body and footer share one horizontal gutter
+  at every breakpoint; the toolbar previously kept a fixed inset and the
+  footer's was pinned by a more specific rule, leaving them 42px and 36.75px
+  against the body's 7px on a narrow viewport.
 
 ### Changed
 
+- `SegmentedControl` renders its track inside a new `.eidos-segmented-bar`
+  wrapper, which is also where `className` now lands - target
+  `.eidos-segmented` to style the track itself.
+- `SegmentedControl` is a single tab stop instead of one per segment, so Tab
+  now steps over the whole group - use the arrow keys to move within it.
+- Modifier class names are normalised to kebab-case (`--full-width`,
+  `--hide-scrollbar`); the camelCase spellings (`--fullWidth`,
+  `--hideScrollbar`) are still emitted alongside them, so existing CSS
+  targeting either keeps working. Prefer kebab-case in new code - the aliases
+  go away at the next major.
 - `Header` reflows against its own width rather than the viewport, so it lays
   out correctly beside `PageLayout`'s navigation rail and in any narrow column.
 - `Header`'s action row stacks full-width at 640px and under, and its surplus

@@ -10,7 +10,7 @@
   gap: var(--spacing-xs);
   position: relative;
 
-  &--fullWidth {
+  &--full-width {
     width: 100%;
   }
 }
@@ -90,7 +90,7 @@
   }
 
   // Full width
-  &--fullWidth {
+  &--full-width {
     width: 100%;
   }
 
@@ -433,7 +433,7 @@
     @include font-size(lg);
   }
 
-  &--fullWidth {
+  &--full-width {
     width: 100%;
   }
 

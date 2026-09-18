@@ -1,5 +1,6 @@
 import React, { forwardRef, useState, useEffect, useId } from 'react';
 import { Minus, Plus } from 'lucide-react';
+import { fullWidthModifier } from '../../utils';
 import type { NumberInputProps } from './NumberInput.types';
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
@@ -127,7 +128,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const rootClasses = [
       'eidos-number-input',
       `eidos-number-input--${size}`,
-      fullWidth && 'eidos-number-input--fullWidth',
+      fullWidth && fullWidthModifier('eidos-number-input'),
       error && 'eidos-number-input--error',
       className,
     ]

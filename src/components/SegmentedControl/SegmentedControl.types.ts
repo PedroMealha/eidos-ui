@@ -16,6 +16,18 @@ export interface SegmentedOption {
   tooltip?: string;
 }
 
+/**
+ * How an overflowing segment track is scrolled. Mirrors `TabsScrollButtonsProps`
+ * - the two components solve the same problem the same way.
+ *
+ * - `auto` - previous/next buttons appear only while the track overflows, and
+ *   the native scrollbar is hidden because the buttons are the affordance.
+ * - `none` - no buttons; the track keeps its native scrollbar.
+ *
+ * Native scrolling (touch swipe, trackpad, shift+wheel) works either way.
+ */
+export type SegmentedControlScrollButtonsProps = 'auto' | 'none';
+
 export interface SegmentedControlProps {
   /** Segment definitions. */
   options: SegmentedOption[];
@@ -31,5 +43,9 @@ export interface SegmentedControlProps {
   disabled?: boolean;
   /** Stretch to fill the parent's width. */
   fullWidth?: boolean;
+  /**
+   * Scroll affordance for a track too wide for its container. @default 'auto'
+   */
+  scrollButtons?: SegmentedControlScrollButtonsProps;
   className?: string;
 }

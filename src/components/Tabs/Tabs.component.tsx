@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext, useEffect, useLayoutEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { renderIcon } from '../../utils';
+import { renderIcon, dualModifier, fullWidthModifier } from '../../utils';
 import type { TabsProps, TabProps, TabPanelProps, TabsContextValue } from './Tabs.types';
 
 // ============================================================================
@@ -58,7 +58,7 @@ export const Tab: React.FC<TabProps> = ({
     `eidos-tab--${size}`,
     isActive && 'eidos-tab--active',
     disabled && 'eidos-tab--disabled',
-    fullWidth && 'eidos-tab--fullWidth',
+    fullWidth && fullWidthModifier('eidos-tab'),
     className,
   ]
     .filter(Boolean)
@@ -268,11 +268,11 @@ export const Tabs: React.FC<TabsProps> = ({
   const listClasses = [
     'eidos-tabs-list',
     `eidos-tabs-list--${size}`,
-    fullWidth && 'eidos-tabs-list--fullWidth',
+    fullWidth && fullWidthModifier('eidos-tabs-list'),
     // With buttons, they are the affordance - a native scrollbar underneath
     // them is redundant, and on a space-taking one it would also sit over the
     // `line` variant's rule.
-    hasScrollButtons && 'eidos-tabs-list--hideScrollbar',
+    hasScrollButtons && dualModifier('eidos-tabs-list', 'hide-scrollbar', 'hideScrollbar'),
   ]
     .filter(Boolean)
     .join(' ');
@@ -315,6 +315,14 @@ export const Tabs: React.FC<TabsProps> = ({
               type="button"
               className={scrollButtonClasses('prev')}
               onClick={() => scrollByStep(-1)}
+              // `tabIndex={-1}` keeps these out of the tab order but does not
+              // stop a click from focusing them, and focus inside an
+              // `aria-hidden` subtree is an error the browser reports
+              // ("Blocked aria-hidden on an element because its descendant
+              // retained focus"). Suppressing the default mousedown keeps
+              // them unfocusable by pointer too; the click still fires.
+              // `inert` would prevent the click as well, so it is no help.
+              onMouseDown={(event) => event.preventDefault()}
               tabIndex={-1}
               aria-hidden="true"
             >
@@ -334,6 +342,7 @@ export const Tabs: React.FC<TabsProps> = ({
               type="button"
               className={scrollButtonClasses('next')}
               onClick={() => scrollByStep(1)}
+              onMouseDown={(event) => event.preventDefault()} // see the prev button
               tabIndex={-1}
               aria-hidden="true"
             >

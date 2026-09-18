@@ -63,3 +63,32 @@ The whole control can be disabled via `disabled`, or individual segments via `op
 Stretch to fill the parent container with `fullWidth`. Each segment takes an equal share.
 
 <Canvas of={SegmentedControlStories.FullWidth} />
+
+## Overflow
+
+Segments never wrap, so a track wider than its container scrolls rather than pushing the page sideways - with chevron buttons at either end, the same treatment [Tabs](?path=/docs/navigation-tabs--docs) uses for its tab strip.
+
+Each button is rendered only while its own direction has somewhere to go, so neither appears when every segment fits, and the one at an end you have reached disappears rather than sitting there disabled. They take no layout space, so appearing and disappearing never shifts the segments. Native scrolling (touch swipe, trackpad, shift+wheel) works alongside them, and selecting a segment that is off screen scrolls it into view.
+
+<Canvas of={SegmentedControlStories.Overflow} />
+
+Pass `scrollButtons="none"` to render no buttons and keep the native scrollbar instead:
+
+```tsx
+<SegmentedControl scrollButtons="none" options={options} value={value} onChange={setValue} />
+```
+
+> **Note**: the buttons are a pointer affordance only - they are hidden from assistive technology and never take focus, because the keyboard already reaches every segment (see below) and the browser scrolls a focused one into view. For the same reason the segments' focus ring is drawn _inside_ their edge: a scroll container clips an outward ring (and `outline` is clipped identically), so an outward ring would be invisible on exactly the overflowing controls that need it most.
+
+## Keyboard
+
+The control follows the [WAI-ARIA radiogroup pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), so it is a **single tab stop** rather than one per option - Tab enters the group at the selected segment and the next Tab leaves it.
+
+| Key            | Behaviour                               |
+| -------------- | --------------------------------------- |
+| `Tab`          | Enter the group at the selected segment |
+| `←` / `↑`      | Select the previous segment, wrapping   |
+| `→` / `↓`      | Select the next segment, wrapping       |
+| `Home` / `End` | Select the first / last segment         |
+
+Selection follows focus, which is what the radio pattern specifies - so arrow keys fire `onChange` as they move, unlike [Tabs](?path=/docs/navigation-tabs--docs), where arrows only move focus and the tab is activated separately. Disabled segments are skipped rather than selected and ignored, and moving to a segment that is off screen scrolls it into view.
