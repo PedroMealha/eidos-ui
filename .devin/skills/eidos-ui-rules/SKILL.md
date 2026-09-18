@@ -102,6 +102,34 @@ that doesn't share the same document root font-size as `global.scss`'s
 `html { font-size: 14px }` reset - see the `Releases.mdx` guide-page note
 above for the concrete case (Storybook's Docs manager frame) this bit.
 
+### `overflow-x: auto` scrolls both axes and clips everything inside
+
+An element with `overflow-x: auto` is a scroll container on **both** axes -
+`overflow-y: visible` computes to `auto` when the other axis isn't `visible` -
+and it clips all descendant paint to its padding box. Two things follow for any
+horizontally-scrollable strip (`Tabs`' tab list, `Table`/`DataGrid`'s scroll
+wrappers):
+
+- **Nothing may sit outside the padding box.** A decoration positioned below it
+  (the classic `bottom: -2px` indicator overlapping a `border-bottom`) becomes
+  _vertical scrollable overflow_: a permanent vertical scrollbar, and the
+  decoration clipped out of view. Reserve the band with `padding-bottom`, paint
+  the rule with `box-shadow: inset 0 -2px 0 …` (an inset shadow paints on the
+  border box and, unlike content, doesn't scroll away), and put the decoration
+  at `bottom: 0`.
+- **Outward focus rings are clipped**, so keyboard focus can disappear entirely -
+  a WCAG 2.4.7 failure, and an invisible one, since the CSS is perfectly valid.
+  Use an inset ring (`box-shadow: inset 0 0 0 2px rgba(var(--x-rgb), 0.5)`) for
+  controls that fill a scrollport's height, as `Tabs` and `DataGrid`'s cell
+  editor do. `outline` is no escape - it is clipped identically.
+
+This bit `Tabs` the moment the strip was made scrollable: the vertical scrollbar
+and the missing `line` indicator were reported, the clipped focus ring went
+unnoticed for a release.
+
+Adding scroll buttons or drag-to-scroll does **not** avoid any of this - both
+drive the same `scrollLeft`, and `overflow: hidden`/`clip` clip identically.
+
 ### A portaled element cannot be sized by an ancestor class
 
 Anything rendered through `Dropdown` (so: `Select`, `Combobox`, `Menu`,

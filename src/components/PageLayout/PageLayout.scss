@@ -24,25 +24,41 @@
 
   &__content {
     grid-area: content;
-    display: grid;
-    grid-template-rows: minmax(50px, auto) 1fr auto;
+    display: flex;
+    flex-direction: column;
     background-color: var(--gray-50);
     // A grid item's automatic minimum size is its content's size, so without
-    // these the `1fr` track can only grow: tall page content stretched the
-    // whole layout past the viewport and scrolled the toolbar and navigation
-    // rail away with it, and a wide table did the same horizontally. Pinning
-    // both to `0` is what lets `&__body` below actually become the scroll
-    // container instead of the document.
+    // these the outer `1fr` content row can only grow: tall page content
+    // stretched the whole layout past the viewport and scrolled the toolbar
+    // and navigation rail away with it, and a wide table did the same
+    // horizontally. With the row pinned, `overflow: auto` makes *this*
+    // element the layout's only scrollport - the header, body and footer all
+    // size to their own content and scroll together inside it.
+    //
+    // Deliberately not a grid with fixed `auto 1fr auto` rows: rows are
+    // resolved against the scrollport height, so the body's track could never
+    // grow past it and tall content overflowed its own area and was painted
+    // over by the footer. Auto-placement made it worse - with `header`
+    // omitted, every region shifted up a track and the footer inherited the
+    // `1fr` leftover.
     min-height: 0;
     min-width: 0;
+    overflow: auto;
+  }
+
+  &__header,
+  &__footer {
+    // Size to their own content, and never get squashed by a tall body.
+    flex: 0 0 auto;
   }
 
   &__body {
-    // The single scroll region of the layout - the toolbar, navigation rail,
-    // header and footer all stay put while only the page content moves.
-    overflow: auto;
-    min-height: 0;
-    min-width: 0;
+    // Grows to push the footer down to the bottom edge on a short page, and
+    // grows *past* the scrollport (rather than shrinking) on a long one.
+    // `flex-shrink: 0`, plus the absence of any `min-height` floor, is what
+    // turns tall content into scrollable overflow on `&__content` instead of
+    // an overlap with the footer.
+    flex: 1 0 auto;
   }
 
   &__footer {
@@ -71,9 +87,9 @@
     }
   }
 
-  // Overrides the shared `0` bottom padding above: now that the body is a
-  // scroll container, content scrolled to the end would otherwise sit flush
-  // against the clipping edge with no breathing room before the footer.
+  // Overrides the shared `0` bottom padding above: the end of the page
+  // content would otherwise sit flush against the footer with no breathing
+  // room between the two.
   &__body {
     padding-bottom: var(--spacing-xl);
 

@@ -11,7 +11,13 @@
   // ── Line variant ──────────────────────────────────────────────────────────
   &--line {
     .eidos-tabs-list {
-      border-bottom: 2px solid var(--gray-200);
+      // The 2px rule is an inset shadow rather than a `border-bottom`, and the
+      // matching `padding-bottom` reserves that band *inside* the padding box -
+      // see the scroll-container note on `.eidos-tabs-list` below. Reserving it
+      // also keeps a hovered tab's `--gray-100` background from painting over
+      // the segment of the rule beneath it.
+      padding-bottom: 2px;
+      box-shadow: inset 0 -2px 0 var(--gray-200);
       position: relative; // required for the absolutely-positioned indicator
       gap: 0;
     }
@@ -24,6 +30,18 @@
 
   // ── Enclosed variant ──────────────────────────────────────────────────────
   &--enclosed {
+    // Painted on the bar as well as the list so the scroll buttons sit on the
+    // same surface: the list keeps its own rounded background, and this one
+    // behind it means the corners meet grey rather than the page colour.
+    .eidos-tabs-bar {
+      background: var(--gray-100);
+      @include border-radius(md);
+    }
+
+    .eidos-tabs-scroll-button:hover {
+      background: var(--gray-200); // --gray-100 would be invisible on the bar
+    }
+
     .eidos-tabs-list {
       background: var(--gray-100);
       @include border-radius(md);
@@ -48,6 +66,14 @@
     }
 
     .eidos-tab {
+      // The only variant that doesn't fill the strip: a pill is a shape around
+      // its label, so it hugs it and is centred in the strip's height instead.
+      // Block padding is `em`-based, so it scales with the size's font.
+      height: auto;
+      padding-block: var(--spacing-sm);
+      // WCAG 2.5.8 minimum target size - without it the `sm` pill computes to
+      // 21px tall, and the strip around it isn't clickable.
+      min-height: 24px;
       border-radius: 9999px;
 
       &--active {
@@ -56,6 +82,84 @@
       }
     }
   }
+}
+
+// ============================================================================
+// TAB BAR - the row holding the scroll buttons and the tab list
+// ============================================================================
+
+.eidos-tabs-bar {
+  display: flex;
+  align-items: stretch;
+  min-width: 0; // let the list scroll instead of overflowing its container
+  position: relative; // containing block for the scroll buttons
+}
+
+// ============================================================================
+// SCROLL BUTTONS - shown only while there is something to scroll to
+// ============================================================================
+
+.eidos-tabs-scroll-button {
+  @include button-reset;
+  @include flex-center;
+  // Floated over the tabs rather than placed beside them: taking no layout
+  // space means the tabs keep the full width of their container, and that a
+  // button appearing or disappearing at an end never shifts them sideways.
+  //
+  // Pinned flush *inside* the strip's edges, never straddling them. An
+  // absolutely positioned box that hangs outside still counts towards the
+  // scrollable overflow of the nearest scrolling ancestor: overhanging on the
+  // right put a horizontal scrollbar across `PageLayout`'s whole content area
+  // (measured: 6px of overflow from one button), and on the left it was
+  // silently clipped instead, since leftward overflow isn't scrollable. The
+  // white fill, border and shadow are what separate it from the tabs it
+  // covers - it doesn't need to escape the box to read as a control.
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1; // above the tabs it overlaps; local, so no token needed
+  padding: var(--spacing-sm);
+  // Opaque, because it sits on top of whatever tab is scrolled under it.
+  background: rgb(var(--white-rgb), 0.9);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-sm);
+  @include elevation(1);
+  color: var(--gray-500);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &--prev {
+    left: 0;
+  }
+
+  &--next {
+    right: 0;
+  }
+
+  &:hover {
+    color: var(--gray-700);
+    background: var(--gray-100);
+  }
+
+  // Sized from the font like the tabs are, so the chevrons stay proportional
+  // to the labels next to them.
+  &--sm {
+    @include font-size(xs);
+  }
+
+  &--md {
+    @include font-size(sm);
+  }
+
+  &--lg {
+    @include font-size(base);
+  }
+}
+
+.eidos-tabs-scroll-button-icon {
+  width: 1.25em;
+  height: 1.25em;
 }
 
 // ============================================================================
@@ -71,14 +175,56 @@
   // to be the nearest scroll container, which on a narrow screen means the
   // page body scrolls sideways because of a tab strip.
   //
-  // The indicator is positioned against this element (it's the offset parent),
-  // so it keeps tracking the active tab and scrolls along with it.
+  // INVARIANT: nothing inside this element may paint outside its padding box.
+  // `overflow-x: auto` makes this a scroll container on *both* axes -
+  // `overflow-y: visible` computes to `auto` when the other axis isn't visible -
+  // and a scroll container clips all descendant paint to its padding box while
+  // counting anything below/right of it as scrollable overflow. So the 2px the
+  // indicator used to hang below the box (`bottom: -2px`, overlapping a
+  // `border-bottom`) produced a permanent vertical scrollbar *and* hid the
+  // indicator, and the tabs' 3px outward focus rings were clipped away entirely.
+  // The rule is therefore an inset shadow, the indicator sits at `bottom: 0` in
+  // padding reserved for it, and the focus rings are inset.
   overflow-x: auto;
   min-width: 0;
+
+  // ── Size modifiers ────────────────────────────────────────────────────────
+  //
+  // `size` sizes the *strip*, not the individual tabs: the tabs then either
+  // fill it (`line`, `enclosed`) or sit centred inside it (`pills`), so every
+  // variant is the same height for a given size. Sizing each tab instead made
+  // the `pills` variant read as oversized - a fully-rounded, saturated fill
+  // around a 12px label in a 40px box is 28px of visible empty space, which
+  // the other two variants happen to hide.
+  //
+  // Everything is inside the token (`border-box` is set globally), so the
+  // `line` variant's 2px rule comes out of the strip's height rather than
+  // adding to it.
+  &--sm {
+    height: var(--component-size-sm);
+  }
+
+  &--md {
+    height: var(--component-size-md);
+  }
+
+  &--lg {
+    height: var(--component-size-lg);
+  }
 
   &--fullWidth {
     .eidos-tab {
       flex: 1;
+    }
+  }
+
+  // Set when the scroll buttons own the affordance. Native scrolling (touch
+  // swipe, trackpad, shift+wheel) still works - only the scrollbar is hidden.
+  &--hideScrollbar {
+    scrollbar-width: none; // Firefox
+
+    &::-webkit-scrollbar {
+      display: none; // Chromium, WebKit
     }
   }
 }
@@ -95,28 +241,29 @@
   white-space: nowrap;
   color: var(--gray-500);
   @include font-weight(medium);
+  line-height: 1;
   transition: all 0.2s ease;
   border-radius: 0; // reset browser default; variants override as needed
-  will-change: transform;
 
-  // ── Size modifiers ────────────────────────────────────────────────────────
+  // Fills the strip, which is what carries the size - see the size modifiers
+  // on `.eidos-tabs-list`. `pills` opts out of this and hugs its label.
+  height: 100%;
+
+  // ── Size modifiers - font and inline padding only ────────────────────────
 
   &--sm {
     @include font-size(xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    height: var(--component-size-sm);
+    padding-inline: var(--spacing-sm);
   }
 
   &--md {
     @include font-size(sm);
-    padding: var(--spacing-xs) var(--spacing-md);
-    height: var(--component-size-md);
+    padding-inline: var(--spacing-md);
   }
 
   &--lg {
     @include font-size(base);
-    padding: var(--spacing-sm) var(--spacing-md);
-    height: var(--component-size-lg);
+    padding-inline: var(--spacing-md);
   }
 
   // ── Hover (inactive, non-disabled only) ──────────────────────────────────
@@ -156,6 +303,13 @@
 // ============================================================================
 // COLOR VARIANTS
 // Higher specificity selectors ensure these override variant-level styles.
+//
+// Focus rings are inset rather than the library's usual 3px outward ring: the
+// list is a scroll container and would clip an outward ring on all four sides
+// (the tabs fill its full height), leaving keyboard focus invisible. Same
+// reasoning as DataGrid's cell editor inside `.eidos-data-grid-scroll`. The
+// alpha is raised to 0.5 because a 2px inset ring reads weaker than a 3px
+// outward one.
 // ============================================================================
 
 .eidos-tabs--primary {
@@ -173,7 +327,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+    box-shadow: inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
   }
 }
 
@@ -192,7 +346,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
+    box-shadow: inset 0 0 0 2px rgba(var(--secondary-rgb), 0.5);
   }
 }
 
@@ -211,7 +365,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
+    box-shadow: inset 0 0 0 2px rgba(var(--success-rgb), 0.5);
   }
 }
 
@@ -230,7 +384,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
+    box-shadow: inset 0 0 0 2px rgba(var(--danger-rgb), 0.5);
   }
 }
 
@@ -249,7 +403,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+    box-shadow: inset 0 0 0 2px rgba(var(--warning-rgb), 0.5);
   }
 }
 
@@ -268,8 +422,17 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+    box-shadow: inset 0 0 0 2px rgba(var(--info-rgb), 0.5);
   }
+}
+
+// A tinted ring is invisible on the `pills` active tab, which is filled with the
+// colour the ring is tinted from. `currentColor` there is already
+// `var(--x-contrast)` - the fill's paired foreground - so one rule covers all
+// six colours. Equal specificity to the blocks above, so it must stay below
+// them to win.
+.eidos-tabs--pills .eidos-tab--active:focus-visible {
+  box-shadow: inset 0 0 0 2px currentColor;
 }
 
 // ============================================================================
@@ -278,7 +441,11 @@
 
 .eidos-tabs-indicator {
   position: absolute;
-  bottom: -2px; // sits flush on top of the list's 2px border-bottom
+  // Covers the 2px band the list reserves via `padding-bottom`, painting over
+  // its inset `--gray-200` rule. Must not be negative: the list is a scroll
+  // container, so anything below its padding box becomes scrollable overflow
+  // (a vertical scrollbar) and is clipped out of view.
+  bottom: 0;
   left: 0;
   width: 0;
   height: 2px;

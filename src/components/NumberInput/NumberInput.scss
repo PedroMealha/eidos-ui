@@ -4,6 +4,8 @@
   display: inline-flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  // Containing block for the visually-hidden native input - see the mixin.
+  position: relative;
 
   &--fullWidth {
     width: 100%;

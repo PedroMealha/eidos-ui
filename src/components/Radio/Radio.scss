@@ -8,6 +8,8 @@
   @include flex-center-y;
   cursor: pointer;
   width: fit-content;
+  // Containing block for the visually-hidden native input - see the mixin.
+  position: relative;
 
   &--disabled {
     cursor: not-allowed;

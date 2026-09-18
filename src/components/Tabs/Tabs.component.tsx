@@ -1,4 +1,5 @@
-import React, { useState, useRef, useContext, useLayoutEffect } from 'react';
+import React, { useState, useRef, useContext, useEffect, useLayoutEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { renderIcon } from '../../utils';
 import type { TabsProps, TabProps, TabPanelProps, TabsContextValue } from './Tabs.types';
 
@@ -122,12 +123,27 @@ export const Tabs: React.FC<TabsProps> = ({
   size = 'md',
   color = 'primary',
   fullWidth = false,
+  scrollButtons = 'auto',
   className = '',
   children,
 }) => {
   const isControlled = value !== undefined;
   const [localValue, setLocalValue] = useState(defaultValue ?? '');
   const activeValue = isControlled ? value! : localValue;
+
+  // Separate Tab and TabPanel children so the list and panels render in
+  // distinct DOM regions, regardless of how the consumer orders them.
+  const tabChildren: React.ReactElement[] = [];
+  const panelChildren: React.ReactElement[] = [];
+
+  React.Children.forEach(children, (child) => {
+    if (!React.isValidElement(child)) return;
+    if (child.type === Tab) {
+      tabChildren.push(child);
+    } else if (child.type === TabPanel) {
+      panelChildren.push(child);
+    }
+  });
 
   const listRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
@@ -163,26 +179,87 @@ export const Tabs: React.FC<TabsProps> = ({
     }
   }, [activeValue, variant, fullWidth]);
 
+  // The list scrolls horizontally when the strip is wider than its container,
+  // so an activated tab can sit outside the scrollport - reachable by keyboard
+  // (`End`) or by a controlled `value` change, but invisible. `scrollLeft` is
+  // adjusted directly rather than via `scrollIntoView`, which walks the whole
+  // ancestor chain and would scroll the page vertically when the strip is below
+  // the fold.
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const activeTab = list.querySelector('[aria-selected="true"]') as HTMLElement | null;
+    if (!activeTab) return;
+
+    const left = activeTab.offsetLeft;
+    const right = left + activeTab.offsetWidth;
+
+    if (left < list.scrollLeft) {
+      list.scrollLeft = left;
+    } else if (right > list.scrollLeft + list.clientWidth) {
+      list.scrollLeft = right - list.clientWidth;
+    }
+  }, [activeValue]);
+
+  // Whether either end of the strip has content hidden past it. Drives both
+  // the presence of the scroll buttons (neither end scrollable = the strip
+  // fits, so no buttons) and their disabled state at the extremes.
+  const [scrollState, setScrollState] = useState({ canScrollPrev: false, canScrollNext: false });
+  const hasScrollButtons = scrollButtons !== 'none';
+
+  useEffect(() => {
+    if (!hasScrollButtons) return;
+    const list = listRef.current;
+    if (!list) return;
+
+    const update = () => {
+      const maxScroll = list.scrollWidth - list.clientWidth;
+      // 1px of tolerance: fractional layout widths leave a sub-pixel remainder
+      // at either end that would otherwise keep a button enabled for a scroll
+      // that can no longer move anything.
+      const canScrollPrev = list.scrollLeft > 1;
+      const canScrollNext = list.scrollLeft < maxScroll - 1;
+      setScrollState((previous) =>
+        previous.canScrollPrev === canScrollPrev && previous.canScrollNext === canScrollNext
+          ? previous
+          : { canScrollPrev, canScrollNext },
+      );
+    };
+
+    update();
+    list.addEventListener('scroll', update, { passive: true });
+
+    // The list's own box stays the same width when a tab's label reflows or a
+    // font finishes loading, so the tabs have to be observed as well as the
+    // container - only their sizes tell us the strip started overflowing.
+    const observer = new ResizeObserver(update);
+    observer.observe(list);
+    Array.from(list.children).forEach((child) => observer.observe(child));
+
+    return () => {
+      list.removeEventListener('scroll', update);
+      observer.disconnect();
+    };
+  }, [hasScrollButtons, tabChildren.length, size, variant, fullWidth]);
+
+  const scrollByStep = (direction: -1 | 1) => {
+    const list = listRef.current;
+    if (!list) return;
+
+    // A step just short of a full page keeps a tab of context on screen, the
+    // same way a paged scrollbar click does.
+    const step = list.clientWidth * 0.8;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    list.scrollBy({ left: direction * step, behavior: reducedMotion ? 'auto' : 'smooth' });
+  };
+
   const onSelect = (newValue: string) => {
     if (!isControlled) {
       setLocalValue(newValue);
     }
     onChange?.(newValue);
   };
-
-  // Separate Tab and TabPanel children so the list and panels render in
-  // distinct DOM regions, regardless of how the consumer orders them.
-  const tabChildren: React.ReactElement[] = [];
-  const panelChildren: React.ReactElement[] = [];
-
-  React.Children.forEach(children, (child) => {
-    if (!React.isValidElement(child)) return;
-    if (child.type === Tab) {
-      tabChildren.push(child);
-    } else if (child.type === TabPanel) {
-      panelChildren.push(child);
-    }
-  });
 
   const rootClasses = ['eidos-tabs', `eidos-tabs--${variant}`, `eidos-tabs--${color}`, className]
     .filter(Boolean)
@@ -192,9 +269,27 @@ export const Tabs: React.FC<TabsProps> = ({
     'eidos-tabs-list',
     `eidos-tabs-list--${size}`,
     fullWidth && 'eidos-tabs-list--fullWidth',
+    // With buttons, they are the affordance - a native scrollbar underneath
+    // them is redundant, and on a space-taking one it would also sit over the
+    // `line` variant's rule.
+    hasScrollButtons && 'eidos-tabs-list--hideScrollbar',
   ]
     .filter(Boolean)
     .join(' ');
+
+  // Each button exists only while its own direction has somewhere to go: none
+  // at all when the strip fits, and none at the end you have reached. A
+  // disabled button would be pointing at nothing. They are positioned
+  // absolutely, so appearing and disappearing never moves the tabs.
+  const showPrevButton = hasScrollButtons && scrollState.canScrollPrev;
+  const showNextButton = hasScrollButtons && scrollState.canScrollNext;
+
+  const scrollButtonClasses = (direction: 'prev' | 'next') =>
+    [
+      'eidos-tabs-scroll-button',
+      `eidos-tabs-scroll-button--${direction}`,
+      `eidos-tabs-scroll-button--${size}`,
+    ].join(' ');
 
   const contextValue: TabsContextValue = {
     activeValue,
@@ -209,12 +304,44 @@ export const Tabs: React.FC<TabsProps> = ({
   return (
     <TabsContext.Provider value={contextValue}>
       <div className={rootClasses}>
-        <div ref={listRef} className={listClasses} role="tablist">
-          {tabChildren}
-          {variant === 'line' && (
-            <span ref={indicatorRef} className="eidos-tabs-indicator" aria-hidden="true" />
+        {/* The buttons are siblings of the tab list, never children of it:
+            `role="tablist"` only accepts tabs. They are also hidden from
+            assistive tech and skipped by Tab, because they are a pointer
+            affordance for something the keyboard already does - arrow keys
+            move between tabs and scroll the active one into view. */}
+        <div className="eidos-tabs-bar">
+          {showPrevButton && (
+            <button
+              type="button"
+              className={scrollButtonClasses('prev')}
+              onClick={() => scrollByStep(-1)}
+              tabIndex={-1}
+              aria-hidden="true"
+            >
+              <ChevronLeft className="eidos-tabs-scroll-button-icon" />
+            </button>
+          )}
+
+          <div ref={listRef} className={listClasses} role="tablist">
+            {tabChildren}
+            {variant === 'line' && (
+              <span ref={indicatorRef} className="eidos-tabs-indicator" aria-hidden="true" />
+            )}
+          </div>
+
+          {showNextButton && (
+            <button
+              type="button"
+              className={scrollButtonClasses('next')}
+              onClick={() => scrollByStep(1)}
+              tabIndex={-1}
+              aria-hidden="true"
+            >
+              <ChevronRight className="eidos-tabs-scroll-button-icon" />
+            </button>
           )}
         </div>
+
         <div className="eidos-tabs-panels">{panelChildren}</div>
       </div>
     </TabsContext.Provider>

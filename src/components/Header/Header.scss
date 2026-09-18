@@ -32,9 +32,9 @@
     gap: var(--spacing-sm);
     flex-shrink: 0;
     // The row wraps onto extra lines rather than overflowing: an action row
-    // wider than the header otherwise had nowhere to go and widened the whole
-    // layout, since `PageLayout` scrolls only its body and nothing above it
-    // clips.
+    // wider than the header otherwise had nowhere to go, and would widen the
+    // whole layout (or, inside `PageLayout`, force its content area to scroll
+    // horizontally) instead of fitting the space it was given.
     //
     // `max-width` is what actually makes the wrap happen. `flex-shrink: 0`
     // keeps this row's base size at its max-content width, and a flex

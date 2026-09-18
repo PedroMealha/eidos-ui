@@ -65,7 +65,6 @@ const meta = {
   component: ThemeEditor,
   parameters: {
     layout: 'padded',
-    docs: { story: { inline: false, height: '720px' } },
   },
   argTypes: {
     colors: {

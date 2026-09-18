@@ -19,6 +19,10 @@
   @include flex-center-y;
   cursor: pointer;
   width: fit-content;
+  // Containing block for the visually-hidden native input below - see the
+  // `visually-hidden` mixin. Without it the input escapes any scrolling
+  // ancestor and stretches the document instead.
+  position: relative;
 
   &--disabled {
     cursor: not-allowed;

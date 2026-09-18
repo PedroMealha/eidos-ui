@@ -20,6 +20,11 @@ const TABS = [
  * The tabs are driven by the route rather than by local state, so each one
  * is a real, deep-linkable URL with working back/forward, while `Tabs` stays
  * a purely presentational control.
+ *
+ * Mounted by the route table (`RouteDef['layout']`), *not* by each settings
+ * page: a layout rendered inside a page is remounted whenever the page
+ * component changes, which resets `Tabs` and makes its indicator jump between
+ * tabs instead of sliding.
  */
 export const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { path, navigate } = useRouter();

@@ -7,6 +7,7 @@ import { TicketsPage } from '../pages/tickets-page';
 import { AdvancedPage } from '../pages/settings/advanced-page';
 import { NotificationsPage } from '../pages/settings/notifications-page';
 import { ProfilePage } from '../pages/settings/profile-page';
+import { SettingsLayout } from '../pages/settings/settings-layout';
 import { ThemePage } from '../pages/settings/theme-page';
 
 /**
@@ -50,6 +51,19 @@ type BaseRoute = {
   adminOnly?: boolean;
   /** Present only on routes that are themselves a navigation rail entry. */
   nav?: { label: string; icon: RouteIcon };
+  /**
+   * Chrome shared by a group of sibling routes, mounted *around* the page.
+   *
+   * It has to be declared here rather than rendered by each page, because a
+   * page component is swapped wholesale on navigation: a layout rendered
+   * inside it is a different element on every route and React remounts it,
+   * losing its state. `SettingsLayout`'s `Tabs` is the visible symptom - a
+   * remounted `Tabs` has no previous indicator position to animate from, so
+   * the underline snapped between tabs instead of sliding. Rendered from here
+   * it keeps the same position in the element tree across the whole group,
+   * so React preserves the instance and only the page beneath it changes.
+   */
+  layout?: React.ComponentType<{ children: React.ReactNode }>;
 };
 
 /**
@@ -109,6 +123,7 @@ export const ROUTES: RouteDef[] = [
     subtitle: 'Your profile and how you appear to teammates.',
     breadcrumb: 'Profile',
     parent: '/app/settings',
+    layout: SettingsLayout,
     component: ProfilePage,
   },
   {
@@ -117,6 +132,7 @@ export const ROUTES: RouteDef[] = [
     subtitle: 'Choose what Meridian emails you about.',
     breadcrumb: 'Notifications',
     parent: '/app/settings',
+    layout: SettingsLayout,
     component: NotificationsPage,
   },
   {
@@ -125,6 +141,7 @@ export const ROUTES: RouteDef[] = [
     subtitle: 'Demo environment details.',
     breadcrumb: 'Advanced',
     parent: '/app/settings',
+    layout: SettingsLayout,
     component: AdvancedPage,
   },
   {
@@ -133,6 +150,7 @@ export const ROUTES: RouteDef[] = [
     subtitle: 'Customize your theme.',
     breadcrumb: 'Theme',
     parent: '/app/settings',
+    layout: SettingsLayout,
     component: ThemePage,
   },
 ];

@@ -162,6 +162,31 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 /**
+ * `main` is the layout's only scroll region: the header, body and footer all
+ * scroll together inside it while the toolbar and navigation rail stay put.
+ * Scroll the canvas below - the header and the copyright notice both travel
+ * with the content, and neither overlaps it.
+ */
+export const Scrolling: Story = {
+  args: {
+    children: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
+        {Array.from({ length: 12 }, (_, index) => (
+          <section key={index}>
+            <h4>Section {index + 1}</h4>
+            <p>
+              Each of these blocks sizes to its own content, and the body region grows with them
+              rather than clipping them - the overflow ends up on the scroll container, not inside
+              the body.
+            </p>
+          </section>
+        ))}
+      </div>
+    ),
+  },
+};
+
+/**
  * At a narrow width, `Toolbar` wraps its breadcrumb trail onto its own line
  * (rather than clipping it or squeezing the search/actions/user menu off to
  * the side) and `Header` wraps its actions below the title/subtitle - both

@@ -9,6 +9,8 @@
   align-items: center;
   gap: var(--spacing-sm);
   cursor: pointer;
+  // Containing block for the visually-hidden native input - see the mixin.
+  position: relative;
 
   &--disabled {
     cursor: not-allowed;

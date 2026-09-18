@@ -85,6 +85,8 @@
     @include flex-center-y;
     gap: var(--spacing-xs);
     flex: 0 0 auto;
+    // Containing block for the visually-hidden file input - see the mixin.
+    position: relative;
     // Pins the action to the trailing edge independently of the content
     // before it, which is what keeps it still.
     margin-left: auto;

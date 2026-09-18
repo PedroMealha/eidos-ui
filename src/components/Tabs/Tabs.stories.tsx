@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Home, Settings, Bell } from 'lucide-react';
 import { Tabs, Tab, TabPanel } from './Tabs.component';
+import { Divider } from '../Divider';
 
 const meta = {
   title: 'Navigation/Tabs',
@@ -47,6 +48,16 @@ const meta = {
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
+      },
+    },
+    scrollButtons: {
+      control: 'select',
+      options: ['auto', 'none'],
+      description:
+        'How an overflowing strip is scrolled. `auto` shows previous/next buttons while it overflows and hides the scrollbar; `none` leaves the native scrollbar. Native scrolling works either way.',
+      table: {
+        type: { summary: '"auto" | "none"' },
+        defaultValue: { summary: 'auto' },
       },
     },
     defaultValue: {
@@ -317,6 +328,79 @@ export const WithDisabledTab = {
       <TabPanel value="reports">{panelContent('Reports')}</TabPanel>
     </Tabs>
   ),
+};
+
+// ============================================================================
+// SCROLL BUTTONS - an overflowing strip in a deliberately narrow container
+// ============================================================================
+
+const MANY_TABS = [
+  'Overview',
+  'Analytics',
+  'Reports',
+  'Automations',
+  'Integrations',
+  'Members',
+  'Billing',
+  'Audit log',
+  'Webhooks',
+  'Danger zone',
+];
+
+export const ScrollButtons = {
+  render: () => {
+    const narrow: React.CSSProperties = { maxWidth: '420px' };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div style={narrow}>
+          <p style={labelStyle}>scrollButtons=&quot;auto&quot; (default)</p>
+          <Tabs defaultValue="overview" variant="line">
+            {MANY_TABS.map((tab) => (
+              <Tab key={tab} value={tab.toLowerCase().replace(' ', '-')}>
+                {tab}
+              </Tab>
+            ))}
+            <TabPanel value="overview">{panelContent('Overview')}</TabPanel>
+          </Tabs>
+        </div>
+        <div style={narrow}>
+          <p style={labelStyle}>scrollButtons=&quot;auto&quot; (default)</p>
+          <Tabs defaultValue="overview" variant="enclosed">
+            {MANY_TABS.map((tab) => (
+              <Tab key={tab} value={tab.toLowerCase().replace(' ', '-')}>
+                {tab}
+              </Tab>
+            ))}
+            <TabPanel value="overview">{panelContent('Overview')}</TabPanel>
+          </Tabs>
+        </div>
+        <div style={narrow}>
+          <p style={labelStyle}>scrollButtons=&quot;auto&quot; (default)</p>
+          <Tabs defaultValue="overview" variant="pills">
+            {MANY_TABS.map((tab) => (
+              <Tab key={tab} value={tab.toLowerCase().replace(' ', '-')}>
+                {tab}
+              </Tab>
+            ))}
+            <TabPanel value="overview">{panelContent('Overview')}</TabPanel>
+          </Tabs>
+        </div>
+        <Divider />
+        <div style={narrow}>
+          <p style={labelStyle}>scrollButtons=&quot;none&quot;</p>
+          <Tabs defaultValue="overview" scrollButtons="none">
+            {MANY_TABS.map((tab) => (
+              <Tab key={tab} value={tab.toLowerCase().replace(' ', '-')}>
+                {tab}
+              </Tab>
+            ))}
+            <TabPanel value="overview">{panelContent('Overview')}</TabPanel>
+          </Tabs>
+        </div>
+      </div>
+    );
+  },
 };
 
 // ============================================================================

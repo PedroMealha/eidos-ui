@@ -9,6 +9,11 @@
 
 html,
 body {
+  /* `100%`, not `100vh`: on mobile `100vh` resolves against the *large*
+     viewport, so a full-height app shell ends up taller than what is actually
+     visible and its bottom chrome hides behind the browser UI. `height: 100%`
+     on `html` already resolves against the viewport, and on `body` against
+     `html`, so this is the same thing on desktop without that bug. */
   height: 100%;
   font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
@@ -16,7 +21,6 @@ body {
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   font-size: 14px;
   line-height: 1.4;
-  margin-bottom: var(--spacing-sm);
   color: var(--dark-color);
 }
 
@@ -90,4 +94,43 @@ pre {
 svg.lucide {
   width: 1em;
   height: 1em;
+}
+
+/* Scrollbars, WebKit/Blink (Chrome, Brave, Edge, Safari).
+   Both dimensions are needed: `width` is the thickness of a *vertical* bar
+   only, so setting it alone left every horizontal scroller (`pre`, the
+   Table/DataGrid wrappers, Tabs' strip) at the OS default thickness.
+   Overridable through the `--scrollbar-*` tokens - see `variables.scss`. */
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  /* A scrollbar thumb takes no `padding`, so a transparent border plus
+     `background-clip: padding-box` is what insets the visible bar from the
+     track - the clip does nothing on its own. The thumb still hit-tests over
+     its whole border box, so this keeps a slim look without shrinking the
+     target to something un-grabbable. */
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-radius: var(--scrollbar-size);
+}
+
+/* Firefox, which supports neither the pseudo-elements above nor an inset
+   thumb - `scrollbar-width`/`scrollbar-color` is its ceiling. Gated behind a
+   Firefox-only `@supports` test on purpose: the standard properties take
+   precedence over the pseudo-elements wherever both are supported, so
+   applying them unconditionally would replace the styling above in Chromium
+   with this coarser version. */
+@supports (scrollbar-width: auto) and (-moz-appearance: none) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
 }

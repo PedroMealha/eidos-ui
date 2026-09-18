@@ -50,6 +50,16 @@ import { Tabs, Tab, TabPanel } from 'eidos-ui';
 
 <Canvas of={TabsStories.FullWidth} />
 
+## Scroll buttons
+
+A strip wider than its container scrolls horizontally rather than overflowing the
+page. With the default `scrollButtons="auto"`, previous/next buttons appear while
+it overflows and the scrollbar is hidden; `scrollButtons="none"` keeps the native
+scrollbar instead. Touch swipe, trackpad and shift+wheel work either way, and
+activating a tab outside the visible part scrolls it into view.
+
+<Canvas of={TabsStories.ScrollButtons} />
+
 ## With disabled tab
 
 <Canvas of={TabsStories.WithDisabledTab} />

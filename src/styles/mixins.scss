@@ -327,6 +327,17 @@
 // ============================================================================
 
 // Visually hidden (accessible)
+//
+// The element it is applied to MUST have a positioned ancestor (usually its
+// own wrapper, with `position: relative`). `position: absolute` with no
+// offsets leaves the box at its static position, but its *containing block*
+// is the nearest positioned ancestor - with none, that is the initial
+// containing block, so the box escapes every scroll container in between and
+// is added to the **document's** scrollable overflow instead. A page of
+// checkboxes inside a scrolling panel then grew a second, phantom scrollbar
+// on `<html>` that revealed nothing but empty space. `clip` hides the paint,
+// not the overflow contribution, so there is no warning - the same
+// silent-failure shape as the other entries in the project rules.
 @mixin visually-hidden {
   position: absolute !important;
   width: 1px !important;

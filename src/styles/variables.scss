@@ -189,6 +189,16 @@
   --footer-height: 60px;
   --badge-offset: 0.3em;
 
+  // Scrollbars
+  //
+  // `global.scss` styles every scroller with these, so a consumer who does not
+  // want the library's scrollbars in their own markup overrides the tokens
+  // rather than having to out-specify `*::-webkit-scrollbar`. The size is the
+  // full hit area; the thumb is inset from it by a transparent border, so it
+  // reads slimmer than it is to click.
+  --scrollbar-size: 10px;
+  --scrollbar-thumb: var(--primary-color);
+
   // Z-index layers
   //
   // Ordered low -> high, in steps of 100 so consumers can slot their own

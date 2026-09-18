@@ -80,7 +80,13 @@ A nested route group (a settings area with its own tab bar, say) needs no second
 
 ## Scrolling
 
-The page body is the layout's only scroll region: the toolbar, navigation rail, header and footer stay fixed while content scrolls beneath them. `PageLayout` therefore fills its container rather than growing with its content, so give it a bounded height - a parent with a real height, or `100vh`/`100dvh` at the app root. Dropping it into an unbounded page will make it collapse to its minimum height instead.
+The `main` content area is the layout's only scroll region. The toolbar and navigation rail stay fixed; the header, page body and footer all scroll together inside it, each sized to its own content. Nothing is pinned - if you want a header that stays visible, add `position: sticky; top: 0` to it yourself.
+
+`PageLayout` therefore fills its container rather than growing with its content, so give it a bounded height - a parent with a real height, or `100vh`/`100dvh` at the app root. Dropping it into an unbounded page will make it collapse to its minimum height instead.
+
+When the page content is shorter than the scroll region, the body absorbs the leftover space, so the footer sits on the bottom edge rather than floating up under the content.
+
+<Canvas of={PageLayoutStories.Scrolling} />
 
 ## Responsive behaviour
 

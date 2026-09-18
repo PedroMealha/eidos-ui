@@ -13,6 +13,55 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `--scrollbar-size` and `--scrollbar-thumb` tokens, which style every
+  scrollbar via `global.scss` and can be overridden to opt out.
+- `Tabs` gains `scrollButtons` (`'auto' | 'none'`, default `'auto'`) - previous/
+  next buttons that appear only while the strip overflows, replacing the native
+  scrollbar as the affordance.
+
+### Changed
+
+- `PageLayout` scrolls its whole `main` content area: the header and footer now
+  scroll with the page body instead of staying fixed above and below it. The
+  toolbar and navigation rail still stay put.
+- `global.scss` no longer puts a `margin-bottom` on `body` - it gave any
+  full-height layout a document-level scrollbar of exactly that size.
+- `Tabs` renders its tab list inside a new `.eidos-tabs-bar` row, which also
+  holds the scroll buttons.
+- `Tabs`' `size` now sizes the tab strip rather than each tab, so all three
+  variants are the same height for a given size: `enclosed` strips lose the 8px
+  their padding used to add, and `pills` tabs hug their label (centred in the
+  strip) instead of filling a 40px box.
+- `Tabs`' scroll buttons float over the strip's edges instead of sitting beside
+  it, and each one is shown only while its direction can still scroll rather
+  than being rendered disabled at the end.
+
+### Fixed
+
+- `PageLayout` page content no longer overlaps the footer - its content area is
+  a real scroll container instead of a fixed three-row grid whose body track
+  could not grow past the scrollport.
+- `PageLayout` no longer stretches the footer into the leftover vertical space
+  when `header` is omitted.
+- `Checkbox`, `Radio`, `Switch`, `NumberInput` and `ThemeEditor` no longer add
+  a phantom scrollbar to the page. Their visually-hidden native inputs are
+  `position: absolute` with no positioned ancestor, so they escaped every
+  scroll container and were counted into the document's scrollable height -
+  a long list of them produced a second scrollbar revealing only empty space.
+- `Tabs` no longer shows a permanent vertical scrollbar on its tab strip - its
+  horizontal scroll container also scrolls vertically per spec, and the `line`
+  indicator hung 2px below the box.
+- `Tabs`' `line` indicator is visible again instead of being clipped by that
+  scroll container; the 2px rule is now an inset shadow with the indicator
+  covering it.
+- `Tabs`' keyboard focus ring is visible again - the outward ring was clipped
+  away on all four sides by the scroll container, so focus was invisible in the
+  `line` and `pills` variants.
+- `Tabs` scrolls the active tab into view when it is selected outside the
+  visible part of an overflowing strip.
+
 ## [3.0.0] - 2026-09-17
 
 ### Added

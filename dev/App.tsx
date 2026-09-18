@@ -38,6 +38,10 @@ export const App: React.FC = () => {
     if (!session) return null;
 
     const Page = match?.route.component;
+    // Group chrome (`SettingsLayout`) is rendered here rather than by the page
+    // so it keeps its position - and therefore its React instance and state -
+    // while the page beneath it changes. See `RouteDef['layout']`.
+    const Layout = match?.route.layout ?? React.Fragment;
     // The navigation rail hides admin-only routes, but a pasted URL must
     // still be refused - one guard here rather than repeated per page.
     const forbidden = match?.route.adminOnly && session.role !== 'admin';
@@ -48,7 +52,9 @@ export const App: React.FC = () => {
           {redirectTo ? null : forbidden ? (
             <ForbiddenPage />
           ) : Page ? (
-            <Page />
+            <Layout>
+              <Page />
+            </Layout>
           ) : (
             <NotFoundPage homePath={HOME_PATH} />
           )}
