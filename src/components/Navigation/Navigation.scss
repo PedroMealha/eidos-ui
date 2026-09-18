@@ -228,8 +228,16 @@ $avatar-size: 32px;
       gap var(--navigation-collapse-duration) var(--navigation-collapse-easing),
       padding var(--navigation-collapse-duration) var(--navigation-collapse-easing);
 
+    // Themed tint rather than a neutral grey, so the rail responds to the
+    // theme at all - this was `--gray-100`, which stayed grey whatever the
+    // palette.
+    //
+    // The foreground deliberately stays `--dark-color` instead of a primary
+    // shade. `--primary-50` is always a near-white tint, so a fixed dark text
+    // colour is legible on it for every base, whereas `--primary-dark` sits
+    // only ~0.09 lightness below its base and drops to 1.6:1 on a pale one.
     &:hover:not(:disabled) {
-      background: var(--gray-100);
+      background: var(--primary-50);
       color: var(--dark-color);
     }
 
@@ -238,10 +246,27 @@ $avatar-size: 32px;
       cursor: not-allowed;
     }
 
+    // Filled, not the tint pair this used to be.
+    //
+    // `--primary-50` behind `--primary-color` text reads nicely for the preset
+    // but is not contrast-safe in general: 4.49:1 for the shipped indigo (just
+    // under AA) and 1.23:1 for a pale primary. Pairing the base with its own
+    // `--x-contrast` is AA for every base by construction - that is what the
+    // token exists for. The icon inherits `currentColor`, so it follows.
     &--active {
-      background: var(--primary-50);
-      color: var(--primary-color);
+      background: var(--primary-color);
+      color: var(--primary-contrast);
       font-weight: var(--font-weight-semibold);
+
+      // Specificity, not merely intent: the `&:hover` rule above is (0,3,0)
+      // and `&--active` is (0,2,0), so without an equally specific rule here
+      // hovering an active item repainted it with the *inactive* hover tint.
+      // `--primary-dark` is darker than the base, so the same contrast
+      // foreground stays valid on it whichever way it resolved.
+      &:hover:not(:disabled) {
+        background: var(--primary-dark);
+        color: var(--primary-contrast);
+      }
     }
   }
 

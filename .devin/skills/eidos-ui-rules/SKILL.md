@@ -296,6 +296,24 @@ A yellow-ish `warning` cannot clear 4.5:1 against white at all - that is
 colour-space geometry, not tuning - so `--warning-color` is necessarily a dark
 gold. Don't "fix" it back to amber.
 
+### A `--x-50` tint behind `--x-color` text is not contrast-safe
+
+It reads beautifully for the preset, which is exactly why it spreads. It is
+**4.49:1 for the shipped indigo** - under AA - and 1.23:1 for a pale primary.
+`Navigation`'s active item used it and had to become a filled
+`--primary-color` / `--primary-contrast` pill, which is AA for every base by
+construction.
+
+Text on a tint is fine if the foreground is far enough down the ramp:
+`--x-700` on `--x-50` is 7.08:1 for the preset and AA for every base except a
+pale one. `TreeView`, `Select` and `Calendar` all do this correctly. The rule of
+thumb: **on a tint use `-700`, never the base.**
+
+Derived scales are also where a "relative" mental model quietly breaks. See the
+comment on `buildRamp` - the ramp's ends have to be absolute positions on the
+lightness axis, not offsets from the base, or a dark base yields `--x-50` as a
+mid grey and every tint consumer in the library turns muddy at once.
+
 ### One `ThemeProvider`, at the root
 
 Tokens are written to `document.documentElement` because every overlay portals
@@ -802,6 +820,35 @@ subheadings, only adding the ones actually needed:
   greps for this exact marker (case-insensitively), `release.js` refuses a
   too-small bump before preflight runs, and `promote-changelog.js` aborts
   `npm version` itself if the bump that actually ran is too small.
+
+#### What actually counts as breaking
+
+The test is **"must a consumer change code to upgrade?"** - semver governs the
+public API, not the rendering. For this library the public API is the exports,
+props and types, plus the `--token` names and the documented `eidos-*` class
+names, since `README.md` presents both as things to target.
+
+| Change                                                 | Breaking     |
+| ------------------------------------------------------ | ------------ |
+| Removing or renaming an export, prop or type           | **yes**      |
+| Narrowing a prop's accepted values                     | **yes**      |
+| Removing or renaming a `--token` or an `eidos-*` class | **yes**      |
+| Changing a token's **value**                           | no           |
+| Restyling a component                                  | no           |
+| Fixing a contrast or layout bug                        | no - `patch` |
+
+Restyling and re-valuing tokens are the tempting cases, and the honest answer
+for both is no: a consumer's code still compiles, their overrides still apply
+to the same selectors, and there is nothing to refactor. Add a short note under
+the entry that visual snapshots will differ, and keep the bump at `patch`.
+
+Do not reach for `**Breaking**:` as a way to _signal_ "this looks different".
+It is a legitimate convention in some design systems, but it is not what semver
+means and it is not what this repo's tooling treats it as - the marker forces a
+major. 3.0.0's palette darkening was marked this way and, judged against the
+table above, should have been a minor: it added tokens and changed values, and
+required nothing of consumers. Don't cite it as precedent.
+
 - **Keep every entry to one line, one sentence.** No walls of text, no
   restating the full backstory of _why_ something changed (that lives in
   the commit/PR, not the changelog) - just what changed, from a consumer's

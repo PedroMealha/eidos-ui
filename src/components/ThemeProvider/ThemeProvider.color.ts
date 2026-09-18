@@ -222,10 +222,18 @@ const MIN_STEP_DELTA = 0.012;
  * - Shifting it so 500 sits at the base's lightness pushes the light end past
  *   `l = 1`, where it clips and 50/100/200/300 all come out pure white.
  *
- * Rescaling keeps the ends anchored (50 stays near-white, 900 stays dark) and
- * compresses only the side with less room - the scale is capped at 1 so a base
- * sitting where the curve expects it reproduces the curve exactly rather than
- * being stretched past it.
+ * The ends are **absolute**, not relative to the base: step 50 lands near-white
+ * and step 900 near-dark whatever lightness the base has, with the remaining
+ * steps interpolated between the base and those anchors. Only a base that is
+ * already past an anchor compresses that side into what headroom is left.
+ *
+ * Getting this wrong is subtle. An earlier version offset every step *from the
+ * base* by the curve's own distances, capped so the preset reproduced exactly.
+ * That looks right - and reproduces the preset ramp perfectly - but it makes the
+ * tints relative: a dark navy base (`#1a1a2e`) returned `--primary-50: #8a8a8c`,
+ * a mid grey rather than a tint, because 50 sits only 0.404 lightness above 500
+ * on the curve. Every consumer of the tint end broke visibly - `Navigation`'s
+ * active item paints `--primary-50` and turned into a charcoal pill.
  *
  * Two inputs are genuinely degenerate and are handled rather than solved: a
  * base at or above `LIGHT_CEILING` has no room for tints, and one with zero
@@ -238,13 +246,16 @@ export const buildRamp = (base: string): Record<RampStep, string> => {
   const { l: baseL, c: baseC, h } = hexToOklch(base);
   const anchor = RAMP_CURVE[BASE_STEP].l;
 
-  // Headroom available above and below the base, versus what the curve wants.
-  // Capped at 1: this may only compress the curve, never stretch it.
-  const lightSpan = RAMP_CURVE[50].l - anchor;
-  const darkSpan = anchor - RAMP_CURVE[900].l;
-  const lightScale =
-    lightSpan > 0 ? Math.min(1, Math.max(0, LIGHT_CEILING - baseL) / lightSpan) : 0;
-  const darkScale = darkSpan > 0 ? Math.min(1, Math.max(0, baseL - DARK_FLOOR) / darkSpan) : 0;
+  // Where the ends of the scale sit, independent of the base. A base already
+  // lighter than the curve's own 50 (or darker than its 900) has nowhere left
+  // to go, so that side compresses into the remaining headroom instead.
+  const curveLight = RAMP_CURVE[50].l;
+  const curveDark = RAMP_CURVE[900].l;
+  const lightTarget = baseL >= curveLight ? Math.min(LIGHT_CEILING, baseL + 0.02) : curveLight;
+  const darkTarget = baseL <= curveDark ? Math.max(DARK_FLOOR * 0.2, baseL - 0.02) : curveDark;
+
+  const lightSpan = curveLight - anchor;
+  const darkSpan = anchor - curveDark;
 
   const out = {} as Record<RampStep, string>;
   for (const step of RAMP_STEPS) {
@@ -254,7 +265,11 @@ export const buildRamp = (base: string): Record<RampStep, string> => {
     }
     const { l: curveL, chroma } = RAMP_CURVE[step];
     const offset = curveL - anchor;
-    const l = baseL + offset * (offset > 0 ? lightScale : darkScale);
+    // How far along its half of the curve this step sits: 0 at the base, 1 at
+    // the end. Interpolating that fraction between the base and the target
+    // keeps the curve's shape while pinning where it ends up.
+    const t = offset > 0 ? offset / lightSpan : -offset / darkSpan;
+    const l = offset > 0 ? baseL + t * (lightTarget - baseL) : baseL - t * (baseL - darkTarget);
     out[step] = oklchToHex({ l, c: baseC * chroma, h });
   }
 

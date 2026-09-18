@@ -13,6 +13,29 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Changed
+
+- `Navigation`'s item hover uses the `--primary-50` tint rather than a fixed
+  `--gray-100`, so the rail responds to the theme.
+
+### Fixed
+
+- `Navigation`'s active item is legible on any theme colour: it is now a filled
+  `--primary-color`/`--primary-contrast` pill instead of a `--primary-50` tint
+  behind `--primary-color` text, which was 4.49:1 - under AA - even for the
+  preset palette.
+- `Navigation`'s active item keeps its own styling on hover; the inactive hover
+  rule was more specific and repainted it.
+- `ThemeProvider` generates real tints for a dark base colour: the ramp's ends
+  were positioned relative to the base, so a dark navy primary produced
+  `--primary-50: #8a8a8c` - a mid grey - and every component painting that
+  token turned muddy. The ends are now absolute, and the preset ramp is
+  unchanged.
+
+> Both `Navigation` fixes change how it looks, so visual snapshots will differ -
+> but no API, token name or class name changed, and nothing needs updating on
+> the consumer side.
+
 ## [3.1.0] - 2026-09-18
 
 ### Added
