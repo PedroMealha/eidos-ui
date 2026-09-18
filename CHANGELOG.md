@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [3.1.1] - 2026-09-18
+
 ### Changed
 
 - `Navigation`'s item hover uses the `--primary-50` tint rather than a fixed
