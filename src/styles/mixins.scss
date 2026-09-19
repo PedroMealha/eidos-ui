@@ -349,6 +349,26 @@
   animation: slideInRight #{$duration} ease-out #{$delay} forwards;
 }
 
+// Content that must not run when the user has asked for less motion.
+//
+// Wrap *decorative* motion only. WCAG 2.3.3 targets non-essential animation,
+// and several animations in this library carry meaning: a spinner that stops
+// spinning, or an indeterminate progress bar that freezes, has lost the very
+// state it exists to communicate. Those stay running; entrance slides, fades,
+// shimmers and parallax do not.
+//
+// This is why the library does NOT use the common global
+// `* { animation-duration: 0.01ms !important }` snippet - it cannot tell the
+// two apart, and silently kills every loading indicator.
+//
+// Usage:
+//   .thing { animation: fade-in 0.2s; @include reduced-motion { animation: none; } }
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
 // ============================================================================
 // SHADOW MIXINS
 // ============================================================================

@@ -591,6 +591,7 @@ dev/
 - Failures must stay deterministic: a domain rule (locked ticket, last active
   admin) or the "Force API errors" switch. Never add random failure injection.
 - `Button` has no `fullWidth` prop - use the `.mrd-block` utility class.
+- Em-dashes (`—`) are forbidden to be used. Use hyphens (`-`) instead.
 
 ### Verifying dev changes
 

@@ -1,0 +1,139 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ChatStories from './Chat.stories';
+
+<Meta of={ChatStories} />
+
+# Chat
+
+A bottom-anchored message thread with a composer, for a live conversation between two or more people. Controlled and transport-agnostic: it renders the messages you give it and reports intent through `onSend` and `onLoadMore` - it never fetches anything itself.
+
+> **Note**: `Chat` and `CommentThread` share one message model, so history stored from a chat can be rendered as a comment thread and vice versa. Pick `Chat` for a live back-and-forth with a scroll region of its own; pick `CommentThread` for a discussion that grows down a page.
+
+## Usage
+
+```tsx
+import { Chat } from 'eidos-ui';
+
+const messages = [
+  {
+    id: 'm-1',
+    author: { id: 'u-2', name: 'Bruno Costa' },
+    body: 'The export is missing a column.',
+    sentAt: '2026-09-18T09:14:00.000Z',
+  },
+];
+
+<div style={{ height: 480 }}>
+  <Chat
+    messages={messages}
+    currentUserId="u-1"
+    onSend={async (draft) => {
+      await api.send(draft.body);
+    }}
+  />
+</div>;
+```
+
+`Chat` has no `height` prop - it fills its parent, so it drops into a `Drawer`, a `Card` or a full page without a magic number.
+
+## Playground
+
+<Canvas of={ChatStories.Playground} />
+<Controls of={ChatStories.Playground} />
+
+## The message model
+
+`ConversationMessage` contains no React nodes and no functions, so the array is JSON-serialisable end to end: whatever your backend returns can be passed straight in, and whatever is rendered can be persisted verbatim.
+
+```ts
+interface ConversationMessage {
+  id: string;
+  author: { id: string; name: string; avatarSrc?: string; role?: string };
+  body: string; // plain text; newlines preserved
+  sentAt: string; // ISO 8601
+  status?: 'sent' | 'sending' | 'failed';
+  edited?: boolean;
+  parentId?: string;
+  attachments?: MessageAttachment[];
+}
+```
+
+For markdown or rich text, keep the source in `body` and render it with the `renderBody` prop. Putting React elements in the model would make the stored history unserialisable, which is the one thing this shape exists to prevent.
+
+The composer emits the mirror of it:
+
+```ts
+interface MessageDraft {
+  body: string;
+  attachments: File[];
+  parentId?: string;
+}
+```
+
+Uploading those `File`s is yours to do - the component never performs a request.
+
+## Optimistic sending
+
+Return a promise from `onSend` and the composer shows a pending state, clears the draft on resolve, and **keeps the typed text if it rejects** so a failed send never loses what was written.
+
+Render the message yourself with `status: 'sending'`, then reconcile to `'sent'` or `'failed'`. A failed message offers a retry control when `onRetry` is supplied.
+
+<Canvas of={ChatStories.FailedMessageRetry} />
+
+## Loading history
+
+`onLoadMore` fires from the load-earlier control and automatically as the reader approaches the top. Scroll position is anchored across the prepend, so the message they were reading stays exactly where it was instead of being pushed down the page.
+
+<Canvas of={ChatStories.LoadingOlderHistory} />
+
+> **Messages are not virtualized.** Every message in `messages` is in the DOM. That is deliberate - message heights are unknown until text wraps, and combining measured virtualization with bottom-anchoring and prepended history produces scroll jitter. Page your history with `onLoadMore` rather than passing tens of thousands of messages at once. `VirtualList` is the component to reach for when you need a fixed-height row at that scale.
+
+## Permissions
+
+There is no `permissions` object. Capability is expressed by the props you supply, which keeps one way to say each thing:
+
+| Capability                 | How                                                 |
+| -------------------------- | --------------------------------------------------- |
+| Post at all                | `readOnly`, or omit `onSend`                        |
+| Act on **a given** message | `messageActions(message)` - return `[]` for no menu |
+| Attach files               | `allowAttachments`                                  |
+
+`readOnly` **removes** the composer rather than disabling it - a control nobody can ever use is worse than no control - and `readOnlyMessage` explains the absence.
+
+<Canvas of={ChatStories.ReadOnly} />
+
+Permissions usually differ per message rather than per thread. `messageActions` is called for each one, so a viewer can edit their own and do nothing to anyone else's.
+
+<Canvas of={ChatStories.MixedPermissions} />
+
+> **This is a UI affordance, not authorization.** Hiding a composer removes controls from a page; it does not stop anyone calling your API. Enforce permissions on the server. Treat `readOnly` as a way to avoid showing people buttons that would fail, never as access control.
+
+## Unread and typing
+
+<Canvas of={ChatStories.UnreadDivider} />
+
+<Canvas of={ChatStories.TypingIndicator} />
+
+## Attachments
+
+Attachments on a message render as download chips. Setting `allowAttachments` adds the attach control to the composer; the selected `File`s arrive on the draft.
+
+<Canvas of={ChatStories.WithAttachments} />
+
+## Empty and loading
+
+<Canvas of={ChatStories.Empty} />
+
+<Canvas of={ChatStories.Loading} />
+
+## Responsive behaviour
+
+Layout responds to the **component's own width**, not the viewport's, using container queries - so a `Chat` in a narrow drawer collapses correctly on a wide screen. Below the `sm` breakpoint the avatar column is dropped, bubbles take the full width and the composer actions stack.
+
+<Canvas of={ChatStories.InsideDrawer} />
+
+## Motion
+
+Newly arrived messages fade and rise 4px into place. Only messages that arrive _after_ the first render animate, so loading a page of history doesn't animate the whole list. The animation uses `opacity` and `transform` only, so it never reflows the list.
+
+It is disabled automatically under `prefers-reduced-motion: reduce`, and can be turned off with `animateNewMessages={false}`.

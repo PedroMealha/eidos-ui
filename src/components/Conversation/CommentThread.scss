@@ -1,0 +1,152 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// COMMENT THREAD
+//
+// Document flow: no scroll container of its own, grows with the page. Like
+// Chat, it sizes its internals from *container* queries so it behaves the same
+// in a narrow sidebar as at full page width.
+// ============================================================================
+
+.eidos-comment-thread {
+  container: eidos-comment-thread / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.eidos-comment-thread-header {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.eidos-comment-thread-title {
+  margin: 0;
+  @include font-size(base);
+  @include font-weight(semibold);
+  color: var(--dark-color);
+}
+
+.eidos-comment-thread-count {
+  @include font-size(xs);
+  color: var(--gray-500);
+}
+
+.eidos-comment-thread-list {
+  gap: var(--spacing-lg);
+}
+
+.eidos-comment-thread-node {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+// ----------------------------------------------------------------------------
+// Comment card
+// ----------------------------------------------------------------------------
+
+.eidos-message--comment {
+  .eidos-message-bubble {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius-md);
+    background: var(--gray-50);
+  }
+
+  // Own comments are marked with a rule rather than a fill: a whole page of
+  // solid primary cards is unreadable, and a --primary-50 tint behind body
+  // text is not contrast-safe for an arbitrary themed base.
+  &.eidos-message--own .eidos-message-bubble {
+    border-left: 2px solid var(--primary-color);
+  }
+
+  &.eidos-message--failed .eidos-message-bubble {
+    border-color: rgba(var(--danger-rgb), 0.4);
+    background: rgba(var(--danger-rgb), 0.04);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Replies (one level, by design - see buildThread)
+// ----------------------------------------------------------------------------
+
+.eidos-comment-thread-replies {
+  padding-left: var(--spacing-xl);
+  gap: var(--spacing-md);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: var(--spacing-md);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--gray-200);
+  }
+}
+
+.eidos-comment-thread-reply-composer {
+  padding-left: var(--spacing-xl);
+}
+
+// ----------------------------------------------------------------------------
+// Load more / skeleton
+// ----------------------------------------------------------------------------
+
+.eidos-comment-thread-load-more {
+  @include flex-center;
+}
+
+.eidos-comment-thread-loading-more {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  @include font-size(xs);
+  color: var(--gray-500);
+}
+
+.eidos-comment-thread-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.eidos-comment-thread-skeleton-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: var(--spacing-sm);
+}
+
+// ----------------------------------------------------------------------------
+// Narrow container
+// ----------------------------------------------------------------------------
+
+@include container-down('sm', eidos-comment-thread) {
+  // Indentation is the first thing to go: at this width a nested column leaves
+  // almost nothing for the text. The rule alone still shows the nesting.
+  .eidos-comment-thread-replies,
+  .eidos-comment-thread-reply-composer {
+    padding-left: var(--spacing-md);
+  }
+
+  .eidos-comment-thread-replies::before {
+    left: 0;
+  }
+
+  .eidos-composer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .eidos-composer-actions-end {
+    justify-content: flex-end;
+  }
+
+  .eidos-composer-hint {
+    display: none;
+  }
+}

@@ -54,6 +54,7 @@ export { ColorPicker } from './components/ColorPicker';
 export { CommandPalette } from './components/CommandPalette';
 export { VirtualList } from './components/VirtualList';
 export { DataGrid } from './components/DataGrid';
+export { Chat, CommentThread, MessageComposer } from './components/Conversation';
 export { ThemeProvider, defaultTheme } from './components/ThemeProvider';
 export {
   registerFontFace,
@@ -215,6 +216,17 @@ export type { SpinnerProps, SpinnerColorProps } from './components/Spinner';
 export type { TagInputProps } from './components/TagInput';
 export type { TreeViewProps, TreeNode } from './components/TreeView';
 export type { VirtualListProps } from './components/VirtualList';
+export type {
+  ChatProps,
+  CommentThreadProps,
+  MessageComposerProps,
+  ConversationBaseProps,
+  ConversationMessage,
+  MessageAttachment,
+  MessageAuthor,
+  MessageDraft,
+  MessageStatus,
+} from './components/Conversation';
 export type {
   ThemeConfig,
   ThemeColors,

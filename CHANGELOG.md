@@ -15,6 +15,23 @@ Entries land here as work happens, not written retroactively at release time
 
 ### Added
 
+- `Chat` component - bottom-anchored conversation with a composer, author
+  grouping, date separators, typing indicator and an unread divider.
+- `CommentThread` component - comment section in document flow, with one level
+  of replies and an inline reply composer.
+- `MessageComposer` component - the shared authoring field, exported on its own
+  for consumers building a bespoke message list.
+- `ConversationMessage` model shared by `Chat` and `CommentThread` -
+  deliberately free of React nodes and functions, so a stored history is
+  JSON-serialisable and renders in either component.
+- `readOnly` / `readOnlyMessage` on `Chat` and `CommentThread` - removes the
+  authoring affordances rather than disabling them. Per-message permissions go
+  through `messageActions(message)` returning an empty array.
+- Optimistic send support: a promise-returning `onSend` gets a pending state,
+  clears the draft on resolve and preserves it on reject; `sending` / `failed`
+  message statuses with a retry affordance.
+- `reduced-motion` SCSS mixin, wrapping `prefers-reduced-motion: reduce` for
+  decorative motion only - loading indicators deliberately keep animating.
 - `IdentityHeader` component - `Header` preconfigured for account and profile
   pages, with an avatar beside the name and a metadata row below it.
 - `Header` takes `media` for leading content (an `Avatar`, a logo, an icon

@@ -150,6 +150,9 @@ These are the same groups used in Storybook, so the README and the docs sidebar 
 - DatePicker
 - Timeline
 - VirtualList
+- Chat
+- CommentThread
+- MessageComposer
 
 **Overlays**
 

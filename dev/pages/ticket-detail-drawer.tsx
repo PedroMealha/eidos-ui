@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
-  Avatar,
+  Chat,
   Divider,
   Drawer,
   InlineEdit,
@@ -9,9 +9,12 @@ import {
   Select,
   TagInput,
   useSnackbar,
+  type ConversationMessage,
+  type MessageDraft,
 } from 'eidos-ui';
 import { errorMessage } from '../api/client';
 import { ticketsApi } from '../api/tickets';
+import { useAuth } from '../auth/auth-context';
 import {
   PRIORITY_LABELS,
   STATUS_COLORS,
@@ -57,6 +60,20 @@ const toDraft = (ticket: Ticket): Draft => ({
   tags: [...ticket.tags],
 });
 
+/**
+ * The domain model already stores exactly what `Chat` renders, which is the
+ * point of keeping `ConversationMessage` free of React nodes - this is a field
+ * rename, not a transformation. The author id is derived from the name because
+ * the demo has no user table; a real app would carry a stable id.
+ */
+const toMessages = (ticket: Ticket): ConversationMessage[] =>
+  ticket.messages.map((message) => ({
+    id: message.id,
+    author: { id: message.author, name: message.author },
+    body: message.body,
+    sentAt: message.sentAt,
+  }));
+
 type Props = {
   ticket: Ticket | null;
   /** Tags already used across other tickets - shown as autocomplete suggestions on the tag picker. */
@@ -74,6 +91,7 @@ export const TicketDetailDrawer: React.FC<Props> = ({
   onRequestDelete,
 }) => {
   const { showSuccess, showError } = useSnackbar();
+  const { session } = useAuth();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -81,6 +99,28 @@ export const TicketDetailDrawer: React.FC<Props> = ({
   useEffect(() => {
     setDraft(ticket ? toDraft(ticket) : null);
   }, [ticket]);
+
+  const messages = useMemo(() => (ticket ? toMessages(ticket) : []), [ticket]);
+
+  // A member can read the thread but not reply - the permission model the
+  // component exposes, wired to the role the demo already tracks.
+  const canReply = session?.role === 'admin';
+
+  const sendReply = useCallback(
+    async (message: MessageDraft) => {
+      if (!ticket || !session) return;
+      try {
+        await ticketsApi.reply(ticket.id, message.body, session.name);
+        onSaved();
+      } catch (error) {
+        showError(errorMessage(error));
+        // Rethrown so the composer keeps the typed text instead of clearing a
+        // reply that was never delivered.
+        throw error;
+      }
+    },
+    [ticket, session, onSaved, showError],
+  );
 
   const dirty =
     ticket !== null && draft !== null && JSON.stringify(draft) !== JSON.stringify(toDraft(ticket));
@@ -194,18 +234,15 @@ export const TicketDetailDrawer: React.FC<Props> = ({
               </Pill>
             </div>
 
-            {ticket.messages.map((message) => (
-              <article key={message.id} className="mrd-message">
-                <Avatar name={message.author} size="sm" color="gray" />
-                <div className="mrd-message__body">
-                  <div className="mrd-message__meta">
-                    <strong>{message.author}</strong>
-                    <span>{new Date(message.sentAt).toLocaleDateString()}</span>
-                  </div>
-                  <p>{message.body}</p>
-                </div>
-              </article>
-            ))}
+            <Chat
+              messages={messages}
+              currentUserId={session?.name}
+              onSend={canReply ? sendReply : undefined}
+              readOnly={!canReply}
+              readOnlyMessage="Only admins can reply to a ticket."
+              placeholder="Reply to the customer..."
+              ariaLabel={`Conversation for ${ticket.reference}`}
+            />
           </div>
         </div>
       )}

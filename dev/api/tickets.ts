@@ -66,6 +66,28 @@ export const ticketsApi = {
       return clone(updated);
     }),
 
+  /**
+   * Appends a message to a ticket's conversation.
+   *
+   * Goes through `assertUnlocked` like every other mutation, so replying to a
+   * locked ticket is a reliable way to exercise the failed-message path in the
+   * Chat component without random failure injection.
+   */
+  reply: (id: string, body: string, author: string): Promise<Ticket> =>
+    request('Sending the reply', () => {
+      const index = findIndexOrThrow(id);
+      assertUnlocked(tickets[index]);
+
+      const sentAt = new Date().toISOString();
+      const updated: Ticket = {
+        ...tickets[index],
+        messages: [...tickets[index].messages, { id: `msg-${id}-${sentAt}`, author, body, sentAt }],
+        updatedAt: sentAt,
+      };
+      tickets = tickets.map((ticket, i) => (i === index ? updated : ticket));
+      return clone(updated);
+    }),
+
   bulkSetStatus: (
     ids: string[],
     status: TicketStatus,

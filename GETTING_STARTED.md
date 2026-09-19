@@ -1,6 +1,6 @@
 # Getting Started with Eidos UI
 
-A React component library with 57 components, a consistent design language, and full TypeScript support.
+A React component library with 58 components, a consistent design language, and full TypeScript support.
 
 ## Quick commands
 
@@ -348,7 +348,7 @@ case up front.
 
 ## Component inventory
 
-57 component directories under `src/components/`, grouped exactly as the
+58 component directories under `src/components/`, grouped exactly as the
 Storybook sidebar groups them - the sidebar is generated from the `title` in
 each `*.stories.tsx`, so that is the authoritative list:
 
@@ -360,11 +360,11 @@ each `*.stories.tsx`, so that is the authoritative list:
 | Forms      | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
 | Navigation | Accordion, Pagination, Stepper, Tabs, TreeView                                                                                           |
 | Overlays   | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip                                                   |
-| Data       | DataGrid, DatePicker, Table, TableFiltersDropdown, Timeline, VirtualList                                                                 |
+| Data       | Chat, CommentThread, DataGrid, DatePicker, MessageComposer, Table, TableFiltersDropdown, Timeline, VirtualList                           |
 | Feedback   | Alert, Progress, Skeleton, Spinner                                                                                                       |
 
-`TableFiltersDropdown` is exported from the `Table` directory rather than having
-one of its own, which is why the table lists one more name than there are
-directories.
+`TableFiltersDropdown` is exported from the `Table` directory, and `Chat`,
+`CommentThread` and `MessageComposer` all live in `Conversation`, which is why
+the table lists more names than there are directories.
 
 For full interactive documentation, run `npm run storybook`.

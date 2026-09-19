@@ -1,0 +1,267 @@
+@use '../../styles/mixins.scss' as *;
+
+// ============================================================================
+// CHAT
+//
+// Responsive behaviour uses *container* queries, not media queries: a Chat is
+// routinely mounted inside a Drawer, a Card or a split pane, so its own width
+// bears no fixed relationship to the viewport's. See the note on
+// `container-up`/`container-down` in mixins.scss.
+//
+// Remember that an element is never matched by its own container query - every
+// rule below therefore targets a descendant of `.eidos-chat`.
+// ============================================================================
+
+.eidos-chat {
+  container: eidos-chat / inline-size;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--white);
+
+  // Fills whatever the consumer sizes it against - there is no `height` prop,
+  // so a Chat drops into a Drawer, a Card or a full page with no magic number.
+  //
+  // Both declarations are needed because the two common hosts size their
+  // children differently: `height: 100%` covers a block parent with a definite
+  // height, `flex: 1 1 auto` covers a flex column (where `height: 100%`
+  // resolves against an auto-height parent and is ignored). `min-height: 0` is
+  // what actually lets the scroll region shrink - without it a flex item's
+  // automatic minimum size is its content, so the list grows the page instead
+  // of scrolling.
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.eidos-chat-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+
+  // The region is focusable so keyboard users can scroll it. An outward ring
+  // would be clipped by the scroll container itself, hence inset.
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Own vs. other
+// ----------------------------------------------------------------------------
+
+.eidos-message--chat {
+  .eidos-message-bubble {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    background: var(--gray-100);
+    max-width: 78ch;
+    width: fit-content;
+  }
+
+  .eidos-message-body {
+    color: var(--gray-800);
+  }
+}
+
+// Own messages are a solid primary fill, so the foreground has to be the
+// computed contrast token - a hardcoded white goes unreadable the moment a
+// consumer themes `--primary-color` to something pale.
+.eidos-message--chat.eidos-message--own {
+  // Mirrors the row without depending on which optional children are present -
+  // see the note on `.eidos-message` in Conversation.scss.
+  flex-direction: row-reverse;
+
+  .eidos-message-main {
+    align-items: flex-end;
+  }
+
+  .eidos-message-header {
+    flex-direction: row-reverse;
+  }
+
+  .eidos-message-bubble {
+    background: var(--primary-color);
+    color: var(--primary-contrast);
+  }
+
+  .eidos-message-body,
+  .eidos-message-quote-author,
+  .eidos-message-quote-body,
+  .eidos-message-reply-target {
+    color: inherit;
+  }
+
+  .eidos-message-time--inline {
+    color: var(--primary-contrast);
+    opacity: 0.75;
+  }
+
+  .eidos-message-quote {
+    background: rgba(var(--white-rgb), 0.15);
+    border-left-color: rgba(var(--white-rgb), 0.5);
+  }
+
+  .eidos-message-attachment-link {
+    background: rgba(var(--white-rgb), 0.15);
+    border-color: rgba(var(--white-rgb), 0.35);
+    color: inherit;
+  }
+}
+
+.eidos-message--chat.eidos-message--grouped {
+  .eidos-message-bubble {
+    // Tightens a run visually without changing the grid, so bubbles in a run
+    // stay aligned with the first one's left edge.
+    margin-top: calc(-1 * var(--spacing-xs));
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Load-more / typing / jump affordances
+// ----------------------------------------------------------------------------
+
+.eidos-chat-load-more {
+  @include flex-center;
+  padding-bottom: var(--spacing-sm);
+}
+
+.eidos-chat-loading-more,
+.eidos-chat-typing {
+  @include flex-center-y;
+  gap: var(--spacing-sm);
+  @include font-size(xs);
+  color: var(--gray-500);
+}
+
+.eidos-chat-typing {
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.eidos-chat-typing-dots {
+  @include flex-center-y;
+  gap: 3px;
+
+  i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gray-400);
+    animation: eidos-chat-typing-bounce 1.2s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+
+  // Purely decorative - the adjacent text already says someone is typing, so
+  // stopping this loses no information.
+  @include reduced-motion {
+    i {
+      animation: none;
+    }
+  }
+}
+
+@keyframes eidos-chat-typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.eidos-chat-jump {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  // Local to the Chat's own stacking context - not a portalled overlay, so it
+  // must not consume one of the global --z-index-* tokens.
+  z-index: 2;
+}
+
+.eidos-chat-composer {
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--gray-200);
+  background: var(--white);
+}
+
+// ----------------------------------------------------------------------------
+// Loading skeleton
+// ----------------------------------------------------------------------------
+
+.eidos-chat-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.eidos-chat-skeleton-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 60%);
+  gap: var(--spacing-sm);
+
+  &--own {
+    grid-template-columns: minmax(0, 60%) 28px;
+    justify-content: end;
+
+    > *:first-child {
+      order: 2;
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Narrow container
+// ----------------------------------------------------------------------------
+
+@include container-down('sm', eidos-chat) {
+  .eidos-chat-scroll {
+    padding: var(--spacing-sm);
+  }
+
+  .eidos-chat-composer {
+    padding: var(--spacing-sm);
+  }
+
+  .eidos-message--chat .eidos-message-bubble {
+    max-width: 100%;
+  }
+
+  // At this width the avatar column costs more than it conveys - the author
+  // line still identifies the speaker, and own messages stay right-aligned.
+  // `display: none` is all that is needed now the row is flex: the remaining
+  // children keep their order with no column list to keep in sync.
+  .eidos-message--chat .eidos-message-avatar {
+    display: none;
+  }
+
+  // Stacked so the send button keeps a full-width tap target instead of being
+  // squeezed next to the keyboard hint.
+  .eidos-composer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .eidos-composer-actions-end {
+    justify-content: flex-end;
+  }
+
+  .eidos-composer-hint {
+    display: none;
+  }
+}

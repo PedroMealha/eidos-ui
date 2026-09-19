@@ -398,29 +398,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-}
-
-.mrd-message {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.mrd-message__body {
-  flex: 1;
-  padding: var(--spacing-md);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--border-radius-md);
-  background: var(--gray-50);
-  font-size: var(--font-size-sm);
-}
-
-.mrd-message__meta {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xs);
-  font-size: var(--font-size-xs);
-  color: var(--gray-500);
+  /* Chat fills its parent rather than taking a height prop, so the host has to
+     provide one. A fixed height here keeps the thread scrolling on its own
+     instead of stretching the drawer body indefinitely. */
+  min-height: 420px;
 }
 
 /* ── Forms ──────────────────────────────────────────────────────────────── */
