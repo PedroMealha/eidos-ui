@@ -24,6 +24,13 @@
   background: rgba(0, 0, 0, 0.4);
   opacity: 0;
   transition: opacity 0.3s ease;
+
+  // A cross-fade is not motion, but it is paired with the panel's slide above;
+  // leaving it running would fade the scrim in over a panel that is already
+  // there. Kept in step with the panel instead.
+  @include reduced-motion {
+    transition: none;
+  }
 }
 
 // ============================================================================
@@ -38,6 +45,17 @@
   overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   @include elevation(3);
+
+  // A full-height panel travelling across the viewport is the largest single
+  // movement in the library, and the first thing a motion-sensitive user would
+  // want gone. Without the transition the panel is simply present at its open
+  // position - the `--open` modifier still sets `transform: translateX(0)`.
+  //
+  // Unmount is `setTimeout(TRANSITION_MS)`-driven in Drawer.component.tsx, so
+  // the close path does not depend on this transition firing.
+  @include reduced-motion {
+    transition: none;
+  }
 
   // ── Left / Right ──────────────────────────────────────────────────────────
   &--left,

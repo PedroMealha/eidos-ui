@@ -81,6 +81,37 @@ button {
   @include button-reset;
 }
 
+// ============================================================================
+// KEYBOARD FOCUS FALLBACK
+// ============================================================================
+//
+// A visible keyboard focus indicator on anything focusable that does not
+// already provide its own. Without it the library shipped ~20 interactive
+// components with no focus affordance at all (WCAG 2.4.7) - see the note on
+// `button-reset` in mixins.scss for how that happened.
+//
+// `:focus-visible`, not `:focus`, so the ring appears for keyboard and
+// assistive-technology users without putting a ring on everything a mouse
+// clicks.
+//
+// This is deliberately the weakest rule of its kind in the library: a bare
+// pseudo-class is specificity (0,1,0), so every component that paints its own
+// focus state - `Input`'s `:focus-within` wrapper ring, `Tabs`' inset ring,
+// `focus-ring()`, which suppresses the outline on its own first line - keeps
+// winning. It only fills the gaps.
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+// Controls that fill a scroll container's height cannot use an outward ring:
+// an ancestor with `overflow: auto` clips descendant paint to its padding box,
+// and `outline` is clipped exactly like a box-shadow is. Those components
+// already define an inset ring; this keeps the fallback from fighting them.
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 pre {
   font-family: var(--font-family-mono);
   background-color: var(--dark-color);

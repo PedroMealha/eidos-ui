@@ -214,6 +214,75 @@ runtime - so "add a nonce" is never the right instinct here; moving the value
 out of the attribute (a CSS class, or accepting `style-src-attr
 'unsafe-inline'` scoped narrowly) are the only two real options.
 
+### A reset must never suppress the focus outline
+
+`outline: none` belongs **with its replacement**, never in a reset. Put it
+inside the same rule that paints the new ring - which is what `focus-ring()`
+does on its own first line - and never in a mixin applied broadly.
+
+`button-reset` used to carry `&:focus { outline: none }`, and `global.scss`
+applies that mixin to the bare `button` element. One declaration therefore
+removed the keyboard focus ring from **every button on the page**, including
+buttons belonging to the consuming app, which this library has no business
+restyling. Nothing put a ring back, so ~20 components shipped with no visible
+keyboard focus at all - a WCAG 2.4.7 failure that is invisible to lint,
+typecheck and every visual test, because nothing is wrong until you press Tab.
+
+`global.scss` now ends with a `:focus-visible` fallback. Three things about it
+matter when adding a component:
+
+- **It is deliberately the weakest rule of its kind.** A bare pseudo-class is
+  specificity (0,1,0), so any component that paints its own focus state wins.
+  Don't raise its specificity to "make it work" somewhere - if it is losing,
+  that component already has a ring.
+- **`:focus-visible`, not `:focus`.** Keyboard and assistive technology get a
+  ring; a mouse click does not.
+- **Inside a scroll container, an outline is clipped exactly like a
+  box-shadow.** The fallback is an outward outline, so a control that fills a
+  scrollport's height must still define its own **inset** ring (`Tabs`,
+  `DataGrid`'s cell editor, `Chat`'s scroll region). Setting `outline: none`
+  alongside that inset ring is what keeps the fallback out of the way.
+
+A visually-hidden input (`Checkbox`, `Radio`) will pick up the fallback on an
+element that is 1px and clipped, so it is invisible - harmless, but it means
+those components must keep painting the ring on their sibling control.
+
+### Motion: disable the decorative, keep the meaningful
+
+Wrap decorative motion in the `reduced-motion` mixin. **Do not** use the common
+global snippet:
+
+```scss
+/* never do this */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+  }
+}
+```
+
+It cannot tell the two apart, and it freezes `Spinner`, `Progress`'s
+indeterminate bar and the `Button`/`SplitButton`/`Combobox` spinners - removing
+the very state they exist to communicate. WCAG 2.3.3 targets _non-essential_
+motion.
+
+Disabled: `Skeleton` pulse/wave · `Snackbar` slide · `Drawer` panel and scrim ·
+`Modal` zoom · `CommandPalette` entrance · `Table` filter-row slide · `Chat`
+message entrance and typing dots.
+
+Still runs: `Spinner` · `Progress` indeterminate · the `Button`,
+`SplitButton` and `Combobox` spinners.
+
+Before disabling a **transition** on an overlay, check how it unmounts.
+`Drawer`, `Modal` and `CommandPalette` are safe because they unmount on a
+`setTimeout(TRANSITION_MS)`; had they listened for `transitionend`, removing
+the transition would strand them on screen forever, since that event never
+fires. Check the component, don't assume.
+
+Also confirm the animation is not the only thing supplying visible styling -
+`Skeleton`'s wave is safe to stop only because its gradient is a static
+`background` declaration and the animation merely moves `background-position`.
+
 ### Layering (z-index)
 
 **Never hardcode a z-index on an overlay** - in SCSS or in a JSX `style` prop.

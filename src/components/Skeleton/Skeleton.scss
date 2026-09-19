@@ -40,8 +40,18 @@
   // Animations
   // ========================================================================
 
+  // Both animations are decorative: the placeholder's shape and colour already
+  // communicate "content is loading", so stopping the shimmer loses nothing.
+  // Safe to disable outright because neither animation supplies the visible
+  // styling - pulse only modulates `opacity`, and wave only moves
+  // `background-position` across a gradient declared statically below.
+
   &--pulse {
     animation: eidos-skeleton-pulse 1.5s ease-in-out infinite;
+
+    @include reduced-motion {
+      animation: none;
+    }
   }
 
   &--wave {
@@ -53,6 +63,10 @@
     );
     background-size: 200% 100%;
     animation: eidos-skeleton-wave 1.5s ease-in-out infinite;
+
+    @include reduced-motion {
+      animation: none;
+    }
   }
 }
 

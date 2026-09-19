@@ -157,7 +157,20 @@
   }
 }
 
-// Button reset
+// Strips native button chrome - background, border, padding, inherited font.
+//
+// It deliberately does NOT touch the focus outline. It used to carry
+// `&:focus { outline: none }`, and because `global.scss` applies this mixin to
+// the bare `button` element, that single declaration removed the keyboard
+// focus ring from **every button on the page** - including a consumer's own
+// buttons, which this library has no business restyling. Nothing put a ring
+// back, so the library shipped with no visible keyboard focus on `Button`,
+// `SplitButton`, `Menu` items, `Modal`'s close control and ~20 others: a
+// WCAG 2.4.7 failure across the whole surface.
+//
+// A component that wants a custom ring suppresses the outline itself - that is
+// what `focus-ring()` above does on its own first line. Suppression belongs
+// with the replacement, never in a reset.
 @mixin button-reset {
   background: none;
   border: none;
@@ -165,13 +178,13 @@
   margin: 0;
   font: inherit;
   cursor: pointer;
-
-  &:focus {
-    outline: none;
-  }
 }
 
-// Input reset
+// Input reset. Same reasoning as `button-reset` - see the note there.
+//
+// The unconditional `outline: none` is kept: an input's resting outline is
+// genuinely part of the chrome being stripped. Only the `:focus` state is
+// left alone, so `global.scss`'s `:focus-visible` fallback can reach it.
 @mixin input-reset {
   background: none;
   border: none;
@@ -180,10 +193,6 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-  }
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

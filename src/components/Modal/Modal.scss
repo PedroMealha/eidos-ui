@@ -39,6 +39,13 @@
     transform: scale(1);
   }
 
+  // The zoom is decorative; the open state still applies `scale(1)`, so the
+  // dialog is simply there at full size. Unmount is timer-driven in
+  // Modal.component.tsx, not `transitionend`-driven.
+  @include reduced-motion {
+    transition: none;
+  }
+
   // Size variants
   &--sm {
     max-width: 400px;

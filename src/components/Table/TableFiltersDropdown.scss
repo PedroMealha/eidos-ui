@@ -139,9 +139,16 @@
   }
 }
 
-// Animation for adding/removing filters
+// Animation for adding/removing filters.
+//
+// Purely an entrance flourish - the row is fully usable without it, so it is
+// dropped under reduced motion.
 .eidos-table-filter-row {
   animation: slideIn 0.2s ease-out;
+
+  @include reduced-motion {
+    animation: none;
+  }
 }
 
 @keyframes slideIn {

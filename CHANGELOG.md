@@ -57,6 +57,26 @@ Entries land here as work happens, not written retroactively at release time
 
 ### Fixed
 
+- **Keyboard focus is visible again across the library.** `global.scss` applied
+  `button-reset` to the bare `button` element, and that mixin carried
+  `&:focus { outline: none }` - so importing `eidos-ui/styles` removed the
+  keyboard focus ring from every button on the page, including a consumer's own.
+  Nothing replaced it, leaving `Button`, `SplitButton`, `Menu` items, `Modal`'s
+  close control and ~20 other components with no focus affordance at all
+  (WCAG 2.4.7). The resets no longer suppress the focus outline, and a
+  `:focus-visible` fallback fills the gaps.
+- Decorative motion now respects `prefers-reduced-motion: reduce`: `Skeleton`'s
+  pulse and wave, `Snackbar`'s slide, `Drawer`'s panel and scrim, `Modal`'s
+  zoom, `CommandPalette`'s entrance and `Table`'s filter-row slide. Loading
+  indicators (`Spinner`, `Progress`, the `Button`/`SplitButton`/`Combobox`
+  spinners) deliberately keep animating - freezing them would remove the state
+  they exist to communicate.
+- `FileUpload`'s drop zone has a real keyboard focus indicator. Focus shared a
+  rule with hover, so a keyboard user saw only the hover border tint, and an
+  unconditional `outline: none` suppressed any ring.
+- `FileUpload`'s hover and drag tints follow `--primary-rgb` instead of a
+  hardcoded `rgba(99, 102, 241, …)` - the indigo replaced in 3.0.0 - so they
+  now respond to `ThemeProvider` like every other tint.
 - `Footer`'s `component` slot fills the footer's width instead of collapsing to
   its content width, so a `space-between` footer bar no longer needs a
   `width: 100%` of its own.

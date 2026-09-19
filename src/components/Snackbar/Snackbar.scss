@@ -20,16 +20,34 @@
     transform: translateX(100%) scale(0.95);
   }
 
+  // The slide is decorative - a snackbar is announced to assistive technology
+  // and read regardless. Dropping the transition makes it appear and disappear
+  // instantly rather than travelling across the viewport.
+  //
+  // Safe because dismissal is driven by a `setTimeout(TRANSITION_MS)` in
+  // Snackbar.context.tsx, not by a `transitionend` listener - with no
+  // transition the element simply sits in its final state until that timer
+  // removes it. Were it `transitionend`-driven, this would strand every
+  // snackbar on screen forever.
+
   &--entered {
     opacity: 1;
     transform: translateX(0) scale(1);
     transition: all 0.3s ease-out;
+
+    @include reduced-motion {
+      transition: none;
+    }
   }
 
   &--exiting {
     opacity: 0;
     transform: translateX(100%) scale(0.85);
     transition: all 0.3s ease-in;
+
+    @include reduced-motion {
+      transition: none;
+    }
   }
 
   &--exited {

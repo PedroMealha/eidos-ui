@@ -78,6 +78,15 @@
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+
+  // Decorative entrance only. Removing the transition makes `--visible` apply
+  // instantly, so the dialog appears at full opacity and scale rather than
+  // zooming in. Unmounting is timer-driven (see TRANSITION_MS in
+  // CommandPalette.component.tsx), not `transitionend`-driven, so nothing
+  // depends on this transition ever completing.
+  @include reduced-motion {
+    transition: none;
+  }
 }
 
 // ── Search area ────────────────────────────────────────────────────────────────
