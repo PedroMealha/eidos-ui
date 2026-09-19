@@ -15,6 +15,218 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.2.0"
+  date="2026-09-19"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>Chat</Code> component - bottom-anchored conversation with a composer, author
+          grouping, date separators, typing indicator and an unread divider.
+        </>,
+        <>
+          <Code>CommentThread</Code> component - comment section in document flow, with one level of
+          replies and an inline reply composer.
+        </>,
+        <>
+          <Code>MessageComposer</Code> component - the shared authoring field, exported on its own
+          for consumers building a bespoke message list.
+        </>,
+        <>
+          <Code>ConversationMessage</Code> model shared by <Code>Chat</Code> and{' '}
+          <Code>CommentThread</Code> - deliberately free of React nodes and functions, so a stored
+          history is JSON-serialisable and renders in either component.
+        </>,
+        <>
+          <Code>readOnly</Code> / <Code>readOnlyMessage</Code> on <Code>Chat</Code> and{' '}
+          <Code>CommentThread</Code> - removes the authoring affordances rather than disabling them.
+          Per-message permissions go through <Code>messageActions(message)</Code> returning an empty
+          array.
+        </>,
+        <>
+          Optimistic send support: a promise-returning <Code>onSend</Code> gets a pending state,
+          clears the draft on resolve and preserves it on reject; <Code>sending</Code> /{' '}
+          <Code>failed</Code> message statuses with a retry affordance.
+        </>,
+        <>
+          <Code>reduced-motion</Code> SCSS mixin, wrapping{' '}
+          <Code>prefers-reduced-motion: reduce</Code> for decorative motion only - loading
+          indicators deliberately keep animating.
+        </>,
+        <>
+          <Code>IdentityHeader</Code> component - <Code>Header</Code> preconfigured for account and
+          profile pages, with an avatar beside the name and a metadata row below it.
+        </>,
+        <>
+          <Code>Header</Code> takes <Code>media</Code> for leading content (an <Code>Avatar</Code>,
+          a logo, an icon block) before the title stack.
+        </>,
+        <>
+          <Code>Header</Code> takes <Code>meta</Code> for a row of supporting facts below the
+          subtitle.
+        </>,
+        <>
+          <Code>Header</Code> takes <Code>variant="hero"</Code>, raising its prominence with a
+          larger title.
+        </>,
+        <>
+          <Code>xs</Code> (480px) breakpoint, for the point where a component's horizontal
+          arrangement has to stack on a phone - <Code>Header</Code> moves its leading media onto its
+          own row there.
+        </>,
+        <>
+          <Code>Header</Code> folds surplus actions into an overflow popover on a narrow header,
+          controlled by <Code>collapseActionsBelow</Code> (default <Code>640</Code>) and{' '}
+          <Code>actionsVisibleWhenCollapsed</Code> (default <Code>1</Code>).
+        </>,
+        <>
+          <Code>container-up</Code> / <Code>container-down</Code> SCSS mixins, the element-relative
+          counterparts of <Code>media-up</Code> / <Code>media-down</Code>, reading the same
+          breakpoint map.
+        </>,
+        <>
+          <Code>SegmentedControl</Code> scrolls an overflowing track with chevron buttons at either
+          end, matching <Code>Tabs</Code>, controlled by <Code>scrollButtons</Code> (default{' '}
+          <Code>'auto'</Code>, <Code>'none'</Code> to keep the native scrollbar).
+        </>,
+        <>
+          <Code>SegmentedControl</Code> segments have a visible focus ring, drawn inset so the
+          scrolling track cannot clip it.
+        </>,
+        <>
+          <Code>SegmentedControl</Code> supports the WAI-ARIA radiogroup keyboard pattern: a single
+          tab stop, with arrow keys, <Code>Home</Code> and <Code>End</Code> moving the selection and
+          skipping disabled segments.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <strong>Keyboard focus is visible again across the library.</strong>{' '}
+          <Code>global.scss</Code> applied <Code>button-reset</Code> to the bare <Code>button</Code>{' '}
+          element, and that mixin carried{' '}
+          <Code>
+            &:focus {'{'} outline: none {'}'}
+          </Code>{' '}
+          - so importing <Code>eidos-ui/styles</Code> removed the keyboard focus ring from every
+          button on the page, including a consumer's own. Nothing replaced it, leaving{' '}
+          <Code>Button</Code>, <Code>SplitButton</Code>, <Code>Menu</Code> items, <Code>Modal</Code>
+          's close control and ~20 other components with no focus affordance at all (WCAG 2.4.7).
+          The resets no longer suppress the focus outline, and a <Code>:focus-visible</Code>{' '}
+          fallback fills the gaps.
+        </>,
+        <>
+          Decorative motion now respects <Code>prefers-reduced-motion: reduce</Code>:{' '}
+          <Code>Skeleton</Code>'s pulse and wave, <Code>Snackbar</Code>'s slide, <Code>Drawer</Code>
+          's panel and scrim, <Code>Modal</Code>'s zoom, <Code>CommandPalette</Code>'s entrance and{' '}
+          <Code>Table</Code>'s filter-row slide. Loading indicators (<Code>Spinner</Code>,{' '}
+          <Code>Progress</Code>, the <Code>Button</Code>/<Code>SplitButton</Code>/
+          <Code>Combobox</Code> spinners) deliberately keep animating - freezing them would remove
+          the state they exist to communicate.
+        </>,
+        <>
+          <Code>FileUpload</Code>'s drop zone has a real keyboard focus indicator. Focus shared a
+          rule with hover, so a keyboard user saw only the hover border tint, and an unconditional{' '}
+          <Code>outline: none</Code> suppressed any ring.
+        </>,
+        <>
+          <Code>FileUpload</Code>'s hover and drag tints follow <Code>--primary-rgb</Code> instead
+          of a hardcoded <Code>rgba(99, 102, 241, …)</Code> - the indigo replaced in 3.0.0 - so they
+          now respond to <Code>ThemeProvider</Code> like every other tint.
+        </>,
+        <>
+          <Code>Footer</Code>'s <Code>component</Code> slot fills the footer's width instead of
+          collapsing to its content width, so a <Code>space-between</Code> footer bar no longer
+          needs a <Code>width: 100%</Code> of its own.
+        </>,
+        <>
+          <Code>PageLayout</Code> no longer paints a stray 1px rule down the page edge when{' '}
+          <Code>navigation</Code> is omitted; the empty rail column now really collapses to nothing.
+        </>,
+        <>
+          <Code>SegmentedControl</Code> no longer pushes the page sideways when its segments are
+          wider than their container.
+        </>,
+        <>
+          <Code>Tabs</Code> and <Code>SegmentedControl</Code> scroll buttons no longer take focus
+          when clicked, which the browser reported as focus trapped inside an{' '}
+          <Code>aria-hidden</Code> subtree.
+        </>,
+        <>
+          <Code>Textarea</Code> can actually be resized by dragging its grabber; the element was a{' '}
+          <Code>flex: 1</Code> item of a column wrapper, so the height the browser sets while
+          dragging was ignored in favour of the flex base size.
+        </>,
+        <>
+          <Code>Navigation</Code> honours <Code>defaultCollapsed</Code> (and a controlled{' '}
+          <Code>collapsed</Code>) on a viewport wider than <Code>collapseBelow</Code>; the
+          breakpoint used to apply its own answer on mount, so a rail asked to start collapsed
+          sprang open immediately.
+        </>,
+        <>
+          <Code>Navigation</Code>'s{' '}
+          <Code>
+            collapseBelow={'{'}0{'}'}
+          </Code>{' '}
+          now really opts out - it previously still forced the rail expanded on mount.
+        </>,
+        <>
+          <Code>Navigation</Code> no longer re-applies the breakpoint on every render when{' '}
+          <Code>onCollapsedChange</Code> is an inline function, which overrode manual toggles made
+          in between crossings.
+        </>,
+        <>
+          <Code>PageLayout</Code>'s toolbar, header, body and footer share one horizontal gutter at
+          every breakpoint; the toolbar previously kept a fixed inset and the footer's was pinned by
+          a more specific rule, leaving them 42px and 36.75px against the body's 7px on a narrow
+          viewport.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>SegmentedControl</Code> renders its track inside a new{' '}
+          <Code>.eidos-segmented-bar</Code> wrapper, which is also where <Code>className</Code> now
+          lands - target <Code>.eidos-segmented</Code> to style the track itself.
+        </>,
+        <>
+          <Code>SegmentedControl</Code> is a single tab stop instead of one per segment, so Tab now
+          steps over the whole group - use the arrow keys to move within it.
+        </>,
+        <>
+          Modifier class names are normalised to kebab-case (<Code>--full-width</Code>,{' '}
+          <Code>--hide-scrollbar</Code>); the camelCase spellings (<Code>--fullWidth</Code>,{' '}
+          <Code>--hideScrollbar</Code>) are still emitted alongside them, so existing CSS targeting
+          either keeps working. Prefer kebab-case in new code - the aliases go away at the next
+          major.
+        </>,
+        <>
+          <Code>Header</Code> reflows against its own width rather than the viewport, so it lays out
+          correctly beside <Code>PageLayout</Code>'s navigation rail and in any narrow column.
+        </>,
+        <>
+          <Code>Header</Code>'s action row stacks full-width at 640px and under, and its surplus
+          actions now collapse by default - mobile rendering differs from 3.1.1 without any prop
+          change, though nothing needs updating on the consumer side. Pass{' '}
+          <Code>
+            collapseActionsBelow={'{'}0{'}'}
+          </Code>{' '}
+          to keep every action inline.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.1.1"
   date="2026-09-18"
   bump="patch"
