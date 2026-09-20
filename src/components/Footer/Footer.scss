@@ -6,7 +6,7 @@
   // Default variant (`copyright`) - centered, muted small text.
   &--copyright {
     @include flex-center-x;
-    color: var(--gray-500);
+    color: var(--text-muted);
     font-size: var(--font-size-sm);
   }
 

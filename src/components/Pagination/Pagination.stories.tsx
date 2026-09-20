@@ -66,6 +66,9 @@ const meta = {
     onChange: { table: { disable: true } },
     className: { table: { disable: true } },
   },
+  // Required props live at meta level so the render-only stories below
+  // satisfy the type, and so Default's controls start from real values.
+  args: { page: 1, totalPages: 10, onChange: () => {} },
 } satisfies Meta<typeof Pagination>;
 
 export default meta;
@@ -116,7 +119,7 @@ export const ManyPages: Story = {
 // COLORS
 // ============================================================================
 
-export const Colors = {
+export const Colors: Story = {
   render: () => {
     const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const;
     const label: React.CSSProperties = {
@@ -124,7 +127,7 @@ export const Colors = {
       fontSize: '0.75rem',
       fontWeight: 600,
       textTransform: 'uppercase',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
       letterSpacing: '0.07em',
     };
 
@@ -145,7 +148,7 @@ export const Colors = {
 // SIZES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => {
     const sizes = ['sm', 'md', 'lg'] as const;
     const label: React.CSSProperties = {
@@ -153,7 +156,7 @@ export const Sizes = {
       fontSize: '0.75rem',
       fontWeight: 600,
       textTransform: 'uppercase',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
       letterSpacing: '0.07em',
     };
 

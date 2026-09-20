@@ -153,7 +153,7 @@ export const AutoFocus: Story = {
 
 // ── Sizes showcase ─────────────────────────────────────────────────────────
 
-export const Sizes = {
+export const Sizes: Story = {
   name: 'All Sizes',
   render: () => {
     const label: React.CSSProperties = {
@@ -162,7 +162,7 @@ export const Sizes = {
       fontWeight: 600,
       textTransform: 'uppercase' as const,
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
     const row: React.CSSProperties = {
       display: 'flex',
@@ -191,7 +191,7 @@ export const Sizes = {
 
 // ── Controlled usage example ───────────────────────────────────────────────
 
-export const Controlled = {
+export const Controlled: Story = {
   name: 'Controlled (with onComplete feedback)',
   render: () => {
     const ControlledDemo = () => {
@@ -219,18 +219,23 @@ export const Controlled = {
             onChange={handleChange}
             onComplete={handleComplete}
           />
-          <p style={{ fontSize: '0.875rem', color: completed ? '#10b981' : '#94a3b8' }}>
+          <p
+            style={{
+              fontSize: 'var(--font-size-sm)',
+              color: completed ? 'var(--success-color)' : 'var(--text-muted)',
+            }}
+          >
             {completed ? `✓ Code accepted: ${code}` : `Current value: "${code}"`}
           </p>
           <button
             style={{
               fontSize: '0.8rem',
               padding: '0.25rem 0.75rem',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--gray-300)',
               borderRadius: '6px',
               background: 'none',
               cursor: 'pointer',
-              color: '#64748b',
+              color: 'var(--text-muted)',
             }}
             onClick={() => {
               setCode('');

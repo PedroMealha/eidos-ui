@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
@@ -52,18 +53,18 @@ const meta = {
           tooltip: 'Notifications',
           icon: 'Bell',
           color: 'secondary',
-          onClick: () => alert('Notifications clicked'),
+          onClick: action('Notifications clicked'),
         },
         {
           tooltip: 'Settings',
           icon: 'Settings',
           color: 'secondary',
-          onClick: () => alert('Settings clicked'),
+          onClick: action('Settings clicked'),
         },
         {
           tooltip: 'User',
           icon: 'User',
-          onClick: () => alert('Settings clicked'),
+          onClick: action('Settings clicked'),
         },
       ],
       userMenu: [
@@ -94,7 +95,7 @@ const meta = {
           id: 'settings',
           label: 'Settings',
           icon: 'settings',
-          onClick: () => alert('Settings clicked'),
+          onClick: action('Settings clicked'),
         },
         {
           type: 'item',
@@ -102,7 +103,7 @@ const meta = {
           label: 'Logout',
           icon: 'log-out',
           color: 'danger',
-          onClick: () => alert('Logout clicked'),
+          onClick: action('Logout clicked'),
         },
       ],
     },
@@ -114,7 +115,7 @@ const meta = {
           children: 'Refresh',
           preIcon: 'refresh-cw',
           variant: 'outlined',
-          onClick: () => alert('Settings clicked'),
+          onClick: action('Settings clicked'),
         },
       ],
     },

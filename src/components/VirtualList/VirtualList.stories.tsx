@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { VirtualList } from './VirtualList.component';
+import type { VirtualListProps } from './VirtualList.types';
 
 // ============================================================================
 // Shared fixture data
@@ -61,7 +62,7 @@ const nameStyle: React.CSSProperties = {
 
 const metaStyle: React.CSSProperties = {
   fontSize: '0.75rem',
-  color: 'var(--gray-400)',
+  color: 'var(--text-muted)',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -139,14 +140,16 @@ virtualizer so the component stays lean.
       },
     },
   },
-  // Baseline args satisfy TypeScript's required-prop constraint so that
-  // individual stories using `render:()` don't need to repeat them.
-  // The render functions in each story fully override these values.
+  // Real defaults, not placeholders: `Default` spreads these through the
+  // Controls panel, and the render-only stories below inherit them to satisfy
+  // TypeScript's required-prop constraint.
   args: {
-    data: [] as unknown[],
-    renderRow: () => null,
+    data: ITEMS,
+    renderRow: renderItem,
     rowHeight: 48,
     height: 400,
+    overscan: 3,
+    loading: false,
   },
   argTypes: {
     height: {
@@ -188,34 +191,21 @@ virtualizer so the component stays lean.
     onEndReached: { table: { disable: true } },
     getRowKey: { table: { disable: true } },
   },
-} satisfies Meta<typeof VirtualList>;
+} satisfies Meta<VirtualListProps<Item>>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<VirtualListProps<Item>>;
 
 // ============================================================================
 // Story: Fixed Height (stress test - 10 000 rows)
 // ============================================================================
 
 export const Default: Story = {
-  name: 'Fixed Row Height',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'All 10 000 rows share the same 48 px height. Scroll performance stays constant because the DOM only ever holds ~20 nodes regardless of dataset size.',
-      },
-    },
-  },
-  render: () => (
-    <VirtualList
-      data={ITEMS}
-      rowHeight={48}
-      height={400}
-      getRowKey={(item) => item.id}
-      renderRow={renderItem}
-    />
-  ),
+  name: 'Fixed row height',
+  // Spreads `args`, so `rowHeight`, `height`, `overscan`, `loading` and the
+  // rest actually drive the list. This used to be `render: () =>`, which
+  // ignored args entirely - the Controls panel the .mdx renders did nothing.
+  render: (args) => <VirtualList {...args} getRowKey={(item) => item.id} />,
 };
 
 // ============================================================================
@@ -334,7 +324,7 @@ function EmptyPlaceholder(): React.ReactElement {
       <div
         style={{
           fontSize: '0.8125rem',
-          color: 'var(--gray-400)',
+          color: 'var(--text-muted)',
           maxWidth: 240,
           textAlign: 'center',
         }}
@@ -346,7 +336,6 @@ function EmptyPlaceholder(): React.ReactElement {
 }
 
 export const EmptyState: Story = {
-  name: 'Empty State',
   parameters: {
     docs: {
       description: {
@@ -373,7 +362,6 @@ export const EmptyState: Story = {
 const PAGE_SIZE = 100;
 
 export const InfiniteScroll: Story = {
-  name: 'Infinite Scroll',
   parameters: {
     docs: {
       description: {

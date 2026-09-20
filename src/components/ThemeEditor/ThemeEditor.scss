@@ -30,7 +30,7 @@
 
 .eidos-theme-editor-section__hint {
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
 
   code {
     @include font-mono;

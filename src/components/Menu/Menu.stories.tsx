@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { User, Settings, LogOut, FileText, Copy, Trash2, Share2, Mail } from 'lucide-react';
 import { Menu } from './Menu.component';
 import { Button } from '../Button';
 import type { MenuItemType } from './Menu.types';
+import { StoryRow } from '../../story-layout.docs';
 
 const meta = {
   title: 'Overlays/Menu',
@@ -62,375 +64,215 @@ const meta = {
     },
     triggerRef: { table: { disable: true } },
   },
+  // `trigger` and `items` are required, so they live here to satisfy the type
+  // for the render-only stories below as well as seeding the Default controls.
+  args: {
+    trigger: <Button variant="outlined">Open menu</Button>,
+    items: [
+      { type: 'item', id: '1', label: 'Profile', icon: User, onClick: action('Profile') },
+      { type: 'item', id: '2', label: 'Settings', icon: Settings, onClick: action('Settings') },
+      { type: 'separator', id: 'sep1' },
+      { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: action('Logout') },
+    ],
+  },
 } satisfies Meta<typeof Menu>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 const basicMenuItems: MenuItemType[] = [
-  { type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => alert('Profile') },
-  { type: 'item', id: '2', label: 'Settings', icon: Settings, onClick: () => alert('Settings') },
+  { type: 'item', id: '1', label: 'Profile', icon: User, onClick: action('Profile') },
+  { type: 'item', id: '2', label: 'Settings', icon: Settings, onClick: action('Settings') },
   { type: 'separator', id: 'sep1' },
-  { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: () => alert('Logout') },
+  { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: action('Logout') },
 ];
 
-export const Default: Story = {
+export const Default: Story = {};
+
+// The `Examples` story that used to live here rendered all seven menus at
+// once. Storybook's "Show code" walks the whole rendered tree with a bundled
+// `react-element-to-jsx-string` that reads React 19's removed `element.ref`,
+// and on a tree that deep the walk froze the Docs tab - which is why it
+// carried a hand-maintained static `code` string as a workaround. Split into
+// focused stories, each tree is small enough that Storybook can derive the
+// source dynamically again, so the source can no longer drift from the story.
+
+export const WithShortcuts: Story = {
   args: {
-    trigger: <Button variant="outlined">Open Menu</Button>,
-    items: basicMenuItems,
+    trigger: (
+      <Button variant="filled" color="secondary">
+        File Menu
+      </Button>
+    ),
+    items: [
+      {
+        type: 'item',
+        id: '1',
+        label: 'New File',
+        icon: FileText,
+        shortcut: '⌘N',
+        onClick: action('New File'),
+      },
+      { type: 'item', id: '2', label: 'Copy', icon: Copy, shortcut: '⌘C', onClick: action('Copy') },
+      {
+        type: 'item',
+        id: '3',
+        label: 'Delete',
+        icon: Trash2,
+        shortcut: '⌫',
+        onClick: action('Delete'),
+      },
+    ],
   },
 };
 
-export const Examples = {
-  // Storybook's own "Show code" source generation walks the entire rendered
-  // element tree with a version of `react-element-to-jsx-string` that reads
-  // the (React 19-removed) `element.ref` property - see
-  // https://github.com/storybookjs/storybook/issues/31480. That's just a
-  // console warning on a small tree, but this story renders 7 nested
-  // Menu/Dropdown/Button trees at once (icons, nested submenus, a custom
-  // component item); walking and warning on every node in a tree that deep
-  // is what freezes the tab, not the warning itself. `sourceState: 'none'`
-  // alone only hides the panel's UI - Storybook still computes the source
-  // eagerly during the initial render regardless, so the freeze happened
-  // before you could even see the hidden panel. Providing an explicit
-  // static `code` string instead bypasses dynamic tree serialization
-  // entirely: Storybook just displays this text, with no need to walk the
-  // rendered output at all.
-  parameters: {
-    docs: {
-      source: {
-        type: 'code',
-        code: `<Menu
-  trigger={<Button variant="filled">User Menu</Button>}
-  items={[
-    { type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => {} },
-    { type: 'item', id: '2', label: 'Settings', icon: Settings, onClick: () => {} },
-    { type: 'separator', id: 'sep1' },
-    { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: () => {} },
-  ]}
-/>
-
-<Menu
-  trigger={<Button variant="filled" color="secondary">File Menu</Button>}
-  items={[
-    { type: 'item', id: '1', label: 'New File', icon: FileText, shortcut: '⌘N', onClick: () => {} },
-    { type: 'item', id: '2', label: 'Copy', icon: Copy, shortcut: '⌘C', onClick: () => {} },
-    { type: 'item', id: '3', label: 'Delete', icon: Trash2, shortcut: '⌫', onClick: () => {} },
-  ]}
-/>
-
-<Menu
-  trigger={<Button variant="outlined" color="success">More Options</Button>}
-  items={[
-    { type: 'item', id: '1', label: 'Copy', icon: Copy, onClick: () => {} },
-    { type: 'item', id: '2', label: 'Share', icon: Share2, onClick: () => {} },
-    { type: 'separator', id: 'sep1' },
-    {
-      type: 'nested',
-      id: 'nested1',
-      label: 'More Actions',
-      icon: Settings,
-      items: [
-        { type: 'item', id: 'n1', label: 'Archive', onClick: () => {} },
-        { type: 'item', id: 'n2', label: 'Export', onClick: () => {} },
-        { type: 'item', id: 'n3', label: 'Print', onClick: () => {} },
-      ],
-    },
-    { type: 'separator', id: 'sep2' },
-    { type: 'item', id: '3', label: 'Delete', icon: Trash2, color: 'danger', onClick: () => {} },
-  ]}
-/>
-
-<Menu
-  trigger={<Button variant="text">Edit</Button>}
-  items={[
-    { type: 'item', id: '1', label: 'Cut', icon: 'scissors', shortcut: '⌘X', onClick: () => {} },
-    { type: 'item', id: '2', label: 'Copy', icon: 'copy', shortcut: '⌘C', onClick: () => {}, disabled: true },
-    { type: 'item', id: '3', label: 'Paste', icon: 'clipboard', shortcut: '⌘V', onClick: () => {}, disabled: true },
-  ]}
-/>
-
-<Menu
-  trigger={<Button variant="outlined" color="primary">Custom Menu</Button>}
-  items={[
-    { type: 'item', id: '1', label: 'Profile', icon: User, onClick: () => {} },
-    { type: 'separator', id: 'sep1' },
-    {
-      type: 'component',
-      id: 'custom',
-      component: <div>Any React content can go here</div>,
-    },
-    { type: 'separator', id: 'sep2' },
-    { type: 'item', id: '2', label: 'Logout', icon: LogOut, onClick: () => {} },
-  ]}
-/>
-
-<Menu
-  trigger={<Button variant="outlined" size="sm">Min Width</Button>}
-  items={[
-    { type: 'item', id: '1', label: 'Short', onClick: () => {} },
-    { type: 'item', id: '2', label: 'Item', onClick: () => {} },
-  ]}
-  minWidth={200}
-/>
-
-<Menu
-  trigger={<Button variant="filled">Hover Me</Button>}
-  items={basicMenuItems}
-  tooltip="Open menu to see options"
-/>`,
+export const WithNestedSubmenu: Story = {
+  args: {
+    trigger: (
+      <Button variant="outlined" color="success">
+        More Options
+      </Button>
+    ),
+    items: [
+      { type: 'item', id: '1', label: 'Copy', icon: Copy, onClick: action('Copy') },
+      { type: 'item', id: '2', label: 'Share', icon: Share2, onClick: action('Share') },
+      { type: 'separator', id: 'sep1' },
+      {
+        type: 'nested',
+        id: 'nested1',
+        label: 'More Actions',
+        icon: Settings,
+        items: [
+          { type: 'item', id: 'n1', label: 'Archive', onClick: action('Archive') },
+          { type: 'item', id: 'n2', label: 'Export', onClick: action('Export') },
+          { type: 'item', id: 'n3', label: 'Print', onClick: action('Print') },
+        ],
       },
-    },
+      { type: 'separator', id: 'sep2' },
+      {
+        type: 'item',
+        id: '3',
+        label: 'Delete',
+        icon: Trash2,
+        color: 'danger',
+        onClick: action('Delete'),
+      },
+    ],
   },
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
+};
 
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
-        <div>
-          <p style={label}>Basic Menu</p>
-          <Menu
-            trigger={<Button variant="filled">User Menu</Button>}
-            items={[
-              {
-                type: 'item',
-                id: '1',
-                label: 'Profile',
-                icon: User,
-                onClick: () => alert('Profile'),
-              },
-              {
-                type: 'item',
-                id: '2',
-                label: 'Settings',
-                icon: Settings,
-                onClick: () => alert('Settings'),
-              },
-              { type: 'separator', id: 'sep1' },
-              {
-                type: 'item',
-                id: '3',
-                label: 'Logout',
-                icon: LogOut,
-                onClick: () => alert('Logout'),
-              },
-            ]}
-          />
-        </div>
+export const WithDisabledItems: Story = {
+  args: {
+    trigger: <Button variant="text">Edit</Button>,
+    items: [
+      {
+        type: 'item',
+        id: '1',
+        label: 'Cut',
+        icon: 'scissors',
+        shortcut: '⌘X',
+        onClick: action('Cut'),
+      },
+      {
+        type: 'item',
+        id: '2',
+        label: 'Copy',
+        icon: 'copy',
+        shortcut: '⌘C',
+        onClick: action('Copy'),
+        disabled: true,
+      },
+      {
+        type: 'item',
+        id: '3',
+        label: 'Paste',
+        icon: 'clipboard',
+        shortcut: '⌘V',
+        onClick: action('Paste'),
+        disabled: true,
+      },
+    ],
+  },
+};
 
-        <div>
-          <p style={label}>Keyboard Shortcuts</p>
-          <Menu
-            trigger={
-              <Button variant="filled" color="secondary">
-                File Menu
-              </Button>
-            }
-            items={[
-              {
-                type: 'item',
-                id: '1',
-                label: 'New File',
-                icon: FileText,
-                shortcut: '⌘N',
-                onClick: () => alert('New File'),
-              },
-              {
-                type: 'item',
-                id: '2',
-                label: 'Copy',
-                icon: Copy,
-                shortcut: '⌘C',
-                onClick: () => alert('Copy'),
-              },
-              {
-                type: 'item',
-                id: '3',
-                label: 'Delete',
-                icon: Trash2,
-                shortcut: '⌫',
-                onClick: () => alert('Delete'),
-              },
-            ]}
-          />
-        </div>
-
-        <div>
-          <p style={label}>Nested Menu</p>
-          <Menu
-            trigger={
-              <Button variant="outlined" color="success">
-                More Options
-              </Button>
-            }
-            items={[
-              { type: 'item', id: '1', label: 'Copy', icon: Copy, onClick: () => alert('Copy') },
-              {
-                type: 'item',
-                id: '2',
-                label: 'Share',
-                icon: Share2,
-                onClick: () => alert('Share'),
-              },
-              { type: 'separator', id: 'sep1' },
-              {
-                type: 'nested',
-                id: 'nested1',
-                label: 'More Actions',
-                icon: Settings,
-                items: [
-                  { type: 'item', id: 'n1', label: 'Archive', onClick: () => alert('Archive') },
-                  { type: 'item', id: 'n2', label: 'Export', onClick: () => alert('Export') },
-                  { type: 'item', id: 'n3', label: 'Print', onClick: () => alert('Print') },
-                ],
-              },
-              { type: 'separator', id: 'sep2' },
-              {
-                type: 'item',
-                id: '3',
-                label: 'Delete',
-                icon: Trash2,
-                color: 'danger',
-                onClick: () => alert('Delete'),
-              },
-            ]}
-          />
-        </div>
-
-        <div>
-          <p style={label}>With Disabled Items</p>
-          <Menu
-            trigger={<Button variant="text">Edit</Button>}
-            items={[
-              {
-                type: 'item',
-                id: '1',
-                label: 'Cut',
-                icon: 'scissors',
-                shortcut: '⌘X',
-                onClick: () => alert('Cut'),
-              },
-              {
-                type: 'item',
-                id: '2',
-                label: 'Copy',
-                icon: 'copy',
-                shortcut: '⌘C',
-                onClick: () => alert('Copy'),
-                disabled: true,
-              },
-              {
-                type: 'item',
-                id: '3',
-                label: 'Paste',
-                icon: 'clipboard',
-                shortcut: '⌘V',
-                onClick: () => alert('Paste'),
-                disabled: true,
-              },
-            ]}
-          />
-        </div>
-
-        <div>
-          <p style={label}>Custom Component Item</p>
-          <Menu
-            trigger={
-              <Button variant="outlined" color="primary">
-                Custom Menu
-              </Button>
-            }
-            items={[
-              {
-                type: 'item',
-                id: '1',
-                label: 'Profile',
-                icon: User,
-                onClick: () => alert('Profile'),
-              },
-              { type: 'separator', id: 'sep1' },
-              {
-                type: 'component',
-                id: 'custom',
-                component: (
-                  <div
-                    style={{ padding: '0.5rem', background: 'var(--gray-50)', borderRadius: '4px' }}
-                  >
-                    <strong>Custom Content</strong>
-                    <p
-                      style={{
-                        margin: '0.25rem 0 0',
-                        fontSize: '0.875rem',
-                        color: 'var(--gray-600)',
-                      }}
-                    >
-                      You can add any React component here
-                    </p>
-                  </div>
-                ),
-              },
-              { type: 'separator', id: 'sep2' },
-              {
-                type: 'item',
-                id: '2',
-                label: 'Logout',
-                icon: LogOut,
-                onClick: () => alert('Logout'),
-              },
-            ]}
-          />
-        </div>
-
-        <div>
-          <p style={label}>Sizing</p>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <Menu
-              trigger={
-                <Button variant="outlined" size="sm">
-                  Min Width
-                </Button>
-              }
-              items={[
-                { type: 'item', id: '1', label: 'Short', onClick: () => alert('Short') },
-                { type: 'item', id: '2', label: 'Item', onClick: () => alert('Item') },
-              ]}
-              minWidth={200}
-            />
-            <Menu
-              trigger={
-                <Button variant="outlined" size="sm">
-                  Max Height
-                </Button>
-              }
-              items={[
-                { type: 'item', id: '1', label: 'Item 1', icon: Mail, onClick: () => {} },
-                { type: 'item', id: '2', label: 'Item 2', icon: Mail, onClick: () => {} },
-                { type: 'item', id: '3', label: 'Item 3', icon: Mail, onClick: () => {} },
-                { type: 'item', id: '4', label: 'Item 4', icon: Mail, onClick: () => {} },
-                { type: 'item', id: '5', label: 'Item 5', icon: Mail, onClick: () => {} },
-                { type: 'item', id: '6', label: 'Item 6', icon: Mail, onClick: () => {} },
-              ]}
-              maxHeight={150}
-            />
+export const WithCustomComponentItem: Story = {
+  args: {
+    trigger: (
+      <Button variant="outlined" color="primary">
+        Custom Menu
+      </Button>
+    ),
+    items: [
+      { type: 'item', id: '1', label: 'Profile', icon: User, onClick: action('Profile') },
+      { type: 'separator', id: 'sep1' },
+      {
+        type: 'component',
+        id: 'custom',
+        component: (
+          <div
+            style={{
+              padding: 'var(--spacing-sm)',
+              background: 'var(--gray-50)',
+              borderRadius: 'var(--border-radius-sm)',
+            }}
+          >
+            <strong>Custom Content</strong>
+            <p
+              style={{
+                margin: 'var(--spacing-xs) 0 0',
+                fontSize: 'var(--font-size-sm)',
+                color: 'var(--text-muted)',
+              }}
+            >
+              You can add any React component here
+            </p>
           </div>
-        </div>
+        ),
+      },
+      { type: 'separator', id: 'sep2' },
+      { type: 'item', id: '2', label: 'Logout', icon: LogOut, onClick: action('Logout') },
+    ],
+  },
+};
 
-        <div>
-          <p style={label}>With Tooltip</p>
-          <Menu
-            trigger={<Button variant="filled">Hover Me</Button>}
-            items={basicMenuItems}
-            tooltip="Open menu to see options"
-          />
-        </div>
-      </div>
-    );
+export const Sizing: Story = {
+  render: () => (
+    <StoryRow>
+      <Menu
+        trigger={
+          <Button variant="outlined" size="sm">
+            Min width
+          </Button>
+        }
+        items={[
+          { type: 'item', id: '1', label: 'Short', onClick: action('Short') },
+          { type: 'item', id: '2', label: 'Item', onClick: action('Item') },
+        ]}
+        minWidth={200}
+      />
+      <Menu
+        trigger={
+          <Button variant="outlined" size="sm">
+            Max height
+          </Button>
+        }
+        items={Array.from({ length: 6 }, (_, i) => ({
+          type: 'item' as const,
+          id: String(i + 1),
+          label: `Item ${i + 1}`,
+          icon: Mail,
+          onClick: () => {},
+        }))}
+        maxHeight={150}
+      />
+    </StoryRow>
+  ),
+};
+
+export const WithTooltip: Story = {
+  args: {
+    trigger: <Button variant="filled">Hover me</Button>,
+    items: basicMenuItems,
+    tooltip: 'Open menu to see options',
   },
 };

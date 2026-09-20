@@ -1,7 +1,7 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Avatar, AvatarGroup } from './Avatar.component';
 import type { AvatarColor } from './Avatar.types';
+import { StoryRow, StoryStack, StoryGroup } from '../../story-layout.docs';
 
 // A self-contained inline SVG (soft-focus colour blobs, like an out-of-focus photo) used
 // as the "image avatar" sample. Deliberately not a live network image (e.g. picsum.photos) -
@@ -142,18 +142,16 @@ export const Fallback: Story = {
 // SHAPES - circle vs square
 // ============================================================================
 
-export const Shapes = {
+export const Shapes: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-      <div>
-        <p style={labelStyle}>Circle</p>
+    <StoryRow>
+      <StoryGroup label="Circle">
         <Avatar name="John Doe" size="lg" shape="circle" />
-      </div>
-      <div>
-        <p style={labelStyle}>Square</p>
+      </StoryGroup>
+      <StoryGroup label="Square">
         <Avatar name="John Doe" size="lg" shape="square" />
-      </div>
-    </div>
+      </StoryGroup>
+    </StoryRow>
   ),
 };
 
@@ -161,19 +159,15 @@ export const Shapes = {
 // SIZES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+    <StoryRow align="flex-end">
       {(['sm', 'md', 'lg'] as const).map((size) => (
-        <div
-          key={size}
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
-        >
+        <StoryGroup key={size} label={size}>
           <Avatar name="Jane Smith" size={size} />
-          <span style={labelStyle}>{size}</span>
-        </div>
+        </StoryGroup>
       ))}
-    </div>
+    </StoryRow>
   ),
 };
 
@@ -191,19 +185,15 @@ const avatarColors: AvatarColor[] = [
   'gray',
 ];
 
-export const Colors = {
+export const Colors: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+    <StoryRow>
       {avatarColors.map((color) => (
-        <div
-          key={color}
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
-        >
+        <StoryGroup key={color} label={color}>
           <Avatar name="AB" color={color} size="md" />
-          <span style={labelStyle}>{color}</span>
-        </div>
+        </StoryGroup>
       ))}
-    </div>
+    </StoryRow>
   ),
 };
 
@@ -215,7 +205,7 @@ export const Clickable: Story = {
   args: {
     name: 'Jane Smith',
     size: 'md',
-    onClick: () => console.log('Avatar clicked'),
+    onClick: () => {},
   },
 };
 
@@ -235,7 +225,7 @@ export const WithError: Story = {
 // GROUP - 6 avatars, max 4 visible
 // ============================================================================
 
-export const Group = {
+export const Group: Story = {
   render: () => (
     <AvatarGroup max={4}>
       <Avatar name="Alice Johnson" />
@@ -252,12 +242,11 @@ export const Group = {
 // GROUP SIZES
 // ============================================================================
 
-export const GroupSizes = {
+export const GroupSizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <StoryStack gap="lg">
       {(['sm', 'md', 'lg'] as const).map((size) => (
-        <div key={size} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span style={{ ...labelStyle, minWidth: '2rem' }}>{size}</span>
+        <StoryGroup key={size} label={size}>
           <AvatarGroup size={size} max={4}>
             <Avatar name="Alice Johnson" />
             <Avatar name="Bob Smith" />
@@ -265,21 +254,8 @@ export const GroupSizes = {
             <Avatar name="David Brown" />
             <Avatar name="Eve Davis" />
           </AvatarGroup>
-        </div>
+        </StoryGroup>
       ))}
-    </div>
+    </StoryStack>
   ),
-};
-
-// ============================================================================
-// Shared label style
-// ============================================================================
-
-const labelStyle: React.CSSProperties = {
-  margin: 0,
-  fontSize: '0.7rem',
-  fontWeight: 600,
-  textTransform: 'uppercase',
-  letterSpacing: '0.07em',
-  color: '#94a3b8',
 };

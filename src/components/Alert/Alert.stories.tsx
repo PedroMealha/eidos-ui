@@ -1,6 +1,8 @@
 import React from 'react';
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Alert } from './Alert.component';
+import { StoryStack } from '../../story-layout.docs';
 
 const meta = {
   title: 'Feedback/Alert',
@@ -66,38 +68,9 @@ export const Default: Story = {
   },
 };
 
-// ============================================================================
-// SUCCESS
-// ============================================================================
-
-export const Success: Story = {
-  args: {
-    variant: 'success',
-    children: 'Your changes have been saved successfully.',
-  },
-};
-
-// ============================================================================
-// WARNING
-// ============================================================================
-
-export const Warning: Story = {
-  args: {
-    variant: 'warning',
-    children: 'This action cannot be undone. Please review before continuing.',
-  },
-};
-
-// ============================================================================
-// DANGER
-// ============================================================================
-
-export const Danger: Story = {
-  args: {
-    variant: 'danger',
-    children: 'An unexpected error occurred. Please try again or contact support.',
-  },
-};
+// Per-variant `Success`/`Warning`/`Danger` stories used to sit here. Each was
+// a one-arg copy of Default that no .mdx referenced, and `AllVariants` below
+// shows all four together - which is how you actually compare them.
 
 // ============================================================================
 // WITH TITLE
@@ -124,7 +97,7 @@ export const WithAction: Story = {
       'You have used 95% of your available storage. Upgrade your plan to continue uploading files.',
     action: {
       label: 'Upgrade plan',
-      onClick: () => alert('Upgrade plan clicked'),
+      onClick: action('Upgrade plan clicked'),
     },
   },
 };
@@ -139,7 +112,7 @@ export const Dismissable: Story = {
 
     if (!visible) {
       return (
-        <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
           Alert dismissed. Refresh the page to reset.
         </p>
       );
@@ -171,17 +144,10 @@ export const NoIcon: Story = {
 // ALL VARIANTS - visual reference of all four variants at once
 // ============================================================================
 
-export const AllVariants = {
-  render: () => {
-    const wrapper: React.CSSProperties = {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.75rem',
-      maxWidth: '600px',
-    };
-
-    return (
-      <div style={wrapper}>
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ maxWidth: 600 }}>
+      <StoryStack gap="sm">
         <Alert variant="info" title="Information">
           Here is some helpful context about this feature or action.
         </Alert>
@@ -194,7 +160,7 @@ export const AllVariants = {
         <Alert variant="danger" title="Error">
           Something went wrong. Please try again or contact support.
         </Alert>
-      </div>
-    );
-  },
+      </StoryStack>
+    </div>
+  ),
 };

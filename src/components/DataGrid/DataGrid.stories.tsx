@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { useState, useEffect } from 'react';
 import { Trash2, Pencil, ShieldOff, FolderInput, Mail, MessageSquare } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
@@ -597,7 +598,6 @@ export const ReadOnly: Story = {
 // ─── 3. WithSorting ───────────────────────────────────────────────────────────
 
 export const WithSorting: Story = {
-  name: 'WithSorting',
   parameters: {
     docs: {
       description: {
@@ -619,7 +619,6 @@ export const WithSorting: Story = {
 // ─── 4. WithFiltering ─────────────────────────────────────────────────────────
 
 export const WithFiltering: Story = {
-  name: 'WithFiltering',
   parameters: {
     docs: {
       description: {
@@ -652,7 +651,6 @@ export const WithFiltering: Story = {
 // ─── 5. WithPagination ────────────────────────────────────────────────────────
 
 export const WithPagination: Story = {
-  name: 'WithPagination',
   parameters: {
     docs: {
       description: {
@@ -751,10 +749,7 @@ export const ServerSidePagination: Story = {
               icon: Mail,
               variant: 'outlined',
               onClick: (selectedRows) =>
-                window.alert(
-                  `Handler received ${selectedRows.length} row object(s):\n` +
-                    selectedRows.map((row) => `#${row.id} ${row.name}`).join('\n'),
-                ),
+                action('Email selected')(selectedRows.map((row) => `#${row.id} ${row.name}`)),
             },
           ]}
         />
@@ -825,10 +820,10 @@ export const SelectAllMatching: Story = {
               icon: FolderInput,
               variant: 'outlined',
               onClick: (selectedRows) =>
-                window.alert(
-                  `${selectedKeys.length} key(s) selected; ${selectedRows.length} row object(s) ` +
-                    'resolved (only loaded rows have one).',
-                ),
+                action('Archive selected')({
+                  keysSelected: selectedKeys.length,
+                  rowObjectsResolved: selectedRows.length,
+                }),
             },
           ]}
         />
@@ -840,7 +835,6 @@ export const SelectAllMatching: Story = {
 // ─── 6. WithSelection ─────────────────────────────────────────────────────────
 
 export const WithSelection: Story = {
-  name: 'WithSelection',
   parameters: {
     docs: {
       description: {
@@ -920,7 +914,6 @@ export const WithSelection: Story = {
 // ─── 7. WithDraggableRows ─────────────────────────────────────────────────────
 
 export const WithDraggableRows: Story = {
-  name: 'WithDraggableRows',
   parameters: {
     docs: {
       description: {
@@ -950,7 +943,6 @@ export const WithDraggableRows: Story = {
 // ─── 8. WithDensity ───────────────────────────────────────────────────────────
 
 export const WithDensity: Story = {
-  name: 'WithDensity',
   parameters: {
     docs: {
       description: {
@@ -979,7 +971,6 @@ export const WithDensity: Story = {
 // ─── 9. WithRowNumbers ────────────────────────────────────────────────────────
 
 export const WithRowNumbers: Story = {
-  name: 'WithRowNumbers',
   parameters: {
     docs: {
       description: {
@@ -1007,7 +998,6 @@ export const WithRowNumbers: Story = {
 // ─── 10. WithValidation ───────────────────────────────────────────────────────
 
 export const WithValidation: Story = {
-  name: 'WithValidation',
   parameters: {
     docs: {
       description: {
@@ -1041,7 +1031,6 @@ export const WithValidation: Story = {
 // ─── 11. EmptyState ───────────────────────────────────────────────────────────
 
 export const EmptyState: Story = {
-  name: 'EmptyState',
   parameters: {
     docs: {
       description: {
@@ -1064,7 +1053,6 @@ export const EmptyState: Story = {
 // ─── 12. Loading ──────────────────────────────────────────────────────────────
 
 export const Loading: Story = {
-  name: 'Loading',
   parameters: {
     docs: {
       description: {
@@ -1080,7 +1068,6 @@ export const Loading: Story = {
 // ─── 13. FullFeatured ─────────────────────────────────────────────────────────
 
 export const FullFeatured: Story = {
-  name: 'FullFeatured',
   parameters: {
     docs: {
       description: {
@@ -1139,7 +1126,6 @@ export const FullFeatured: Story = {
 // ─── 14. PinnedFromMiddle ─────────────────────────────────────────────────────
 
 export const PinnedFromMiddle: Story = {
-  name: 'PinnedFromMiddle',
   parameters: {
     docs: {
       description: {
@@ -1187,13 +1173,13 @@ const CARD_VIEW_COLUMNS: DataGridColumn<Person>[] = [
     header: 'Actions',
     type: 'actions',
     actions: [
-      { label: 'Edit', icon: Pencil, onClick: (person) => window.alert(`Edit ${person.name}`) },
+      { label: 'Edit', icon: Pencil, onClick: action('Edit') },
       {
         label: 'Delete',
         icon: Trash2,
         danger: true,
         divider: true,
-        onClick: (person) => window.alert(`Delete ${person.name}`),
+        onClick: action('Delete'),
       },
     ],
   },
@@ -1274,19 +1260,19 @@ const ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
     header: 'Actions',
     type: 'actions',
     actions: [
-      { label: 'Edit', icon: Pencil, onClick: (person) => window.alert(`Edit ${person.name}`) },
+      { label: 'Edit', icon: Pencil, onClick: action('Edit') },
       {
         label: 'Deactivate',
         icon: ShieldOff,
         disabled: (person) => !person.active,
-        onClick: (person) => window.alert(`Deactivate ${person.name}`),
+        onClick: action('Deactivate'),
       },
       {
         label: 'Delete',
         icon: Trash2,
         danger: true,
         divider: true,
-        onClick: (person) => window.alert(`Delete ${person.name}`),
+        onClick: action('Delete'),
       },
     ],
   },
@@ -1347,7 +1333,7 @@ const ADVANCED_ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
         label: 'Edit',
         icon: Pencil,
         shortcut: '⌘E',
-        onClick: () => window.alert(`Edit ${person.name} (row ${index})`),
+        onClick: () => action('Edit')({ person, index }),
       },
       {
         id: 'move',
@@ -1359,7 +1345,7 @@ const ADVANCED_ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
           type: 'item',
           label: dept.label,
           disabled: dept.value === person.department,
-          onClick: () => window.alert(`Move ${person.name} to ${dept.label}`),
+          onClick: action('Move'),
         })),
       },
       {
@@ -1372,14 +1358,14 @@ const ADVANCED_ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
             type: 'item',
             label: 'Send email',
             icon: Mail,
-            onClick: () => window.alert(`Email ${person.name}`),
+            onClick: action('Email'),
           },
           {
             id: 'contact-message',
             type: 'item',
             label: 'Send message',
             icon: MessageSquare,
-            onClick: () => window.alert(`Message ${person.name}`),
+            onClick: action('Message'),
           },
         ],
       },
@@ -1399,7 +1385,7 @@ const ADVANCED_ACTIONS_COLUMNS: DataGridColumn<Person>[] = [
         label: 'Delete',
         icon: Trash2,
         color: 'danger',
-        onClick: () => window.alert(`Delete ${person.name}`),
+        onClick: action('Delete'),
       },
     ],
   },
@@ -1486,9 +1472,7 @@ const EXPANDABLE_COLUMNS: DataGridColumn<Person>[] = [
     key: 'actions',
     header: 'Actions',
     type: 'actions',
-    actions: [
-      { label: 'Edit', icon: Pencil, onClick: (person) => window.alert(`Edit ${person.name}`) },
-    ],
+    actions: [{ label: 'Edit', icon: Pencil, onClick: action('Edit') }],
   },
 ];
 
@@ -1532,7 +1516,6 @@ export const ExpandableRows: Story = {
 // ─── 20. Quick filters ────────────────────────────────────────────────────────
 
 export const WithQuickFilters: Story = {
-  name: 'WithQuickFilters',
   parameters: {
     docs: {
       description: {
@@ -1566,7 +1549,6 @@ export const WithQuickFilters: Story = {
 // ─── 21. Column alignment ─────────────────────────────────────────────────────
 
 export const ColumnAlignment: Story = {
-  name: 'ColumnAlignment',
   parameters: {
     docs: {
       description: {
@@ -1641,7 +1623,6 @@ const TYPED_COLUMNS: DataGridColumn<Person>[] = [
 ];
 
 export const TypedColumns: Story = {
-  name: 'TypedColumns',
   parameters: {
     docs: {
       description: {

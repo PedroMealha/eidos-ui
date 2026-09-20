@@ -62,7 +62,7 @@
   height: 36px;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-calendar-content {
@@ -138,7 +138,7 @@
 
   // Other month dates (grayed out)
   &.eidos-calendar-other-month {
-    color: var(--gray-400);
+    color: var(--text-muted);
 
     &:hover:not(.eidos-calendar-disabled) {
       color: var(--gray-600);

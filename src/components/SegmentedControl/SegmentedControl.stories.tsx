@@ -10,14 +10,79 @@ import {
   AlignJustify,
 } from 'lucide-react';
 import { SegmentedControl } from './SegmentedControl.component';
+import { StoryStack } from '../../story-layout.docs';
+
+const RANGE_OPTIONS = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+  { value: 'year', label: 'Year' },
+];
+
+const ABC_OPTIONS = [
+  { value: 'a', label: 'Option A' },
+  { value: 'b', label: 'Option B' },
+  { value: 'c', label: 'Option C' },
+];
 
 const meta = {
   title: 'Elements/SegmentedControl',
   component: SegmentedControl,
   parameters: { layout: 'centered' },
+  // `options` is required, so it lives here to satisfy the type for the
+  // render-only stories below as well as seeding the Default controls.
   args: {
-    // Required - overridden by every story's render function.
-    options: [],
+    options: RANGE_OPTIONS,
+  },
+  argTypes: {
+    options: {
+      control: 'object',
+      description: 'Segment definitions. Each needs a `value` plus a `label` and/or an `icon`.',
+      table: { type: { summary: 'SegmentedOption[]' } },
+    },
+    defaultValue: {
+      control: 'text',
+      description: "Initial value when uncontrolled. Defaults to the first option's value.",
+      table: { type: { summary: 'string' } },
+    },
+    value: {
+      control: false,
+      description: 'Controlled selected value. Pair with `onChange`.',
+      table: { type: { summary: 'string' } },
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Control height',
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
+    },
+    color: {
+      control: 'select',
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      description: 'Colour of the active segment chip',
+      table: {
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable every segment.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    fullWidth: {
+      control: 'boolean',
+      description: "Stretch to the parent's width, each segment taking an equal share.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    scrollButtons: {
+      control: 'inline-radio',
+      options: ['auto', 'none'],
+      description: 'Scroll affordance when the track is wider than its container.',
+      table: { type: { summary: '"auto" | "none"' }, defaultValue: { summary: 'auto' } },
+    },
+    onChange: { table: { disable: true } },
+    className: { table: { disable: true } },
   },
 } satisfies Meta<typeof SegmentedControl>;
 
@@ -26,65 +91,21 @@ type Story = StoryObj<typeof meta>;
 
 // ─── Default ──────────────────────────────────────────────────────────────────
 
+// Uncontrolled (`defaultValue`) rather than the `useState` wrapper this used
+// to have, so every prop in the panel actually drives the rendered control.
 export const Default: Story = {
-  render: function DefaultStory() {
-    const [view, setView] = useState('week');
-    return (
-      <SegmentedControl
-        options={[
-          { value: 'day', label: 'Day' },
-          { value: 'week', label: 'Week' },
-          { value: 'month', label: 'Month' },
-          { value: 'year', label: 'Year' },
-        ]}
-        value={view}
-        onChange={setView}
-      />
-    );
+  args: {
+    defaultValue: 'week',
+    size: 'md',
+    color: 'primary',
+    disabled: false,
+    fullWidth: false,
   },
 };
 
-// ─── 1. Labels ────────────────────────────────────────────────────────────────
-
-export const Labels: Story = {
-  name: 'Labels',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Text-only segments. Controlled via `value` + `onChange`. ' +
-          'The group respects the primary color by default.',
-      },
-    },
-  },
-  render: function LabelsStory() {
-    const [view, setView] = useState('week');
-    return (
-      <SegmentedControl
-        options={[
-          { value: 'day', label: 'Day' },
-          { value: 'week', label: 'Week' },
-          { value: 'month', label: 'Month' },
-          { value: 'year', label: 'Year' },
-        ]}
-        value={view}
-        onChange={setView}
-      />
-    );
-  },
-};
-
-// ─── 2. Icons + tooltips ──────────────────────────────────────────────────────
+// ─── Icons + tooltips ─────────────────────────────────────────────────────────
 
 export const Icons: Story = {
-  name: 'Icons',
-  parameters: {
-    docs: {
-      description: {
-        story: 'Icon-only segments with a tooltip on each. Ideal for view-switcher toolbars.',
-      },
-    },
-  },
   render: function IconsStory() {
     const [view, setView] = useState('list');
     return (
@@ -101,10 +122,9 @@ export const Icons: Story = {
   },
 };
 
-// ─── 3. Icons + labels ────────────────────────────────────────────────────────
+// ─── Icons + labels ───────────────────────────────────────────────────────────
 
 export const IconsAndLabels: Story = {
-  name: 'IconsAndLabels',
   render: function IconsAndLabelsStory() {
     const [align, setAlign] = useState('left');
     return (
@@ -122,71 +142,41 @@ export const IconsAndLabels: Story = {
   },
 };
 
-// ─── 4. Sizes ─────────────────────────────────────────────────────────────────
+// ─── Sizes ────────────────────────────────────────────────────────────────────
 
 export const Sizes: Story = {
-  name: 'Sizes',
   render: () => (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}
-    >
+    <StoryStack align="flex-start">
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <SegmentedControl
           key={size}
           size={size}
           defaultValue="week"
-          options={[
-            { value: 'day', label: 'Day' },
-            { value: 'week', label: 'Week' },
-            { value: 'month', label: 'Month' },
-          ]}
+          options={RANGE_OPTIONS.slice(0, 3)}
         />
       ))}
-    </div>
+    </StoryStack>
   ),
 };
 
-// ─── 5. Colors ────────────────────────────────────────────────────────────────
+// ─── Colors ───────────────────────────────────────────────────────────────────
 
 export const Colors: Story = {
-  name: 'Colors',
   render: () => (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-start' }}
-    >
+    <StoryStack gap="sm" align="flex-start">
       {(['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const).map((color) => (
-        <SegmentedControl
-          key={color}
-          color={color}
-          defaultValue="b"
-          options={[
-            { value: 'a', label: 'Option A' },
-            { value: 'b', label: 'Option B' },
-            { value: 'c', label: 'Option C' },
-          ]}
-        />
+        <SegmentedControl key={color} color={color} defaultValue="b" options={ABC_OPTIONS} />
       ))}
-    </div>
+    </StoryStack>
   ),
 };
 
-// ─── 6. Disabled states ───────────────────────────────────────────────────────
+// ─── Disabled states ──────────────────────────────────────────────────────────
 
 export const Disabled: Story = {
-  name: 'Disabled',
   render: () => (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-start' }}
-    >
-      <SegmentedControl
-        disabled
-        defaultValue="b"
-        options={[
-          { value: 'a', label: 'Option A' },
-          { value: 'b', label: 'Option B' },
-          { value: 'c', label: 'Option C' },
-        ]}
-      />
+    <StoryStack gap="sm" align="flex-start">
+      <SegmentedControl disabled defaultValue="b" options={ABC_OPTIONS} />
       <SegmentedControl
         defaultValue="b"
         options={[
@@ -195,14 +185,13 @@ export const Disabled: Story = {
           { value: 'c', label: 'Option C' },
         ]}
       />
-    </div>
+    </StoryStack>
   ),
 };
 
-// ─── 7. Full width ────────────────────────────────────────────────────────────
+// ─── Full width ───────────────────────────────────────────────────────────────
 
 export const FullWidth: Story = {
-  name: 'FullWidth',
   decorators: [
     (Story) => (
       <div style={{ width: 400 }}>
@@ -230,21 +219,6 @@ export const FullWidth: Story = {
 // ─── Overflow ─────────────────────────────────────────────────────────────────
 
 export const Overflow: Story = {
-  name: 'Overflow',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'A track wider than its container scrolls instead of overflowing the ' +
-          'page, with chevron buttons at either end - the same treatment `Tabs` ' +
-          'uses. Each button is rendered only while its own direction has ' +
-          'somewhere to go, so neither appears when every segment fits. Native ' +
-          'scrolling (touch swipe, trackpad, shift+wheel) works too, and ' +
-          'selecting a segment off screen scrolls it into view. Pass ' +
-          '`scrollButtons="none"` to keep the native scrollbar instead.',
-      },
-    },
-  },
   decorators: [
     (Story) => (
       <div style={{ width: 320 }}>

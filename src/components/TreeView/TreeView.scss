@@ -123,7 +123,7 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  color: var(--gray-400);
+  color: var(--text-muted);
   transition: transform 0.15s ease;
 
   svg {
@@ -136,7 +136,7 @@
   // ── Expanded state: rotate chevron 90° so it points downward ───────────────
   &--expanded {
     transform: rotate(90deg);
-    color: var(--gray-500);
+    color: var(--text-muted);
   }
 
   // ── Leaf placeholder: invisible but occupies space for alignment ────────────
@@ -154,7 +154,7 @@
 .eidos-tree-icon {
   @include flex-center;
   flex-shrink: 0;
-  color: var(--gray-500);
+  color: var(--text-muted);
   // Width/height is driven by the lucide `size` prop in the component;
   // we only ensure it shrinks correctly here.
 }

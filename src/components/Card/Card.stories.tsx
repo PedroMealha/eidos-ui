@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Card } from './Card.component';
+import { StoryRow, StoryStack } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/Card',
@@ -51,18 +52,27 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Elevated: Story = {
-  args: { variant: 'elevated' },
-};
-
-export const Flat: Story = {
-  args: { variant: 'flat' },
+// `Elevated` and `Flat` were separate one-arg stories that no .mdx referenced,
+// and `Variants` already shows all three side by side, which is how you
+// actually compare them.
+export const Variants: Story = {
+  render: () => (
+    <StoryRow align="stretch">
+      {(['outlined', 'elevated', 'flat'] as const).map((v) => (
+        <Card key={v} variant={v} style={{ width: 200 }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            variant=&quot;{v}&quot;
+          </span>
+        </Card>
+      ))}
+    </StoryRow>
+  ),
 };
 
 export const Clickable: Story = {
   args: { clickable: true },
   render: (args) => (
-    <Card {...args} onClick={() => alert('Card clicked')}>
+    <Card {...args} onClick={() => {}}>
       Click me - hover to see the interactive styles.
     </Card>
   ),
@@ -70,33 +80,32 @@ export const Clickable: Story = {
 
 export const Padding: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: 360 }}>
+    <StoryStack>
       {(['none', 'sm', 'md', 'lg'] as const).map((p) => (
-        <Card key={p} padding={p}>
-          <span style={{ fontSize: '0.75rem', color: '#71717a' }}>padding="{p}"</span>
+        <Card key={p} padding={p} style={{ width: 360 }}>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            padding=&quot;{p}&quot;
+          </span>
         </Card>
       ))}
-    </div>
-  ),
-};
-
-export const Variants: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-      {(['outlined', 'elevated', 'flat'] as const).map((v) => (
-        <Card key={v} variant={v} style={{ width: 200 }}>
-          <span style={{ fontSize: '0.75rem', color: '#71717a' }}>variant="{v}"</span>
-        </Card>
-      ))}
-    </div>
+    </StoryStack>
   ),
 };
 
 export const WithContent: Story = {
   render: () => (
     <Card style={{ width: 320 }}>
-      <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 600 }}>Card title</h3>
-      <p style={{ margin: 0, fontSize: '0.875rem', color: '#71717a', lineHeight: 1.6 }}>
+      <h3 style={{ margin: '0 0 var(--spacing-sm)', fontSize: 'var(--font-size-base)' }}>
+        Card title
+      </h3>
+      <p
+        style={{
+          margin: 0,
+          fontSize: 'var(--font-size-sm)',
+          color: 'var(--text-muted)',
+          lineHeight: 1.6,
+        }}
+      >
         Cards are surface-level containers that group related content. Use them to establish visual
         hierarchy without adding page-level sections.
       </p>

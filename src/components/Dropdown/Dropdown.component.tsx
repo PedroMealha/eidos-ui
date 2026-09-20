@@ -416,12 +416,32 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 
   return (
     <>
+      {/*
+        A positioning and click-capturing wrapper, and nothing more - it
+        deliberately carries no `role` and no `tabIndex`.
+
+        It used to be `role="button" tabIndex={-1}`, which was wrong in both
+        directions at once. `tabIndex={-1}` with no key handler meant the
+        wrapper was never keyboard-operable, so the button role it advertised
+        could not be activated by anyone using a keyboard - it promised a
+        control that did not exist. Meanwhile, because `trigger` is virtually
+        always a real control (Select and Combobox pass an `<input>`, Menu and
+        SplitButton a `<button>`, ...), the role wrapped an interactive element
+        in another interactive element: invalid ARIA, flagged by axe as
+        `nested-interactive`, and announced by screen readers as a button
+        inside a button. One attribute did this across every component built
+        on Dropdown - Select, Combobox, Menu, Popover, ContextMenu,
+        ColorPicker and TagInput - 212 violations in a single axe run.
+
+        Semantics belong to whatever is passed as `trigger`, which is the only
+        element that can actually own them. A consumer passing a
+        non-interactive node should pass a `<button>` instead; it was never
+        keyboard-accessible under the old markup either.
+      */}
       <div
         ref={triggerRef}
         onClick={handleTriggerClick}
         className={`eidos-dropdown-trigger ${fullWidth ? fullWidthModifier('eidos-dropdown-trigger') : ''} ${triggerClassName}`}
-        role="button"
-        tabIndex={-1}
       >
         {trigger}
       </div>

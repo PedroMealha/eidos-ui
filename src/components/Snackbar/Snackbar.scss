@@ -165,7 +165,7 @@
     width: 24px;
     height: 24px;
     @include border-radius(sm);
-    color: var(--gray-500);
+    color: var(--text-muted);
     margin-left: var(--spacing-sm);
     transition: all 0.2s ease;
 

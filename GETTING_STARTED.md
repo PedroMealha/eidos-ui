@@ -123,7 +123,7 @@ logs a development warning.
 
 ## Icons
 
-Many components accept icon props (`preIcon`, `postIcon`, `icon`). These use `lucide-react`, which is listed as a regular dependency and auto-installed with the package - no extra install step needed.
+Many components accept icon props (`preIcon`, `posIcon`, `icon`). These use `lucide-react`, which is listed as a regular dependency and auto-installed with the package - no extra install step needed.
 
 ```tsx
 import { Download, Plus } from 'lucide-react';

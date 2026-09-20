@@ -1,0 +1,53 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { GuideHero } from './guide-hero.docs';
+import { StatGrid, Features, Categories, AccessibilityNote, welcomeStats } from './Welcome.docs';
+
+<Meta title="Welcome" />
+
+{/* Nothing but imports may sit above <Meta />. All JSX for this page lives in */}
+{/* Welcome.docs.tsx - the MDX language server re-parses a document's */}
+{/* top-level ESM block with acorn-loose, which cannot be extended with */}
+{/* acorn-jsx, so any JSX here reports as unparseable and takes every import */}
+{/* in the block down with it. See mdx-js/mdx-analyzer#267. */}
+
+<GuideHero title="A React component library">
+  {welcomeStats.componentCount} components that share one API vocabulary, from a button to a data
+  grid. Every prop is documented here, and every control on these pages actually drives the
+  component beside it.
+</GuideHero>
+
+<StatGrid />
+
+## What you get
+
+<Features />
+
+## Components by group
+
+<Categories />
+
+## Accessibility
+
+<AccessibilityNote />
+
+## Where to go next
+
+Installation, the two context providers, theming and deep imports are all covered in **[Getting Started](?path=/docs/getting-started--docs)** - start there.
+
+- **[Content Security Policy](?path=/docs/content-security-policy--docs)** - the inline-style surface, for anyone server-rendering under a strict CSP.
+- **[Releases](?path=/docs/releases--docs)** - what changed, and when.
+
+Then pick any component from the sidebar. Every page has the same shape: a **Default** story wired to the Controls panel so you can drive every prop, then one focused story per feature. If a control is in the panel, it works.
+
+<div
+  style={{
+    marginTop: 32,
+    paddingTop: 16,
+    borderTop: '1px solid #e2e8f0',
+    fontSize: 12,
+    color: '#475569',
+  }}
+>
+  eidos-ui v{welcomeStats.version} · {welcomeStats.componentCount} components ·{' '}
+  {welcomeStats.storyCount} stories · MIT licensed
+</div>

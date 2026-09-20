@@ -65,7 +65,7 @@
   flex-shrink: 0;
   height: 100%;
   cursor: pointer;
-  color: var(--gray-500);
+  color: var(--text-muted);
   transition:
     background 0.15s ease,
     color 0.15s ease;
@@ -145,7 +145,7 @@
 
 .eidos-number-input-helper {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
 }
 
 .eidos-number-input-error {

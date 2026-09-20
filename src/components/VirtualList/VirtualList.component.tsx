@@ -8,8 +8,17 @@ import './VirtualList.scss';
 // Helpers
 // ============================================================================
 
+/**
+ * A bare number means pixels. A numeric *string* means pixels too - `'240'`
+ * is not valid CSS, so returning it unchanged set an invalid declaration that
+ * every browser drops silently, leaving the element unsized with nothing
+ * logged. The prop is typed `number | string`, so passing `'240'` is an
+ * entirely reasonable reading of the API. Anything with a unit (`'60vh'`,
+ * `'100%'`, `'calc(...)'`) is passed through untouched.
+ */
 function toCssSize(value: number | string): string {
-  return typeof value === 'number' ? `${value}px` : value;
+  if (typeof value === 'number') return `${value}px`;
+  return /^-?\d*\.?\d+$/.test(value.trim()) ? `${value.trim()}px` : value;
 }
 
 // ============================================================================

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Tag, Star, Check } from 'lucide-react';
 import { Chip } from './Chip.component';
+import { StoryRow } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/Chip',
@@ -97,108 +98,92 @@ export const Default: Story = {
   },
 };
 
-export const Examples = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const row: React.CSSProperties = {
-      display: 'flex',
-      gap: '0.5rem',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-    };
+export const Variants: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip variant="filled">Filled</Chip>
+      <Chip variant="outlined">Outlined</Chip>
+      <Chip variant="text">Text</Chip>
+    </StoryRow>
+  ),
+};
 
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '2rem 2.5rem',
-          padding: '1.5rem',
-        }}
-      >
-        <div>
-          <p style={label}>Variants</p>
-          <div style={row}>
-            <Chip variant="filled">Filled</Chip>
-            <Chip variant="outlined">Outlined</Chip>
-            <Chip variant="text">Text</Chip>
-          </div>
-        </div>
+export const Colors: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip color="primary">Primary</Chip>
+      <Chip color="secondary">Secondary</Chip>
+      <Chip color="success">Success</Chip>
+      <Chip color="danger">Danger</Chip>
+      <Chip color="warning">Warning</Chip>
+      <Chip color="info">Info</Chip>
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>Sizes</p>
-          <div style={row}>
-            <Chip size="sm">Small</Chip>
-            <Chip size="md">Medium</Chip>
-            <Chip size="lg">Large</Chip>
-          </div>
-        </div>
+export const Sizes: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip size="sm">Small</Chip>
+      <Chip size="md">Medium</Chip>
+      <Chip size="lg">Large</Chip>
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>States</p>
-          <div style={row}>
-            <Chip>Default</Chip>
-            <Chip disabled>Disabled</Chip>
-            <Chip tooltip="Helpful information">With Tooltip</Chip>
-          </div>
-        </div>
+export const WithIcons: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip preIcon={Tag}>Tagged</Chip>
+      <Chip posIcon={Check}>Verified</Chip>
+      <Chip preIcon={Star} posIcon={Check}>
+        Featured
+      </Chip>
+    </StoryRow>
+  ),
+};
 
-        <div style={{ gridColumn: '1 / -1' }}>
-          <p style={label}>Colors</p>
-          <div style={row}>
-            <Chip color="primary">Primary</Chip>
-            <Chip color="secondary">Secondary</Chip>
-            <Chip color="success">Success</Chip>
-            <Chip color="danger">Danger</Chip>
-            <Chip color="warning">Warning</Chip>
-            <Chip color="info">Info</Chip>
-          </div>
-        </div>
+export const Interactive: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip onClick={() => {}}>Clickable</Chip>
+      <Chip onRemove={() => {}}>Removable</Chip>
+      <Chip onClick={() => {}} onRemove={() => {}}>
+        Both
+      </Chip>
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>Icons</p>
-          <div style={row}>
-            <Chip preIcon={Tag}>Tagged</Chip>
-            <Chip posIcon={Check}>Verified</Chip>
-            <Chip preIcon={Star} posIcon={Check}>
-              Featured
-            </Chip>
-          </div>
-        </div>
+export const States: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip>Default</Chip>
+      <Chip disabled>Disabled</Chip>
+      <Chip tooltip="Helpful information">With tooltip</Chip>
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>Interactive</p>
-          <div style={row}>
-            <Chip onClick={() => alert('Clicked!')}>Clickable</Chip>
-            <Chip onRemove={() => alert('Removed!')}>Removable</Chip>
-            <Chip onClick={() => alert('Clicked!')} onRemove={() => alert('Removed!')}>
-              Both
-            </Chip>
-          </div>
-        </div>
-
-        <div>
-          <p style={label}>Combined</p>
-          <div style={row}>
-            <Chip variant="outlined" color="success" preIcon={Check} size="sm">
-              Verified
-            </Chip>
-            <Chip variant="text" color="warning" posIcon={Star}>
-              Premium
-            </Chip>
-            <Chip variant="filled" color="danger" onRemove={() => {}}>
-              Error
-            </Chip>
-          </div>
-        </div>
-      </div>
-    );
-  },
+/**
+ * `Chip` sets `display: inline-flex` explicitly rather than inheriting
+ * `flex` from its layout mixin. Without that override it stretches to fill
+ * its parent the moment it is used outside a flex row - which is exactly
+ * what this story puts it in, so a regression shows up as a full-width bar.
+ *
+ * The wrapper is a `div`, not a `p`, deliberately: `Chip` renders a `div`,
+ * and a `div` inside a `p` is invalid HTML that React reports as a hydration
+ * error. That is a real constraint on where a chip can go - see the note in
+ * `Chip.mdx`.
+ */
+export const InlineInText: Story = {
+  render: () => (
+    <div style={{ maxWidth: 420, lineHeight: 2 }}>
+      Filters currently applied: <Chip size="sm">Design</Chip> and{' '}
+      <Chip size="sm" color="success">
+        Published
+      </Chip>
+      . Remove one to widen the result set.
+    </div>
+  ),
 };

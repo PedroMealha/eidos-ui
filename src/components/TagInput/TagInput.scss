@@ -114,7 +114,7 @@
   line-height: 1.4;
 
   &::placeholder {
-    color: var(--gray-400);
+    color: var(--text-muted);
   }
 }
 
@@ -170,7 +170,7 @@
   padding: var(--spacing-md);
   text-align: center;
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 // ============================================================================
@@ -179,7 +179,7 @@
 
 .eidos-tag-input-hint {
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
   margin-top: var(--spacing-xs);
   line-height: 1.4;
 }

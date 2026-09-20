@@ -346,7 +346,7 @@ export const CustomRenderLabel: Story = {
  * behaviour). The rename is intentionally triggered via the icon button so
  * the two interactions don't conflict.
  */
-export const InlineRename = {
+export const InlineRename: Story = {
   render: () => {
     const [data, setData] = React.useState<TreeNode[]>(FILE_TREE);
     const [editingId, setEditingId] = React.useState<string | null>(null);

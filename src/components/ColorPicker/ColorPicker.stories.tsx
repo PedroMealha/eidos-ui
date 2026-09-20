@@ -154,7 +154,7 @@ export const Controlled: Story = {
         style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}
       >
         <ColorPicker value={colour} onChange={setColour} inline label="Controlled colour picker" />
-        <p style={{ fontFamily: 'monospace', fontSize: '0.875rem', color: '#475569' }}>
+        <p style={{ fontFamily: 'monospace', fontSize: '0.875rem', color: 'var(--gray-600)' }}>
           Current value: <strong>{colour}</strong>
         </p>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -166,7 +166,7 @@ export const Controlled: Story = {
               style={{
                 padding: '4px 12px',
                 borderRadius: '6px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid var(--gray-200)',
                 background: c,
                 color: '#fff',
                 cursor: 'pointer',

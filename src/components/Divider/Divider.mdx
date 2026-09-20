@@ -41,8 +41,12 @@ Set `direction="vertical"` when the divider's parent is a flex row. The divider 
 
 <Canvas of={DividerStories.Vertical} />
 
-## Examples
+## Separating stacked content
 
-Common placement patterns: horizontal between stacked content, vertical between inline items, and as a list separator inside a bordered card.
+<Canvas of={DividerStories.SeparatingContent} />
 
-<Canvas of={DividerStories.Examples} />
+## In a list
+
+Between rows of a bordered container, where the divider replaces a per-row border and so avoids a doubled line at the edges.
+
+<Canvas of={DividerStories.InAList} />

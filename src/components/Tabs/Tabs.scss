@@ -124,7 +124,7 @@
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-sm);
   @include elevation(1);
-  color: var(--gray-500);
+  color: var(--text-muted);
   transition:
     color 0.2s ease,
     background-color 0.2s ease;
@@ -239,7 +239,7 @@
   gap: var(--spacing-xs);
   cursor: pointer;
   white-space: nowrap;
-  color: var(--gray-500);
+  color: var(--text-muted);
   @include font-weight(medium);
   line-height: 1;
   transition: all 0.2s ease;

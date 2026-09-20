@@ -1,9 +1,9 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Bell, Mail, ShoppingCart } from 'lucide-react';
 import { Badge } from './Badge.component';
 import { IconButton } from '../Button/Button.component';
 import { Avatar } from '../Avatar/Avatar.component';
+import { StoryRow, StoryStack, StoryGroup } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/Badge',
@@ -80,6 +80,13 @@ const meta = {
     },
     className: { table: { disable: true } },
   },
+  // `children` is required, so it lives here to satisfy the type for the
+  // render-only stories below as well as seeding the Default controls.
+  args: {
+    children: (
+      <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
+    ),
+  },
 } satisfies Meta<typeof Badge>;
 
 export default meta;
@@ -93,9 +100,6 @@ export const Default: Story = {
   args: {
     content: 4,
     color: 'danger',
-    children: (
-      <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
-    ),
   },
 };
 
@@ -103,131 +107,85 @@ export const Default: Story = {
 // COUNTS - notification-style counters, with max clamping
 // ============================================================================
 
-export const Counts = {
-  render: () => {
-    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
-
-    return (
-      <div style={{ padding: '1rem' }}>
-        <div style={row}>
-          <Badge content={3} color="primary">
-            <IconButton icon={Mail} variant="text" color="secondary" aria-label="Messages" />
-          </Badge>
-          <Badge content={99} max={99} color="danger">
-            <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
-          </Badge>
-          <Badge content={150} max={99} color="danger">
-            <IconButton icon={ShoppingCart} variant="text" color="secondary" aria-label="Cart" />
-          </Badge>
-          <Badge content={0} color="primary">
-            <IconButton
-              icon={Bell}
-              variant="text"
-              color="secondary"
-              aria-label="No notifications"
-            />
-          </Badge>
-        </div>
-      </div>
-    );
-  },
+export const Counts: Story = {
+  render: () => (
+    <StoryRow gap="lg">
+      <Badge content={3} color="primary">
+        <IconButton icon={Mail} variant="text" color="secondary" aria-label="Messages" />
+      </Badge>
+      <Badge content={99} max={99} color="danger">
+        <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
+      </Badge>
+      <Badge content={150} max={99} color="danger">
+        <IconButton icon={ShoppingCart} variant="text" color="secondary" aria-label="Cart" />
+      </Badge>
+      <Badge content={0} color="primary">
+        <IconButton icon={Bell} variant="text" color="secondary" aria-label="No notifications" />
+      </Badge>
+    </StoryRow>
+  ),
 };
 
 // ============================================================================
 // DOT - minimal presence/status indicator, no count
 // ============================================================================
 
-export const Dot = {
-  render: () => {
-    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
-
-    return (
-      <div style={{ padding: '1rem' }}>
-        <div style={row}>
-          <Badge dot color="success" overlap="circular">
-            <Avatar name="Jane Doe" />
-          </Badge>
-          <Badge dot color="danger" overlap="circular">
-            <Avatar name="John Smith" />
-          </Badge>
-          <Badge dot color="warning" overlap="circular">
-            <Avatar name="Ana Silva" />
-          </Badge>
-        </div>
-      </div>
-    );
-  },
+export const Dot: Story = {
+  render: () => (
+    <StoryRow gap="lg">
+      <Badge dot color="success" overlap="circular">
+        <Avatar name="Jane Doe" />
+      </Badge>
+      <Badge dot color="danger" overlap="circular">
+        <Avatar name="John Smith" />
+      </Badge>
+      <Badge dot color="warning" overlap="circular">
+        <Avatar name="Ana Silva" />
+      </Badge>
+    </StoryRow>
+  ),
 };
 
 // ============================================================================
 // OVERLAP - rectangular (default) vs circular children
 // ============================================================================
 
-export const Overlap = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.5rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase' as const,
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem' }}>
-        <div>
-          <p style={label}>Rectangular - square/rectangular children (default)</p>
-          <div style={row}>
-            <Badge content={2} color="primary" overlap="rectangular">
-              <IconButton
-                icon={Bell}
-                variant="outlined"
-                color="secondary"
-                aria-label="Notifications"
-              />
-            </Badge>
-          </div>
-        </div>
-        <div>
-          <p style={label}>Circular - pulled in to follow the child&apos;s curve</p>
-          <div style={row}>
-            <Badge content={2} color="primary" overlap="circular">
-              <Avatar name="Jane Doe" />
-            </Badge>
-          </div>
-        </div>
-      </div>
-    );
-  },
+export const Overlap: Story = {
+  render: () => (
+    <StoryStack gap="lg">
+      <StoryGroup label="Rectangular - square/rectangular children (default)">
+        <Badge content={2} color="primary" overlap="rectangular">
+          <IconButton icon={Bell} variant="outlined" color="secondary" aria-label="Notifications" />
+        </Badge>
+      </StoryGroup>
+      <StoryGroup label="Circular - pulled in to follow the child's curve">
+        <Badge content={2} color="primary" overlap="circular">
+          <Avatar name="Jane Doe" />
+        </Badge>
+      </StoryGroup>
+    </StoryStack>
+  ),
 };
 
 // ============================================================================
 // ALIGNMENT - anchor to any corner
 // ============================================================================
 
-export const Alignment = {
-  render: () => {
-    const row: React.CSSProperties = { display: 'flex', gap: '1.5rem', alignItems: 'center' };
-
-    return (
-      <div style={{ padding: '1rem' }}>
-        <div style={row}>
-          <Badge content={10} color="primary" placement="top-right">
-            <Avatar shape="square" name="TR" />
-          </Badge>
-          <Badge content={10} color="primary" placement="top-left">
-            <Avatar shape="square" name="TL" />
-          </Badge>
-          <Badge content={10} color="primary" placement="bottom-right">
-            <Avatar shape="square" name="BR" />
-          </Badge>
-          <Badge content={10} color="primary" placement="bottom-left">
-            <Avatar shape="square" name="BL" />
-          </Badge>
-        </div>
-      </div>
-    );
-  },
+export const Alignment: Story = {
+  render: () => (
+    <StoryRow gap="lg">
+      <Badge content={10} color="primary" placement="top-right">
+        <Avatar shape="square" name="TR" />
+      </Badge>
+      <Badge content={10} color="primary" placement="top-left">
+        <Avatar shape="square" name="TL" />
+      </Badge>
+      <Badge content={10} color="primary" placement="bottom-right">
+        <Avatar shape="square" name="BR" />
+      </Badge>
+      <Badge content={10} color="primary" placement="bottom-left">
+        <Avatar shape="square" name="BL" />
+      </Badge>
+    </StoryRow>
+  ),
 };

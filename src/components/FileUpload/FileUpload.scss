@@ -47,7 +47,7 @@
   height: 48px;
   border-radius: 50%;
   background: var(--gray-100);
-  color: var(--gray-400);
+  color: var(--text-muted);
 
   svg {
     width: 24px;
@@ -76,7 +76,7 @@
 
 .eidos-file-upload-hint {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
 }
 
 .eidos-file-upload-error {
@@ -116,7 +116,7 @@
     width: 16px;
     height: 16px;
     flex-shrink: 0;
-    color: var(--gray-400);
+    color: var(--text-muted);
   }
 }
 
@@ -129,7 +129,7 @@
 
 .eidos-file-upload-item-size {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -140,7 +140,7 @@
   height: 24px;
   border-radius: var(--border-radius-xs);
   cursor: pointer;
-  color: var(--gray-400);
+  color: var(--text-muted);
   flex-shrink: 0;
   transition:
     background 0.15s ease,

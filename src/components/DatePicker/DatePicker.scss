@@ -23,12 +23,12 @@
 
   // Style the calendar icon
   .eidos-input-pre-icon {
-    color: var(--gray-500);
+    color: var(--text-muted);
   }
 
   // Style the clear (X) icon button
   .eidos-input-pos-icon-button {
-    color: var(--gray-500) !important;
+    color: var(--text-muted) !important;
     background: none !important;
     border: none !important;
     padding: var(--spacing-xs) !important;

@@ -1,16 +1,91 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Save, Download, FileText, Clock, ChevronDown } from 'lucide-react';
 import { SplitButton } from './SplitButton.component';
+import { StoryRow } from '../../story-layout.docs';
+
+const SAVE_OPTIONS = [
+  { id: 'draft', label: 'Save as draft', icon: FileText, onClick: () => {} },
+  { id: 'template', label: 'Save as template', icon: Save, onClick: () => {} },
+  { id: 'schedule', label: 'Schedule publish', icon: Clock, onClick: () => {} },
+];
+
+const EXPORT_OPTIONS = [
+  { id: 'csv', label: 'Export as CSV', icon: Download, onClick: () => {} },
+  { id: 'xlsx', label: 'Export as XLSX', icon: Download, onClick: () => {} },
+  { id: 'pdf', label: 'Export as PDF', icon: Download, onClick: () => {} },
+];
+
+const SIMPLE_OPTIONS = [
+  { id: 'a', label: 'Option A', onClick: () => {} },
+  { id: 'b', label: 'Option B', onClick: () => {} },
+];
 
 const meta = {
   title: 'Elements/SplitButton',
   component: SplitButton,
   parameters: { layout: 'centered' },
+  // `label`, `onClick` and `options` are required props, so they live here to
+  // satisfy the type for the render-only stories below as well as seeding the
+  // Default controls.
   args: {
-    // Required - overridden by every story's render function.
     label: 'Save',
     onClick: () => {},
-    options: [],
+    options: SAVE_OPTIONS,
+  },
+  argTypes: {
+    label: {
+      control: 'text',
+      description: 'Label for the primary (left) action.',
+      table: { type: { summary: 'string' } },
+    },
+    variant: {
+      control: 'inline-radio',
+      options: ['filled', 'outlined'],
+      description:
+        'There is deliberately no `text` variant - a transparent split control has no visible boundary between its two halves.',
+      table: {
+        type: { summary: '"filled" | "outlined"' },
+        defaultValue: { summary: 'filled' },
+      },
+    },
+    color: {
+      control: 'select',
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      description: 'Color theme',
+      table: {
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Control height',
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables both halves and the dropdown.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    loading: {
+      control: 'boolean',
+      description: 'Shows a spinner in the primary half.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    preIcon: {
+      control: 'text',
+      description:
+        'Icon before the primary label. Pass a Lucide component (Save) or string name ("save").',
+      table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons' },
+    },
+    options: {
+      control: 'object',
+      description: 'Secondary actions shown in the dropdown.',
+      table: { type: { summary: 'SplitButtonOption[]' } },
+    },
+    onClick: { table: { disable: true } },
+    className: { table: { disable: true } },
   },
 } satisfies Meta<typeof SplitButton>;
 
@@ -19,140 +94,89 @@ type Story = StoryObj<typeof meta>;
 
 // ─── Shared options ───────────────────────────────────────────────────────────
 
-const SAVE_OPTIONS = [
-  {
-    id: 'draft',
-    label: 'Save as draft',
-    icon: FileText,
-    onClick: () => console.log('Save as draft'),
-  },
-  {
-    id: 'template',
-    label: 'Save as template',
-    icon: Save,
-    onClick: () => console.log('Save as template'),
-  },
-  {
-    id: 'schedule',
-    label: 'Schedule publish',
-    icon: Clock,
-    onClick: () => console.log('Schedule'),
-  },
-];
-
-const EXPORT_OPTIONS = [
-  { id: 'csv', label: 'Export as CSV', icon: Download, onClick: () => console.log('CSV') },
-  { id: 'xlsx', label: 'Export as XLSX', icon: Download, onClick: () => console.log('XLSX') },
-  { id: 'pdf', label: 'Export as PDF', icon: Download, onClick: () => console.log('PDF') },
-];
-
-// ─── 1. Default (filled, primary) ────────────────────────────────────────────
+// ─── Default ──────────────────────────────────────────────────────────────────
 
 export const Default: Story = {
-  name: 'Default',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Click the left part to trigger the primary action immediately. ' +
-          'Click the chevron on the right to reveal secondary options. ' +
-          'The two halves share one continuous visual boundary.',
-      },
-    },
+  args: {
+    preIcon: Save,
+    variant: 'filled',
+    color: 'primary',
+    size: 'md',
+    disabled: false,
+    loading: false,
   },
+};
+
+// ─── Variants ─────────────────────────────────────────────────────────────────
+
+export const Variants: Story = {
   render: () => (
-    <SplitButton
-      label="Save"
-      onClick={() => console.log('Primary: Save')}
-      options={SAVE_OPTIONS}
-      preIcon={Save}
-    />
+    <StoryRow>
+      <SplitButton label="Save" onClick={() => {}} options={SAVE_OPTIONS} preIcon={Save} />
+      <SplitButton
+        label="Export"
+        variant="outlined"
+        onClick={() => {}}
+        options={EXPORT_OPTIONS}
+        preIcon={Download}
+      />
+    </StoryRow>
   ),
 };
 
-// ─── 2. Outlined ─────────────────────────────────────────────────────────────
-
-export const Outlined: Story = {
-  name: 'Outlined',
-  render: () => (
-    <SplitButton
-      label="Export"
-      variant="outlined"
-      onClick={() => console.log('Export')}
-      options={EXPORT_OPTIONS}
-      preIcon={Download}
-    />
-  ),
-};
-
-// ─── 3. Colors ────────────────────────────────────────────────────────────────
+// ─── Colors ───────────────────────────────────────────────────────────────────
 
 export const Colors: Story = {
-  name: 'Colors',
   render: () => (
-    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+    <StoryRow>
       {(['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const).map((color) => (
         <SplitButton
           key={color}
           label={color.charAt(0).toUpperCase() + color.slice(1)}
           color={color}
-          onClick={() => console.log(color)}
-          options={[
-            { id: 'a', label: 'Option A', onClick: () => {} },
-            { id: 'b', label: 'Option B', onClick: () => {} },
-          ]}
+          onClick={() => {}}
+          options={SIMPLE_OPTIONS}
         />
       ))}
-    </div>
+    </StoryRow>
   ),
 };
 
-// ─── 4. Sizes ─────────────────────────────────────────────────────────────────
+// ─── Sizes ────────────────────────────────────────────────────────────────────
 
 export const Sizes: Story = {
-  name: 'Sizes',
   render: () => (
-    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+    <StoryRow>
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <SplitButton
           key={size}
           label="Publish"
           size={size}
           onClick={() => {}}
-          options={[
-            { id: 'draft', label: 'Save as draft', onClick: () => {} },
-            { id: 'schedule', label: 'Schedule publish', onClick: () => {} },
-          ]}
+          options={SIMPLE_OPTIONS}
         />
       ))}
-    </div>
+    </StoryRow>
   ),
 };
 
-// ─── 5. Loading ───────────────────────────────────────────────────────────────
+// ─── States ───────────────────────────────────────────────────────────────────
 
 export const Loading: Story = {
-  name: 'Loading',
   render: () => <SplitButton label="Saving..." loading onClick={() => {}} options={SAVE_OPTIONS} />,
 };
 
-// ─── 6. Disabled ─────────────────────────────────────────────────────────────
-
 export const Disabled: Story = {
-  name: 'Disabled',
   render: () => (
     <SplitButton label="Save" disabled onClick={() => {}} options={SAVE_OPTIONS} preIcon={Save} />
   ),
 };
 
-// ─── 7. With disabled option ──────────────────────────────────────────────────
-
 export const WithDisabledOption: Story = {
-  name: 'WithDisabledOption',
   render: () => (
     <SplitButton
       label="Export"
-      onClick={() => console.log('Export')}
+      onClick={() => {}}
       preIcon={ChevronDown}
       options={[
         { id: 'csv', label: 'Export as CSV', onClick: () => {} },

@@ -161,7 +161,7 @@
   flex-shrink: 0;
   width: 1em;
   height: 1em;
-  color: var(--gray-400);
+  color: var(--text-muted);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   // Rotate and inherit the trigger's active color when open.

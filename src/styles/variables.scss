@@ -122,6 +122,35 @@
   // variable, silently removing Snackbar's focus indicator.
   --gray-rgb: 100, 116, 139;
 
+  // Text roles
+  //
+  // Use these for *text*, never a raw --gray-N. The grays are a surface ramp:
+  // picking one for a label is how the library ended up with 99 declarations
+  // of `color: var(--gray-400)` on placeholders, hints, timestamps, counts and
+  // empty-state copy - #94a3b8 measures 2.56:1 on white, against WCAG 1.4.3's
+  // 4.5:1. axe flagged 441 contrast violations across 207 stories in one run.
+  //
+  // --text-muted is --gray-600 rather than the more obvious --gray-500 because
+  // a component does not know what it is sitting on, and --gray-500 only
+  // clears AA on white:
+  //
+  //             white   gray-50  gray-100  gray-200
+  //   gray-400   2.56     2.45      2.34      2.08
+  //   gray-500   4.76     4.55      4.34 x    3.86 x
+  //   gray-600   7.58     7.24      6.92      6.15
+  //
+  // The gray-500 row is not hypothetical - `#64748b` on `#f1f5f9` accounted
+  // for 54 of those violations. --gray-600 is the lightest step that is safe
+  // on every surface the library paints, and at 7.58:1 it still reads as
+  // clearly secondary next to body text (--dark-color, 14.63:1).
+  --text-muted: var(--gray-600);
+
+  // Disabled controls only. WCAG 1.4.3 exempts "inactive user interface
+  // components", so this one is deliberately below 4.5:1 - a disabled control
+  // is *supposed* to look unavailable. Do not use it for read-only content:
+  // a read-only cell or transcript is still content someone has to read.
+  --text-disabled: var(--gray-400);
+
   // Typography
   --font-family-primary:
     'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

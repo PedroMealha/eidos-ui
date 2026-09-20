@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Select } from './Select.component';
 import { User, Mail, Phone, MapPin, Calendar } from 'lucide-react';
 import { useState } from 'react';
+import { StoryStack, StoryValue } from '../../story-layout.docs';
 
 const meta: Meta<typeof Select> = {
   title: 'Forms/Select',
@@ -176,14 +177,8 @@ const optionsWithDisabled = [
   { id: '4', label: 'Also Disabled', value: 'disabled2', disabled: true },
 ];
 
+// `SingleSelect` was byte-identical to this and referenced by no .mdx.
 export const Default: Story = {
-  args: {
-    options: basicOptions,
-    placeholder: 'Select a fruit...',
-  },
-};
-
-export const SingleSelect: Story = {
   args: {
     options: basicOptions,
     placeholder: 'Select a fruit...',
@@ -263,11 +258,11 @@ export const FullWidth: Story = {
 };
 
 export const ControlledExample: Story = {
-  render: (args) => {
+  render: function ControlledStory(args) {
     const [value, setValue] = useState<string>('');
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <StoryStack gap="md">
         <Select
           {...args}
           options={basicOptions}
@@ -275,20 +270,18 @@ export const ControlledExample: Story = {
           onChange={(newValue) => setValue(newValue as string)}
           placeholder="Select a fruit..."
         />
-        <div style={{ fontSize: '14px', color: '#666' }}>
-          Selected value: <strong>{value || 'None'}</strong>
-        </div>
-      </div>
+        <StoryValue label="Selected value" value={value || 'None'} />
+      </StoryStack>
     );
   },
 };
 
 export const MultipleControlled: Story = {
-  render: (args) => {
+  render: function MultipleControlledStory(args) {
     const [values, setValues] = useState<string[]>([]);
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <StoryStack gap="md">
         <Select
           {...args}
           options={basicOptions}
@@ -297,78 +290,22 @@ export const MultipleControlled: Story = {
           onChange={(newValues) => setValues(newValues as string[])}
           placeholder="Select multiple fruits..."
         />
-        <div style={{ fontSize: '14px', color: '#666' }}>
-          Selected values: <strong>{values.length > 0 ? values.join(', ') : 'None'}</strong>
-        </div>
-      </div>
+        <StoryValue
+          label="Selected values"
+          value={values.length > 0 ? values.join(', ') : 'None'}
+        />
+      </StoryStack>
     );
   },
 };
 
-export const Examples: Story = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gap: '2rem 3rem',
-          padding: '1.5rem',
-        }}
-      >
-        <div>
-          <p style={label}>Single Select</p>
-          <Select options={basicOptions} placeholder="Select a fruit..." />
-        </div>
-
-        <div>
-          <p style={label}>Multiple Selection</p>
-          <Select options={basicOptions} multiple placeholder="Select multiple fruits..." />
-        </div>
-
-        <div>
-          <p style={label}>With Icons</p>
-          <Select options={optionsWithComponentIcons} placeholder="Select with icons..." />
-        </div>
-
-        <div>
-          <p style={label}>With Disabled Options</p>
-          <Select options={optionsWithDisabled} placeholder="Some options are disabled..." />
-        </div>
-
-        <div>
-          <p style={label}>Required</p>
-          <Select options={basicOptions} required placeholder="This field is required..." />
-        </div>
-
-        <div>
-          <p style={label}>Not Clearable</p>
-          <Select options={basicOptions} clearable={false} placeholder="No clear button..." />
-        </div>
-
-        <div>
-          <p style={label}>Disabled</p>
-          <Select options={basicOptions} disabled placeholder="This select is disabled..." />
-        </div>
-
-        <div>
-          <p style={label}>Custom Input Styling</p>
-          <Select
-            options={optionsWithComponentIcons}
-            placeholder="Success variant..."
-            inputProps={{ variant: 'filled', color: 'success' }}
-          />
-        </div>
-      </div>
-    );
+// The `Examples` grid that used to live here duplicated every story above and
+// was referenced by no .mdx section. `CustomInputStyling` was the one thing it
+// showed that nothing else did, so it survives as a focused story.
+export const CustomInputStyling: Story = {
+  args: {
+    options: optionsWithComponentIcons,
+    placeholder: 'Success variant...',
+    inputProps: { variant: 'filled', color: 'success' },
   },
 };

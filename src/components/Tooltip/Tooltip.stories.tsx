@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Tooltip } from './Tooltip.component';
 import { Button } from '../Button';
 import { Info } from 'lucide-react';
+import { StoryRow } from '../../story-layout.docs';
 
 const meta = {
   title: 'Overlays/Tooltip',
@@ -64,6 +65,12 @@ const meta = {
       table: { disable: true },
     },
   },
+  // `children` and `message` are required, so they live here to satisfy the
+  // type for the render-only stories below as well as seeding Default.
+  args: {
+    message: 'This is a helpful tooltip',
+    children: <Button>Hover me</Button>,
+  },
 } satisfies Meta<typeof Tooltip>;
 
 export default meta;
@@ -75,29 +82,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    message: 'This is a helpful tooltip',
     placement: 'top',
     triggerType: 'hover',
     delay: 100,
     disabled: false,
-    children: <Button>Hover me</Button>,
   },
 };
 
-// ============================================================================
-// MESSAGE TOOLTIP - Main interactive example with all controls
-// ============================================================================
-
-export const MessageTooltip: Story = {
-  args: {
-    message: 'This is a helpful tooltip',
-    placement: 'top',
-    triggerType: 'hover',
-    delay: 100,
-    disabled: false,
-    children: <Button>Hover me</Button>,
-  },
-};
+// `MessageTooltip` was a byte-identical copy of Default, referenced by no .mdx.
 
 // ============================================================================
 // COMPONENT TOOLTIP - Custom component instead of string
@@ -133,94 +125,63 @@ export const ComponentTooltip: Story = {
 };
 
 // ============================================================================
-// EXAMPLES SHOWCASE
+// PLACEMENTS
 // ============================================================================
 
-export const Examples = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const row: React.CSSProperties = { display: 'flex', gap: '1rem', flexWrap: 'wrap' };
+export const Placements: Story = {
+  render: () => (
+    <StoryRow>
+      {(['top', 'bottom', 'left', 'right'] as const).map((placement) => (
+        <Tooltip key={placement} message={`Placed ${placement}`} placement={placement}>
+          <Button variant="outlined" size="sm">
+            {placement}
+          </Button>
+        </Tooltip>
+      ))}
+    </StoryRow>
+  ),
+};
 
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '2rem 2.5rem',
-          padding: '1.5rem',
-        }}
-      >
-        <div>
-          <p style={label}>Placements</p>
-          <div style={row}>
-            <Tooltip message="Top" placement="top">
-              <Button variant="outlined" size="sm">
-                Top
-              </Button>
-            </Tooltip>
-            <Tooltip message="Bottom" placement="bottom">
-              <Button variant="outlined" size="sm">
-                Bottom
-              </Button>
-            </Tooltip>
-            <Tooltip message="Left" placement="left">
-              <Button variant="outlined" size="sm">
-                Left
-              </Button>
-            </Tooltip>
-            <Tooltip message="Right" placement="right">
-              <Button variant="outlined" size="sm">
-                Right
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
+// ============================================================================
+// TRIGGERS
+// ============================================================================
 
-        <div>
-          <p style={label}>Triggers</p>
-          <div style={row}>
-            <Tooltip message="Triggered on hover" triggerType="hover">
-              <Button variant="outlined" size="sm">
-                Hover
-              </Button>
-            </Tooltip>
-            <Tooltip message="Triggered on click" triggerType="click">
-              <Button variant="outlined" size="sm">
-                Click
-              </Button>
-            </Tooltip>
-            <Tooltip message="Triggered on focus" triggerType="focus">
-              <Button variant="outlined" size="sm">
-                Focus
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
+export const Triggers: Story = {
+  render: () => (
+    <StoryRow>
+      {(['hover', 'click', 'focus'] as const).map((triggerType) => (
+        <Tooltip
+          key={triggerType}
+          message={`Triggered on ${triggerType}`}
+          triggerType={triggerType}
+        >
+          <Button variant="outlined" size="sm">
+            {triggerType}
+          </Button>
+        </Tooltip>
+      ))}
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>Common Use Cases</p>
-          <div style={row}>
-            <Tooltip message="More information">
-              <Button preIcon={Info} variant="text">
-                Info
-              </Button>
-            </Tooltip>
-            <Tooltip message="Delete permanently" placement="bottom">
-              <Button color="danger">Delete</Button>
-            </Tooltip>
-            <Tooltip message="This action is disabled">
-              <Button disabled>Disabled</Button>
-            </Tooltip>
-          </div>
-        </div>
-      </div>
-    );
-  },
+// ============================================================================
+// COMMON USE CASES
+// ============================================================================
+
+export const CommonUseCases: Story = {
+  render: () => (
+    <StoryRow>
+      <Tooltip message="More information">
+        <Button preIcon={Info} variant="text">
+          Info
+        </Button>
+      </Tooltip>
+      <Tooltip message="Delete permanently" placement="bottom">
+        <Button color="danger">Delete</Button>
+      </Tooltip>
+      <Tooltip message="This action is disabled">
+        <Button disabled>Disabled</Button>
+      </Tooltip>
+    </StoryRow>
+  ),
 };

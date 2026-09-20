@@ -273,14 +273,14 @@
   // Disabled state
   &--disabled {
     background-color: var(--gray-200) !important;
-    color: var(--gray-500) !important;
+    color: var(--text-disabled) !important;
     border-color: var(--gray-200) !important;
     cursor: not-allowed !important;
     opacity: 0.6;
 
     &:hover {
       background-color: var(--gray-200) !important;
-      color: var(--gray-500) !important;
+      color: var(--text-disabled) !important;
       transform: none !important;
     }
   }

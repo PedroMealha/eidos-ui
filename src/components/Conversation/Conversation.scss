@@ -27,7 +27,7 @@
   gap: var(--spacing-sm);
   margin: var(--spacing-sm) 0;
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
 
   &::before,
   &::after {
@@ -57,7 +57,7 @@
   margin: 0;
   padding: var(--spacing-md);
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
   text-align: center;
   border-top: 1px solid var(--gray-200);
 }
@@ -141,7 +141,7 @@
 
 .eidos-message-time {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
   flex-shrink: 0;
 
   &--inline {
@@ -151,7 +151,7 @@
 
 .eidos-message-edited {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
   font-style: italic;
 }
 
@@ -190,12 +190,12 @@
 }
 
 .eidos-message-quote-body {
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-message-reply-target {
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 // ----------------------------------------------------------------------------
@@ -206,7 +206,7 @@
   @include flex-center-y;
   gap: var(--spacing-xs);
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
 
   svg {
     width: 14px;
@@ -301,7 +301,7 @@
 }
 
 .eidos-message-attachment-size {
-  color: var(--gray-400);
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -327,7 +327,7 @@
   @include flex-between;
   gap: var(--spacing-sm);
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-composer-row {
@@ -362,11 +362,11 @@
   background: transparent;
 
   &::placeholder {
-    color: var(--gray-400);
+    color: var(--text-muted);
   }
 
   &:disabled {
-    color: var(--gray-400);
+    color: var(--text-disabled);
     cursor: not-allowed;
   }
 }
@@ -403,7 +403,7 @@
 
 .eidos-composer-hint {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
 
   kbd {
     font-family: var(--font-family-mono);

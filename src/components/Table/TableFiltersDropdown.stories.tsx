@@ -32,10 +32,23 @@ const meta: Meta<typeof TableFiltersDropdown<StoryRow>> = {
     },
   },
   argTypes: {
-    columns: { control: false },
-    filters: { control: false },
-    onFiltersChange: { control: false },
-    defaultFilters: { control: false },
+    // `columns` is the one prop a control can meaningfully drive: edit the
+    // schema and the filter rows re-derive from it. Everything else is
+    // controlled state or a callback, so exposing a control for them would
+    // be a widget that silently does nothing.
+    columns: {
+      control: 'object',
+      description:
+        'Column schema. Only entries with `filterable: true` appear; `filterType` picks the editor.',
+      table: { type: { summary: 'TableColumn<T>[]' } },
+    },
+    defaultFilters: {
+      control: 'object',
+      description: 'Filters applied before the user touches anything.',
+      table: { type: { summary: 'TableFilters' } },
+    },
+    filters: { control: false, description: 'Controlled applied filters.' },
+    onFiltersChange: { control: false, description: 'Called on Apply with the committed filters.' },
     className: { table: { disable: true } },
   },
 };
@@ -116,7 +129,7 @@ const AppliedBadge = ({ filters }: { filters: TableFilters }) => {
   const entries = Object.entries(filters).filter(([, v]) => v !== '' && v !== undefined);
   if (entries.length === 0) return null;
   return (
-    <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: '#64748b' }}>
+    <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
       <strong>Applied filters:</strong>{' '}
       {entries.map(([k, v]) => `${k} = ${JSON.stringify(v)}`).join(' · ')}
     </div>
@@ -127,21 +140,24 @@ const AppliedBadge = ({ filters }: { filters: TableFilters }) => {
 // Minimal example with text + select column types.
 
 export const Default: Story = {
-  render: () => {
+  args: {
+    columns: textAndSelectColumns,
+    defaultFilters: {},
+  },
+  // Spreads `args` so editing the `columns` schema in the panel re-derives the
+  // filter rows. `filters`/`onFiltersChange` stay owned by the story, since a
+  // controlled component needs someone to hold the state.
+  render: function DefaultStory(args) {
     const [filters, setFilters] = useState<TableFilters>({});
 
     return (
       <div
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
       >
-        <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
+        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           Click the funnel icon to open the filter panel
         </p>
-        <TableFiltersDropdown<StoryRow>
-          columns={textAndSelectColumns}
-          filters={filters}
-          onFiltersChange={setFilters}
-        />
+        <TableFiltersDropdown<StoryRow> {...args} filters={filters} onFiltersChange={setFilters} />
         <AppliedBadge filters={filters} />
       </div>
     );
@@ -173,7 +189,7 @@ export const MultipleFilters: Story = {
       <div
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
       >
-        <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
+        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           Columns include text, date-range, boolean, and select filter types
         </p>
         <TableFiltersDropdown<StoryRow>
@@ -219,7 +235,7 @@ export const PreFilledFilters: Story = {
       <div
         style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
       >
-        <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
+        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           Dropdown opens with pre-staged filters (name = "Alice", role = "Admin")
         </p>
         <TableFiltersDropdown<StoryRow>

@@ -29,7 +29,7 @@
 .eidos-slider-value {
   @include font-size(sm);
   @include font-weight(medium);
-  color: var(--gray-500);
+  color: var(--text-muted);
   min-width: 2.5ch;
   text-align: right;
 }
@@ -303,5 +303,5 @@
 .eidos-slider-minmax {
   @include flex-between;
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
 }

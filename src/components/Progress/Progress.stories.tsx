@@ -105,12 +105,12 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.07em',
-  color: '#94a3b8',
+  color: 'var(--text-muted)',
 };
 
 const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const;
 
-export const Colors = {
+export const Colors: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '520px' }}>
       {colors.map((color) => (
@@ -127,7 +127,7 @@ export const Colors = {
 // SIZES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '520px' }}>
       {(['sm', 'md', 'lg'] as const).map((size) => (
@@ -170,7 +170,7 @@ export const Striped: Story = {
 // STATES - 0 / 25 / 50 / 75 / 100 %
 // ============================================================================
 
-export const States = {
+export const States: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: '520px' }}>
       {[0, 25, 50, 75, 100].map((value) => (

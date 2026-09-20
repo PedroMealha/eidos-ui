@@ -239,7 +239,7 @@
   // Disabled state
   &--disabled {
     background-color: var(--gray-100) !important;
-    color: var(--gray-400) !important;
+    color: var(--text-disabled) !important;
     border-color: var(--gray-200) !important;
     cursor: not-allowed !important;
     opacity: 0.6;

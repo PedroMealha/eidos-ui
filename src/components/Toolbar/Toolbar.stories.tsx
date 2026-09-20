@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { Toolbar } from './Toolbar.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 import { Pill } from '../Pill';
@@ -29,18 +30,18 @@ const meta = {
         tooltip: 'Notifications',
         icon: 'Bell',
         color: 'secondary',
-        onClick: () => alert('Notifications clicked'),
+        onClick: action('Notifications clicked'),
       },
       {
         tooltip: 'Settings',
         icon: 'Settings',
         color: 'secondary',
-        onClick: () => alert('Settings clicked'),
+        onClick: action('Settings clicked'),
       },
       {
         tooltip: 'User',
         icon: 'User',
-        onClick: () => alert('Settings clicked'),
+        onClick: action('Settings clicked'),
       },
     ],
     userMenu: [
@@ -66,7 +67,7 @@ const meta = {
         id: 'settings',
         label: 'Settings',
         icon: 'settings',
-        onClick: () => alert('Settings clicked'),
+        onClick: action('Settings clicked'),
       },
       {
         type: 'item',
@@ -74,7 +75,7 @@ const meta = {
         label: 'Logout',
         icon: 'log-out',
         color: 'danger',
-        onClick: () => alert('Logout clicked'),
+        onClick: action('Logout clicked'),
       },
     ],
   },

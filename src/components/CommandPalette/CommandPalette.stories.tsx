@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
 import { Bug, FilePlus, Moon, Settings } from 'lucide-react';
 import { CommandPalette } from './CommandPalette.component';
@@ -76,16 +76,17 @@ const meta = {
     maxHeight: { control: 'text' },
     className: { table: { disable: true } },
   },
+  // `items` is required, so it lives here to satisfy the type for the
+  // render-only stories below as well as seeding the Default controls. The
+  // file previously dropped the `Story` annotation from every story to dodge
+  // this, which left them all untyped.
+  args: { items: CMDP_ITEMS },
 } satisfies Meta<typeof CommandPalette>;
 
 export default meta;
+type Story = StoryObj<typeof meta>;
 
 // ── Stories ────────────────────────────────────────────────────────────────────
-
-// Stories use a plain object (no `Story` type annotation). This mirrors the
-// Chip `Examples` pattern in the codebase and avoids the Storybook TS error
-// that would otherwise require required props (items) inside `args` even
-// when a render function is used.
 
 /**
  * The default story renders a full palette with a mixed set of items.
@@ -97,7 +98,7 @@ export default meta;
  * them at once (see `Uncontrolled`, the one place this is meant to be
  * demonstrated), so it's disabled here. Still fully overridable via Controls.
  */
-export const Default = {
+export const Default: Story = {
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
     <CommandPalette {...args} trigger items={CMDP_ITEMS} />
@@ -117,7 +118,7 @@ export const Default = {
  * point at all. Press ⌘K / Ctrl+K to open it directly; `shortcutKey` can be
  * changed to any other letter, or set to `null` to disable the listener.
  */
-export const Uncontrolled = {
+export const Uncontrolled: Story = {
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => {
     const key = args.shortcutKey === undefined ? 'k' : args.shortcutKey;
     return (
@@ -127,8 +128,8 @@ export const Uncontrolled = {
           alignItems: 'center',
           justifyContent: 'center',
           height: '400px',
-          background: '#f8fafc',
-          color: '#94a3b8',
+          background: 'var(--gray-50)',
+          color: 'var(--text-muted)',
           fontSize: '0.875rem',
         }}
       >
@@ -163,7 +164,7 @@ export const Uncontrolled = {
  * a click handler that opens the palette, the same convention `Menu` and
  * `Dropdown` use for their own `trigger` prop.
  */
-export const WithCustomTrigger = {
+export const WithCustomTrigger: Story = {
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
     <CommandPalette
@@ -185,7 +186,7 @@ export const WithCustomTrigger = {
  * All items carry a `group` property, producing clearly labelled sections.
  * Groups appear in the order their first item appears in the `items` array.
  */
-export const WithGroups = {
+export const WithGroups: Story = {
   // See the comment on Default's `args`.
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
@@ -206,7 +207,7 @@ export const WithGroups = {
  * Demonstrates shortcut badges rendered as `<kbd>` elements.
  * Use ArrowUp / ArrowDown to move between items and inspect the shortcuts.
  */
-export const WithShortcuts = {
+export const WithShortcuts: Story = {
   // See the comment on Default's `args`.
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => {
@@ -229,7 +230,7 @@ export const WithShortcuts = {
  * You can also trigger the empty state in any other story by typing a
  * query that matches nothing.
  */
-export const EmptyState = {
+export const EmptyState: Story = {
   // See the comment on Default's `args`.
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
@@ -253,7 +254,7 @@ export const EmptyState = {
  * The `footer` prop accepts any ReactNode and is placed on the right side of
  * the footer bar, next to the keyboard-hint strip.
  */
-export const WithFooter = {
+export const WithFooter: Story = {
   // See the comment on Default's `args`.
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
@@ -265,7 +266,7 @@ export const WithFooter = {
         <span
           style={{
             fontSize: '11px',
-            color: '#94a3b8',
+            color: 'var(--text-muted)',
             fontFamily: 'var(--font-family-mono, monospace)',
           }}
         >
@@ -287,7 +288,7 @@ export const WithFooter = {
  * Items with `disabled: true` are rendered at reduced opacity and skip
  * keyboard navigation - you cannot land on them with ArrowUp / ArrowDown.
  */
-export const WithDisabledItems = {
+export const WithDisabledItems: Story = {
   // See the comment on Default's `args`.
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => {

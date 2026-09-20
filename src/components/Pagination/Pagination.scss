@@ -162,7 +162,7 @@
 .eidos-pagination-ellipsis {
   @include flex-center;
   @include font-size(sm);
-  color: var(--gray-400);
+  color: var(--text-muted);
   padding: 0 var(--spacing-xs);
   user-select: none;
 }

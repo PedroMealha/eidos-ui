@@ -85,7 +85,7 @@ export const Disabled: Story = {
 // GROUP STORIES
 // ============================================================================
 
-export const Group = {
+export const Group: Story = {
   render: () => (
     <RadioGroup
       name="group-vertical"
@@ -100,7 +100,7 @@ export const Group = {
   ),
 };
 
-export const GroupHorizontal = {
+export const GroupHorizontal: Story = {
   render: () => (
     <RadioGroup
       name="group-horizontal"
@@ -115,7 +115,7 @@ export const GroupHorizontal = {
   ),
 };
 
-export const GroupWithError = {
+export const GroupWithError: Story = {
   render: () => (
     <RadioGroup
       name="group-error"
@@ -133,7 +133,7 @@ export const GroupWithError = {
 // SHOWCASE STORIES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => {
     const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
     return (
@@ -146,7 +146,7 @@ export const Sizes = {
   },
 };
 
-export const Colors = {
+export const Colors: Story = {
   render: () => {
     const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
     return (

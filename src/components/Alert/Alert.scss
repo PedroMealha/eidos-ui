@@ -132,7 +132,7 @@
   @include button-reset;
   @include flex-center;
   flex-shrink: 0;
-  color: var(--gray-400);
+  color: var(--text-muted);
   padding: 2px;
   @include border-radius(sm);
   transition: all 0.2s ease;

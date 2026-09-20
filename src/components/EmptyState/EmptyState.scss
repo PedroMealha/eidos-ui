@@ -96,7 +96,7 @@
 .eidos-empty-state-description {
   margin: 0;
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
   line-height: 1.6;
 }
 

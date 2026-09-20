@@ -61,6 +61,12 @@ const meta = {
     className: { table: { disable: true } },
     contentClassName: { table: { disable: true } },
   },
+  // Required props live at meta level so the render-only stories below
+  // satisfy the type, and so Default's controls start from real values.
+  args: {
+    trigger: <Button variant="outlined">Open popover</Button>,
+    children: <p style={{ margin: 0 }}>Popover content.</p>,
+  },
 } satisfies Meta<typeof Popover>;
 
 export default meta;
@@ -116,7 +122,7 @@ export const WithTitle: Story = {
 // PLACEMENTS - All four placement options
 // ============================================================================
 
-export const Placements = {
+export const Placements: Story = {
   render: () => (
     <div
       style={{
@@ -168,7 +174,7 @@ export const RichContent: Story = {
         onSubmit={(e) => e.preventDefault()}
         style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}
       >
-        <label style={{ fontSize: '0.875rem', color: '#475569' }}>
+        <label style={{ fontSize: '0.875rem', color: 'var(--gray-600)' }}>
           Email address
           <input
             type="email"
@@ -178,7 +184,7 @@ export const RichContent: Story = {
               marginTop: '0.25rem',
               width: '100%',
               padding: '0.5rem 0.75rem',
-              border: '1px solid #e2e8f0',
+              border: '1px solid var(--gray-200)',
               borderRadius: '6px',
               fontSize: '0.875rem',
               boxSizing: 'border-box',
@@ -197,7 +203,7 @@ export const RichContent: Story = {
 // CONTROLLED - Externally controlled open state
 // ============================================================================
 
-export const Controlled = {
+export const Controlled: Story = {
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
 

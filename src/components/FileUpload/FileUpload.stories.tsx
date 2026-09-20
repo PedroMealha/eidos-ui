@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FileUpload } from './FileUpload.component';
+import { StoryStack, StoryValue } from '../../story-layout.docs';
 
 const meta = {
   title: 'Forms/FileUpload',
@@ -50,26 +51,35 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - basic drop zone, shows accepted file count via render state
 // ============================================================================
 
+// Spreads `args`, so every control in the panel drives the drop zone. This
+// used to be `render: () =>`, which ignored args entirely - the Controls panel
+// was rendered by the .mdx but could not change anything.
 export const Default: Story = {
-  render: () => {
+  args: {
+    multiple: false,
+    disabled: false,
+  },
+  render: function DefaultStory(args) {
     const [accepted, setAccepted] = useState<File[]>([]);
     return (
-      <div style={{ width: 480 }}>
-        <FileUpload onFilesAccepted={setAccepted} />
+      <StoryStack gap="sm">
+        <FileUpload {...args} onFilesAccepted={setAccepted} />
         {accepted.length > 0 && (
-          <p
-            style={{
-              marginTop: '0.75rem',
-              fontSize: '0.75rem',
-              color: '#64748b',
-            }}
-          >
-            {accepted.length} file{accepted.length > 1 ? 's' : ''} accepted
-          </p>
+          <StoryValue
+            label="Accepted"
+            value={`${accepted.length} file${accepted.length > 1 ? 's' : ''}`}
+          />
         )}
-      </div>
+      </StoryStack>
     );
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 480 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 // ============================================================================
@@ -77,11 +87,7 @@ export const Default: Story = {
 // ============================================================================
 
 export const Multiple: Story = {
-  render: () => (
-    <div style={{ width: 480 }}>
-      <FileUpload multiple maxFiles={5} hint="Select up to 5 files" />
-    </div>
-  ),
+  args: { multiple: true, maxFiles: 5, hint: 'Select up to 5 files' },
 };
 
 // ============================================================================
@@ -89,21 +95,10 @@ export const Multiple: Story = {
 // ============================================================================
 
 export const WithMaxSize: Story = {
-  render: () => (
-    <div style={{ width: 480 }}>
-      <FileUpload
-        maxSize={5 * 1024 * 1024}
-        hint="Maximum file size: 5 MB"
-        onFilesRejected={(files, reason) =>
-          console.warn(
-            'Rejected',
-            reason,
-            files.map((f) => f.name),
-          )
-        }
-      />
-    </div>
-  ),
+  args: {
+    maxSize: 5 * 1024 * 1024,
+    hint: 'Maximum file size: 5 MB',
+  },
 };
 
 // ============================================================================
@@ -129,28 +124,35 @@ export const Disabled: Story = {
 };
 
 // ============================================================================
-// WITH CALLBACKS - logs accepted / rejected files to the console
+// WITH CALLBACKS - surfaces the accept/reject outcome in the story itself
 // ============================================================================
 
+// Renders the outcome rather than logging it. A console.log is invisible on a
+// Docs page unless the reader happens to have devtools open, which makes the
+// one thing this story exists to demonstrate undiscoverable.
 export const WithCallbacks: Story = {
-  render: () => (
-    <div style={{ width: 480 }}>
-      <FileUpload
-        multiple
-        maxSize={10 * 1024 * 1024}
-        onFilesAccepted={(files) =>
-          console.log(
-            '✅ Accepted:',
-            files.map((f) => `${f.name} (${f.size} B)`),
-          )
-        }
-        onFilesRejected={(files, reason) =>
-          console.warn(
-            `❌ Rejected (${reason}):`,
-            files.map((f) => f.name),
-          )
-        }
-      />
-    </div>
-  ),
+  render: function WithCallbacksStory() {
+    const [log, setLog] = useState<string>('Nothing yet - drop a file above.');
+    return (
+      <StoryStack gap="sm">
+        <FileUpload
+          multiple
+          maxSize={10 * 1024 * 1024}
+          hint="Maximum file size: 10 MB"
+          onFilesAccepted={(files) => setLog(`Accepted: ${files.map((f) => f.name).join(', ')}`)}
+          onFilesRejected={(files, reason) =>
+            setLog(`Rejected (${reason}): ${files.map((f) => f.name).join(', ')}`)
+          }
+        />
+        <StoryValue label="Last event" value={log} />
+      </StoryStack>
+    );
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 480 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };

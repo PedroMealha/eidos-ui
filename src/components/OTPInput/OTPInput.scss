@@ -105,7 +105,7 @@
 
   .eidos-otp-hint {
     @include font-size(sm);
-    color: var(--gray-500);
+    color: var(--text-muted);
     line-height: 1.4;
   }
 

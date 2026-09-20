@@ -42,7 +42,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-xl);
     min-height: 120px;
-    color: var(--gray-500);
+    color: var(--text-muted);
     @include font-size(sm);
     text-align: center;
   }

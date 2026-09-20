@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Drawer } from './Drawer.component';
 import { Button } from '../Button';
@@ -8,7 +9,10 @@ const meta = {
   title: 'Overlays/Drawer',
   component: Drawer,
   parameters: { layout: 'padded' },
+  // Required props live at meta level so the render-only stories below
+  // satisfy the type, and so Default's controls start from real values.
   args: {
+    children: null,
     isOpen: false,
     onClose: () => {},
     placement: 'right',
@@ -86,7 +90,7 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.07em',
-  color: '#94a3b8',
+  color: 'var(--text-muted)',
 };
 
 const drawerBody = (
@@ -130,7 +134,7 @@ export const Default: Story = {
 // WITH TITLE - explicit title prop
 // ============================================================================
 
-export const WithTitle = {
+export const WithTitle: Story = {
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
     return (
@@ -148,7 +152,7 @@ export const WithTitle = {
 // WITH ACTIONS - footer action buttons
 // ============================================================================
 
-export const WithActions = {
+export const WithActions: Story = {
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
     return (
@@ -171,7 +175,7 @@ export const WithActions = {
               variant: 'filled',
               color: 'primary',
               onClick: () => {
-                alert('Changes saved!');
+                action('Changes saved')();
                 setIsOpen(false);
               },
             },
@@ -188,7 +192,7 @@ export const WithActions = {
 // PLACEMENTS - all four sides
 // ============================================================================
 
-export const Placements = {
+export const Placements: Story = {
   render: () => {
     const [open, setOpen] = useState(false);
     const [placement, setPlacement] = useState<DrawerPlacement>('right');
@@ -227,7 +231,7 @@ export const Placements = {
 // SIZES - sm / md / lg / full
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => {
     const [activeSize, setActiveSize] = useState<DrawerSize | null>(null);
 
@@ -268,7 +272,7 @@ export const Sizes = {
 // BOTTOM SHEET - bottom placement simulating a mobile sheet
 // ============================================================================
 
-export const BottomSheet = {
+export const BottomSheet: Story = {
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
     return (

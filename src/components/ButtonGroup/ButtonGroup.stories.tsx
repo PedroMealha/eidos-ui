@@ -11,15 +11,51 @@ import {
 } from 'lucide-react';
 import { ButtonGroup } from './ButtonGroup.component';
 import { Button, IconButton } from '../Button';
+import { StoryStack } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/ButtonGroup',
   component: ButtonGroup,
   parameters: { layout: 'centered' },
   args: {
-    // Required - overridden by every story's render function.
     children: null,
-    orientation: 'horizontal',
+  },
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['filled', 'outlined', 'text'],
+      description: "Fallback variant for children that don't set their own",
+      table: {
+        type: { summary: '"filled" | "outlined" | "text"' },
+        defaultValue: { summary: 'filled' },
+      },
+    },
+    color: {
+      control: 'select',
+      options: ['primary', 'secondary', 'success', 'danger', 'warning', 'info'],
+      description: "Fallback color for children that don't set their own",
+      table: {
+        type: { summary: '"primary" | "secondary" | "success" | "danger" | "warning" | "info"' },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: "Fallback size for children that don't set their own",
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
+    },
+    orientation: {
+      control: 'inline-radio',
+      options: ['horizontal', 'vertical'],
+      description: 'Lay the buttons out in a row or a column',
+      table: {
+        type: { summary: '"horizontal" | "vertical"' },
+        defaultValue: { summary: 'horizontal' },
+      },
+    },
+    children: { table: { disable: true } },
+    className: { table: { disable: true } },
   },
 } satisfies Meta<typeof ButtonGroup>;
 
@@ -28,31 +64,18 @@ type Story = StoryObj<typeof meta>;
 
 // ─── Default ──────────────────────────────────────────────────────────────────
 
+// Spreads `args` so the Controls panel actually drives the group. `children`
+// stays fixed: it is the one prop a control cannot meaningfully supply, and
+// the group-level props are the whole point of the component.
 export const Default: Story = {
-  render: () => (
-    <ButtonGroup variant="outlined" color="primary">
-      <Button preIcon={AlignLeft}>Left</Button>
-      <Button preIcon={AlignCenter}>Center</Button>
-      <Button preIcon={AlignRight}>Right</Button>
-    </ButtonGroup>
-  ),
-};
-
-// ─── 1. Outlined (most common use-case) ──────────────────────────────────────
-
-export const Outlined: Story = {
-  name: 'Outlined',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'The classic segmented action bar. Children inherit `variant` and `color` ' +
-          'from the group unless they specify their own.',
-      },
-    },
+  args: {
+    variant: 'outlined',
+    color: 'primary',
+    size: 'md',
+    orientation: 'horizontal',
   },
-  render: () => (
-    <ButtonGroup variant="outlined" color="primary">
+  render: (args) => (
+    <ButtonGroup {...args}>
       <Button preIcon={AlignLeft}>Left</Button>
       <Button preIcon={AlignCenter}>Center</Button>
       <Button preIcon={AlignRight}>Right</Button>
@@ -60,10 +83,9 @@ export const Outlined: Story = {
   ),
 };
 
-// ─── 2. Filled ────────────────────────────────────────────────────────────────
+// ─── Filled ───────────────────────────────────────────────────────────────────
 
 export const Filled: Story = {
-  name: 'Filled',
   render: () => (
     <ButtonGroup variant="filled" color="primary">
       <Button preIcon={Plus}>Add</Button>
@@ -75,14 +97,11 @@ export const Filled: Story = {
   ),
 };
 
-// ─── 3. Sizes ─────────────────────────────────────────────────────────────────
+// ─── Sizes ────────────────────────────────────────────────────────────────────
 
 export const Sizes: Story = {
-  name: 'Sizes',
   render: () => (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}
-    >
+    <StoryStack align="flex-start">
       <ButtonGroup variant="outlined" size="sm">
         <Button>Small</Button>
         <Button>Group</Button>
@@ -98,22 +117,13 @@ export const Sizes: Story = {
         <Button>Group</Button>
         <Button>Here</Button>
       </ButtonGroup>
-    </div>
+    </StoryStack>
   ),
 };
 
-// ─── 4. Icon-only buttons ─────────────────────────────────────────────────────
+// ─── Icon-only buttons ────────────────────────────────────────────────────────
 
 export const IconOnly: Story = {
-  name: 'IconOnly',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Works with icon-only buttons. Useful for view-switcher or text-formatting toolbars.',
-      },
-    },
-  },
   render: () => (
     <ButtonGroup variant="outlined">
       <IconButton icon={List} tooltip="List view" />
@@ -122,10 +132,9 @@ export const IconOnly: Story = {
   ),
 };
 
-// ─── 5. Vertical orientation ─────────────────────────────────────────────────
+// ─── Vertical orientation ─────────────────────────────────────────────────────
 
 export const Vertical: Story = {
-  name: 'Vertical',
   render: () => (
     <ButtonGroup variant="outlined" orientation="vertical">
       <Button>Top</Button>
@@ -135,20 +144,9 @@ export const Vertical: Story = {
   ),
 };
 
-// ─── 6. Mixed per-child overrides ────────────────────────────────────────────
+// ─── Mixed per-child overrides ────────────────────────────────────────────────
 
 export const PerChildOverride: Story = {
-  name: 'PerChildOverride',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Each child can override the group-level props. Here `variant="outlined"` is the ' +
-          'group default, but the delete button switches to `color="danger"` and ' +
-          '`variant="filled"` independently.',
-      },
-    },
-  },
   render: () => (
     <ButtonGroup variant="outlined" color="primary">
       <Button>Save</Button>

@@ -1,5 +1,5 @@
 import { Meta, Source } from '@storybook/addon-docs/blocks';
-import pkg from '../package.json';
+import { GuideHero } from './guide-hero.docs';
 
 <Meta title="Getting Started" />
 
@@ -13,40 +13,10 @@ import pkg from '../package.json';
 
 {/* ── Hero ─────────────────────────────────────────────────────────── */}
 
-<div style={{
-  background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%)',
-  borderRadius: 16,
-  padding: '2.5rem 2.5rem 2rem',
-  marginBottom: '2.5rem',
-  position: 'relative',
-  overflow: 'hidden',
-}}>
-  {/* decorative circles */}
-  <div style={{ position: 'absolute', top: -40, right: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-  <div style={{ position: 'absolute', bottom: -30, right: 80, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
-
-  <div style={{ position: 'relative' }}>
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 6,
-      background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)',
-      borderRadius: 6, padding: '4px 10px', marginBottom: '1.125rem',
-    }}>
-      <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#a78bfa', display: 'inline-block' }} />
-      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)', WebkitTextFillColor: 'rgba(255,255,255,0.85)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>eidos-ui</span>
-      <span style={{ width: 1, height: 10, background: 'rgba(255,255,255,0.25)', display: 'inline-block' }} />
-      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)', WebkitTextFillColor: 'rgba(255,255,255,0.85)', letterSpacing: '0.02em' }}>v{pkg.version}</span>
-    </span>
-
-    <div style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#fff', WebkitTextFillColor: '#fff', margin: '0 0 0.75rem', lineHeight: 1.1 }}>
-      Getting Started
-    </div>
-    <div style={{ fontSize: '1.0625rem', color: 'rgba(255,255,255,0.85)', WebkitTextFillColor: 'rgba(255,255,255,0.85)', lineHeight: 1.65, margin: 0, maxWidth: 460 }}>
-      A React component library with a consistent design language.
-      Install it, load the stylesheet, and wire up the required context providers.
-    </div>
-
-  </div>
-</div>
+<GuideHero title="Getting Started">
+  Install the package, load the stylesheet, and wire up the two context providers. Five minutes,
+  start to finish.
+</GuideHero>
 
 {/* ── Timeline steps ───────────────────────────────────────────────── */}
 
@@ -182,37 +152,42 @@ import pkg from '../package.json';
           <code style={{ fontSize: '0.8125rem', background: 'rgba(109,40,217,0.1)', padding: '1px 4px', borderRadius: 3 }}>SnackbarContainer</code> is the portal that renders toasts - add it once at root.
         </div>
       </div>
-      <Source dark language="tsx" code={`import { SnackbarProvider, SnackbarContainer } from 'eidos-ui';
-
-function Root() {
-return (
-
-<SnackbarProvider>
-<App />
-<SnackbarContainer />
-</SnackbarProvider>
-);
-}`} />
-</div>
+      <Source dark language="tsx" code={[
+        "import { SnackbarProvider, SnackbarContainer } from 'eidos-ui';",
+        '',
+        'function Root() {',
+        '  return (',
+        '    <SnackbarProvider>',
+        '      <App />',
+        '      <SnackbarContainer />',
+        '    </SnackbarProvider>',
+        '  );',
+        '}',
+      ].join('\n')} />
+    </div>
 
     <div style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
       Then use <code style={{ fontSize: '0.8125rem' }}>useSnackbar</code> anywhere inside the tree:
     </div>
 
-    <Source dark language="tsx" code={`import { useSnackbar } from 'eidos-ui';
-
-function SaveButton() {
-const { showSuccess, showError } = useSnackbar();
-return (
-
-<button onClick={async () => {
-try { await save(); showSuccess('Saved!'); }
-catch { showError('Failed to save'); }
-}}>
-Save
-</button>
-);
-}`} />
+    <Source dark language="tsx" code={[
+      "import { useSnackbar } from 'eidos-ui';",
+      '',
+      'function SaveButton() {',
+      '  const { showSuccess, showError } = useSnackbar();',
+      '',
+      '  const onSave = async () => {',
+      '    try {',
+      '      await save();',
+      "      showSuccess('Saved!');",
+      '    } catch {',
+      "      showError('Failed to save');",
+      '    }',
+      '  };',
+      '',
+      '  return <button onClick={onSave}>Save</button>;',
+      '}',
+    ].join('\n')} />
 
     {/* Dropdown callout */}
     <div style={{
@@ -237,18 +212,19 @@ Save
           Works standalone by default. Add <code style={{ fontSize: '0.8125rem' }}>DropdownProvider</code> only when using <code style={{ fontSize: '0.8125rem' }}>dropdownGroup</code> - ensures only one dropdown in a group is open at a time.
         </div>
       </div>
-      <Source dark language="tsx" code={`import { DropdownProvider, Dropdown } from 'eidos-ui';
-
-function Toolbar() {
-return (
-
-<DropdownProvider>
-<Dropdown dropdownGroup="toolbar" trigger={<button>File</button>} content={...} />
-<Dropdown dropdownGroup="toolbar" trigger={<button>Edit</button>} content={...} />
-</DropdownProvider>
-);
-}`} />
-</div>
+      <Source dark language="tsx" code={[
+        "import { DropdownProvider, Dropdown } from 'eidos-ui';",
+        '',
+        'function Toolbar() {',
+        '  return (',
+        '    <DropdownProvider>',
+        '      <Dropdown dropdownGroup="toolbar" trigger={<button>File</button>} content={fileMenu} />',
+        '      <Dropdown dropdownGroup="toolbar" trigger={<button>Edit</button>} content={editMenu} />',
+        '    </DropdownProvider>',
+        '  );',
+        '}',
+      ].join('\n')} />
+    </div>
 
   </div>
 </div>
@@ -292,7 +268,7 @@ return (
     <span style={{ fontSize: '0.6875rem', color: '#71717a' }}>- bundled automatically</span>
   </div>
   <div style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
-    Many components accept icon props (e.g. <code style={{ fontSize: '0.8125rem' }}>preIcon</code>, <code style={{ fontSize: '0.8125rem' }}>postIcon</code>). These use <code style={{ fontSize: '0.8125rem' }}>lucide-react</code>, which is listed as a regular dependency and auto-installed with the package - no extra install step needed.
+    Many components accept icon props (e.g. <code style={{ fontSize: '0.8125rem' }}>preIcon</code>, <code style={{ fontSize: '0.8125rem' }}>posIcon</code>). These use <code style={{ fontSize: '0.8125rem' }}>lucide-react</code>, which is listed as a regular dependency and auto-installed with the package - no extra install step needed.
   </div>
   <Source dark language="tsx" code={`import { Download, Plus, Search } from 'lucide-react';
 import { Button } from 'eidos-ui';
@@ -345,21 +321,23 @@ import { Button } from 'eidos-ui';
   <div style={{ fontSize: '0.875rem', color: '#71717a', margin: '0 0 0.75rem', lineHeight: 1.6 }}>
     All design tokens are CSS custom properties defined on <code style={{ fontSize: '0.8125rem' }}>:root</code>. Override them in your own stylesheet after the library import to customise colours, spacing, border-radius, and more.
   </div>
-  <Source dark language="css" code={`:root {
-  /* Brand colour */
-  --primary-color: #0ea5e9;
-  --primary-dark:  #0284c7;
-  --primary-light: #7dd3fc;
-
-/_ Border radius _/
---border-radius-md: 6px;
---border-radius-lg: 8px;
-
-/_ Component heights _/
---component-size-sm: 28px;
---component-size-md: 36px;
---component-size-lg: 44px;
-}`} />
+  <Source dark language="css" code={[
+    ':root {',
+    '  /* Brand colour */',
+    '  --primary-color: #0ea5e9;',
+    '  --primary-dark:  #0284c7;',
+    '  --primary-light: #7dd3fc;',
+    '',
+    '  /* Border radius */',
+    '  --border-radius-md: 6px;',
+    '  --border-radius-lg: 8px;',
+    '',
+    '  /* Component heights */',
+    '  --component-size-sm: 28px;',
+    '  --component-size-md: 36px;',
+    '  --component-size-lg: 44px;',
+    '}',
+  ].join('\n')} />
 
 </div>
 

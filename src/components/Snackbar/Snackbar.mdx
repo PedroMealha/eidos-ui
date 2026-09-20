@@ -32,23 +32,17 @@ function YourApp() {
 
 ## Default
 
-All notification variants with their trigger buttons. Click each to see the toast appear.
+`Snackbar` has no props of its own - it is a provider plus the `useSnackbar` hook - so the controls below describe the **options object** the hook takes. Adjust them and fire a toast.
 
 <Canvas of={SnackbarStories.Default} />
 
-## Success variant
+<Controls of={SnackbarStories.Default} />
 
-## Error variant
+## All variants
 
-<Canvas of={SnackbarStories.ErrorVariant} />
+Every variant, action and duration combination behind its own trigger.
 
-## Warning variant
-
-<Canvas of={SnackbarStories.WarningVariant} />
-
-## Info variant
-
-<Canvas of={SnackbarStories.InfoVariant} />
+<Canvas of={SnackbarStories.AllVariants} />
 
 ## With action button
 

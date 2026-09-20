@@ -144,7 +144,7 @@ export const Sizes: Story = {
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
     return (
       <div style={col}>
@@ -183,7 +183,7 @@ export const Colors: Story = {
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
     return (
       <div style={col}>
@@ -269,7 +269,7 @@ export const WithUnit: Story = {
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
     return (
       <div style={col}>
@@ -325,7 +325,7 @@ export const BlockedRange: Story = {
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
     return (
       <div style={col}>

@@ -75,3 +75,11 @@ Time selection works with `mode="range"` too - the value gains `time: { start: T
 Restrict the selectable range with `minDate` and `maxDate` (ISO strings). Days outside the range are visually disabled in the calendar and cannot be selected.
 
 <Canvas of={DatePickerStories.DateConstraints} />
+
+## Independent calendars
+
+By default a single month/year control drives every visible calendar, and the others follow a consecutive month apart - rather than each showing its own control that looks editable but is not.
+
+Set `calendar={{ independent: true }}` to give each calendar its own control. They stay clamped so one can never reach or cross its neighbour's month, which would otherwise let you select a range whose end precedes its start.
+
+<Canvas of={DatePickerStories.IndependentCalendars} />

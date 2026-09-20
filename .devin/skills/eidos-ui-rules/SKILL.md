@@ -486,26 +486,211 @@ import { ComponentName } from 'eidos-ui';
 - Usage block must be minimal but copy-paste runnable
 - When a component has a custom `.mdx`, remove `tags: ['autodocs']` from the `.stories.tsx` - Storybook does not allow both
 
+### Story file structure (mandatory, no deviations)
+
+The `.mdx` is the documentation; the `.stories.tsx` exists to feed it. Every
+story file follows the same shape, for the same reason the `.mdx` template is
+fixed - a reader moving between two components should not have to relearn the
+layout.
+
+1. **`Default` is the control surface.** It is args-driven - either no
+   `render` at all, or `render: (args) => <X {...args} />`. It carries the
+   full `argTypes` map, and it is the **only** story the `.mdx` attaches
+   `<Controls>` to.
+
+   A story written `render: () => <X someProp="fixed" />` ignores `args`
+   entirely, so the Controls panel renders, responds to being dragged, and
+   changes nothing. This is worse than having no controls: it looks like the
+   component ignores the prop. Eight components shipped this way
+   (`ButtonGroup`, `ContextMenu`, `FileUpload`, `Navigation`, `SplitButton`,
+   `TableFiltersDropdown`, `ThemeProvider`, `VirtualList`) - the defect is
+   invisible to lint, tsc and the build, and only shows up by actually
+   dragging a control.
+
+2. **Every public prop gets an `argTypes` entry** with `control`,
+   `description`, and `table.type` / `table.defaultValue`. Non-visual props
+   (`className`, `id`, `name`, event handlers) get `table: { disable: true }`
+   rather than being omitted, so the panel stays readable. `Pill` and `Button`
+   are the reference shape.
+
+3. **Every other story is focused**: one feature, one story, shown by exactly
+   one `.mdx` section. A story that no `.mdx` references does not exist as
+   documentation - it is sidebar noise. ~20 were orphaned this way.
+
+4. **No `Examples` grid stories.** They duplicate the individual stories,
+   drift from them, and are the exact shape that freezes the Docs tab under
+   React 19 (see the `react-element-to-jsx-string` note below). 12 of these
+   were deleted; if a variant is worth showing, it is worth its own focused
+   story and `.mdx` section.
+
+5. **Never hand-roll story chrome.** Use the helpers in
+   `src/story-layout.docs.tsx` (`StoryRow`, `StoryStack`, `StoryGroup`,
+   `StoryGrid`, `StoryFrame`, `StoryValue`). The same `label`/`row`/`col`
+   style objects had been copy-pasted into a dozen files with hardcoded hex
+   (`#94a3b8`, `#666`, `#e2e8f0`) - all of them token values written out by
+   hand, and `#94a3b8` is 2.56:1 on white, so the story scaffolding itself was
+   failing the contrast check the components are held to.
+
+   That file is `.docs.tsx` deliberately: `release-needed.js` and
+   `check-changelog.js` exclude that suffix at any depth, so it cannot flag a
+   release. Unlike a guide page's JSX it renders inside `<Canvas>`, so tokens
+   and `rem` are correct there - the "fixed px" rule does not apply.
+
+6. **`layout` has a rule**: `centered` for a single small control, `padded`
+   for anything with internal layout, `fullscreen` only for page-level
+   chrome (`PageLayout`, `Header`, `Navigation`).
+
+7. **`satisfies Meta<typeof X>`**, never `const meta: Meta<typeof X> =` - the
+   former keeps `StoryObj<typeof meta>` inference sharp enough to typecheck
+   each story's `args`.
+
+8. **Every story is annotated `: Story`, and required props live in the
+   meta's `args`.** These two go together. A story that only sets `render`
+   still has to satisfy the component's required props, and the tempting
+   escape is to drop the annotation - `export const Foo = {` typechecks
+   against nothing. Three files had done exactly that (`CommandPalette`,
+   `Navigation`, and `VirtualList` via placeholder args), each with a comment
+   citing the others as precedent, which is how it spread to 65 untyped
+   stories. Put the required props in the meta instead:
+
+   ```ts
+   const meta = {
+     component: Menu,
+     // Required props: satisfies the type for render-only stories below,
+     // and seeds Default's controls with real values.
+     args: { trigger: <Button>Open</Button>, items: BASIC_ITEMS },
+   } satisfies Meta<typeof Menu>;
+   ```
+
+   Make them **real defaults, not placeholders**. `VirtualList` had
+   `data: [], renderRow: () => null` with a comment saying every story
+   overrides them - which meant `Default` could not be args-driven at all.
+
+9. **No `alert()` or `console.log` in a story.** Use `action('Label')` from
+   `storybook/actions` (core, no addon to install - `Select` was already
+   using the `action:` argType form). `alert()` blocks the thread and pops a
+   modal dialog over a Docs page rendering dozens of stories; a `console.log`
+   is invisible unless devtools happen to be open, which makes the one thing
+   the story demonstrates undiscoverable. Where the _outcome_ is the point,
+   render it in the story instead (see `FileUpload`'s `WithCallbacks`).
+
+10. **Don't restate the export name in `name`.** Storybook already renders
+    `IconOnly` as "Icon Only". Set `name` only where it genuinely reads better
+    as prose (`'Multiple select (compact label)'`).
+
+### Accessibility is checked, and the check is honest
+
+`@storybook/addon-a11y` runs axe against every story, both in the
+"Accessibility" panel and under `vitest --project=storybook` (the browser-mode
+project in `vite.config.ts`, which was configured but had no tests in it).
+
+Two things to keep straight:
+
+- **`parameters.a11y.test` is `'todo'`, not `'error'`.** The first run after
+  wiring it was 207 of 439 stories failing. Two systemic root causes are
+  fixed; a real backlog remains (`label`, `nested-interactive` on
+  Checkbox/Radio's visually-hidden inputs and DataGrid's clickable rows,
+  `button-name` on icon-only controls). A permanently red suite teaches
+  people to ignore it - flip to `'error'` when it reaches zero, not before.
+- **Axe is a net, not a certificate.** It covers roughly a third of the WCAG
+  success criteria. A clean run is necessary and nowhere near sufficient, so
+  **no page in this Storybook claims a conformance level** - `Welcome.mdx`
+  states specifics (measured palette ratios, focus rings, reduced-motion)
+  instead of a WCAG AA badge. Don't add one.
+
+The two root causes already fixed are worth recognising, because both are the
+library's recurring failure shape - valid CSS/markup, no warning anywhere:
+
+- `--gray-400` used as a **text** colour in 99 declarations across 39
+  components. The grays are a _surface_ ramp; text must come from
+  `--text-muted` / `--text-disabled`. See the contrast table in
+  `variables.scss` for why `--text-muted` is `--gray-600` and not the more
+  obvious `--gray-500`.
+- `Dropdown`'s trigger wrapper carrying `role="button"` around the real
+  control, which propagated invalid nested-interactive ARIA to all seven
+  components built on it.
+
 ### Interactive overlay stories
 
 CommandPalette, Modal, Drawer, and similar overlay components must start CLOSED in stories (`useState(false)`), with a visible trigger button. Never auto-open overlays on story mount - it breaks the Docs page by popping multiple overlays simultaneously.
 
 ### Top-level guide pages (not component docs)
 
-`Introduction.mdx` ("Getting Started"), `ContentSecurityPolicy.mdx`
-("Content Security Policy"), and `Releases.mdx` ("Releases") live at `src/`
-root, not under a component folder, and don't follow the component `.mdx`
-template above - they're prose/reference pages, picked up by the same
-`../src/**/*.mdx` glob in `.storybook/main.ts`. Use a bare `<Meta title="..." />`
-(no component group prefix) so they land in the ungrouped bucket at the end
-of the sidebar per `storySort` in `.storybook/preview.ts`.
+`Welcome.mdx` ("Welcome"), `Introduction.mdx` ("Getting Started"),
+`ContentSecurityPolicy.mdx` ("Content Security Policy"), and `Releases.mdx`
+("Releases") live at `src/` root, not under a component folder, and don't
+follow the component `.mdx` template above - they're prose/reference pages,
+picked up by the same `../src/**/*.mdx` glob in `.storybook/main.ts`. Use a
+bare `<Meta title="..." />` (no component group prefix).
+
+All four are **named explicitly in `storySort.order`** in
+`.storybook/preview.ts` so they lead the sidebar. Without that they fall into
+the ungrouped bucket, which sorted "Welcome" and "Getting Started" _below_ all
+58 components - the worst possible place for the two pages a newcomer needs
+first. Note that Storybook places docs-only entries ahead of component groups
+regardless of where they sit relative to `'*'`, so they cannot be pushed to
+the tail by listing them after it.
+
+### Numbers on a guide page are derived, never typed
+
+`Welcome.mdx` leads with a component count, a story count, a token count and
+the gzipped stylesheet size. Every one comes from `virtual:eidos-stats`, a
+Vite virtual module served by `.storybook/stats-plugin.ts`, which reads the
+source tree at config time. Nothing on that page is hand-maintained, because
+this repo has twice shipped a stale count in prose (see "Documentation
+freshness") and a landing page is the most visible possible place for it.
+
+Two alternatives were considered and rejected, both for reasons worth keeping:
+
+- **`import.meta.glob(..., { eager: true })` in the page.** The story modules
+  are already in the preview bundle so it adds no bytes, but eagerly importing
+  all 62 forces the whole library to load when Welcome renders - and Welcome
+  is the first page anyone sees.
+- **A generated file committed to `src/`.** Free at runtime, but stale the
+  moment someone adds a component without re-running the generator, which is
+  the exact failure this exists to prevent.
+
+The story/category counts come from each story file's `title` - the same
+source of truth `scripts/check-docs.js` uses - so the page cannot drift from
+the sidebar.
 
 `Releases.mdx` mirrors `CHANGELOG.md` in summary form (see "Changelog
 discipline" below) - it has its own mock/example release entries clearly
 marked with a banner and a `MOCK DATA BELOW` comment; leave them until real
 entries have shipped and replaced them, don't delete them just to tidy up.
 
+### Guide pages share one hero - don't write a second one
+
+`Welcome.mdx` and `Introduction.mdx` both render `GuideHero` from
+`src/guide-hero.docs.tsx`, which owns the gradient banner, the decorative
+circles and the version chip. They each had their own copy, and the copies had
+already drifted into rendering the _same design at two different scales_ -
+title 35px vs 40px, subtitle 15px vs 17px, different padding - purely because
+one was written in `rem` and the other in `px`. Nothing catches that: both
+render fine in isolation, and you only see it by flipping between the two
+pages.
+
+Keep the copy distinct too. The two heroes also both opened with "A React
+component library", because `Welcome` described the library and `Getting
+Started` re-described it before getting to the install steps. `Welcome` says
+what the library is; `Getting Started` says what _that page_ does.
+
 ### Custom JSX directly in a top-level `.mdx` page needs fixed `px` sizing, not `rem`/`em`
+
+> **Measured correction (Storybook 10.6):** the premise below - that a Docs
+> page's JSX renders in the _manager_ frame at a 16px root - **is not what
+> happens now.** Probed in the browser on `Welcome`, `Getting Started` and
+> `Releases`, all three render inside the **preview iframe**, where
+> `global.scss`'s `html { font-size: 14px }` applies and `1rem` resolves to
+> `14px`, exactly as it does in a story. Either this changed in a Storybook
+> upgrade or the original diagnosis attributed a real symptom to the wrong
+> cause.
+>
+> The fixed-px convention is kept regardless - it is unambiguous, it costs
+> nothing, and a guide page has no reason to scale with a root font-size.
+> But do not repeat the 16px explanation as fact, and do not treat `rem` on a
+> guide page as the bug it is described as below; if something renders at the
+> wrong size there, measure before concluding why.
 
 Applies specifically to JSX written for a top-level guide page - its body, or
 its `*.docs.tsx` companion (like `Releases.docs.tsx`'s

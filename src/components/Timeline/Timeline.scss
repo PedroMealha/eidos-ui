@@ -130,7 +130,7 @@
 
 .eidos-timeline-timestamp {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
 }
 
 .eidos-timeline-title {
@@ -142,6 +142,6 @@
 .eidos-timeline-description {
   margin: 0;
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
   line-height: 1.6;
 }

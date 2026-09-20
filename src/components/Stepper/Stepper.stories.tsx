@@ -60,6 +60,9 @@ const meta = {
     steps: { table: { disable: true } },
     className: { table: { disable: true } },
   },
+  // Required props live at meta level so the render-only stories below
+  // satisfy the type, and so Default's controls start from real values.
+  args: { steps: [], activeStep: 0 },
 } satisfies Meta<typeof Stepper>;
 
 export default meta;
@@ -130,7 +133,7 @@ export const WithError: Story = {
 // COLORS - all six color variants stacked
 // ============================================================================
 
-export const Colors = {
+export const Colors: Story = {
   render: () => {
     const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info'] as const;
     const label: React.CSSProperties = {
@@ -138,7 +141,7 @@ export const Colors = {
       fontSize: '0.75rem',
       fontWeight: 600,
       textTransform: 'uppercase',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
       letterSpacing: '0.07em',
     };
 

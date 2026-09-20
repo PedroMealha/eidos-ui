@@ -22,26 +22,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// The decorator gives the container both a width and a height, and lays it
+// out as a flex row. A fixed-width box with no height (what this used to be)
+// renders a `vertical` divider as nothing at all - so flipping the `direction`
+// control, the one control this component has, appeared to break it.
 export const Default: Story = {
   args: {
     direction: 'horizontal',
   },
   decorators: [
     (Story) => (
-      <div style={{ width: '300px' }}>
-        <Story />
-      </div>
-    ),
-  ],
-};
-
-export const Horizontal: Story = {
-  args: {
-    direction: 'horizontal',
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '300px', height: '120px', display: 'flex' }}>
         <Story />
       </div>
     ),
@@ -61,67 +52,32 @@ export const Vertical: Story = {
   ],
 };
 
-export const Examples = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
+export const SeparatingContent: Story = {
+  render: () => (
+    <div style={{ width: '300px' }}>
+      <p style={{ margin: 0, padding: 'var(--spacing-sm) 0' }}>Content above</p>
+      <Divider />
+      <p style={{ margin: 0, padding: 'var(--spacing-sm) 0' }}>Content below</p>
+    </div>
+  ),
+};
 
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '2rem 2.5rem',
-          padding: '1.5rem',
-        }}
-      >
-        <div>
-          <p style={label}>Horizontal</p>
-          <div>
-            <div style={{ padding: '0.5rem 0', color: '#64748b', fontSize: '0.875rem' }}>
-              Content above
-            </div>
-            <Divider direction="horizontal" />
-            <div style={{ padding: '0.5rem 0', color: '#64748b', fontSize: '0.875rem' }}>
-              Content below
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <p style={label}>Vertical</p>
-          <div style={{ display: 'flex', alignItems: 'center', height: '60px', gap: '1rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.875rem' }}>Left</span>
-            <Divider direction="vertical" />
-            <span style={{ color: '#64748b', fontSize: '0.875rem' }}>Right</span>
-          </div>
-        </div>
-
-        <div>
-          <p style={label}>In a List</p>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '180px',
-              border: '1px solid var(--gray-300)',
-              borderRadius: 'var(--border-radius-md)',
-            }}
-          >
-            <div style={{ padding: '0.625rem 0.875rem', fontSize: '0.875rem' }}>Item 1</div>
-            <Divider />
-            <div style={{ padding: '0.625rem 0.875rem', fontSize: '0.875rem' }}>Item 2</div>
-            <Divider />
-            <div style={{ padding: '0.625rem 0.875rem', fontSize: '0.875rem' }}>Item 3</div>
-          </div>
-        </div>
-      </div>
-    );
-  },
+export const InAList: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '200px',
+        border: '1px solid var(--gray-300)',
+        borderRadius: 'var(--border-radius-md)',
+      }}
+    >
+      <div style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>Item 1</div>
+      <Divider />
+      <div style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>Item 2</div>
+      <Divider />
+      <div style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>Item 3</div>
+    </div>
+  ),
 };

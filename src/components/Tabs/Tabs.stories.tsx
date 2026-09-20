@@ -88,7 +88,7 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.07em',
-  color: '#94a3b8',
+  color: 'var(--text-muted)',
 };
 
 const panelContent = (tab: string) => (
@@ -136,7 +136,7 @@ export const Default: Story = {
 // throughout the rest of the design system (e.g. Button.stories.tsx).
 // ============================================================================
 
-export const Enclosed = {
+export const Enclosed: Story = {
   render: () => (
     <Tabs variant="enclosed" defaultValue="account">
       <Tab value="account">Account</Tab>
@@ -153,7 +153,7 @@ export const Enclosed = {
 // PILLS
 // ============================================================================
 
-export const Pills = {
+export const Pills: Story = {
   render: () => (
     <Tabs variant="pills" defaultValue="all">
       <Tab value="all">All</Tab>
@@ -170,7 +170,7 @@ export const Pills = {
 // WITH ICONS
 // ============================================================================
 
-export const WithIcons = {
+export const WithIcons: Story = {
   render: () => (
     <Tabs defaultValue="home">
       <Tab value="home" icon={Home}>
@@ -193,7 +193,7 @@ export const WithIcons = {
 // COLORS - all four color themes
 // ============================================================================
 
-export const Colors = {
+export const Colors: Story = {
   render: () => {
     const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '2rem' };
     return (
@@ -251,7 +251,7 @@ export const Colors = {
 // SIZES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => {
     const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '2rem' };
     return (
@@ -298,7 +298,7 @@ export const Sizes = {
 // FULL WIDTH
 // ============================================================================
 
-export const FullWidth = {
+export const FullWidth: Story = {
   render: () => (
     <Tabs fullWidth defaultValue="overview">
       <Tab value="overview">Overview</Tab>
@@ -315,7 +315,7 @@ export const FullWidth = {
 // WITH DISABLED TAB
 // ============================================================================
 
-export const WithDisabledTab = {
+export const WithDisabledTab: Story = {
   render: () => (
     <Tabs defaultValue="overview">
       <Tab value="overview">Overview</Tab>
@@ -347,7 +347,7 @@ const MANY_TABS = [
   'Danger zone',
 ];
 
-export const ScrollButtons = {
+export const ScrollButtons: Story = {
   render: () => {
     const narrow: React.CSSProperties = { maxWidth: '420px' };
 
@@ -407,7 +407,7 @@ export const ScrollButtons = {
 // CONTROLLED - external state drives the active tab
 // ============================================================================
 
-export const Controlled = {
+export const Controlled: Story = {
   render: () => {
     const [activeTab, setActiveTab] = useState('profile');
 

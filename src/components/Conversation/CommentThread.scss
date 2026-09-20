@@ -31,7 +31,7 @@
 
 .eidos-comment-thread-count {
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-comment-thread-list {
@@ -106,7 +106,7 @@
   @include flex-center-y;
   gap: var(--spacing-sm);
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-comment-thread-skeleton {

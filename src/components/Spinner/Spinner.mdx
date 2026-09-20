@@ -21,8 +21,18 @@ import { Spinner } from 'eidos-ui';
 
 <Controls of={SpinnerStories.Default} />
 
-## Examples
+## Sizes
 
-Shows all three sizes (`sm`, `md`, `lg`), available colors, and the spinner centering itself inside a relatively-positioned container.
+<Canvas of={SpinnerStories.Sizes} />
 
-<Canvas of={SpinnerStories.Examples} />
+## Colors
+
+<Canvas of={SpinnerStories.Colors} />
+
+## Inside a container
+
+The spinner centres itself against the nearest positioned ancestor, so a container only needs `position: relative`.
+
+<Canvas of={SpinnerStories.Contained} />
+
+> **Note**: the spinner keeps animating under `prefers-reduced-motion`. WCAG 2.3.3 targets non-essential motion, and here the motion _is_ the message - freezing it would leave an indistinguishable static arc.

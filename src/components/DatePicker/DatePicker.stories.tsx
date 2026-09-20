@@ -125,7 +125,7 @@ export const Default: Story = {
         ) : (
           <DatePicker mode="single" value={single} onChange={setSingle} {...rest} />
         )}
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           Selected: <strong>{preview}</strong>
         </div>
       </div>
@@ -163,7 +163,7 @@ export const SingleDate: Story = {
           onChange={setValue}
           placeholder="Select a date..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           Selected: <strong>{value.date ?? 'None'}</strong>
         </div>
       </div>
@@ -184,7 +184,7 @@ export const DateRange: Story = {
           onChange={setValue}
           placeholder="Select date range..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           <div>
             Start: <strong>{value.date.start ?? 'Not selected'}</strong>
           </div>
@@ -208,7 +208,7 @@ export const MultipleSelection: Story = {
           onChange={setValue}
           placeholder="Select multiple dates..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           Selected: <strong>{value.date.length} date(s)</strong>
           {value.date.length > 0 && (
             <ul style={{ marginTop: '6px', paddingLeft: '20px' }}>
@@ -242,7 +242,7 @@ export const WithTime: Story = {
           time={{ enabled: true, includeSeconds: false }}
           placeholder="Select date and time..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           Date: <strong>{value.date ?? 'None'}</strong>
           {value.time && (
             <div>
@@ -276,7 +276,7 @@ export const DateRangeWithTime: Story = {
           time={{ enabled: true, includeSeconds: false }}
           placeholder="Select date range with time..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           <div>
             Start: <strong>{value.date.start ?? 'Not selected'}</strong>
           </div>
@@ -290,14 +290,6 @@ export const DateRangeWithTime: Story = {
 };
 
 export const IndependentCalendars: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "By default, one shared month/year control drives every calendar - the others just follow along a consecutive month apart, rather than each showing its own (misleadingly editable) control. Setting `calendar={{ independent: true }}` gives every calendar its own control instead, clamped so a calendar can never reach or cross its neighbor's month - e.g. the left calendar here can't be navigated to the same month as the right one, or past it.",
-      },
-    },
-  },
   render: () => {
     const [value, setValue] = useState<DateTimeValue<'range'>>({
       date: { start: null, end: null },
@@ -311,7 +303,7 @@ export const IndependentCalendars: Story = {
           calendar={{ independent: true }}
           placeholder="Select date range..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           <div>
             Start: <strong>{value.date.start ?? 'Not selected'}</strong>
           </div>
@@ -352,7 +344,7 @@ export const DateConstraints: Story = {
           maxDate={maxDate}
           placeholder="Today → +3 months only..."
         />
-        <div style={{ marginTop: '12px', fontSize: '13px', color: '#666' }}>
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           Selected: <strong>{value.date ?? 'None'}</strong>
         </div>
       </div>

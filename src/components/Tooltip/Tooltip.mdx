@@ -30,3 +30,19 @@ import { Tooltip } from 'eidos-ui';
 Pass a `component` prop instead of `message` to render rich React content inside the tooltip.
 
 <Canvas of={TooltipStories.ComponentTooltip} />
+
+## Placements
+
+`placement` is a preference, not a guarantee - the tooltip flips to the opposite side when there isn't room, and is clamped against both viewport edges on both axes.
+
+<Canvas of={TooltipStories.Placements} />
+
+## Triggers
+
+`hover` is the default. `focus` is the keyboard-equivalent and is what makes a tooltip reachable without a pointer; `click` keeps it open until dismissed.
+
+<Canvas of={TooltipStories.Triggers} />
+
+## Common use cases
+
+<Canvas of={TooltipStories.CommonUseCases} />

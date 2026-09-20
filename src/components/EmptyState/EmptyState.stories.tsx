@@ -1,13 +1,16 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Inbox, SearchX, FolderOpen, AlertCircle } from 'lucide-react';
 import { EmptyState } from './EmptyState.component';
 import { Button } from '../Button';
+import { StoryStack, StoryGroup } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/EmptyState',
   component: EmptyState,
   parameters: { layout: 'centered' },
+  // `title` is required, so it lives here to satisfy the type for the
+  // render-only stories below as well as seeding the Default controls.
+  args: { title: 'No items yet' },
   argTypes: {
     title: {
       control: 'text',
@@ -112,61 +115,40 @@ export const WithoutIcon: Story = {
 // SIZES
 // ============================================================================
 
-export const Sizes = {
-  render: () => {
-    const wrapper: React.CSSProperties = {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '3rem',
-      alignItems: 'center',
-      width: '100%',
-    };
-    const label: React.CSSProperties = {
-      margin: '0 0 0.5rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-      textAlign: 'center',
-    };
-    return (
-      <div style={wrapper}>
-        <div style={{ width: '100%' }}>
-          <p style={label}>Small</p>
-          <EmptyState
-            size="sm"
-            icon={<Inbox />}
-            title="No messages"
-            description="Your inbox is empty."
-            action={
-              <Button size="sm" color="primary">
-                Compose
-              </Button>
-            }
-          />
-        </div>
-        <div style={{ width: '100%' }}>
-          <p style={label}>Medium</p>
-          <EmptyState
-            size="md"
-            icon={<FolderOpen />}
-            title="No items yet"
-            description="Create your first item to get started."
-            action={<Button color="primary">Create item</Button>}
-          />
-        </div>
-        <div style={{ width: '100%' }}>
-          <p style={label}>Large</p>
-          <EmptyState
-            size="lg"
-            icon={<SearchX />}
-            title="No results found"
-            description="Try adjusting your filters or broadening your search to find what you're looking for."
-            action={<Button color="primary">Clear filters</Button>}
-          />
-        </div>
-      </div>
-    );
-  },
+export const Sizes: Story = {
+  render: () => (
+    <StoryStack gap="lg">
+      <StoryGroup label="Small">
+        <EmptyState
+          size="sm"
+          icon={<Inbox />}
+          title="No messages"
+          description="Your inbox is empty."
+          action={
+            <Button size="sm" color="primary">
+              Compose
+            </Button>
+          }
+        />
+      </StoryGroup>
+      <StoryGroup label="Medium">
+        <EmptyState
+          size="md"
+          icon={<FolderOpen />}
+          title="No items yet"
+          description="Create your first item to get started."
+          action={<Button color="primary">Create item</Button>}
+        />
+      </StoryGroup>
+      <StoryGroup label="Large">
+        <EmptyState
+          size="lg"
+          icon={<SearchX />}
+          title="No results found"
+          description="Try adjusting your filters or broadening your search to find what you're looking for."
+          action={<Button color="primary">Clear filters</Button>}
+        />
+      </StoryGroup>
+    </StoryStack>
+  ),
 };

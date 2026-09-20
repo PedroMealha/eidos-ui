@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Plus, Trash2, ArrowBigDownDash, ArrowRight, Replace } from 'lucide-react';
 import { Button, IconButton } from './Button.component';
+import { StoryRow } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/Button',
@@ -169,87 +170,71 @@ export const IconOnly: Story = {
 };
 
 // ============================================================================
-// EXAMPLES SHOWCASE
+// FOCUSED STORIES - one axis each, in the order the .mdx presents them
 // ============================================================================
 
-export const Examples = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const row: React.CSSProperties = {
-      display: 'flex',
-      gap: '0.75rem',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-    };
+export const Variants: Story = {
+  render: () => (
+    <StoryRow>
+      <Button variant="filled">Filled</Button>
+      <Button variant="outlined">Outlined</Button>
+      <Button variant="text">Text</Button>
+    </StoryRow>
+  ),
+};
 
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gap: '2rem 3rem',
-          padding: '1.5rem',
-        }}
-      >
-        <div>
-          <p style={label}>Variants</p>
-          <div style={row}>
-            <Button variant="filled">Filled</Button>
-            <Button variant="outlined">Outlined</Button>
-            <Button variant="text">Text</Button>
-          </div>
-        </div>
+export const Colors: Story = {
+  render: () => (
+    <StoryRow>
+      <Button color="primary">Primary</Button>
+      <Button color="secondary">Secondary</Button>
+      <Button color="success">Success</Button>
+      <Button color="danger">Danger</Button>
+      <Button color="warning">Warning</Button>
+      <Button color="info">Info</Button>
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>Colors</p>
-          <div style={row}>
-            <Button color="primary">Primary</Button>
-            <Button color="secondary">Secondary</Button>
-            <Button color="success">Success</Button>
-            <Button color="danger">Danger</Button>
-            <Button color="warning">Warning</Button>
-            <Button color="info">Info</Button>
-          </div>
-        </div>
+export const Sizes: Story = {
+  render: () => (
+    <StoryRow>
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>Sizes</p>
-          <div style={row}>
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
-          </div>
-        </div>
+export const WithIcons: Story = {
+  render: () => (
+    <StoryRow>
+      <Button preIcon={Download}>Download</Button>
+      <Button posIcon={ArrowRight}>Next</Button>
+      <Button icon={Plus} />
+    </StoryRow>
+  ),
+};
 
-        <div>
-          <p style={label}>States</p>
-          <div style={row}>
-            <Button disabled>Disabled</Button>
-            <Button loading>Loading</Button>
-            <Button tooltip="Helpful hint">With Tooltip</Button>
-          </div>
-        </div>
+export const IconButtons: Story = {
+  render: () => (
+    <StoryRow>
+      <IconButton icon={Trash2} color="danger" variant="outlined" size="sm" />
+      <IconButton icon={ArrowBigDownDash} tooltip="Icon-only button" />
+      <IconButton icon={Replace} tooltip="Icon-only button" size="lg" />
+    </StoryRow>
+  ),
+};
 
-        {/* Icons spans both columns */}
-        <div style={{ gridColumn: '1 / -1' }}>
-          <p style={label}>Icons &amp; Icon Buttons</p>
-          <div style={row}>
-            <Button preIcon={Download}>Download</Button>
-            <Button posIcon={ArrowRight}>Next</Button>
-            <Button icon={Plus} />
-            <IconButton icon={Trash2} color="danger" variant="outlined" size="sm" />
-            <IconButton icon={ArrowBigDownDash} tooltip="Icon-only button" />
-            <IconButton icon={Replace} tooltip="Icon-only button" size="lg" />
-          </div>
-        </div>
-      </div>
-    );
-  },
+export const States: Story = {
+  render: () => (
+    <StoryRow>
+      <Button disabled>Disabled</Button>
+      <Button loading>Loading</Button>
+      <Button loading loadingText="Saving...">
+        Save
+      </Button>
+      <Button tooltip="Helpful hint">With tooltip</Button>
+    </StoryRow>
+  ),
 };

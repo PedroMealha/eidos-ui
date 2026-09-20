@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { Table } from './Table.component';
 import { useState, useMemo } from 'react';
 import { Button } from '../Button';
@@ -441,7 +442,7 @@ export const WithFilters: Story = {
           showFilters={true}
           showFooter={true}
         />
-        <div style={{ marginTop: '16px', fontSize: '14px', color: '#666' }}>
+        <div style={{ marginTop: '16px', fontSize: '14px', color: 'var(--text-muted)' }}>
           <strong>Active Filters:</strong>{' '}
           {Object.keys(filters).length > 0 ? JSON.stringify(filters, null, 2) : 'None'}
         </div>
@@ -493,14 +494,14 @@ export const WithActionsMenu: Story = {
                 type: 'item',
                 label: 'View',
                 icon: Eye,
-                onClick: () => alert(`View user ${item.name}`),
+                onClick: () => action('View user')(item),
               },
               {
                 id: 'edit',
                 type: 'item',
                 label: 'Edit',
                 icon: Edit,
-                onClick: () => alert(`Edit user ${item.name}`),
+                onClick: () => action('Edit user')(item),
               },
               { id: 'sep-1', type: 'separator' },
               {
@@ -508,7 +509,7 @@ export const WithActionsMenu: Story = {
                 type: 'item',
                 label: 'Delete',
                 icon: Trash2,
-                onClick: () => alert(`Delete user ${item.name}`),
+                onClick: () => action('Delete user')(item),
               },
             ]}
           />
@@ -674,14 +675,13 @@ export const WithSelection: Story = {
               icon: Trash2,
               color: 'danger',
               variant: 'outlined',
-              onClick: (rows) =>
-                alert(`Deactivate ${rows.length} user(s): ${rows.map((r) => r.name).join(', ')}`),
+              onClick: action('Deactivate'),
             },
             {
               id: 'email',
               label: 'Email',
               icon: Eye,
-              onClick: (rows) => alert(`Email ${rows.length} user(s)`),
+              onClick: action('Email'),
             },
           ]}
         />
@@ -710,14 +710,14 @@ const cardViewColumns: TableColumn<User>[] = [
             type: 'item',
             label: 'View',
             icon: Eye,
-            onClick: () => alert(`View ${item.name}`),
+            onClick: () => action('View')(item),
           },
           {
             id: 'edit',
             type: 'item',
             label: 'Edit',
             icon: Edit,
-            onClick: () => alert(`Edit ${item.name}`),
+            onClick: () => action('Edit')(item),
           },
         ]}
       />
@@ -767,173 +767,6 @@ export const ResponsiveCardView: Story = {
           showFooter
           showPagination
           pageSize={4}
-        />
-      </div>
-    );
-  },
-};
-
-// Complete example
-export const Examples: Story = {
-  render: () => {
-    const [sortKey, setSortKey] = useState<keyof User & string>('name');
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-    const [filters, setFilters] = useState({});
-
-    const columns: TableColumn<User>[] = [
-      {
-        key: 'id',
-        label: '',
-        type: 'icon',
-        render: () => <UserCircle size={20} />,
-      },
-      {
-        key: 'name',
-        label: 'Name',
-        sortable: true,
-        filterable: true,
-        filterType: 'text',
-      },
-      {
-        key: 'email',
-        label: 'Email',
-        sortable: true,
-        filterable: true,
-        filterType: 'text',
-      },
-      {
-        key: 'role',
-        label: 'Role',
-        sortable: true,
-        filterable: true,
-        filterType: 'select',
-        filterOptions: [
-          { id: 'admin', value: 'Admin', label: 'Admin' },
-          { id: 'user', value: 'User', label: 'User' },
-          { id: 'editor', value: 'Editor', label: 'Editor' },
-        ],
-      },
-      {
-        key: 'status',
-        label: 'Status',
-        align: 'center',
-        filterable: true,
-        filterType: 'select',
-        filterOptions: [
-          { id: 'active', value: 'active', label: 'Active' },
-          { id: 'inactive', value: 'inactive', label: 'Inactive' },
-          { id: 'pending', value: 'pending', label: 'Pending' },
-        ],
-        render: (value) => {
-          const status = value as User['status'];
-          return (
-            <Chip
-              color={status === 'active' ? 'success' : status === 'inactive' ? 'danger' : 'warning'}
-              size="sm"
-            >
-              {status}
-            </Chip>
-          );
-        },
-      },
-      {
-        key: 'joinDate',
-        label: 'Join Date',
-        sortable: true,
-        filterable: true,
-        filterType: 'date',
-        dateFilterMode: 'range',
-      },
-      {
-        key: 'actions',
-        label: '',
-        type: 'icon',
-        align: 'center',
-        render: (_value, item) => (
-          <Menu
-            trigger={<Button icon={MoreVertical} variant="text" size="sm" />}
-            items={[
-              {
-                id: 'view',
-                type: 'item',
-                label: 'View',
-                icon: Eye,
-                onClick: () => alert(`View user ${item.name}`),
-              },
-              {
-                id: 'edit',
-                type: 'item',
-                label: 'Edit',
-                icon: Edit,
-                onClick: () => alert(`Edit user ${item.name}`),
-              },
-              { id: 'sep-1', type: 'separator' },
-              {
-                id: 'delete',
-                type: 'item',
-                label: 'Delete',
-                icon: Trash2,
-                onClick: () => alert(`Delete user ${item.name}`),
-              },
-            ]}
-          />
-        ),
-      },
-    ];
-
-    // Apply filters (client-side for demo)
-    let processedData = sampleUsers.filter((user) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-
-        const userValue = user[key as keyof User];
-
-        // Text filter
-        if (typeof value === 'string') {
-          return String(userValue).toLowerCase().includes(value.toLowerCase());
-        }
-
-        // Date range filter
-        if (typeof value === 'object' && value !== null && 'start' in value && 'end' in value) {
-          const dateValue = new Date(userValue as string);
-          const rangeValue = value as { start: string | null; end: string | null };
-          if (rangeValue.start && new Date(rangeValue.start) > dateValue) return false;
-          if (rangeValue.end && new Date(rangeValue.end) < dateValue) return false;
-          return true;
-        }
-
-        return true;
-      });
-    });
-
-    // Apply sorting (client-side for demo)
-    processedData = [...processedData].sort((a, b) => {
-      const aValue = String(a[sortKey as keyof User]);
-      const bValue = String(b[sortKey as keyof User]);
-      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    return (
-      <div style={{ width: '100%' }}>
-        <Table
-          data={processedData}
-          columns={columns}
-          currentSort={{ key: sortKey, direction: sortDirection }}
-          onSortChange={(key, direction) => {
-            setSortKey(key);
-            setSortDirection(direction);
-          }}
-          filters={filters}
-          onFiltersChange={setFilters}
-          showFilters={true}
-          showFooter={true}
-          showPagination={true}
-          pageSize={3}
-          pageSizeOptions={[3, 5, 10]}
-          totalItems={sampleUsers.length}
-          onRowClick={(user) => console.log('Clicked:', user)}
         />
       </div>
     );

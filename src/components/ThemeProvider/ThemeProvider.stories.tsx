@@ -73,24 +73,29 @@ const meta = {
       table: { type: { summary: '(theme: ThemeConfig) => void' } },
     },
   },
+  // `children` is required, so it lives here to satisfy the type for the
+  // render-only stories below as well as seeding the Default controls.
+  args: {
+    children: <Swatches />,
+  },
 } satisfies Meta<typeof ThemeProvider>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** With no theme supplied, nothing is written and the preset renders as-is. */
+/**
+ * With no theme supplied, nothing is written and the preset renders as-is.
+ *
+ * Args-driven, so editing `defaultTheme` in the Controls panel re-themes the
+ * swatches live - the point of the component. It previously used
+ * `render: () =>`, which ignored args, so the panel the .mdx renders was inert.
+ */
 export const Default: Story = {
-  args: { children: null },
-  render: () => (
-    <ThemeProvider>
-      <Swatches />
-    </ThemeProvider>
-  ),
+  render: (args) => <ThemeProvider {...args} />,
 };
 
 /** One base colour is enough - the ramp, shades and foregrounds are derived. */
 export const CustomPrimary: Story = {
-  args: { children: null },
   render: () => (
     <ThemeProvider defaultTheme={{ colors: { primary: '#b5179e' } }}>
       <Swatches />
@@ -100,7 +105,6 @@ export const CustomPrimary: Story = {
 
 /** Typography is scaled by a multiplier over the preset `--font-size-*` values. */
 export const Typography: Story = {
-  args: { children: null },
   render: () => (
     <ThemeProvider
       defaultTheme={{
@@ -118,7 +122,6 @@ export const Typography: Story = {
  * result the computation exists to avoid - shown to make the override visible.
  */
 export const PinnedContrast: Story = {
-  args: { children: null },
   render: () => (
     <ThemeProvider defaultTheme={{ colors: { primary: { base: '#fde047', contrast: '#ffffff' } } }}>
       <Swatches />
@@ -128,7 +131,6 @@ export const PinnedContrast: Story = {
 
 /** The preset object is exported, so a theme can be built by deriving from it. */
 export const ReadingThePreset: Story = {
-  args: { children: null },
   render: () => (
     <Card variant="outlined" padding="lg">
       <pre style={{ fontSize: 11 }}>{JSON.stringify(defaultTheme, null, 2)}</pre>

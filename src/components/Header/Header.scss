@@ -183,7 +183,7 @@
 
   &__subtitle {
     font-size: var(--font-size-sm);
-    color: var(--gray-500);
+    color: var(--text-muted);
     overflow-wrap: break-word;
   }
 
@@ -221,7 +221,7 @@
     height: var(--font-size-sm);
     // A step lighter than the label: the icon is the least informative part
     // of a fact and shouldn't compete with its value.
-    color: var(--gray-400);
+    color: var(--text-muted);
     flex-shrink: 0;
   }
 
@@ -229,7 +229,7 @@
   // the same size and weight, a few pixels apart, read as one phrase however
   // the colours differ - which is what made this row look mushed.
   &__meta-label {
-    color: var(--gray-500);
+    color: var(--text-muted);
     font-weight: var(--font-weight-normal);
     flex-shrink: 0;
   }

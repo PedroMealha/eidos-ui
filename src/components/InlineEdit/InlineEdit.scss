@@ -42,7 +42,7 @@
   .eidos-inline-edit__icon {
     display: inline-flex;
     align-items: center;
-    color: var(--gray-400);
+    color: var(--text-muted);
     opacity: 0;
     transition: opacity 0.15s ease;
     flex-shrink: 0;
@@ -62,7 +62,7 @@
   }
 
   .eidos-inline-edit__placeholder {
-    color: var(--gray-400);
+    color: var(--text-muted);
     font-style: italic;
   }
 
@@ -86,7 +86,7 @@
   // ── Disabled ──────────────────────────────────────────────────────────────
   &--disabled {
     cursor: not-allowed;
-    color: var(--gray-400);
+    color: var(--text-disabled);
   }
 
   // ── Edit mode - the Input fills the same slot ─────────────────────────────

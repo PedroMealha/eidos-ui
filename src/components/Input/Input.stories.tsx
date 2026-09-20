@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { Mail, Search, User, HelpCircle, DollarSign, Calendar } from 'lucide-react';
 import { Input } from './Input.component';
+import { StoryRow, StoryStack } from '../../story-layout.docs';
 
 const meta = {
   title: 'Forms/Input',
@@ -148,131 +150,108 @@ export const Default: Story = {
   },
 };
 
-export const Examples = {
-  render: () => {
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
-    const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '0.75rem' };
+export const CommonFields: Story = {
+  render: () => (
+    <StoryStack>
+      <Input label="Email" type="email" placeholder="Enter your email" preIcon={Mail} />
+      <Input label="Password" type="password" placeholder="Enter password" />
+      <Input label="Username" placeholder="Choose a username" preIcon={User} />
+    </StoryStack>
+  ),
+};
 
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '2rem 2.5rem',
-          padding: '1.5rem',
-        }}
-      >
-        {/* ── Row 1 ── */}
-        <div>
-          <p style={label}>Basic</p>
-          <div style={col}>
-            <Input label="Email" type="email" placeholder="Enter your email" preIcon={Mail} />
-            <Input label="Password" type="password" placeholder="Enter password" />
-            <Input label="Username" placeholder="Choose a username" preIcon={User} />
-          </div>
-        </div>
+export const Variants: Story = {
+  render: () => (
+    <StoryStack>
+      <Input variant="filled" label="Filled" placeholder="Filled (default)" />
+      <Input variant="outlined" label="Outlined" placeholder="Outlined" />
+      <Input variant="text" label="Text" placeholder="Text" />
+    </StoryStack>
+  ),
+};
 
-        <div>
-          <p style={label}>Variants</p>
-          <div style={col}>
-            <Input variant="filled" label="Filled" placeholder="Filled (default)" />
-            <Input variant="outlined" label="Outlined" placeholder="Outlined" />
-            <Input variant="text" label="Text" placeholder="Text" />
-          </div>
-        </div>
+export const Colors: Story = {
+  render: () => (
+    <StoryStack>
+      <Input color="primary" label="Primary" placeholder="Primary" />
+      <Input color="secondary" label="Secondary" placeholder="Secondary" />
+      <Input color="success" label="Success" placeholder="Success" />
+      <Input color="danger" label="Danger" placeholder="Danger" />
+    </StoryStack>
+  ),
+};
 
-        <div>
-          <p style={label}>Colors</p>
-          <div style={col}>
-            <Input color="primary" label="Primary" placeholder="Primary" />
-            <Input color="secondary" label="Secondary" placeholder="Secondary" />
-            <Input color="success" label="Success" placeholder="Success" />
-            <Input color="danger" label="Danger" placeholder="Danger" />
-          </div>
-        </div>
+export const Sizes: Story = {
+  render: () => (
+    <StoryStack>
+      <Input size="sm" label="Small" placeholder="Small" />
+      <Input size="md" label="Medium" placeholder="Medium (default)" />
+      <Input size="lg" label="Large" placeholder="Large" />
+    </StoryStack>
+  ),
+};
 
-        {/* ── Row 2 ── */}
-        <div>
-          <p style={label}>Sizes</p>
-          <div style={col}>
-            <Input size="sm" label="Small" placeholder="Small" />
-            <Input size="md" label="Medium" placeholder="Medium (default)" />
-            <Input size="lg" label="Large" placeholder="Large" />
-          </div>
-        </div>
+export const States: Story = {
+  render: () => (
+    <StoryStack>
+      <Input label="Required" placeholder="Required field" required />
+      <Input label="Disabled" placeholder="Disabled" disabled />
+      <Input label="Loading" placeholder="Loading..." loading />
+      <Input label="Error" placeholder="Invalid" error="This field is required" />
+      <Input label="Not clearable" placeholder="Type something..." clearable={false} />
+    </StoryStack>
+  ),
+};
 
-        <div>
-          <p style={label}>States</p>
-          <div style={col}>
-            <Input label="Required" placeholder="Required field" required />
-            <Input label="Disabled" placeholder="Disabled" disabled />
-            <Input label="Loading" placeholder="Loading..." loading />
-            <Input label="Error" placeholder="Invalid" error="This field is required" />
-            <Input label="No Clear" placeholder="Type something..." clearable={false} />
-          </div>
-        </div>
+export const WithIcons: Story = {
+  render: () => (
+    <StoryStack>
+      <Input label="Pre-icon" placeholder="Search..." preIcon={Search} />
+      <Input label="Post-icon" type="date" posIcon={Calendar} />
+      <Input label="Amount" type="number" placeholder="0.00" preIcon={DollarSign} />
+      <Input
+        label="Clickable icon"
+        placeholder="Type to search..."
+        posIcon={Search}
+        posIconButton
+        onPosIconClick={action('Search clicked')}
+      />
+    </StoryStack>
+  ),
+};
 
-        <div>
-          <p style={label}>Icons &amp; Actions</p>
-          <div style={col}>
-            <Input label="Pre-icon" placeholder="Search..." preIcon={Search} />
-            <Input label="Post-icon" type="date" posIcon={Calendar} />
-            <Input label="Amount" type="number" placeholder="0.00" preIcon={DollarSign} />
-            <Input
-              label="Clickable icon"
-              placeholder="Type to search..."
-              posIcon={Search}
-              posIconButton
-              onPosIconClick={() => alert('Search clicked!')}
-            />
-          </div>
-        </div>
-
-        {/* ── Row 3 ── */}
-        <div>
-          <p style={label}>Disclaimer</p>
-          <div style={col}>
-            <Input
-              label="API Key"
-              placeholder="Enter your API key"
-              disclaimerIcon={HelpCircle}
-              disclaimerContent="Found in your account settings"
-            />
-          </div>
-        </div>
-
-        <div>
-          <p style={label}>Select Style</p>
-          <div style={col}>
-            <Input label="Category" placeholder="Select a category" isSelect clearable={false} />
-          </div>
-        </div>
-
-        <div>
-          <p style={label}>Custom Width</p>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
-            <Input label="PIN" type="number" placeholder="0000" width={100} maxLength={4} />
-            <Input label="Year" type="number" placeholder="2025" width={120} />
-          </div>
-        </div>
-
-        {/* ── Full Width - spans all columns ── */}
-        <div style={{ gridColumn: '1 / -1' }}>
-          <p style={label}>Full Width</p>
-          <Input
-            label="Full Width Input"
-            placeholder="This input spans the full container width"
-            fullWidth
-          />
-        </div>
-      </div>
-    );
+export const WithDisclaimer: Story = {
+  args: {
+    label: 'API key',
+    placeholder: 'Enter your API key',
+    disclaimerIcon: HelpCircle,
+    disclaimerContent: 'Found in your account settings',
   },
+};
+
+export const SelectStyle: Story = {
+  args: {
+    label: 'Category',
+    placeholder: 'Select a category',
+    isSelect: true,
+    clearable: false,
+  },
+};
+
+export const CustomWidth: Story = {
+  render: () => (
+    <StoryRow align="flex-end">
+      <Input label="PIN" type="number" placeholder="0000" width={100} maxLength={4} />
+      <Input label="Year" type="number" placeholder="2025" width={120} />
+    </StoryRow>
+  ),
+};
+
+export const FullWidth: Story = {
+  args: {
+    label: 'Full width input',
+    placeholder: 'This input spans the full container width',
+    fullWidth: true,
+  },
+  parameters: { layout: 'padded' },
 };

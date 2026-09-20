@@ -3,50 +3,58 @@ import { Kbd } from './Kbd.component';
 import { Menu } from '../Menu';
 import type { MenuItemType } from '../Menu';
 import { Copy, Scissors, Clipboard, Undo2, Redo2 } from 'lucide-react';
+import { Button } from '../Button';
+import { StoryRow, StoryStack } from '../../story-layout.docs';
 
 const meta = {
   title: 'Elements/Kbd',
   component: Kbd,
   parameters: { layout: 'centered' },
+  // `children` is required, so it lives here to satisfy the type for the
+  // render-only stories below as well as seeding the Default controls.
   args: { children: '⌘K' },
+  argTypes: {
+    children: {
+      control: 'text',
+      description: 'The key name or symbol to display.',
+      table: { type: { summary: 'React.ReactNode' } },
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'Key cap size. Match it to the surrounding text.',
+      table: { type: { summary: '"sm" | "md" | "lg"' }, defaultValue: { summary: 'md' } },
+    },
+    className: { table: { disable: true } },
+  },
 } satisfies Meta<typeof Kbd>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ─── 1. Default ───────────────────────────────────────────────────────────────
+// ─── Default ──────────────────────────────────────────────────────────────────
 
 export const Default: Story = {
-  name: 'Default',
   args: { children: '⌘K', size: 'md' },
 };
 
-// ─── 2. Sizes ─────────────────────────────────────────────────────────────────
+// ─── Sizes ────────────────────────────────────────────────────────────────────
 
 export const Sizes: Story = {
-  name: 'Sizes',
   render: () => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <StoryRow>
       <Kbd size="sm">⌘K</Kbd>
       <Kbd size="md">⌘K</Kbd>
       <Kbd size="lg">⌘K</Kbd>
-    </div>
+    </StoryRow>
   ),
 };
 
-// ─── 3. Common keys ───────────────────────────────────────────────────────────
+// ─── Common keys ──────────────────────────────────────────────────────────────
 
 export const CommonKeys: Story = {
-  name: 'CommonKeys',
-  parameters: {
-    docs: {
-      description: {
-        story: 'A sample of common keys and modifier symbols.',
-      },
-    },
-  },
   render: () => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', maxWidth: 440 }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-sm)', maxWidth: 440 }}>
       {[
         '⌘',
         '⌥',
@@ -70,23 +78,15 @@ export const CommonKeys: Story = {
   ),
 };
 
-// ─── 4. Compound shortcuts ────────────────────────────────────────────────────
+// ─── Compound shortcuts ───────────────────────────────────────────────────────
 
 export const CompoundShortcuts: Story = {
-  name: 'CompoundShortcuts',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'For multi-key combos, place individual `<Kbd>` elements side-by-side. ' +
-          'The `+` separator is rendered as plain text between them.',
-      },
-    },
-  },
   render: () => {
-    const sep = <span style={{ color: 'var(--gray-400)', fontSize: 12 }}> + </span>;
+    const sep = (
+      <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}> + </span>
+    );
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      <StoryStack gap="sm">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Kbd>⌘</Kbd>
           {sep}
@@ -109,36 +109,25 @@ export const CompoundShortcuts: Story = {
           {sep}
           <Kbd>F4</Kbd>
         </div>
-      </div>
+      </StoryStack>
     );
   },
 };
 
-// ─── 5. Inline in prose ───────────────────────────────────────────────────────
+// ─── Inline in prose ──────────────────────────────────────────────────────────
 
 export const InlineProse: Story = {
-  name: 'InlineProse',
   render: () => (
-    <p style={{ fontSize: 14, color: 'var(--gray-700)', lineHeight: 1.8 }}>
+    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-700)', lineHeight: 1.8 }}>
       Press <Kbd>⌘</Kbd> <Kbd>K</Kbd> to open the command palette, <Kbd>Esc</Kbd> to dismiss, or{' '}
       <Kbd>↑</Kbd> / <Kbd>↓</Kbd> to navigate results.
     </p>
   ),
 };
 
-// ─── 6. In a Menu (with shortcut prop) ────────────────────────────────────────
+// ─── In a Menu (via the `shortcut` prop) ──────────────────────────────────────
 
 export const InMenu: Story = {
-  name: 'InMenu',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'The `shortcut` prop on a `MenuItem` is automatically rendered as a `<Kbd>`. ' +
-          'No extra work required - just pass the string.',
-      },
-    },
-  },
   render: () => {
     const items: MenuItemType[] = [
       { type: 'item', id: 'undo', label: 'Undo', icon: Undo2, shortcut: '⌘Z', onClick: () => {} },
@@ -155,11 +144,6 @@ export const InMenu: Story = {
         onClick: () => {},
       },
     ];
-    return (
-      <Menu
-        trigger={<button style={{ padding: '6px 12px', cursor: 'pointer' }}>Open menu ▾</button>}
-        items={items}
-      />
-    );
+    return <Menu trigger={<Button variant="outlined">Open menu</Button>} items={items} />;
   },
 };

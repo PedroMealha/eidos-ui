@@ -148,7 +148,7 @@ export const AsyncSearch: Story = {
           hint="Type to search. Results are mocked with a 600 ms delay."
         />
         {selected && (
-          <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: '#64748b' }}>
+          <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             Selected value: <strong>{selected}</strong>
           </p>
         )}
@@ -178,7 +178,7 @@ export const AllowFreeText: Story = {
           hint="You can pick a suggestion or type a custom value."
         />
         {value && (
-          <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: '#64748b' }}>
+          <p style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             Committed: <strong>{value}</strong>
           </p>
         )}
@@ -254,7 +254,7 @@ export const CustomRenderOption: Story = {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{option.label}</div>
           {option.group && (
-            <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{option.group}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{option.group}</div>
           )}
         </div>
       </div>
@@ -316,7 +316,7 @@ export const Controlled: Story = {
                 padding: '0.25rem 0.625rem',
                 fontSize: '0.78rem',
                 borderRadius: 6,
-                border: '1.5px solid #cbd5e1',
+                border: '1.5px solid var(--gray-300)',
                 background: value === c.value ? '#eef2ff' : '#fff',
                 color: value === c.value ? '#4338ca' : '#475569',
                 cursor: 'pointer',
@@ -341,7 +341,7 @@ export const Controlled: Story = {
             Clear
           </button>
         </div>
-        <p style={{ fontSize: '0.85rem', color: '#64748b', margin: 0 }}>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
           Current value: <strong>{value || '(none)'}</strong>
         </p>
       </div>

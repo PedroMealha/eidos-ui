@@ -41,7 +41,11 @@ Use the indeterminate state when a parent checkbox represents a group where some
 
 ## Disabled
 
+A disabled checkbox is exempt from WCAG's contrast minimum - it is meant to read as unavailable - which is why it uses `--text-disabled` rather than `--text-muted`.
+
 <Canvas of={CheckboxStories.Disabled} />
+
+<Canvas of={CheckboxStories.DisabledChecked} />
 
 ## With error
 

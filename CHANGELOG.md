@@ -13,6 +13,24 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `--text-muted` and `--text-disabled` tokens for text colour, so a raw
+  `--gray-N` surface step is never picked for a label again.
+
+### Fixed
+
+- Muted text meets WCAG 1.4.3 AA. 99 declarations across 39 components painted
+  placeholders, hints, timestamps, counts and empty-state copy in
+  `--gray-400`, which is 2.56:1 on white against the required 4.5:1.
+- `Dropdown`'s trigger wrapper no longer sets `role="button"`, which wrapped
+  the real control in a second, non-keyboard-operable one - invalid ARIA
+  across `Select`, `Combobox`, `Menu`, `Popover`, `ContextMenu`, `ColorPicker`
+  and `TagInput`.
+- `Skeleton` and `VirtualList` accept a unitless numeric string for `width`
+  and `height`; `'240'` previously produced an invalid CSS declaration that
+  browsers dropped silently, leaving the element unsized.
+
 ## [3.2.1] - 2026-09-20
 
 ### Fixed

@@ -117,7 +117,7 @@ export const WithError: Story = {
 // SHOWCASE STORIES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => {
     const row: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
     return (
@@ -130,7 +130,7 @@ export const Sizes = {
   },
 };
 
-export const Colors = {
+export const Colors: Story = {
   render: () => {
     const row: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '1rem' };
     return (

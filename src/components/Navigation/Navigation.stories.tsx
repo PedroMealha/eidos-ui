@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { Meta } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { Navigation } from './Navigation.component';
 import type { NavigationItem } from './Navigation.types';
@@ -124,14 +125,20 @@ const meta = {
     },
     className: { table: { disable: true } },
   },
+  // `brand` and `items` are required. Declaring them here satisfies the type
+  // for the render-only stories below *and* seeds the Default controls - the
+  // file previously dropped the `Story` annotation entirely to dodge this,
+  // which left every story untyped and Default's Controls panel inert.
+  args: {
+    brand: { name: 'Eidos', onClick: action('Brand clicked') },
+    items: ITEMS.map((item, i) => ({ ...item, active: i === 0 })),
+    defaultCollapsed: false,
+    collapsible: true,
+  },
 } satisfies Meta<typeof Navigation>;
 
 export default meta;
-
-// Stories use a plain object (no `Story` type annotation). This mirrors the
-// CommandPalette pattern in the codebase and avoids the Storybook TS error
-// that would otherwise require required props (brand, items) inside `args`
-// even when a render function is used.
+type Story = StoryObj<typeof meta>;
 
 /**
  * Without a `logo`, the brand mark falls back to an initials `Avatar` built
@@ -139,21 +146,25 @@ export default meta;
  * it to an icon-only width - no `useState` required, `Navigation` manages
  * this itself.
  */
-export const Default = {
-  render: () => (
-    <Navigation
-      brand={{ name: 'Eidos', onClick: () => alert('Brand clicked') }}
-      items={useDemoItems()}
-      footer={
-        <>
-          <Divider />
-          <Pill color="primary" variant="outlined" size="sm">
-            Admin
-          </Pill>
-        </>
-      }
-    />
-  ),
+export const Default: Story = {
+  // Spreads `args` so the panel drives the rail; `items` still comes from the
+  // local-state hook so clicking an item moves the active highlight.
+  render: function DefaultStory(args) {
+    return (
+      <Navigation
+        {...args}
+        items={useDemoItems()}
+        footer={
+          <>
+            <Divider />
+            <Pill color="primary" variant="outlined" size="sm">
+              Admin
+            </Pill>
+          </>
+        }
+      />
+    );
+  },
 };
 
 /**
@@ -162,7 +173,7 @@ export const Default = {
  * already bakes the brand name into the image (passing both is a type
  * error, same as `Footer`'s `copyright`/`component`).
  */
-export const WithSquareLogo = {
+export const WithSquareLogo: Story = {
   render: () => (
     <Navigation brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }} items={useDemoItems()} />
   ),
@@ -173,7 +184,7 @@ export const WithSquareLogo = {
  * height as the square logo, scaling its width to match its own aspect
  * ratio - up to a maximum width, so it can never overflow the rail.
  */
-export const WithHorizontalLogo = {
+export const WithHorizontalLogo: Story = {
   render: () => (
     <Navigation brand={{ logo: { src: HORIZONTAL_LOGO, alt: 'Eidos' } }} items={useDemoItems()} />
   ),
@@ -184,7 +195,7 @@ export const WithHorizontalLogo = {
  * orientations - it never grows taller than the brand row, regardless of
  * its narrow aspect ratio.
  */
-export const WithVerticalLogo = {
+export const WithVerticalLogo: Story = {
   render: () => (
     <Navigation brand={{ logo: { src: VERTICAL_LOGO, alt: 'Eidos' } }} items={useDemoItems()} />
   ),
@@ -195,7 +206,7 @@ export const WithVerticalLogo = {
  * overflowing it - the brand mark, footer, and toggle all stay fixed in
  * place above/below the scrolling item list.
  */
-export const WithManyItems = {
+export const WithManyItems: Story = {
   render: () => {
     const [activeId, setActiveId] = useState('item-0');
     const items: NavigationItem[] = Array.from({ length: 20 }, (_, i) => ({
@@ -222,7 +233,7 @@ export const WithManyItems = {
 /**
  * `disabled: true` renders an item at reduced opacity and blocks clicks.
  */
-export const WithDisabledItem = {
+export const WithDisabledItem: Story = {
   render: () => {
     const items = useDemoItems();
     items[2] = { ...items[2], disabled: true, onClick: undefined };
@@ -234,7 +245,7 @@ export const WithDisabledItem = {
  * `defaultCollapsed` sets the initial state while still leaving Navigation
  * uncontrolled - the toggle button still works normally.
  */
-export const DefaultCollapsed = {
+export const DefaultCollapsed: Story = {
   render: () => (
     <Navigation
       brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
@@ -250,7 +261,7 @@ export const DefaultCollapsed = {
  * Resize your actual browser window to see it react; the toggle button
  * still works normally in between crossings.
  */
-export const CollapseBelowBreakpoint = {
+export const CollapseBelowBreakpoint: Story = {
   render: () => (
     <Navigation
       brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
@@ -276,7 +287,7 @@ export const CollapseBelowBreakpoint = {
  * be impossible: the breakpoint applied its answer on mount regardless, so a
  * rail asked to start collapsed sprang open on the first commit.
  */
-export const CollapseDisabled = {
+export const CollapseDisabled: Story = {
   render: () => (
     <Navigation
       brand={{ logo: { src: SQUARE_LOGO, alt: 'Eidos' } }}
@@ -300,7 +311,7 @@ export const CollapseDisabled = {
  * breakpoint. `collapsible={false}` also hides the built-in toggle button
  * entirely when the only way to change it should be external.
  */
-export const Controlled = {
+export const Controlled: Story = {
   render: () => {
     const [collapsed, setCollapsed] = useState(false);
     return (

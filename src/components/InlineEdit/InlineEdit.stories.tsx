@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InlineEdit } from './InlineEdit.component';
 import { Button } from '../Button/Button.component';
@@ -113,6 +114,9 @@ const meta = {
     },
     className: { table: { disable: true } },
   },
+  // Required props live at meta level so the render-only stories below
+  // satisfy the type, and so Default's controls start from real values.
+  args: { value: 'Page title' },
 } satisfies Meta<typeof InlineEdit>;
 
 export default meta;
@@ -138,7 +142,7 @@ export const Default: Story = {
 // SIZES
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => {
     const col: React.CSSProperties = {
       display: 'flex',
@@ -152,7 +156,7 @@ export const Sizes = {
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
 
     return (
@@ -178,7 +182,7 @@ export const Sizes = {
 // TRIGGER MODES
 // ============================================================================
 
-export const Trigger = {
+export const Trigger: Story = {
   render: () => {
     const [clickValue, setClickValue] = useState('Click to edit');
     const [dblValue, setDblValue] = useState('Double-click to edit');
@@ -190,7 +194,7 @@ export const Trigger = {
       alignItems: 'flex-start',
     };
     const row: React.CSSProperties = { display: 'flex', gap: '2.5rem', alignItems: 'flex-start' };
-    const caption: React.CSSProperties = { fontSize: '0.75rem', color: '#94a3b8' };
+    const caption: React.CSSProperties = { fontSize: '0.75rem', color: 'var(--text-muted)' };
 
     return (
       <div style={row}>
@@ -243,7 +247,7 @@ export const Disabled: Story = {
 // CUSTOM DISPLAY
 // ============================================================================
 
-export const CustomDisplay = {
+export const CustomDisplay: Story = {
   render: () => {
     const [value, setValue] = useState('Custom styled text');
 
@@ -262,7 +266,7 @@ export const CustomDisplay = {
 // CONTROLLED - editing state driven externally
 // ============================================================================
 
-export const Controlled = {
+export const Controlled: Story = {
   render: () => {
     const [value, setValue] = useState('Controlled value');
     const [editing, setEditing] = useState(false);
@@ -275,7 +279,7 @@ export const Controlled = {
       fontSize: '0.7rem',
       fontWeight: 600,
       background: editing ? '#dbeafe' : '#f1f5f9',
-      color: editing ? '#1d4ed8' : '#64748b',
+      color: editing ? 'var(--primary-color)' : 'var(--text-muted)',
     };
 
     return (
@@ -300,7 +304,7 @@ export const Controlled = {
 // WITH CALLBACKS
 // ============================================================================
 
-export const WithCallback = {
+export const WithCallback: Story = {
   render: () => {
     const [value, setValue] = useState('Edit me');
 
@@ -309,9 +313,9 @@ export const WithCallback = {
         value={value}
         onConfirm={(v) => {
           setValue(v);
-          alert(`Confirmed: ${v}`);
+          action('Confirmed')(v);
         }}
-        onCancel={() => alert('Cancelled')}
+        onCancel={action('Cancelled')}
       />
     );
   },

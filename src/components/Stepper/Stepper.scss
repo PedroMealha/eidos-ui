@@ -151,7 +151,7 @@
   flex-shrink: 0;
   border: 2px solid var(--gray-300);
   background: var(--white);
-  color: var(--gray-400);
+  color: var(--text-muted);
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
@@ -309,11 +309,11 @@
   color: var(--dark-color);
 
   .eidos-stepper-step--pending & {
-    color: var(--gray-400);
+    color: var(--text-muted);
   }
 }
 
 .eidos-stepper-description {
   @include font-size(xs);
-  color: var(--gray-400);
+  color: var(--text-muted);
 }

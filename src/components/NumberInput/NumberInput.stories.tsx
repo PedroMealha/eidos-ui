@@ -124,7 +124,7 @@ export const WithMinMax: Story = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: 240 }}>
         <NumberInput value={val} onChange={setVal} min={1} max={10} step={1} label="Quantity" />
-        <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748b' }}>
+        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>
           Current value: <strong>{val}</strong>
         </p>
       </div>
@@ -164,7 +164,7 @@ export const Sizes: Story = {
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '0.07em',
-      color: '#94a3b8',
+      color: 'var(--text-muted)',
     };
     return (
       <div style={col}>

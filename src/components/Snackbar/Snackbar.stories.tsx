@@ -1,26 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { SnackbarProvider, SnackbarContainer } from './index';
 import { useSnackbar } from './Snackbar.hooks';
 import { Button } from '../Button';
 import { UserCircle } from 'lucide-react';
+import type { SnackbarVariant } from './Snackbar.types';
+import { StoryLabel } from '../../story-layout.docs';
 
-const label: React.CSSProperties = {
-  marginBottom: '0.5rem',
-  fontSize: '0.7rem',
-  fontWeight: 600,
-  textTransform: 'uppercase',
-  letterSpacing: '0.07em',
-  color: '#94a3b8',
-};
-
-// Wrapper component used by the Examples story
+// Fires one of each variant, so they can be compared without flipping the
+// playground's `variant` control four times.
 const SnackbarDemo = () => {
   const { showSuccess, showError, showWarning, showInfo, showSnackbar, clearAll } = useSnackbar();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.5rem' }}>
       <div>
-        <p style={label}>Variants</p>
+        <StoryLabel>Variants</StoryLabel>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button onClick={() => showSuccess('Operation completed successfully!')}>Success</Button>
           <Button onClick={() => showError('An error occurred!')}>Error</Button>
@@ -32,12 +27,12 @@ const SnackbarDemo = () => {
       </div>
 
       <div>
-        <p style={label}>With Actions</p>
+        <StoryLabel>With Actions</StoryLabel>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button
             onClick={() =>
               showSuccess('File uploaded successfully', {
-                action: { label: 'View', onClick: () => alert('Viewing file...') },
+                action: { label: 'View', onClick: action('Viewing file...') },
               })
             }
           >
@@ -46,7 +41,7 @@ const SnackbarDemo = () => {
           <Button
             onClick={() =>
               showError('Failed to delete item', {
-                action: { label: 'Retry', onClick: () => alert('Retrying...') },
+                action: { label: 'Retry', onClick: action('Retrying...') },
               })
             }
           >
@@ -55,7 +50,7 @@ const SnackbarDemo = () => {
           <Button
             onClick={() =>
               showWarning('You have unsaved changes', {
-                action: { label: 'Save', onClick: () => alert('Saving...') },
+                action: { label: 'Save', onClick: action('Saving...') },
                 duration: 0,
               })
             }
@@ -66,7 +61,7 @@ const SnackbarDemo = () => {
       </div>
 
       <div>
-        <p style={label}>Duration</p>
+        <StoryLabel>Duration</StoryLabel>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button onClick={() => showSuccess('Stays 10 seconds', { duration: 10000 })}>10s</Button>
           <Button onClick={() => showError('Stays 2 seconds', { duration: 2000 })}>2s</Button>
@@ -75,7 +70,7 @@ const SnackbarDemo = () => {
       </div>
 
       <div>
-        <p style={label}>Advanced</p>
+        <StoryLabel>Advanced</StoryLabel>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <Button
             onClick={() => {
@@ -94,7 +89,7 @@ const SnackbarDemo = () => {
                     <UserCircle size={40} style={{ color: '#667eea' }} />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '14px' }}>New Message</div>
-                      <div style={{ fontSize: '13px', color: '#666' }}>
+                      <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                         John Doe sent you a message
                       </div>
                     </div>
@@ -116,8 +111,20 @@ const SnackbarDemo = () => {
   );
 };
 
-// Meta configuration for Storybook
-const meta: Meta = {
+/**
+ * `Snackbar` has no props of its own - it is a provider plus the `useSnackbar`
+ * hook - so there is nothing for Storybook to infer controls from. These args
+ * describe the *options object* the hook takes instead, which is the thing a
+ * reader actually wants to experiment with.
+ */
+interface SnackbarPlaygroundArgs {
+  message: string;
+  variant: SnackbarVariant;
+  duration: number;
+  withAction: boolean;
+}
+
+const meta: Meta<SnackbarPlaygroundArgs> = {
   title: 'Overlays/Snackbar',
   decorators: [
     (Story) => (
@@ -136,99 +143,73 @@ const meta: Meta = {
       },
     },
   },
+  args: {
+    message: 'Your changes have been saved.',
+    variant: 'success',
+    duration: 4000,
+    withAction: false,
+  },
+  argTypes: {
+    message: {
+      control: 'text',
+      description: 'Text shown in the toast.',
+      table: { type: { summary: 'string' } },
+    },
+    variant: {
+      control: 'inline-radio',
+      options: ['success', 'danger', 'warning', 'info'],
+      description: 'Colour and icon of the toast.',
+      table: {
+        type: { summary: '"success" | "danger" | "warning" | "info"' },
+        defaultValue: { summary: 'info' },
+      },
+    },
+    duration: {
+      control: { type: 'number', step: 500 },
+      description: 'Auto-dismiss delay in ms. `0` keeps the toast until closed manually.',
+      table: { type: { summary: 'number' }, defaultValue: { summary: '4000' } },
+    },
+    withAction: {
+      control: 'boolean',
+      description: 'Adds a labelled action button inside the toast.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+  },
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<SnackbarPlaygroundArgs>;
+
+// ─── Default - the args-driven playground ─────────────────────────────────────
+
+const Playground = ({ message, variant, duration, withAction }: SnackbarPlaygroundArgs) => {
+  const { showSnackbar } = useSnackbar();
+  return (
+    <div style={{ padding: 'var(--spacing-lg)' }}>
+      <Button
+        onClick={() =>
+          showSnackbar({
+            message,
+            variant,
+            duration,
+            ...(withAction ? { action: { label: 'Undo', onClick: action('Undo clicked') } } : {}),
+          })
+        }
+      >
+        Show snackbar
+      </Button>
+    </div>
+  );
+};
 
 export const Default: Story = {
+  render: (args) => <Playground {...args} />,
+};
+
+// ─── All variants ─────────────────────────────────────────────────────────────
+
+export const AllVariants: Story = {
   render: () => <SnackbarDemo />,
-  parameters: {
-    docs: {
-      source: {
-        code: `
-const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
-
-<button onClick={() => showSuccess('Changes saved!')}>Success</button>
-<button onClick={() => showError('An error occurred!')}>Error</button>
-<button onClick={() => showWarning('Please review your changes.')}>Warning</button>
-<button onClick={() => showInfo("Here's some useful information.")}>Info</button>`.trim(),
-      },
-    },
-  },
-};
-
-export const Examples: Story = {
-  render: () => <SnackbarDemo />,
-  parameters: {
-    docs: {
-      source: {
-        code: `
-const { showSuccess, showError, showWarning, showInfo } = useSnackbar();
-
-<button onClick={() => showSuccess('Changes saved!')}>Success</button>
-<button onClick={() => showError('An error occurred!')}>Error</button>
-<button onClick={() => showWarning('Please review your changes.')}>Warning</button>
-<button onClick={() => showInfo("Here's some useful information.")}>Info</button>`.trim(),
-      },
-    },
-  },
-};
-
-export const SuccessVariant: Story = {
-  render: () => {
-    const { showSuccess } = useSnackbar();
-
-    return (
-      <div style={{ padding: '20px' }}>
-        <Button onClick={() => showSuccess('Operation completed successfully!')}>
-          Show Success Notification
-        </Button>
-      </div>
-    );
-  },
-};
-
-export const ErrorVariant: Story = {
-  render: () => {
-    const { showError } = useSnackbar();
-
-    return (
-      <div style={{ padding: '20px' }}>
-        <Button onClick={() => showError('An error occurred while processing your request.')}>
-          Show Error Notification
-        </Button>
-      </div>
-    );
-  },
-};
-
-export const WarningVariant: Story = {
-  render: () => {
-    const { showWarning } = useSnackbar();
-
-    return (
-      <div style={{ padding: '20px' }}>
-        <Button onClick={() => showWarning('Warning: Please review your changes before saving.')}>
-          Show Warning Notification
-        </Button>
-      </div>
-    );
-  },
-};
-
-export const InfoVariant: Story = {
-  render: () => {
-    const { showInfo } = useSnackbar();
-
-    return (
-      <div style={{ padding: '20px' }}>
-        <Button onClick={() => showInfo("Here's some useful information for you.")}>
-          Show Info Notification
-        </Button>
-      </div>
-    );
-  },
 };
 
 export const WithAction: Story = {
@@ -242,7 +223,7 @@ export const WithAction: Story = {
             showSuccess('File uploaded successfully', {
               action: {
                 label: 'View',
-                onClick: () => alert('Opening file...'),
+                onClick: action('Opening file...'),
               },
             })
           }
@@ -311,7 +292,7 @@ export const CustomComponent: Story = {
                     <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>
                       New Message
                     </div>
-                    <div style={{ fontSize: '13px', color: '#666' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                       John Doe: "Hey, can we schedule a meeting?"
                     </div>
                   </div>
@@ -321,7 +302,7 @@ export const CustomComponent: Story = {
               duration: 8000,
               action: {
                 label: 'Reply',
-                onClick: () => alert('Opening chat...'),
+                onClick: action('Opening chat...'),
               },
             })
           }

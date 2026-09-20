@@ -15,6 +15,9 @@ const meta = {
     items: { table: { disable: true } },
     className: { table: { disable: true } },
   },
+  // Required props live at meta level so the render-only stories below
+  // satisfy the type, and so Default's controls start from real values.
+  args: { items: [] },
 } satisfies Meta<typeof Timeline>;
 
 export default meta;
@@ -134,7 +137,7 @@ export const Simple: Story = {
 // ALL COLORS - one item per color variant
 // ============================================================================
 
-export const AllColors = {
+export const AllColors: Story = {
   render: () => (
     <Timeline
       items={[

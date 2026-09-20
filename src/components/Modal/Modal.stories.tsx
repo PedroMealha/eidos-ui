@@ -1,16 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import { useState, type ComponentProps } from 'react';
 import { CircleAlert, CircleCheck, Info, CircleX, Trash2 } from 'lucide-react';
 import { Modal } from './Modal.component';
 import { Button } from '../Button';
+import { StoryRow } from '../../story-layout.docs';
 
 const meta = {
   title: 'Overlays/Modal',
   component: Modal,
   parameters: { layout: 'centered' },
+  // `isOpen`, `onClose` and `children` are required, so they live here to
+  // satisfy the type for the render-only stories below as well as seeding the
+  // Default controls. Overlays always start closed - see the .mdx note.
   args: {
     isOpen: false,
     onClose: () => {},
+    children: <p>This is a basic modal with default styling.</p>,
   },
   argTypes: {
     isOpen: {
@@ -113,237 +119,159 @@ const [isOpen, setIsOpen] = useState(false);
   },
 };
 
-export const Examples = {
-  render: () => {
-    const [basicOpen, setBasicOpen] = useState(false);
-    const [infoOpen, setInfoOpen] = useState(false);
-    const [successOpen, setSuccessOpen] = useState(false);
-    const [warningOpen, setWarningOpen] = useState(false);
-    const [dangerOpen, setDangerOpen] = useState(false);
-    const [actionsOpen, setActionsOpen] = useState(false);
-    const [sizesOpen, setSizesOpen] = useState<'sm' | 'md' | 'lg' | 'full' | null>(null);
-    const [stringIconOpen, setStringIconOpen] = useState(false);
+// The `Examples` story this replaces drove both its "With Actions" and its
+// "Complex Example" modal from the same `actionsOpen` state, so either trigger
+// opened both modals stacked on top of each other. Splitting gives each story
+// its own state and makes that class of mistake impossible.
 
-    const label: React.CSSProperties = {
-      marginBottom: '0.625rem',
-      fontSize: '0.7rem',
-      fontWeight: 600,
-      textTransform: 'uppercase',
-      letterSpacing: '0.07em',
-      color: '#94a3b8',
-    };
+/** Trigger + modal pair sharing one piece of local open state. */
+const ModalDemo = ({
+  triggerLabel,
+  children,
+  ...modalProps
+}: { triggerLabel: string } & Omit<ComponentProps<typeof Modal>, 'isOpen' | 'onClose'>) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)}>{triggerLabel}</Button>
+      <Modal {...modalProps} isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        {children}
+      </Modal>
+    </>
+  );
+};
 
+export const Types: Story = {
+  render: () => (
+    <StoryRow>
+      <ModalDemo triggerLabel="Info" title="Information" icon={Info} type="info">
+        <p>This is an informational modal with an icon.</p>
+      </ModalDemo>
+      <ModalDemo triggerLabel="Success" title="Success!" icon={CircleCheck} type="success">
+        <p>Your action was completed successfully.</p>
+      </ModalDemo>
+      <ModalDemo triggerLabel="Warning" title="Warning" icon={CircleAlert} type="warning">
+        <p>Please review the following information before proceeding.</p>
+      </ModalDemo>
+      <ModalDemo triggerLabel="Danger" title="Delete item" icon={CircleX} type="danger">
+        <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+      </ModalDemo>
+    </StoryRow>
+  ),
+};
+
+export const WithStringIcon: Story = {
+  render: () => (
+    <ModalDemo
+      triggerLabel="Open with string icon"
+      title="Delete confirmation"
+      icon="trash-2"
+      type="danger"
+    >
+      <p>
+        The <code>icon</code> prop accepts a Lucide component or its kebab-case name.
+      </p>
+    </ModalDemo>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <StoryRow>
+      <ModalDemo triggerLabel="Small" title="Small modal" size="sm">
+        <p>Small - max-width 400px.</p>
+      </ModalDemo>
+      <ModalDemo triggerLabel="Medium" title="Medium modal" size="md">
+        <p>Medium - max-width 600px, the default.</p>
+      </ModalDemo>
+      <ModalDemo triggerLabel="Large" title="Large modal" size="lg">
+        <p>Large - max-width 800px.</p>
+      </ModalDemo>
+      <ModalDemo triggerLabel="Full screen" title="Full screen modal" size="full">
+        <p>Full - 95% of the viewport.</p>
+      </ModalDemo>
+    </StoryRow>
+  ),
+};
+
+export const WithActions: Story = {
+  render: function WithActionsStory() {
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', padding: '1.5rem' }}>
-        <div>
-          <p style={label}>Basic</p>
-          <Button onClick={() => setBasicOpen(true)}>Open Basic Modal</Button>
-          <Modal isOpen={basicOpen} onClose={() => setBasicOpen(false)} title="Welcome">
-            <p>This is a simple modal with just a title and content.</p>
-          </Modal>
-        </div>
+      <>
+        <Button onClick={() => setIsOpen(true)}>Open modal with actions</Button>
+        <Modal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title="Confirm action"
+          icon={CircleAlert}
+          type="warning"
+          actions={[
+            { id: 'cancel', label: 'Cancel', variant: 'outlined', onClick: () => setIsOpen(false) },
+            {
+              id: 'confirm',
+              label: 'Confirm',
+              variant: 'filled',
+              color: 'danger',
+              onClick: () => {
+                action('Action confirmed')();
+                setIsOpen(false);
+              },
+            },
+          ]}
+        >
+          <p>This modal includes action buttons in the footer.</p>
+        </Modal>
+      </>
+    );
+  },
+};
 
-        <div>
-          <p style={label}>Types</p>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Button variant="filled" color="primary" onClick={() => setInfoOpen(true)}>
-              Info Modal
-            </Button>
-            <Button variant="filled" color="success" onClick={() => setSuccessOpen(true)}>
-              Success Modal
-            </Button>
-            <Button variant="filled" color="secondary" onClick={() => setWarningOpen(true)}>
-              Warning Modal
-            </Button>
-            <Button variant="filled" color="danger" onClick={() => setDangerOpen(true)}>
-              Danger Modal
-            </Button>
+export const DestructiveConfirmation: Story = {
+  render: function DestructiveConfirmationStory() {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <>
+        <Button color="danger" onClick={() => setIsOpen(true)}>
+          Delete account
+        </Button>
+        <Modal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          title="Delete account"
+          icon={Trash2}
+          type="danger"
+          size="md"
+          actions={[
+            { id: 'cancel', label: 'Cancel', variant: 'text', onClick: () => setIsOpen(false) },
+            {
+              id: 'delete',
+              label: 'Delete account',
+              variant: 'filled',
+              color: 'danger',
+              onClick: () => {
+                action('Account deleted')();
+                setIsOpen(false);
+              },
+            },
+          ]}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+            <p>
+              <strong>Are you sure you want to delete your account?</strong>
+            </p>
+            <p>This action will:</p>
+            <ul style={{ margin: 0, paddingLeft: 'var(--spacing-lg)' }}>
+              <li>Permanently delete all your data</li>
+              <li>Cancel all active subscriptions</li>
+              <li>Remove access to all services</li>
+            </ul>
+            <p style={{ color: 'var(--danger-color)', fontWeight: 'var(--font-weight-semibold)' }}>
+              This action cannot be undone.
+            </p>
           </div>
-
-          <Modal
-            isOpen={infoOpen}
-            onClose={() => setInfoOpen(false)}
-            title="Information"
-            icon={Info}
-            type="info"
-          >
-            <p>This is an informational modal with an icon.</p>
-          </Modal>
-
-          <Modal
-            isOpen={successOpen}
-            onClose={() => setSuccessOpen(false)}
-            title="Success!"
-            icon={CircleCheck}
-            type="success"
-          >
-            <p>Your action was completed successfully!</p>
-          </Modal>
-
-          <Modal
-            isOpen={warningOpen}
-            onClose={() => setWarningOpen(false)}
-            title="Warning"
-            icon={CircleAlert}
-            type="warning"
-          >
-            <p>Please review the following information before proceeding.</p>
-          </Modal>
-
-          <Modal
-            isOpen={dangerOpen}
-            onClose={() => setDangerOpen(false)}
-            title="Delete Item"
-            icon={CircleX}
-            type="danger"
-          >
-            <p>Are you sure you want to delete this item? This action cannot be undone.</p>
-          </Modal>
-        </div>
-
-        <div>
-          <p style={label}>With Icon</p>
-          <Button onClick={() => setStringIconOpen(true)}>Open with String Icon</Button>
-          <Modal
-            isOpen={stringIconOpen}
-            onClose={() => setStringIconOpen(false)}
-            title="Delete Confirmation"
-            icon="trash-2"
-            type="danger"
-          >
-            <p>String-based icon example using "trash-2" instead of component.</p>
-          </Modal>
-        </div>
-
-        <div>
-          <p style={label}>With Actions</p>
-          <Button onClick={() => setActionsOpen(true)}>Open Modal with Actions</Button>
-          <Modal
-            isOpen={actionsOpen}
-            onClose={() => setActionsOpen(false)}
-            title="Confirm Action"
-            icon={CircleAlert}
-            type="warning"
-            actions={[
-              {
-                id: 'cancel',
-                label: 'Cancel',
-                variant: 'outlined',
-                onClick: () => setActionsOpen(false),
-              },
-              {
-                id: 'confirm',
-                label: 'Confirm',
-                variant: 'filled',
-                color: 'danger',
-                onClick: () => {
-                  alert('Action confirmed!');
-                  setActionsOpen(false);
-                },
-              },
-            ]}
-          >
-            <p>This modal includes action buttons in the footer.</p>
-            <p>Click "Confirm" to proceed or "Cancel" to close.</p>
-          </Modal>
-        </div>
-
-        <div>
-          <p style={label}>Sizes</p>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Button onClick={() => setSizesOpen('sm')}>Small</Button>
-            <Button onClick={() => setSizesOpen('md')}>Medium</Button>
-            <Button onClick={() => setSizesOpen('lg')}>Large</Button>
-            <Button onClick={() => setSizesOpen('full')}>Full Screen</Button>
-          </div>
-
-          <Modal
-            isOpen={sizesOpen === 'sm'}
-            onClose={() => setSizesOpen(null)}
-            title="Small Modal"
-            size="sm"
-          >
-            <p>This is a small modal (max-width: 400px).</p>
-          </Modal>
-
-          <Modal
-            isOpen={sizesOpen === 'md'}
-            onClose={() => setSizesOpen(null)}
-            title="Medium Modal"
-            size="md"
-          >
-            <p>This is a medium modal (max-width: 600px) - default size.</p>
-          </Modal>
-
-          <Modal
-            isOpen={sizesOpen === 'lg'}
-            onClose={() => setSizesOpen(null)}
-            title="Large Modal"
-            size="lg"
-          >
-            <p>This is a large modal (max-width: 800px).</p>
-            <p>It can contain more content.</p>
-          </Modal>
-
-          <Modal
-            isOpen={sizesOpen === 'full'}
-            onClose={() => setSizesOpen(null)}
-            title="Full Screen Modal"
-            size="full"
-          >
-            <p>This modal takes up 95% of the viewport.</p>
-            <p>Perfect for forms or detailed content.</p>
-          </Modal>
-        </div>
-
-        <div>
-          <p style={label}>Complex Example</p>
-          <Button onClick={() => setActionsOpen(true)}>Open Complex Modal</Button>
-          <Modal
-            isOpen={actionsOpen}
-            onClose={() => setActionsOpen(false)}
-            title="Delete Account"
-            icon={Trash2}
-            type="danger"
-            size="md"
-            actions={[
-              {
-                id: 'cancel',
-                label: 'Cancel',
-                variant: 'text',
-                onClick: () => setActionsOpen(false),
-              },
-              {
-                id: 'delete',
-                label: 'Delete Account',
-                variant: 'filled',
-                color: 'danger',
-                onClick: () => {
-                  alert('Account deleted!');
-                  setActionsOpen(false);
-                },
-              },
-            ]}
-          >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <p>
-                <strong>Are you sure you want to delete your account?</strong>
-              </p>
-              <p>This action will:</p>
-              <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-                <li>Permanently delete all your data</li>
-                <li>Cancel all active subscriptions</li>
-                <li>Remove access to all services</li>
-              </ul>
-              <p
-                style={{ color: 'var(--danger-color)', fontWeight: 'var(--font-weight-semibold)' }}
-              >
-                This action cannot be undone.
-              </p>
-            </div>
-          </Modal>
-        </div>
-      </div>
+        </Modal>
+      </>
     );
   },
 };

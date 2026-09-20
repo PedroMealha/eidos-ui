@@ -127,7 +127,7 @@
 .eidos-table-sort-indicator {
   display: flex;
   font-size: var(--font-size-xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
   transition: color 0.2s ease;
 
   .eidos-table-sortable:hover & {
@@ -472,7 +472,7 @@
   display: inline-flex;
   align-items: center;
   cursor: grab;
-  color: var(--gray-400);
+  color: var(--text-muted);
   line-height: 0;
   opacity: 0;
   transition: opacity 0.15s ease;
@@ -693,7 +693,7 @@
 
 .eidos-table-card-heading-subtitle {
   font-size: var(--font-size-sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 // Remaining columns, each a label-above-value stack. `auto-fit` + `minmax`
@@ -717,7 +717,7 @@
 .eidos-table-card-field-label {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-table-card-field-value {

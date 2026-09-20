@@ -12,7 +12,7 @@ const cardStyle: React.CSSProperties = {
   gap: '1rem',
   maxWidth: '400px',
   padding: '1.25rem',
-  border: '1px solid #e2e8f0',
+  border: '1px solid var(--gray-200)',
   borderRadius: '8px',
 };
 
@@ -145,7 +145,7 @@ export const Pulse: Story = {
 // CARD PLACEHOLDER - composite skeleton mimicking a content card
 // ============================================================================
 
-export const CardPlaceholder = {
+export const CardPlaceholder: Story = {
   render: () => (
     <div style={cardStyle}>
       {/* Hero image */}
@@ -169,7 +169,7 @@ export const CardPlaceholder = {
 // TABLE PLACEHOLDER - composite skeleton mimicking a data table
 // ============================================================================
 
-export const TablePlaceholder = {
+export const TablePlaceholder: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '640px' }}>
       {/* Header row */}

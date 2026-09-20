@@ -71,7 +71,7 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600,
   textTransform: 'uppercase',
   letterSpacing: '0.07em',
-  color: '#94a3b8',
+  color: 'var(--text-muted)',
 };
 
 const itemContent = (topic: string) => (
@@ -112,7 +112,7 @@ export const Default: Story = {
 // MULTIPLE - allow several items open at once
 // ============================================================================
 
-export const Multiple = {
+export const Multiple: Story = {
   render: () => (
     <Accordion multiple variant="bordered" defaultValue={['item1', 'item3']}>
       <AccordionItem value="item1" label="General settings">
@@ -132,7 +132,7 @@ export const Multiple = {
 // BORDERED
 // ============================================================================
 
-export const Bordered = {
+export const Bordered: Story = {
   render: () => (
     <Accordion variant="bordered" defaultValue="faq1">
       <AccordionItem value="faq1" label="Can I use this in production?">
@@ -152,7 +152,7 @@ export const Bordered = {
 // SEPARATED
 // ============================================================================
 
-export const Separated = {
+export const Separated: Story = {
   render: () => (
     <Accordion variant="separated" defaultValue="step1">
       <AccordionItem value="step1" label="Step 1 - Create an account">
@@ -172,7 +172,7 @@ export const Separated = {
 // SIZES - small / medium / large stacked
 // ============================================================================
 
-export const Sizes = {
+export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
@@ -218,7 +218,7 @@ export const Sizes = {
 // COLORS - all four color themes
 // ============================================================================
 
-export const Colors = {
+export const Colors: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
@@ -276,7 +276,7 @@ export const Colors = {
 // WITH ICONS - items with a leading icon node
 // ============================================================================
 
-export const WithIcons = {
+export const WithIcons: Story = {
   render: () => (
     <Accordion variant="bordered" defaultValue="profile">
       <AccordionItem value="profile" label="Profile" icon={<User size={16} />}>
@@ -305,7 +305,7 @@ export const WithIcons = {
 // DISABLED - one item disabled, one open, one normal
 // ============================================================================
 
-export const Disabled = {
+export const Disabled: Story = {
   render: () => (
     <Accordion defaultValue="item1">
       <AccordionItem value="item1" label="Active item - open">
@@ -325,7 +325,7 @@ export const Disabled = {
 // CONTROLLED - external useState drives the open state
 // ============================================================================
 
-export const Controlled = {
+export const Controlled: Story = {
   render: () => {
     const [openItem, setOpenItem] = useState<string>('q1');
 

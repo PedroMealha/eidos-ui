@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
 import {
   Copy,
   Scissors,
@@ -13,31 +14,17 @@ import {
 import { ContextMenu } from './ContextMenu.component';
 import type { MenuItemType } from '../Menu';
 
-const meta = {
-  title: 'Overlays/ContextMenu',
-  component: ContextMenu,
-  parameters: { layout: 'centered' },
-  args: {
-    // Required - overridden by every story's render function.
-    items: [],
-    children: null,
-  },
-} satisfies Meta<typeof ContextMenu>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
 // ─── Shared items ─────────────────────────────────────────────────────────────
 
 const EDIT_ITEMS: MenuItemType[] = [
-  { type: 'item', id: 'cut', label: 'Cut', icon: Scissors, onClick: () => console.log('cut') },
-  { type: 'item', id: 'copy', label: 'Copy', icon: Copy, onClick: () => console.log('copy') },
+  { type: 'item', id: 'cut', label: 'Cut', icon: Scissors, onClick: action('cut') },
+  { type: 'item', id: 'copy', label: 'Copy', icon: Copy, onClick: action('copy') },
   {
     type: 'item',
     id: 'paste',
     label: 'Paste',
     icon: Clipboard,
-    onClick: () => console.log('paste'),
+    onClick: action('paste'),
   },
   { type: 'separator', id: 'sep1' },
   {
@@ -45,14 +32,14 @@ const EDIT_ITEMS: MenuItemType[] = [
     id: 'rename',
     label: 'Rename',
     icon: Pencil,
-    onClick: () => console.log('rename'),
+    onClick: action('rename'),
   },
   {
     type: 'item',
     id: 'open',
     label: 'Open in new tab',
     icon: ExternalLink,
-    onClick: () => console.log('open'),
+    onClick: action('open'),
   },
   { type: 'separator', id: 'sep2' },
   {
@@ -61,7 +48,7 @@ const EDIT_ITEMS: MenuItemType[] = [
     label: 'Delete',
     icon: Trash2,
     color: 'danger',
-    onClick: () => console.log('delete'),
+    onClick: action('delete'),
   },
 ];
 
@@ -91,25 +78,34 @@ const targetStyle: React.CSSProperties = {
   borderRadius: 8,
   fontSize: 13,
   fontWeight: 500,
-  color: 'var(--gray-400)',
+  color: 'var(--text-muted)',
   userSelect: 'none',
 };
 
-// ─── 1. Default ───────────────────────────────────────────────────────────────
-
-export const Default: Story = {
-  name: 'Default',
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Right-click anywhere inside the dashed region to open the context menu. ' +
-          'Close by clicking outside, pressing Escape, or selecting an item.',
-      },
+const meta = {
+  title: 'Overlays/ContextMenu',
+  component: ContextMenu,
+  parameters: { layout: 'centered' },
+  argTypes: {
+    items: {
+      control: 'object',
+      description: 'Menu items shown on right-click. Supports every `MenuItemType` variant.',
+      table: { type: { summary: 'MenuItemType[]' } },
     },
+    disabled: {
+      control: 'boolean',
+      description: "Falls through to the browser's own context menu instead.",
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    children: { table: { disable: true } },
+    className: { table: { disable: true } },
   },
-  render: () => (
-    <ContextMenu items={EDIT_ITEMS}>
+  // `items` and `children` are required, so they live here to satisfy the type
+  // for the render-only stories below as well as seeding the Default controls.
+  args: {
+    items: EDIT_ITEMS,
+    disabled: false,
+    children: (
       <div
         style={{
           ...targetStyle,
@@ -119,14 +115,23 @@ export const Default: Story = {
       >
         Right-click here
       </div>
-    </ContextMenu>
-  ),
-};
+    ),
+  },
+} satisfies Meta<typeof ContextMenu>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// ─── 1. Default ───────────────────────────────────────────────────────────────
+
+// Args-driven, so the Controls panel the .mdx renders actually does something
+// - `disabled` in particular is worth toggling, since it hands the right-click
+// back to the browser.
+export const Default: Story = {};
 
 // ─── 2. On a table / list ─────────────────────────────────────────────────────
 
 export const OnAList: Story = {
-  name: 'OnAList',
   parameters: {
     docs: {
       description: {
@@ -169,7 +174,6 @@ export const OnAList: Story = {
 // ─── 3. With nested menu ──────────────────────────────────────────────────────
 
 export const WithNested: Story = {
-  name: 'WithNested',
   render: () => {
     const items: MenuItemType[] = [
       { type: 'item', id: 'copy', label: 'Copy', icon: Copy, onClick: () => {} },
@@ -209,7 +213,6 @@ export const WithNested: Story = {
 // ─── 4. Disabled ─────────────────────────────────────────────────────────────
 
 export const Disabled: Story = {
-  name: 'Disabled',
   parameters: {
     docs: {
       description: {

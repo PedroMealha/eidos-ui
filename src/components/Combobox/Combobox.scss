@@ -105,7 +105,7 @@
   padding-bottom: var(--spacing-xs);
   @include font-size(xs);
   @include font-weight(semibold);
-  color: var(--gray-500);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   user-select: none;
@@ -184,7 +184,7 @@
 
 .eidos-combobox-option-description {
   @include font-size(xs);
-  color: var(--gray-500);
+  color: var(--text-muted);
   flex-shrink: 0;
   @include text-truncate;
   max-width: 40%;
@@ -196,7 +196,7 @@
   padding: var(--spacing-md);
   text-align: center;
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 // ─── Loading state ────────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
 }
 
 .eidos-combobox-loading-icon {
@@ -220,7 +220,7 @@
 
 .eidos-combobox-hint {
   @include font-size(sm);
-  color: var(--gray-500);
+  color: var(--text-muted);
   line-height: 1.4;
 }
 

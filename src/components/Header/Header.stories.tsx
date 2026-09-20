@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { action } from 'storybook/actions';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Header } from './Header.component';
 import { Pill } from '../Pill';
@@ -16,7 +17,7 @@ const meta = {
         children: 'Refresh',
         preIcon: 'refresh-cw',
         variant: 'outlined',
-        onClick: () => alert('Settings clicked'),
+        onClick: action('Settings clicked'),
       },
     ],
   },
@@ -117,12 +118,12 @@ export const WithMultipleActions: Story = {
         children: 'Export',
         preIcon: 'download',
         variant: 'outlined',
-        onClick: () => alert('Export clicked'),
+        onClick: action('Export clicked'),
       },
       {
         children: 'New item',
         preIcon: 'plus',
-        onClick: () => alert('New item clicked'),
+        onClick: action('New item clicked'),
       },
     ],
   },

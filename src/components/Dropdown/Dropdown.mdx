@@ -34,8 +34,34 @@ The primary interactive story - use the Controls panel to explore `placement`, `
 
 <Controls of={DropdownStories.Default} />
 
-## Examples
+## As a menu
 
-A comprehensive overview showing a practical menu, all four placement options, and sizing constraints in action.
+For a real menu prefer the [Menu](?path=/docs/overlays-menu--docs) component, which builds this on top of `Dropdown` with keyboard navigation and roles already handled. Use `Dropdown` directly when the panel is not a menu.
 
-<Canvas of={DropdownStories.Examples} />
+<Canvas of={DropdownStories.AsAMenu} />
+
+## Placements
+
+`placement` is a preference. The panel flips to the opposite side when the anchor has no room there, and is then clamped against both viewport edges on both axes - the flip reacts to the anchor, the clamp to the panel's own size, and both are needed.
+
+<Canvas of={DropdownStories.Placements} />
+
+## Sizing
+
+<Canvas of={DropdownStories.Sizing} />
+
+## With a delay
+
+<Canvas of={DropdownStories.WithDelay} />
+
+## Grouped (mutual exclusion)
+
+Give several dropdowns the same `dropdownGroup` and wrap them in `DropdownProvider` so only one can be open at a time.
+
+<Canvas of={DropdownStories.Grouped} />
+
+## Custom trigger
+
+The trigger keeps its own semantics - `Dropdown` wraps it in a plain positioning `div` carrying no `role` and no `tabIndex`. A custom trigger must therefore be a real interactive element itself, or it will be unreachable by keyboard and invisible to assistive technology.
+
+<Canvas of={DropdownStories.CustomTrigger} />
