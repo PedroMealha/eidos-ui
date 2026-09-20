@@ -151,7 +151,7 @@
     color: var(--danger-color);
   }
   &:focus-visible {
-    @include focus-ring(primary, 2px);
+    @include focus-ring(primary);
   }
 
   svg {

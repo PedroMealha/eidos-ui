@@ -312,7 +312,7 @@
     position: relative;
     padding: 0;
     background: var(--white);
-    box-shadow: inset 0 0 0 2px var(--primary-color);
+    box-shadow: focus-ring-shadow-inset(primary);
 
     // Fill the cell with the editor, stretching horizontally & vertically.
     .eidos-input-container {
@@ -345,7 +345,7 @@
 
   // Validation error overrides the primary ring with danger colour
   &--error {
-    box-shadow: inset 0 0 0 2px var(--danger-color) !important;
+    box-shadow: focus-ring-shadow-inset(danger) !important;
   }
 
   // Pointer + subtle hover for cells that can be clicked into edit mode

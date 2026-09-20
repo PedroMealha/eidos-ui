@@ -223,7 +223,7 @@ Individual components can also be targeted directly, following each component's 
 
 ### Runtime theming
 
-`ThemeProvider` applies a theme at runtime — for a settings screen, a per-tenant palette, or a colour a user picks. Supply one base colour per family and the shades, tints, ramp steps and accessible foregrounds are derived from it:
+`ThemeProvider` applies a theme at runtime - for a settings screen, a per-tenant palette, or a colour a user picks. Supply one base colour per family and the shades, tints, ramp steps and accessible foregrounds are derived from it:
 
 ```tsx
 import { ThemeProvider, ThemeEditor } from 'eidos-ui';
@@ -242,13 +242,13 @@ import { ThemeProvider, ThemeEditor } from 'eidos-ui';
 </ThemeProvider>
 ```
 
-Ten things are editable — seven colour bases, two font stacks, and a font scale. Tokens are written through the CSSOM to `document.documentElement`, which needs **no Content Security Policy allowance** and covers portaled overlays too. A theme equal to the preset writes nothing at all.
+Ten things are editable - seven colour bases, two font stacks, and a font scale. Tokens are written through the CSSOM to `document.documentElement`, which needs **no Content Security Policy allowance** and covers portaled overlays too. A theme equal to the preset writes nothing at all.
 
-Use `useTheme()` to read or change it from your own UI, and `toCss()` to export the resolved tokens as a `:root` block you can paste into a stylesheet — useful for baking a theme in at build time.
+Use `useTheme()` to read or change it from your own UI, and `toCss()` to export the resolved tokens as a `:root` block you can paste into a stylesheet - useful for baking a theme in at build time.
 
 ### Fonts
 
-The theme names Plus Jakarta Sans and JetBrains Mono, but a font stack only _names_ families — it cannot install them. Import the bundled copies to actually use them:
+The theme names Plus Jakarta Sans and JetBrains Mono, but a font stack only _names_ families - it cannot install them. Import the bundled copies to actually use them:
 
 ```ts
 import 'eidos-ui/fonts';

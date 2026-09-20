@@ -174,6 +174,45 @@ for (const file of ['README.md', 'GETTING_STARTED.md']) {
 }
 
 // ---------------------------------------------------------------------------
+// 4. No em-dashes in prose
+// ---------------------------------------------------------------------------
+//
+// A house style rule (see the dev-app section of the eidos-ui-rules skill):
+// write `-`, not `—`. Enforced because it is invisible in review - the two
+// characters are near-indistinguishable at editor font sizes - and because
+// prose is the one thing no other check in this repo reads.
+//
+// Fenced code blocks are stripped first: `DataGrid` legitimately renders `'—'`
+// as the placeholder glyph for an empty cell, which is data, not punctuation.
+// The skill file is skipped because it has to quote the character to state the
+// rule at all.
+
+const PROSE_FILES = ['README.md', 'GETTING_STARTED.md', 'CONTRIBUTING.md', 'CHANGELOG.md'];
+const PROSE_GLOB_DIRS = ['./src'];
+
+/** Drops fenced blocks and inline code so only real prose is inspected. */
+const proseOnly = (text) => text.replace(/```[\s\S]*?```/g, '').replace(/`[^`\n]*`/g, '');
+
+const mdxFiles = (dir) =>
+  readdirSync(dir, { withFileTypes: true, recursive: true })
+    .filter((e) => e.isFile() && /\.mdx?$/.test(e.name))
+    .map((e) => `${e.parentPath ?? e.path}/${e.name}`);
+
+for (const file of [...PROSE_FILES, ...PROSE_GLOB_DIRS.flatMap(mdxFiles)]) {
+  let text;
+  try {
+    text = readFileSync(file, 'utf8');
+  } catch {
+    continue; // optional file
+  }
+
+  const count = (proseOnly(text).match(/—/g) ?? []).length;
+  if (count > 0) {
+    note(file, `uses ${count} em-dash(es) in prose - write "-" instead`);
+  }
+}
+
+// ---------------------------------------------------------------------------
 
 if (problems.length === 0) {
   console.log('✓ README.md and GETTING_STARTED.md are consistent with the source.');

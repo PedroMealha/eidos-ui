@@ -69,10 +69,19 @@
   border: 1.5px solid var(--gray-300);
   background-color: var(--white);
 
-  // Focus state
+  // Focus state.
+  //
+  // The ring is written directly rather than via `focus-ring()`: this is a
+  // wrapper `<div>`, which is never itself focused, so the mixin's
+  // `:focus-visible` (previously `:focus`) would compose into a selector that
+  // matches nothing. It sat here dead for two majors, masked by the
+  // per-variant `:focus-within` rules below that paint the real ring.
+  //
+  // `:focus-within` rather than `:focus-visible` is also correct here: a text
+  // field should show which input is active when clicked, not only on Tab.
   &:focus-within {
     border-color: var(--primary-color);
-    @include focus-ring(primary, 3px);
+    box-shadow: focus-ring-shadow(primary);
   }
 
   // Focused state for additional styling
@@ -113,7 +122,7 @@
       background-color: var(--white);
       border-color: var(--primary-color);
       box-shadow:
-        0 0 0 3px rgba(var(--primary-rgb), 0.1),
+        focus-ring-shadow(primary),
         0 4px 12px rgba(0, 0, 0, 0.08),
         0 1px 3px rgba(0, 0, 0, 0.05);
     }
@@ -126,7 +135,7 @@
       &:focus-within {
         border-color: var(--secondary-color);
         box-shadow:
-          0 0 0 3px rgba(var(--secondary-rgb), 0.1),
+          focus-ring-shadow(secondary),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -140,7 +149,7 @@
       &:focus-within {
         border-color: var(--success-color);
         box-shadow:
-          0 0 0 3px rgba(var(--success-rgb), 0.1),
+          focus-ring-shadow(success),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -154,7 +163,7 @@
       &:focus-within {
         border-color: var(--danger-color);
         box-shadow:
-          0 0 0 3px rgba(var(--danger-rgb), 0.1),
+          focus-ring-shadow(danger),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -168,7 +177,7 @@
       &:focus-within {
         border-color: var(--warning-color);
         box-shadow:
-          0 0 0 3px rgba(var(--warning-rgb), 0.1),
+          focus-ring-shadow(warning),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -182,7 +191,7 @@
       &:focus-within {
         border-color: var(--info-color);
         box-shadow:
-          0 0 0 3px rgba(var(--info-rgb), 0.1),
+          focus-ring-shadow(info),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -201,7 +210,7 @@
     &:focus-within {
       border-color: var(--primary-color);
       box-shadow:
-        0 0 0 3px rgba(var(--primary-rgb), 0.1),
+        focus-ring-shadow(primary),
         0 4px 12px rgba(0, 0, 0, 0.08),
         0 1px 3px rgba(0, 0, 0, 0.05);
     }
@@ -216,7 +225,7 @@
       &:focus-within {
         border-color: var(--secondary-color);
         box-shadow:
-          0 0 0 3px rgba(var(--secondary-rgb), 0.1),
+          focus-ring-shadow(secondary),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -232,7 +241,7 @@
       &:focus-within {
         border-color: var(--success-color);
         box-shadow:
-          0 0 0 3px rgba(var(--success-rgb), 0.1),
+          focus-ring-shadow(success),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -248,7 +257,7 @@
       &:focus-within {
         border-color: var(--danger-color);
         box-shadow:
-          0 0 0 3px rgba(var(--danger-rgb), 0.1),
+          focus-ring-shadow(danger),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -264,7 +273,7 @@
       &:focus-within {
         border-color: var(--warning-color);
         box-shadow:
-          0 0 0 3px rgba(var(--warning-rgb), 0.1),
+          focus-ring-shadow(warning),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -280,7 +289,7 @@
       &:focus-within {
         border-color: var(--info-color);
         box-shadow:
-          0 0 0 3px rgba(var(--info-rgb), 0.1),
+          focus-ring-shadow(info),
           0 4px 12px rgba(0, 0, 0, 0.08),
           0 1px 3px rgba(0, 0, 0, 0.05);
       }
@@ -396,9 +405,11 @@
   &--error {
     border-color: var(--danger-color) !important;
 
+    // Written directly for the same reason as the base focus state above: a
+    // wrapper div never matches the mixin's `:focus-visible`.
     &:focus-within {
       border-color: var(--danger-color) !important;
-      @include focus-ring(danger, 3px);
+      box-shadow: focus-ring-shadow(danger);
     }
   }
 

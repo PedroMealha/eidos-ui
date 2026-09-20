@@ -80,7 +80,7 @@ $avatar-size: 32px;
         opacity: 0.85;
       }
 
-      @include focus-ring(primary, 3px);
+      @include focus-ring(primary);
     }
   }
 

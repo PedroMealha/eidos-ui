@@ -243,6 +243,38 @@ matter when adding a component:
   `DataGrid`'s cell editor, `Chat`'s scroll region). Setting `outline: none`
   alongside that inset ring is what keeps the fallback out of the way.
 
+### Never hand-write a focus ring
+
+Take it from `focus-ring-shadow()` / `focus-ring-shadow-inset()` in
+`mixins.scss`, or the `focus-ring()` / `focus-ring-inset()` mixins built on
+them. The functions exist for the call sites a mixin cannot serve:
+`Input`/`Textarea` paint on a `:focus-within` **wrapper** and compose the ring
+with elevation shadows; `SegmentedControl` composes it with `$chip-shadow`.
+
+Two properties of the ring that are easy to undo by accident:
+
+- **It is solid, not a tint.** Every ring in the library was once
+  `rgba(var(--x-rgb), 0.3)`, which measures **1.47-1.62:1** against a white
+  page for all seven families - every one failing WCAG 1.4.11's 3:1. Alpha
+  cannot rescue it: 0.6 still only reaches 2.3-2.76:1. The solid base is ~5:1,
+  which is by construction - the palette is tuned so each base clears 4.5:1 as
+  text on white.
+- **The white gap is load-bearing.** "Adjacent" in 1.4.11 cuts both ways: a
+  solid primary ring around a _checked_ `Switch`, `Checkbox` or `Radio` - whose
+  track is already `--primary-color` - has no edge against the very thing it
+  marks. Verified in the browser: the checked track and the ring's outer band
+  are both `rgb(92, 93, 232)`. The gap separates them at ≥4.76:1.
+
+Do not pass a custom `$size` just to make one component stand out; rings were
+2px and 3px arbitrarily before, rendering 4px and 5px bands side by side.
+
+Watch for a same-property, same-specificity neighbour. `AvatarGroup`'s white
+separator (`.eidos-avatar-group-item .eidos-avatar`) and the focus ring are
+both `box-shadow` at (0,2,0), and the separator is later in the file, so it
+silently won and a clickable avatar in a group had no ring. It is now scoped
+`:not(:focus-visible)` - and only the `box-shadow` is, since putting
+`margin-left` inside the `:not()` would shift the layout on focus.
+
 A visually-hidden input (`Checkbox`, `Radio`) will pick up the fallback on an
 element that is 1px and clipped, so it is invisible - harmless, but it means
 those components must keep painting the ring on their sibling control.

@@ -164,15 +164,11 @@
   // Applied via thumb box-shadow to work across WebKit and Firefox.
   // The per-color rules at the bottom of this file override the colour.
   &:focus-visible::-webkit-slider-thumb {
-    box-shadow:
-      0 0 0 3px var(--white),
-      0 0 0 5px var(--primary-color);
+    box-shadow: focus-ring-shadow(primary, 2px, 3px);
   }
 
   &:focus-visible::-moz-range-thumb {
-    box-shadow:
-      0 0 0 3px var(--white),
-      0 0 0 5px var(--primary-color);
+    box-shadow: focus-ring-shadow(primary, 2px, 3px);
   }
 
   // ── Disabled state ────────────────────────────────────────────────────
@@ -263,65 +259,41 @@
 // ============================================================================
 
 .eidos-slider--primary .eidos-slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--primary-color);
+  box-shadow: focus-ring-shadow(primary, 2px, 3px);
 }
 .eidos-slider--secondary .eidos-slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--secondary-color);
+  box-shadow: focus-ring-shadow(secondary, 2px, 3px);
 }
 .eidos-slider--success .eidos-slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--success-color);
+  box-shadow: focus-ring-shadow(success, 2px, 3px);
 }
 .eidos-slider--danger .eidos-slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--danger-color);
+  box-shadow: focus-ring-shadow(danger, 2px, 3px);
 }
 .eidos-slider--warning .eidos-slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--warning-color);
+  box-shadow: focus-ring-shadow(warning, 2px, 3px);
 }
 .eidos-slider--info .eidos-slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--info-color);
+  box-shadow: focus-ring-shadow(info, 2px, 3px);
 }
 
 .eidos-slider--primary .eidos-slider-input:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--primary-color);
+  box-shadow: focus-ring-shadow(primary, 2px, 3px);
 }
 .eidos-slider--secondary .eidos-slider-input:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--secondary-color);
+  box-shadow: focus-ring-shadow(secondary, 2px, 3px);
 }
 .eidos-slider--success .eidos-slider-input:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--success-color);
+  box-shadow: focus-ring-shadow(success, 2px, 3px);
 }
 .eidos-slider--danger .eidos-slider-input:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--danger-color);
+  box-shadow: focus-ring-shadow(danger, 2px, 3px);
 }
 .eidos-slider--warning .eidos-slider-input:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--warning-color);
+  box-shadow: focus-ring-shadow(warning, 2px, 3px);
 }
 .eidos-slider--info .eidos-slider-input:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 3px var(--white),
-    0 0 0 5px var(--info-color);
+  box-shadow: focus-ring-shadow(info, 2px, 3px);
 }
 
 // ============================================================================

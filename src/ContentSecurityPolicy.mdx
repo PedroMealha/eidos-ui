@@ -84,7 +84,7 @@ It is worth being explicit that this is the **strictest** of the available optio
 
 | Approach                                                     | Requires                                                  |
 | ------------------------------------------------------------ | --------------------------------------------------------- |
-| `new FontFace(family, arrayBuffer)` — what this library does | nothing                                                   |
+| `new FontFace(family, arrayBuffer)` - what this library does | nothing                                                   |
 | `new FontFace(family, 'url(/f.woff2)')`                      | `font-src` for that origin                                |
 | A `@font-face` rule in a same-origin stylesheet              | `font-src 'self'`                                         |
 | A `@font-face` rule injected at runtime in a `<style>` tag   | `font-src` **and** a nonce or `style-src 'unsafe-inline'` |

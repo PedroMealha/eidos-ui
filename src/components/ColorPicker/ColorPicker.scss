@@ -43,7 +43,7 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.25);
+    box-shadow: focus-ring-shadow(primary);
   }
 
   .eidos-color-picker--sm & {
@@ -396,7 +396,7 @@
 
   &:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.15);
+    box-shadow: focus-ring-shadow(primary);
   }
 
   &:disabled {

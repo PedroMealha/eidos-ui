@@ -109,7 +109,7 @@
   // ── Focus (keyboard only) ──────────────────────────────────────────────────
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.3);
+    box-shadow: focus-ring-shadow(primary);
   }
 
   &:disabled {

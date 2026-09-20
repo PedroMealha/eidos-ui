@@ -175,7 +175,7 @@
     }
 
     &:focus {
-      @include focus-ring(gray, 2px);
+      @include focus-ring(gray);
     }
   }
 
@@ -185,25 +185,9 @@
   }
 }
 
-// Animations
-@keyframes snackbarEnter {
-  from {
-    opacity: 0;
-    transform: translateX(100%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-
-@keyframes snackbarExit {
-  from {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(0) scale(0.85);
-  }
-}
+// The enter/exit motion lives in the `--entering`/`--entered`/`--exiting`
+// transitions at the top of this file, not in keyframes. Two unreferenced
+// `@keyframes snackbarEnter/snackbarExit` blocks used to sit here and shipped
+// in `dist/index.css` - they were also unprefixed, so a consumer defining
+// their own `snackbarEnter` would have silently collided with them
+// (`@keyframes` names are global to the document).

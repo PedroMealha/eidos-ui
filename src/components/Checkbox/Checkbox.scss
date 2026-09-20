@@ -81,7 +81,7 @@
   &--primary {
     .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+      box-shadow: focus-ring-shadow(primary);
     }
 
     .eidos-checkbox-control--checked,
@@ -95,7 +95,7 @@
   &--secondary {
     .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
+      box-shadow: focus-ring-shadow(secondary);
     }
 
     .eidos-checkbox-control--checked,
@@ -109,7 +109,7 @@
   &--success {
     .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
+      box-shadow: focus-ring-shadow(success);
     }
 
     .eidos-checkbox-control--checked,
@@ -123,7 +123,7 @@
   &--danger {
     .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
+      box-shadow: focus-ring-shadow(danger);
     }
 
     .eidos-checkbox-control--checked,
@@ -137,7 +137,7 @@
   &--warning {
     .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+      box-shadow: focus-ring-shadow(warning);
     }
 
     .eidos-checkbox-control--checked,
@@ -151,7 +151,7 @@
   &--info {
     .eidos-checkbox-input:focus-visible + .eidos-checkbox-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+      box-shadow: focus-ring-shadow(info);
     }
 
     .eidos-checkbox-control--checked,

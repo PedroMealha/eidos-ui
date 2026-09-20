@@ -68,7 +68,7 @@
   &--primary {
     .eidos-radio-input:focus-visible + .eidos-radio-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
+      box-shadow: focus-ring-shadow(primary);
     }
 
     .eidos-radio-control--checked {
@@ -81,7 +81,7 @@
   &--secondary {
     .eidos-radio-input:focus-visible + .eidos-radio-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--secondary-rgb), 0.3);
+      box-shadow: focus-ring-shadow(secondary);
     }
 
     .eidos-radio-control--checked {
@@ -94,7 +94,7 @@
   &--success {
     .eidos-radio-input:focus-visible + .eidos-radio-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--success-rgb), 0.3);
+      box-shadow: focus-ring-shadow(success);
     }
 
     .eidos-radio-control--checked {
@@ -107,7 +107,7 @@
   &--danger {
     .eidos-radio-input:focus-visible + .eidos-radio-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--danger-rgb), 0.3);
+      box-shadow: focus-ring-shadow(danger);
     }
 
     .eidos-radio-control--checked {
@@ -120,7 +120,7 @@
   &--warning {
     .eidos-radio-input:focus-visible + .eidos-radio-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--warning-rgb), 0.3);
+      box-shadow: focus-ring-shadow(warning);
     }
 
     .eidos-radio-control--checked {
@@ -133,7 +133,7 @@
   &--info {
     .eidos-radio-input:focus-visible + .eidos-radio-control {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(var(--info-rgb), 0.3);
+      box-shadow: focus-ring-shadow(info);
     }
 
     .eidos-radio-control--checked {

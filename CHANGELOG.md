@@ -13,6 +13,67 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- A clickable `Chip` and a `Chip`'s remove control have a visible keyboard
+  focus indicator. Both suppressed the outline with no replacement, which the
+  3.2.0 focus sweep did not reach because they suppressed `:focus-visible`
+  explicitly. The remove control's ring is inset, since an outward one is
+  clipped by the chip's rounded edge. Affects `TagInput` and
+  `MessageComposer` attachments, where the remove control is the only way to
+  delete an entry.
+- A `Chip`'s remove control shows a hover tint on the `outlined` and `text`
+  variants. It was a hardcoded `rgba(255, 255, 255, 0.2)`, and both variants
+  are `background: transparent` - white on white, so those two had no hover
+  feedback at all. `filled` keeps the white tint; the others use a neutral
+  dark one.
+- `focus-ring()` binds `:focus-visible` instead of `:focus`, so `Avatar`,
+  `Navigation` items and `Snackbar`'s close button no longer show a focus ring
+  on a mouse press - matching every other control in the library. Text inputs
+  are unaffected: `Input` keeps ringing on click, which is correct for a field
+  you are about to type into.
+- `Input`'s base and error focus rings are written directly rather than through
+  `focus-ring()`. Nested in `&:focus-within`, the mixin composed to
+  `.eidos-input-wrapper:focus-within:focus`, which a wrapper `<div>` can never
+  match - dead since the mixin was introduced, and masked by the per-variant
+  rules that painted the real ring.
+- **Focus indicators now meet WCAG 1.4.11 (3:1).** Every ring in the library
+  was an alpha tint of its colour, measuring **1.47-1.62:1** against a white
+  page across all seven families - all failing. Raising the alpha cannot fix
+  it (0.6 still only reaches 2.3-2.76:1), so rings are now a solid base colour
+  with a white gap: ≥4.76:1 against the page *and* against a filled control.
+  The gap is what makes a ring visible around a checked `Switch`, `Checkbox`
+  or `Radio`, whose track is already the ring's own colour.
+- A clickable `Avatar` inside an `AvatarGroup` has a focus ring. The group's
+  white separator and the focus ring set `box-shadow` at identical specificity
+  (0,2,0), and the separator is later in the stylesheet, so it silently won.
+- `TagInput` and `OTPInput` focus rings were the weakest in the library at
+  `0.15` alpha; they are covered by the same change. Their state is driven by a
+  `--focused` class rather than `:focus`, which is why earlier sweeps missed
+  them.
+
+### Changed
+
+- Focus-ring geometry lives in one place: `focus-ring-shadow()` /
+  `focus-ring-shadow-inset()` in `mixins.scss`, with the `focus-ring()` /
+  `focus-ring-inset()` mixins built on them. All 98 call sites consume it,
+  including the ones that cannot use a mixin - `Input`/`Textarea` paint on a
+  `:focus-within` wrapper and compose the ring with elevation shadows, and
+  `SegmentedControl` composes it with its chip shadow. Previously the ring was
+  copied by hand in 75 places, which is exactly why every copy was failing
+  contrast in the same way.
+- Focus rings are a uniform width. Call sites passed 2px or 3px arbitrarily,
+  rendering 4px and 5px bands side by side; they all take the shared default
+  now. `Slider`, which already used a correct two-tone ring, keeps its wider
+  gap through the same function.
+
+### Removed
+
+- Two unreferenced `@keyframes` blocks (`snackbarEnter`, `snackbarExit`) that
+  shipped in `dist/index.css`. `Snackbar`'s motion comes from transitions;
+  these were also unprefixed, so a consumer defining the same name would have
+  collided with them.
+
 ## [3.2.0] - 2026-09-19
 
 ### Added

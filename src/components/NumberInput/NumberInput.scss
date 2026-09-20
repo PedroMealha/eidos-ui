@@ -30,13 +30,13 @@
 
   &:focus-within:not(.eidos-number-input-control--disabled) {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(var(--primary-rgb, 99, 102, 241), 0.15);
+    box-shadow: focus-ring-shadow(primary);
   }
 
   .eidos-number-input--error & {
     border-color: var(--danger-color);
     &:focus-within {
-      box-shadow: 0 0 0 3px rgba(var(--danger-rgb, 239, 68, 68), 0.15);
+      box-shadow: focus-ring-shadow(danger);
     }
   }
 

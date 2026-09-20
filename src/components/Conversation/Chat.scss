@@ -47,7 +47,7 @@
   // would be clipped by the scroll container itself, hence inset.
   &:focus-visible {
     outline: none;
-    box-shadow: inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(primary);
   }
 }
 

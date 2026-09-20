@@ -327,7 +327,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(primary);
   }
 }
 
@@ -346,7 +346,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--secondary-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(secondary);
   }
 }
 
@@ -365,7 +365,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--success-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(success);
   }
 }
 
@@ -384,7 +384,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--danger-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(danger);
   }
 }
 
@@ -403,7 +403,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--warning-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(warning);
   }
 }
 
@@ -422,7 +422,7 @@
   }
 
   .eidos-tab:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--info-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(info);
   }
 }
 

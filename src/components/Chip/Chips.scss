@@ -40,8 +40,12 @@
   &--clickable {
     cursor: pointer;
 
-    &:focus,
-    &:focus-visible {
+    // Suppress the ring for a mouse press only. This used to suppress
+    // `:focus-visible` too, which left a clickable chip with no keyboard focus
+    // indicator of any kind - the same `outline: none` with no replacement
+    // that removed the ring library-wide. `:focus-visible` now falls through
+    // to the fallback in global.scss.
+    &:focus:not(:focus-visible) {
       outline: none;
     }
   }
@@ -281,12 +285,35 @@
   cursor: pointer;
   flex-shrink: 0;
 
+  // A neutral dark tint, because the default is whatever sits behind a
+  // `text`/`outlined` chip - both `background-color: transparent`, so the
+  // hardcoded white this used to be was white-on-white and gave those two
+  // variants no hover feedback at all. Only `filled` has a colour behind the
+  // button, and it gets the white tint below.
   &:hover:not(:disabled) {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(var(--dark-rgb), 0.12);
   }
 
-  &:focus {
+  .eidos-chip--filled & {
+    &:hover:not(:disabled) {
+      background-color: rgba(var(--white-rgb), 0.25);
+    }
+  }
+
+  // As above: mouse press only. The remove control is the sole way to delete a
+  // tag from a `TagInput` or an attachment from `MessageComposer`, so it has to
+  // be reachable and visible to a keyboard user.
+  //
+  // The ring is drawn inset because this button sits flush inside the chip's
+  // rounded edge, where an outward ring would be clipped by the chip's own
+  // `overflow` and would collide with the adjacent label.
+  &:focus:not(:focus-visible) {
     outline: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: focus-ring-shadow-inset(primary);
   }
 }
 

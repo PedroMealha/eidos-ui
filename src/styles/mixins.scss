@@ -149,11 +149,82 @@
   }
 }
 
-// Focus styles
-@mixin focus-ring($color: primary, $size: 3px) {
-  &:focus {
+// Focus ring for an interactive control.
+//
+// Binds to `:focus-visible`, not `:focus`, so a ring appears for keyboard and
+// assistive-technology users but not on a mouse press - matching the fallback
+// in `global.scss`. It used to bind `:focus`, which left `Avatar`,
+// `Navigation` items and `Snackbar`'s close button ringing on click while
+// everything else did not: one concept, two behaviours.
+//
+// **Do not nest this inside `&:focus-within`.** The expansion targets the
+// element the mixin is applied to, and a wrapper `<div>` is never itself
+// focused - `.eidos-input-wrapper:focus-within:focus-visible` matches nothing.
+// `Input` had exactly that, dead, for two majors; it went unnoticed only
+// because its per-variant `:focus-within` rules painted the real ring. For a
+// wrapper, write the `box-shadow` directly on `:focus-within`.
+//
+// A text input is also the one case where ringing on mouse focus is correct -
+// the user needs to see which field they are about to type into - which is
+// another reason wrappers state it themselves rather than using this.
+//
+// ── Why the ring is two-tone and solid ──────────────────────────────────────
+//
+// WCAG 1.4.11 requires a focus indicator to reach 3:1 against *adjacent*
+// colours. Every ring in this library used to be `rgba(var(--x-rgb), 0.3)`,
+// which measures **1.47-1.62:1** against a white page for all seven families -
+// every one failing, by a wide margin. Raising the alpha does not rescue it:
+// even 0.6 only reaches 2.3-2.76:1. Only the solid base clears it, at ~5:1,
+// which is no accident - the palette is tuned so each base is ~5:1 on white.
+//
+// Solid alone is still not enough, because "adjacent" cuts both ways: a solid
+// primary ring drawn around a *checked* Switch, Checkbox or Radio - whose
+// track is already `--primary-color` - has no edge against the thing it is
+// meant to be marking. Hence the white gap: it separates the ring from the
+// component (≥4.76:1 for every family), and the solid outer band separates it
+// from the page (the same ~5:1).
+//
+// Use `focus-ring-inset` instead wherever an ancestor has `overflow: auto` -
+// an outward shadow is clipped there exactly like an outline.
+// ── The one definition of the ring ──────────────────────────────────────────
+//
+// The geometry and colour live here as *functions* rather than only in the
+// mixins below, because three call sites cannot use a mixin at all:
+//
+//   - `Input`/`Textarea` paint the ring on a `:focus-within` **wrapper**, so
+//     they need the value, not a `:focus-visible` rule (see the warning above).
+//   - The same two compose it with elevation shadows in one declaration.
+//   - `SegmentedControl` composes it with its `$chip-shadow`.
+//
+// Returning a value keeps all of those on the single definition. This matters
+// more than it looks: the sweep that introduced these functions had to touch
+// 75 hand-written rings precisely *because* the ring had been copied 75 times,
+// and every one of them was failing WCAG identically. Anything that needs the
+// ring takes it from here.
+@function focus-ring-shadow($color: primary, $size: 2px, $gap: 2px) {
+  @return 0 0 0 $gap var(--white), 0 0 0 ($gap + $size) var(--#{$color}-color);
+}
+
+// Inset counterpart, for a control inside an `overflow` ancestor.
+//
+// No white gap: an inset ring is drawn within the control's own box, so it
+// already has the control's surface on one side and its edge on the other.
+// Don't use it on a surface painted in the ring's own colour.
+@function focus-ring-shadow-inset($color: primary, $size: 2px) {
+  @return inset 0 0 0 $size var(--#{$color}-color);
+}
+
+@mixin focus-ring($color: primary, $size: 2px, $gap: 2px) {
+  &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 #{$size} rgba(var(--#{$color}-rgb), 0.3);
+    box-shadow: focus-ring-shadow($color, $size, $gap);
+  }
+}
+
+@mixin focus-ring-inset($color: primary, $size: 2px) {
+  &:focus-visible {
+    outline: none;
+    box-shadow: focus-ring-shadow-inset($color, $size);
   }
 }
 

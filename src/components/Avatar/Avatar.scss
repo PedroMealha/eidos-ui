@@ -102,7 +102,7 @@
       opacity: 0.85;
     }
 
-    @include focus-ring(primary, 3px);
+    @include focus-ring(primary);
   }
 }
 
@@ -151,13 +151,23 @@
     margin-left: 0;
   }
 
-  // White ring to visually separate overlapping avatars
-  .eidos-avatar {
+  // White ring to visually separate overlapping avatars.
+  //
+  // Excluded while focused, because this and the focus ring are the same
+  // property at the same specificity (both 0,2,0) and this rule is later in
+  // the stylesheet - so without the guard it silently won, and a *clickable*
+  // avatar inside a group had no focus indicator at all.
+  .eidos-avatar:not(:focus-visible) {
     box-shadow: 0 0 0 2px var(--white);
   }
 }
 
 .eidos-avatar-group .eidos-avatar--overflow {
   margin-left: -8px;
-  box-shadow: 0 0 0 2px var(--white);
+
+  // Only the separator is conditional - keeping `margin-left` out of the
+  // `:not()` so focusing the overflow bubble cannot shift the group's layout.
+  &:not(:focus-visible) {
+    box-shadow: 0 0 0 2px var(--white);
+  }
 }

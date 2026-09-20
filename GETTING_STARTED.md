@@ -184,7 +184,7 @@ elements in between:
 | `--z-index-tooltip`         | `1700` | `Tooltip`                                                                                                                               |
 
 The ordering is deliberate: anchored popups sit **above** `Modal` and `Drawer`
-because they are opened _from_ modal and drawer content — a `Select` inside a
+because they are opened _from_ modal and drawer content - a `Select` inside a
 `Modal` must be able to render over it. Tooltips sit at the top because they are
 small, transient and never interactive.
 
@@ -307,7 +307,7 @@ the package resolves or installs.
 
 Publishing on doc-only changes inflates the version history until "what changed
 in 3.4.0?" stops being answerable. Let non-shipping work ride along with the
-next real change — but don't sit on a genuine `src/` fix.
+next real change - but don't sit on a genuine `src/` fix.
 
 ### Releasing
 
@@ -328,11 +328,11 @@ publishes (which triggers `prepublishOnly: npm run build` automatically).
 4. `lint`, `typecheck` and `build` all pass.
 
 This matters because `npm version` creates a commit **and a tag** immediately,
-and nothing rolls them back if `npm publish` then fails — leaving a version that
+and nothing rolls them back if `npm publish` then fails - leaving a version that
 exists in git but never reached the registry.
 
 > **If publish fails after the version was already bumped**, run `npm publish`
-> on its own to retry. Do **not** re-run `npm run release:*` — that would bump
+> on its own to retry. Do **not** re-run `npm run release:*` - that would bump
 > the version a second time and strand another one.
 
 Afterwards, push the commit and the tag (`npm version` only tags locally):
@@ -343,7 +343,7 @@ npm view eidos-ui version   # confirm the registry agrees
 ```
 
 A logged-out publish of a scoped package fails with a misleading
-`404 Not Found` rather than a permission error — the preflight catches that
+`404 Not Found` rather than a permission error - the preflight catches that
 case up front.
 
 ## Component inventory

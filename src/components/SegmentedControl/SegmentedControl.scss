@@ -295,72 +295,60 @@ $chip-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
 .eidos-segmented--primary {
   .eidos-segmented-item:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(primary);
   }
 
   .eidos-segmented-item--active:focus-visible {
-    box-shadow:
-      $chip-shadow,
-      inset 0 0 0 2px rgba(var(--primary-rgb), 0.5);
+    box-shadow: $chip-shadow, focus-ring-shadow-inset(primary);
   }
 }
 
 .eidos-segmented--secondary {
   .eidos-segmented-item:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--secondary-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(secondary);
   }
 
   .eidos-segmented-item--active:focus-visible {
-    box-shadow:
-      $chip-shadow,
-      inset 0 0 0 2px rgba(var(--secondary-rgb), 0.5);
+    box-shadow: $chip-shadow, focus-ring-shadow-inset(secondary);
   }
 }
 
 .eidos-segmented--success {
   .eidos-segmented-item:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--success-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(success);
   }
 
   .eidos-segmented-item--active:focus-visible {
-    box-shadow:
-      $chip-shadow,
-      inset 0 0 0 2px rgba(var(--success-rgb), 0.5);
+    box-shadow: $chip-shadow, focus-ring-shadow-inset(success);
   }
 }
 
 .eidos-segmented--danger {
   .eidos-segmented-item:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--danger-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(danger);
   }
 
   .eidos-segmented-item--active:focus-visible {
-    box-shadow:
-      $chip-shadow,
-      inset 0 0 0 2px rgba(var(--danger-rgb), 0.5);
+    box-shadow: $chip-shadow, focus-ring-shadow-inset(danger);
   }
 }
 
 .eidos-segmented--warning {
   .eidos-segmented-item:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--warning-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(warning);
   }
 
   .eidos-segmented-item--active:focus-visible {
-    box-shadow:
-      $chip-shadow,
-      inset 0 0 0 2px rgba(var(--warning-rgb), 0.5);
+    box-shadow: $chip-shadow, focus-ring-shadow-inset(warning);
   }
 }
 
 .eidos-segmented--info {
   .eidos-segmented-item:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(var(--info-rgb), 0.5);
+    box-shadow: focus-ring-shadow-inset(info);
   }
 
   .eidos-segmented-item--active:focus-visible {
-    box-shadow:
-      $chip-shadow,
-      inset 0 0 0 2px rgba(var(--info-rgb), 0.5);
+    box-shadow: $chip-shadow, focus-ring-shadow-inset(info);
   }
 }
