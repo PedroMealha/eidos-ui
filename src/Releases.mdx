@@ -15,6 +15,104 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.2.1"
+  date="2026-09-20"
+  bump="patch"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          A clickable <Code>Chip</Code> and a <Code>Chip</Code>'s remove control have a visible
+          keyboard focus indicator. Both suppressed the outline with no replacement, which the 3.2.0
+          focus sweep did not reach because they suppressed <Code>:focus-visible</Code> explicitly.
+          The remove control's ring is inset, since an outward one is clipped by the chip's rounded
+          edge. Affects <Code>TagInput</Code> and <Code>MessageComposer</Code> attachments, where
+          the remove control is the only way to delete an entry.
+        </>,
+        <>
+          A <Code>Chip</Code>'s remove control shows a hover tint on the <Code>outlined</Code> and{' '}
+          <Code>text</Code> variants. It was a hardcoded <Code>rgba(255, 255, 255, 0.2)</Code>, and
+          both variants are <Code>background: transparent</Code> - white on white, so those two had
+          no hover feedback at all. <Code>filled</Code> keeps the white tint; the others use a
+          neutral dark one.
+        </>,
+        <>
+          <Code>focus-ring()</Code> binds <Code>:focus-visible</Code> instead of <Code>:focus</Code>
+          , so <Code>Avatar</Code>, <Code>Navigation</Code> items and <Code>Snackbar</Code>'s close
+          button no longer show a focus ring on a mouse press - matching every other control in the
+          library. Text inputs are unaffected: <Code>Input</Code> keeps ringing on click, which is
+          correct for a field you are about to type into.
+        </>,
+        <>
+          <Code>Input</Code>'s base and error focus rings are written directly rather than through{' '}
+          <Code>focus-ring()</Code>. Nested in <Code>&:focus-within</Code>, the mixin composed to{' '}
+          <Code>.eidos-input-wrapper:focus-within:focus</Code>, which a wrapper{' '}
+          <Code>
+            {'<'}div{'>'}
+          </Code>{' '}
+          can never match - dead since the mixin was introduced, and masked by the per-variant rules
+          that painted the real ring.
+        </>,
+        <>
+          <strong>Focus indicators now meet WCAG 1.4.11 (3:1).</strong> Every ring in the library
+          was an alpha tint of its colour, measuring <strong>1.47-1.62:1</strong> against a white
+          page across all seven families - all failing. Raising the alpha cannot fix it (0.6 still
+          only reaches 2.3-2.76:1), so rings are now a solid base colour with a white gap: ≥4.76:1
+          against the page *and* against a filled control. The gap is what makes a ring visible
+          around a checked <Code>Switch</Code>, <Code>Checkbox</Code> or <Code>Radio</Code>, whose
+          track is already the ring's own colour.
+        </>,
+        <>
+          A clickable <Code>Avatar</Code> inside an <Code>AvatarGroup</Code> has a focus ring. The
+          group's white separator and the focus ring set <Code>box-shadow</Code> at identical
+          specificity (0,2,0), and the separator is later in the stylesheet, so it silently won.
+        </>,
+        <>
+          <Code>TagInput</Code> and <Code>OTPInput</Code> focus rings were the weakest in the
+          library at <Code>0.15</Code> alpha; they are covered by the same change. Their state is
+          driven by a <Code>--focused</Code> class rather than <Code>:focus</Code>, which is why
+          earlier sweeps missed them.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          Focus-ring geometry lives in one place: <Code>focus-ring-shadow()</Code> /{' '}
+          <Code>focus-ring-shadow-inset()</Code> in <Code>mixins.scss</Code>, with the{' '}
+          <Code>focus-ring()</Code> / <Code>focus-ring-inset()</Code> mixins built on them. All 98
+          call sites consume it, including the ones that cannot use a mixin - <Code>Input</Code>/
+          <Code>Textarea</Code> paint on a <Code>:focus-within</Code> wrapper and compose the ring
+          with elevation shadows, and <Code>SegmentedControl</Code> composes it with its chip
+          shadow. Previously the ring was copied by hand in 75 places, which is exactly why every
+          copy was failing contrast in the same way.
+        </>,
+        <>
+          Focus rings are a uniform width. Call sites passed 2px or 3px arbitrarily, rendering 4px
+          and 5px bands side by side; they all take the shared default now. <Code>Slider</Code>,
+          which already used a correct two-tone ring, keeps its wider gap through the same function.
+        </>,
+      ],
+    },
+    {
+      category: 'removed',
+      items: [
+        <>
+          Two unreferenced <Code>@keyframes</Code> blocks (<Code>snackbarEnter</Code>,{' '}
+          <Code>snackbarExit</Code>) that shipped in <Code>dist/index.css</Code>.{' '}
+          <Code>Snackbar</Code>'s motion comes from transitions; these were also unprefixed, so a
+          consumer defining the same name would have collided with them.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.2.0"
   date="2026-09-19"
   bump="minor"
