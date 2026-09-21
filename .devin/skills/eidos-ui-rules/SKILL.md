@@ -767,6 +767,31 @@ library's recurring failure shape - valid CSS/markup, no warning anywhere:
   control, which propagated invalid nested-interactive ARIA to all seven
   components built on it.
 
+### `typecheck` needs `dist/` - build styles first
+
+`dev/main.tsx` imports `eidos-ui/fonts`, deliberately, because the dev app
+is meant to consume the package the way a consumer does. That specifier
+resolves through the `exports` map to `dist/fonts.css.d.ts`, which only
+exists after a build - so on a **fresh checkout** `tsc --noEmit` fails with:
+
+```
+TS2882: Cannot find module or type declarations for side-effect import of 'eidos-ui/fonts'.
+```
+
+This passed locally for a long time purely because `dist/` was lying around
+from an earlier build, and broke the moment CI ran it on a clean runner.
+`npm run verify` had the same latent bug for the same reason.
+
+Both now run `npm run build:styles` before `typecheck` - about a second of
+Sass, which is why the fast CI job does not need the full package build.
+`scripts/build-styles.js` also had to learn to create `dist/` itself; it had
+only ever run after `tsup`, which made the directory for it.
+
+**When a check depends on a build artefact, say so in the pipeline.** The
+tempting shortcut here - an ambient `declare module 'eidos-ui/fonts'` - would
+have made the error disappear while also hiding the removal of that entry
+from the `exports` map, which nothing else validates.
+
 ### Storybook is for consumers; the repo is for contributors
 
 A reader in Storybook installed the package from npm. They have `dist/` and

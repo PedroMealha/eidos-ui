@@ -4,6 +4,12 @@ import { compileString } from 'sass';
 const compile = (entry) =>
   compileString(readFileSync(entry, 'utf8'), { loadPaths: ['./src/styles'] }).css;
 
+// `tsup` normally creates `dist/` before this runs, so this only matters when
+// the script is invoked on its own - which `typecheck` now does, because the
+// `dev/` app imports `eidos-ui/fonts` and needs the declaration below to
+// resolve. Without it the script died with ENOENT on a clean checkout.
+if (!existsSync('./dist')) mkdirSync('./dist', { recursive: true });
+
 // ---------------------------------------------------------------------------
 // Main stylesheet - `eidos-ui/styles`
 // ---------------------------------------------------------------------------

@@ -43,6 +43,7 @@
     "release:approve": "npm run release -- approve",
     "version:check": "npm view eidos-ui version",
     "build": "node scripts/build.js",
+    "build:styles": "node scripts/build-styles.js",
     "build-storybook": "storybook build",
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit",

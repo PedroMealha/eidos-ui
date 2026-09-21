@@ -67,6 +67,13 @@ function mdxChanged() {
 const started = Date.now();
 console.log('');
 step('lint', 'npm run lint');
+// The `dev/` app imports `eidos-ui/fonts` the way a consumer would, and that
+// specifier only resolves through the `exports` map to `dist/fonts.css.d.ts`.
+// So `typecheck` needs the stylesheet build to have happened at least once.
+// It always had; nobody noticed because `dist/` was left over from a previous
+// run, and `verify` therefore could not pass on a fresh clone. A second's
+// worth of Sass here keeps the cheap checks in front of the expensive ones.
+step('styles', 'npm run build:styles');
 step('typecheck', 'npm run typecheck');
 step('prettier', 'npm run prettier:check');
 // README/GETTING_STARTED duplicate the component list and the token names, and

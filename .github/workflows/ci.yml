@@ -30,6 +30,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+
+      # `dev/main.tsx` imports `eidos-ui/fonts` as a consumer would, and that
+      # resolves through the `exports` map to `dist/fonts.css.d.ts`. On a
+      # fresh checkout there is no `dist/`, so `typecheck` fails with TS2882
+      # unless the stylesheet build has run. About a second of Sass, which is
+      # why this job does not need the full package build.
+      - run: npm run build:styles
       - run: npm run typecheck
       - run: npm run prettier:check
       - run: node scripts/check-docs.js
