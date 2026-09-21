@@ -29,6 +29,16 @@ Entries land here as work happens, not written retroactively at release time
 
 ### Fixed
 
+- Targets meet the 24x24 minimum of WCAG 2.2 SC 2.5.8. `ColorPicker`'s
+  preset swatches (20x20), its hue and alpha sliders (20px tall),
+  `SplitButton`'s chevron half (20.4px wide) and `NumberInput`'s spinbutton
+  (only 15.6px of it reachable between its own buttons). The sliders are
+  unchanged visually - their hit area grew, the painted track did not.
+- `MessageComposer` and `ThemeEditor` no longer put their hidden file inputs
+  in the tab order. Both are proxies for a visible button, but were hidden
+  with `visually-hidden`, which deliberately keeps an element focusable - so
+  keyboard users landed on an invisible control and met the same action
+  twice. They now match `FileUpload`, which already did this correctly.
 - Every field with an `error` now says so programmatically. `Input`,
   `Textarea`, `Checkbox`, `RadioGroup`, `NumberInput`, `Combobox`, `TagInput`
   and `OTPInput` set `aria-invalid` and point `aria-describedby` at the

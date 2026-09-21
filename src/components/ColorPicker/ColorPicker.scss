@@ -156,11 +156,15 @@
 // ── Shared range-input base ────────────────────────────────────────────────
 // Applied to both the hue and alpha <input type="range"> elements.
 
+// 24px tall to satisfy SC 2.5.8 (Target Size, Minimum), which is a pure
+// win here: the input is transparent and the *visible* bar is
+// `%range-track-base` at 10px, centred inside it. Growing the input grows
+// only the hit area - the slider looks identical and is 20% easier to grab.
 %range-base {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 20px;
+  height: 24px;
   background: transparent;
   cursor: pointer;
   outline: none;
@@ -267,7 +271,10 @@
 
 .eidos-color-picker-alpha-wrapper {
   position: relative;
-  height: 20px;
+  // Matches `%range-base` - the wrapper would otherwise clip the input's
+  // taller hit area. The visible bar is `.eidos-color-picker-alpha-bg`,
+  // still 10px.
+  height: 24px;
   @include flex-center-y;
 }
 
@@ -448,10 +455,19 @@
   gap: var(--spacing-xs);
 }
 
+// 24px, not 20px with a wider gap.
+//
+// SC 2.5.8 offers a spacing exception - a sub-24px target passes if a 24px
+// circle centred on it clears its neighbours - and at 20px that needs only
+// a 4px gap. The gap here is `--spacing-xs`, which is `0.25em`: 3.5px at the
+// default font size, and ~3.06px at the minimum `fontScale`. So the
+// exception would have held for the preset theme and broken silently for a
+// themed one. Same trap as the `Alert` tints - do not park on a threshold
+// that a theme can move.
 .eidos-color-picker-swatch {
   @include button-reset;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--border-radius-sm);
   border: 2px solid transparent;
   cursor: pointer;

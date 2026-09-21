@@ -128,7 +128,19 @@
   border: none;
   outline: none;
   padding: 0 var(--spacing-xs);
-  min-width: 0;
+  // Not `0`.
+  //
+  // With `allowTyping={false}` the *container* is the `spinbutton`, and the
+  // increment/decrement buttons sit inside it - so the only part of the
+  // target a pointer can actually reach is this strip between them. It
+  // measured 15.6px wide, which fails SC 2.5.8 even though the control as a
+  // whole is 90x40.
+  //
+  // Worth noting the shape rather than just the number: a widget role with
+  // its own controls nested inside is the same pattern corrected elsewhere
+  // in this library. Restructuring the spinbutton is the better long-term
+  // answer; this floor makes it conformant without that risk.
+  min-width: 24px;
 
   // When it's a span (no-typing mode)
   display: flex;

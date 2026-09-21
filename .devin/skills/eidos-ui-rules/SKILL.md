@@ -767,6 +767,55 @@ library's recurring failure shape - valid CSS/markup, no warning anywhere:
   control, which propagated invalid nested-interactive ARIA to all seven
   components built on it.
 
+### 24px targets: take the size, not the spacing exception
+
+SC 2.5.8 lets a sub-24px target pass if a 24px circle centred on it clears
+its neighbours, and `ColorPicker`'s 20px swatches were four pixels of gap
+away from qualifying. Don't.
+
+The gap is `--spacing-xs`, which is `0.25em`: 3.5px at the default font
+size and about 3.06px at the minimum `fontScale`. The exception would have
+held for the preset theme and failed silently for a themed one - the same
+threshold trap as the `Alert` tints. **Set a px floor; don't rely on a
+computed value a theme can move.** `SplitButton`'s chevron got `min-width:
+24px` for the same reason, its `em` padding having left it at 20.4px.
+
+Growing a target is often free. `ColorPicker`'s sliders are a transparent
+`<input type="range">` over a 10px painted track, so raising the input to
+24px enlarged only the hit area - identical pixels, 20% easier to grab.
+Check what actually paints the control before assuming a size change is
+visible.
+
+### `visually-hidden` keeps things focusable - that is what it is for
+
+`MessageComposer` and `ThemeEditor` hid their file inputs with
+`@include visually-hidden` and let a visible button call `.click()` on
+them. The mixin is a clip-rect, which is _deliberately_ still focusable
+(that is how skip links and screen-reader-only text work), so keyboard
+users tabbed onto an invisible control and met the same action twice.
+
+For a proxy element - one a visible control drives - use `display: none`
+plus `tabIndex={-1}`, which is what `FileUpload` already did. `aria-hidden`
+is only safe alongside the `tabIndex={-1}`; hiding a focusable element is
+its own violation.
+
+Rule of thumb: `visually-hidden` is for content you want **announced but
+not seen**. If you want it neither announced nor reachable, it is the wrong
+tool.
+
+### Checking SC 2.4.11 needs a sibling-aware probe
+
+Nothing in axe tests Focus Not Obscured. A `elementFromPoint` sweep over
+every tab stop does, but the naive version reports **every custom checkbox
+and radio in the library** as fully covered: the native input is visually
+hidden under a sibling that paints the box _and_ the focus ring
+(`input:focus-visible + .control`), so the hit test returns the sibling.
+
+Count a sibling as visible, and the sweep over ~2350 tab stops finds
+exactly what it should. Script: `/tmp/focus-obscured.mjs` pattern - sample
+a grid of points per element, and fail only when _none_ of them hit it,
+since the AA criterion is about being entirely hidden.
+
 ### A visible error is not an identified error
 
 Eight components take an `error` prop. Before this work, **none** set

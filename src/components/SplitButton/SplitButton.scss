@@ -34,7 +34,10 @@
     margin-left: -1.5px;
     padding-left: var(--spacing-sm);
     padding-right: var(--spacing-sm);
-    min-width: unset;
+    // 24px floor for SC 2.5.8. The padding is `em`-based, so at the default
+    // size this half measured 20.4px wide and would shrink further on a
+    // smaller `fontScale`; the floor holds regardless.
+    min-width: 24px;
     align-self: stretch;
     align-items: center;
     justify-content: center;

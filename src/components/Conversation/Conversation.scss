@@ -381,7 +381,10 @@
 }
 
 .eidos-composer-file-input {
-  @include visually-hidden;
+  // `display: none`, not `visually-hidden`: this input is a proxy for a
+  // visible button, so it should be gone entirely rather than merely
+  // invisible. `visually-hidden` deliberately keeps things focusable.
+  display: none;
 }
 
 .eidos-composer-actions {

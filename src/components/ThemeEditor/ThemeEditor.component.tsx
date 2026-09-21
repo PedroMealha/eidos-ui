@@ -310,8 +310,10 @@ const FontRow: React.FC<FontRowProps> = ({
             ref={inputRef}
             type="file"
             accept={FONT_ACCEPT}
+            // Same proxy pattern as `MessageComposer` - see the note there.
             className="eidos-theme-editor-file"
-            aria-label="Upload a font file"
+            tabIndex={-1}
+            aria-hidden="true"
             onChange={(event) => {
               void handleFile(event.target.files?.[0]);
               // Allow re-picking the same file after a failure.

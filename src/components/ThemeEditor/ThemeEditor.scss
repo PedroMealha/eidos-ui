@@ -142,7 +142,10 @@
 // rather than rendered. `display: none` would make it unreachable to some
 // assistive tech and to programmatic `.click()` in older engines.
 .eidos-theme-editor-file {
-  @include visually-hidden;
+  // `display: none`, not `visually-hidden`: this input is a proxy for a
+  // visible button, so it should be gone entirely rather than merely
+  // invisible. `visually-hidden` deliberately keeps things focusable.
+  display: none;
 }
 
 .eidos-theme-editor-actions {

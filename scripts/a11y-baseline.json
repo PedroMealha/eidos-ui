@@ -3,6 +3,6 @@
   "tags": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"],
   "recordedAt": "2026-09-21",
   "storiesAudited": 475,
-  "totalNodes": 61,
-  "rules": { "target-size": 54, "color-contrast": 7 }
+  "totalNodes": 7,
+  "rules": { "color-contrast": 7 }
 }

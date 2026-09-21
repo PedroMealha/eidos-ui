@@ -191,8 +191,24 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
                 type="file"
                 multiple
                 accept={attachmentAccept}
+                // Hidden from both the tab order and the accessibility
+                // tree. It is a proxy: the visible button above opens the
+                // file dialog via `.click()`, so this input is an
+                // implementation detail, not a control.
+                //
+                // `visually-hidden` keeps an element *focusable* - that is
+                // the point of it, for skip links and screen-reader-only
+                // text - so a keyboard user landed on an invisible control
+                // and met the same "Attach files" action twice. `FileUpload`
+                // already gets this right with `display: none` +
+                // `tabIndex={-1}`; these two had drifted from it.
+                //
+                // `aria-hidden` is safe here only *because* of the
+                // `tabIndex={-1}` beside it - hiding a focusable element is
+                // its own violation.
                 className="eidos-composer-file-input"
-                aria-label="Attach files"
+                tabIndex={-1}
+                aria-hidden="true"
                 onChange={(event) => addFiles(event.target.files)}
                 disabled={disabled || pending}
               />
