@@ -508,9 +508,8 @@ export const AuditSummary = () => {
         </tbody>
       </Table>
       <div style={{ fontSize: 11.5, color: MUTED, marginTop: 8 }}>
-        Tags audited: {a.tags.join(', ')}. Recorded by{' '}
-        <code>node scripts/check-a11y-baseline.js --update</code>, and re-checked on every build -
-        any increase fails CI.
+        Tags audited: {a.tags.join(', ')}. Re-checked on every build; a release cannot be cut with
+        more violations than the figure above.
       </div>
     </Section>
   );
@@ -697,7 +696,11 @@ export const AccessibilityReport = () => {
   const source = stats.accessibilityDoc;
   if (!source) return null;
 
-  const lines = source.split('\n');
+  // Everything after the marker is written for someone working in the
+  // repository - commands they can run, files they can open. A reader here
+  // installed the package from npm and has none of that, so the render
+  // stops rather than showing instructions that cannot be followed.
+  const lines = source.split('<!-- storybook:end -->')[0]!.split('\n');
   const out: ReactNode[] = [];
   let i = 0;
   let key = 0;

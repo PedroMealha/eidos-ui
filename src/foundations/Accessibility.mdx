@@ -7,9 +7,9 @@ import { AuditSummary, AccessibilityReport } from './Foundations.docs';
 {/* All JSX lives in Foundations.docs.tsx - see the note in Colour.mdx. */}
 
 <GuideHero title="Accessibility">
-  Every story is audited against WCAG 2.2 AA on each build. The result below is read from the gate's
-  own record, and the report beneath it is the repository's ACCESSIBILITY.md rendered in place -
-  neither is retyped, so neither can drift from what CI enforces.
+  Every story is audited against WCAG 2.2 AA on each build, and no release can ship with more
+  violations than the figure below. Both the audit and the report beneath it are read from the build
+  rather than retyped, so neither can drift from what is actually enforced.
 </GuideHero>
 
 ## Current audit
@@ -18,10 +18,11 @@ import { AuditSummary, AccessibilityReport } from './Foundations.docs';
 
 ## The report
 
-<GuideNote title="This is ACCESSIBILITY.md, rendered" hint="one source, two places to read it">
-  The rest of this page is the repository's accessibility report, shown here so it can be read
-  without leaving Storybook. The file remains the standalone artefact - it is what appears on GitHub
-  and what a procurement reviewer would be sent - so it is rendered rather than restated.
+<GuideNote title="The full report, in place" hint="also available as a file">
+  Everything below is the project's accessibility report, shown here so it can be read without
+  leaving these docs. The same report is available as [a single
+  document](https://github.com/PedroMealha/eidos-ui/blob/main/ACCESSIBILITY.md) if you need to send
+  it to someone - a procurement review, for instance.
 </GuideNote>
 
 <AccessibilityReport />

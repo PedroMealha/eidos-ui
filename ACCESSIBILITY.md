@@ -26,12 +26,12 @@ components**.
 |                     |                                                                                                                                                                                                                  |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | axe-core violations | **7**, all documented exemptions (below)                                                                                                                                                                         |
-| Story tests         | 528 (`npm test`)                                                                                                                                                                                                 |
+| Story tests         | 528                                                                                                                                                                                                              |
 | Rules at zero       | `label`, `button-name`, `nested-interactive`, `target-size`, `aria-allowed-attr`, `aria-valid-attr-value`, `link-in-text-block`, `scrollable-region-focusable`, `aria-required-children`, `aria-prohibited-attr` |
 
-These numbers are not hand-maintained. `scripts/check-a11y-baseline.js` drives
-axe over every story on each `npm run verify`, and fails the build if any rule
-count rises. If this table is ever wrong, the build is already red.
+These numbers are not hand-maintained. Every build re-runs the audit across
+every story and fails if any rule's count has risen. If this table is ever
+wrong, the build is already red.
 
 ## The 7 remaining nodes
 
@@ -114,6 +114,13 @@ omission left unmentioned is not:
 
 If you need a conformance claim for procurement, these three are the gap
 between this document and one.
+
+<!-- storybook:end -->
+<!--
+     Everything below is for someone working in this repository. The
+     Storybook rendering of this file stops at the marker above, because a
+     reader there has installed the package and cannot run any of it.
+-->
 
 ## Running the checks yourself
 

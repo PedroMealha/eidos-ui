@@ -767,6 +767,35 @@ library's recurring failure shape - valid CSS/markup, no warning anywhere:
   control, which propagated invalid nested-interactive ARIA to all seven
   components built on it.
 
+### Storybook is for consumers; the repo is for contributors
+
+A reader in Storybook installed the package from npm. They have `dist/` and
+nothing else - no `scripts/`, no `npm run verify`, no `.stories.tsx`, no
+source SCSS (`files: ["dist"]`). Anything they cannot act on is noise at
+best and misleading at worst.
+
+`ACCESSIBILITY.md` serves both audiences, so it carries a
+`<!-- storybook:end -->` marker: the renderer in `Foundations.docs.tsx`
+stops there, and everything after it - the "Running the checks yourself"
+commands - stays in the file for whoever is working in the repository. Move
+contributor content behind the marker rather than deleting it.
+
+The same habit applies to phrasing: state the **guarantee**, not the
+mechanism. "Re-checked on every build; a release cannot be cut with more
+violations than the figure above" tells a consumer something true and
+useful. "Recorded by `node scripts/check-a11y-baseline.js --update`" tells
+them about a file they do not have.
+
+`/tmp/audience-sweep.mjs` is the shape of the check: load every docs page,
+read `innerText`, and grep for `npm run`, `scripts/`, `git clone`,
+`vitest`, `.stories.tsx` and similar. Grepping the `.mdx` sources is not
+enough, because `ACCESSIBILITY.md` reaches the page through the plugin.
+
+One exception worth preserving: the **Releases** page names internal files
+(`global.scss`, `mixins.scss`) inside historical changelog entries. Those
+describe consumer-visible effects and are a record of what happened -
+leave them.
+
 ### Foundations pages are generated - never type a token value into prose
 
 `Foundations/Colour`, `/Typography` and `/Layout` render from
