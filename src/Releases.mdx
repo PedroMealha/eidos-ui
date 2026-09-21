@@ -14,6 +14,288 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.4.0"
+  date="2026-09-21"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>Input.posIconLabel</Code> - accessible name for the <Code>posIconButton</Code>.
+          Optional only to avoid a breaking change; omitting it logs a dev warning and falls back to
+          a generic name.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>h4</Code> is <Code>semibold</Code> rather than <Code>medium</Code>. Heading weight
+          descends from <Code>h1</Code> to <Code>h3</Code> and now floors at <Code>h4</Code>: below{' '}
+          <Code>h3</Code> the size steps are small (20px, 18px, 16px against a 14px body), so weight
+          carries most of the "this is a heading" signal, and a <Code>medium</Code> <Code>h4</Code>{' '}
+          would otherwise have rendered lighter than the new <Code>h5</Code> and <Code>h6</Code>.
+        </>,
+        <>
+          Links are underlined by default. In a paragraph they were distinguished from the
+          surrounding text by colour alone, and that colour difference is 2.90:1 - under the 3:1
+          that SC 1.4.1 requires when colour is the only cue. Only bare anchors are affected;{' '}
+          <Code>Breadcrumb</Code> and <Code>Conversation</Code> already set their own{' '}
+          <Code>text-decoration</Code>.
+        </>,
+      ],
+    },
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>h5</Code>, <Code>h6</Code> and <Code>small</Code> are styled. The browser's defaults
+          for <Code>h5</Code> and <Code>h6</Code> are <Code>0.83em</Code> and <Code>0.67em</Code>,
+          which against this library's 14px body resolve to roughly 11.6px and 9.4px - both{' '}
+          <strong>smaller than the paragraph beneath them</strong>. Any document using a six-level
+          outline had two heading levels that read as fine print. <Code>small</Code> covers captions
+          and metadata.
+        </>,
+        <>
+          <Code>ACCESSIBILITY.md</Code> - what is tested against WCAG 2.2 AA and how, the seven
+          documented SC 1.4.3 exemptions, what remains the consuming application's responsibility,
+          and what has not been done. It deliberately does not claim a conformance level.
+        </>,
+        <>
+          <Code>ColorPicker.ariaLabel</Code> - names the trigger when the label is rendered outside
+          the component, as <Code>ThemeEditor</Code> does. Without it every picker on that page was
+          announced as "Open colour picker".
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Tooltip</Code> satisfies SC 1.4.13. Escape now dismisses it for every trigger type
+          rather than only <Code>click</Code> (<Code>hover</Code> is the default, so the failing
+          case was the common one), and the panel is no longer <Code>pointer-events: none</Code>, so
+          the pointer can rest on it to read or select its content.
+        </>,
+        <>
+          <Code>Pagination</Code> shows a focus ring on every page button. The ring was nested
+          inside the <Code>--active</Code> rule, so tabbing across the other pages showed nothing at
+          all while <Code>outline: none</Code> suppressed the browser default.
+        </>,
+        <>
+          <Code>CommandPalette</Code>'s search field, <Code>MessageComposer</Code>'s textarea and{' '}
+          <Code>ColorPicker</Code>'s hue and alpha sliders have visible focus indicators. All four
+          cleared the outline via a reset and painted nothing in its place.
+        </>,
+        <>
+          <Code>Pagination</Code> wraps its page buttons, so a long pager reflows at 320px instead
+          of forcing horizontal scrolling (SC 1.4.10).
+        </>,
+        <>
+          <Code>InlineEdit</Code> and <Code>FileUpload</Code> include their visible text in the
+          accessible name (SC 2.5.3). <Code>InlineEdit</Code> was announced as "Click to edit"
+          regardless of its content, so every instance on a page sounded identical and speech input
+          had nothing to match.
+        </>,
+        <>
+          Targets meet the 24x24 minimum of WCAG 2.2 SC 2.5.8. <Code>ColorPicker</Code>'s preset
+          swatches (20x20), its hue and alpha sliders (20px tall), <Code>SplitButton</Code>'s
+          chevron half (20.4px wide) and <Code>NumberInput</Code>'s spinbutton (only 15.6px of it
+          reachable between its own buttons). The sliders are unchanged visually - their hit area
+          grew, the painted track did not.
+        </>,
+        <>
+          <Code>MessageComposer</Code> and <Code>ThemeEditor</Code> no longer put their hidden file
+          inputs in the tab order. Both are proxies for a visible button, but were hidden with{' '}
+          <Code>visually-hidden</Code>, which deliberately keeps an element focusable - so keyboard
+          users landed on an invisible control and met the same action twice. They now match{' '}
+          <Code>FileUpload</Code>, which already did this correctly.
+        </>,
+        <>
+          Every field with an <Code>error</Code> now says so programmatically. <Code>Input</Code>,{' '}
+          <Code>Textarea</Code>, <Code>Checkbox</Code>, <Code>RadioGroup</Code>,{' '}
+          <Code>NumberInput</Code>, <Code>Combobox</Code>, <Code>TagInput</Code> and{' '}
+          <Code>OTPInput</Code> set <Code>aria-invalid</Code> and point{' '}
+          <Code>aria-describedby</Code> at the message. Not one of the eight set{' '}
+          <Code>aria-invalid</Code> before, and most left the message unassociated - the error was
+          conveyed by colour and proximity alone (WCAG 3.3.1, Level A).
+        </>,
+        <>
+          <Code>RadioGroup</Code> is a <Code>radiogroup</Code>. Its options were announced as a run
+          of unrelated radios, and there was nothing for its error to attach to.
+        </>,
+        <>
+          <Code>Snackbar</Code> pauses its auto-dismiss on hover and on focus, resuming with the
+          remaining time. Auto-dismiss was a fixed <Code>setTimeout</Code> that nothing could stop -
+          a time limit the user could neither turn off, adjust nor extend (WCAG 2.2.1, Level A) -
+          which also meant a snackbar's <Code>action</Code> ("Undo") could disappear mid-reach.
+        </>,
+        <>
+          <Code>DataGrid</Code> rows are rows again. dnd-kit's <Code>attributes</Code> were spread
+          onto every{' '}
+          <Code>
+            {'<'}tr{'>'}
+          </Code>
+          , giving it <Code>role="button"</Code> and erasing the table's structure for assistive
+          technology - even with <Code>draggableRows</Code> off, since <Code>useSortable</Code>{' '}
+          returns them regardless. Moving them to the drag handle also made the handle focusable, so
+          the keyboard alternative to dragging (SC 2.5.7) can actually be started; it previously had
+          no activator.
+        </>,
+        <>
+          <Code>Combobox</Code> and <Code>TagInput</Code> follow the ARIA 1.2 combobox pattern. The
+          wrapper{' '}
+          <Code>
+            {'<'}div{'>'}
+          </Code>{' '}
+          carried <Code>aria-expanded</Code>/<Code>aria-haspopup</Code> with no role at all, the
+          input had no <Code>combobox</Code> role, and <Code>aria-controls</Code> named a listbox
+          that does not exist until the menu opens.
+        </>,
+        <>
+          <Code>Popover</Code> puts <Code>aria-expanded</Code>/<Code>aria-haspopup</Code> on its
+          trigger element rather than on a roleless wrapper.
+        </>,
+        <>
+          <Code>Chip</Code> renders its action and its remove button as siblings when it is both
+          clickable and removable. It previously nested one button inside another via{' '}
+          <Code>role="button"</Code>.
+        </>,
+        <>
+          <Code>Tooltip</Code> only makes its wrapper a control when the trigger does not already
+          contain one - <Code>Button</Code> wraps itself in a <Code>Tooltip</Code>, so the{' '}
+          <Code>click</Code> trigger reliably produced a button inside a button.
+        </>,
+        <>
+          <Code>VirtualList</Code> scopes <Code>role="list"</Code> to the element holding the rows,
+          so the loading and empty states are no longer invalid list children; drops an{' '}
+          <Code>aria-label</Code> that is prohibited on a roleless element; and makes the scroll
+          viewport focusable so it can be scrolled by keyboard.
+        </>,
+        <>
+          <Code>Chat</Code>'s outgoing message bubble was the worst contrast surface in the library.
+          Its attachment chip tinted the bubble with white (3.83:1 for the preset, 3.79-4.15:1
+          across the palette) and now tints with black (6.79-6.87:1); the attachment size label no
+          longer uses <Code>--text-muted</Code>, a dark grey meant for light surfaces, on a
+          saturated fill (1.97:1); and the timestamp is no longer faded to 0.75 opacity (3.57:1).
+        </>,
+        <>
+          <Code>Alert</Code> titles and icons use <Code>--x-dark</Code> rather than{' '}
+          <Code>--x-color</Code>. Each variant tints its background with 8% of its own hue, leaving
+          the title at 4.44-4.52:1 - two variants failing AA and three passing by a hundredth. Now
+          6.10-6.22:1 across the set.
+        </>,
+        <>
+          <strong>
+            <Code>tooltip</Code> now names an icon-only <Code>Button</Code>.
+          </strong>{' '}
+          <Code>
+            {'<'}IconButton icon={'{'}Plus{'}'} tooltip="Add item" /{'>'}
+          </Code>{' '}
+          - the pattern in <Code>IconButton</Code>'s own documentation - produced a button announced
+          as just "button", because <Code>Tooltip</Code> adds no naming attributes to its child. An
+          explicit <Code>aria-label</Code> still wins. <Code>SegmentedControl</Code> had the
+          identical problem for icon-only segments.
+        </>,
+        <>
+          <Code>Button</Code> and <Code>SegmentedControl</Code> warn in development when an
+          icon-only control has no accessible name at all.
+        </>,
+        <>
+          <Code>DataGrid</Code> labels the checkboxes it renders itself: row selection, select all,
+          and boolean cells (which are named by their column and row). 194 unlabelled checkboxes.
+        </>,
+        <>
+          <Code>Input</Code>'s clear, password-toggle and <Code>posIcon</Code> buttons have
+          accessible names, and are no longer{' '}
+          <Code>
+            tabIndex={'{'}-1{'}'}
+          </Code>{' '}
+          - they were unreachable by keyboard entirely (WCAG 2.1.1). This propagated to{' '}
+          <Code>Combobox</Code>, <Code>Select</Code>, <Code>DatePicker</Code> and anything else
+          built on <Code>Input</Code>.
+        </>,
+        <>
+          <Code>Combobox</Code>, <Code>Select</Code> and <Code>DatePicker</Code> name their
+          clear/expand buttons.
+        </>,
+        <>
+          <Code>Pagination</Code>'s rows-per-page control is associated with its visible "Show:"
+          label, which was a{' '}
+          <Code>
+            {'<'}label{'>'}
+          </Code>{' '}
+          with no <Code>htmlFor</Code>.
+        </>,
+        <>
+          <Code>DataGrid</Code> and <Code>Table</Code> name their inline-edit and filter inputs from
+          the column header; <Code>ThemeEditor</Code> and <Code>MessageComposer</Code> name their
+          file inputs.
+        </>,
+        <>
+          <Code>Modal</Code>, <Code>Drawer</Code> and <Code>CommandPalette</Code> now trap keyboard
+          focus while open, move focus into the dialog, and return it to the control that opened
+          them. All three declared <Code>aria-modal="true"</Code> - a promise that the rest of the
+          page is inert - while Tab moved straight out to the page behind the scrim (WCAG 2.4.3
+          Focus Order, Level A).
+        </>,
+        <>
+          <Code>Drawer</Code> no longer drops focus onto{' '}
+          <Code>
+            {'<'}body{'>'}
+          </Code>{' '}
+          when it closes, which returned keyboard users to the top of the document.
+        </>,
+        <>
+          <Code>Popover</Code> moves focus into its panel and back to the trigger. Its panel is
+          portaled, so its controls were previously unreachable by keyboard. Tab is deliberately{' '}
+          <strong>not</strong> trapped - it is a non-modal dialog.
+        </>,
+        <>
+          <Code>CommandPalette</Code> no longer remounts its trigger when opening. The root element
+          changed shape between the closed and open states, so React destroyed and recreated the
+          button the user had just clicked, losing focus with it.
+        </>,
+      ],
+    },
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>--text-muted</Code> and <Code>--text-disabled</Code> tokens for text colour, so a
+          raw <Code>--gray-N</Code> surface step is never picked for a label again.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          Muted text meets WCAG 1.4.3 AA. 99 declarations across 39 components painted placeholders,
+          hints, timestamps, counts and empty-state copy in <Code>--gray-400</Code>, which is 2.56:1
+          on white against the required 4.5:1.
+        </>,
+        <>
+          <Code>Dropdown</Code>'s trigger wrapper no longer sets <Code>role="button"</Code>, which
+          wrapped the real control in a second, non-keyboard-operable one - invalid ARIA across{' '}
+          <Code>Select</Code>, <Code>Combobox</Code>, <Code>Menu</Code>, <Code>Popover</Code>,{' '}
+          <Code>ContextMenu</Code>, <Code>ColorPicker</Code> and <Code>TagInput</Code>.
+        </>,
+        <>
+          <Code>Skeleton</Code> and <Code>VirtualList</Code> accept a unitless numeric string for{' '}
+          <Code>width</Code> and <Code>height</Code>; <Code>'240'</Code> previously produced an
+          invalid CSS declaration that browsers dropped silently, leaving the element unsized.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.3.0"
   date="2026-09-21"
   bump="minor"
