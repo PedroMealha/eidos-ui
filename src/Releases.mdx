@@ -15,6 +15,46 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.3.0"
+  date="2026-09-21"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>--text-muted</Code> and <Code>--text-disabled</Code> tokens for text colour, so a
+          raw <Code>--gray-N</Code> surface step is never picked for a label again.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          Muted text meets WCAG 1.4.3 AA. 99 declarations across 39 components painted placeholders,
+          hints, timestamps, counts and empty-state copy in <Code>--gray-400</Code>, which is 2.56:1
+          on white against the required 4.5:1.
+        </>,
+        <>
+          <Code>Dropdown</Code>'s trigger wrapper no longer sets <Code>role="button"</Code>, which
+          wrapped the real control in a second, non-keyboard-operable one - invalid ARIA across{' '}
+          <Code>Select</Code>, <Code>Combobox</Code>, <Code>Menu</Code>, <Code>Popover</Code>,{' '}
+          <Code>ContextMenu</Code>, <Code>ColorPicker</Code> and <Code>TagInput</Code>.
+        </>,
+        <>
+          <Code>Skeleton</Code> and <Code>VirtualList</Code> accept a unitless numeric string for{' '}
+          <Code>width</Code> and <Code>height</Code>; <Code>'240'</Code> previously produced an
+          invalid CSS declaration that browsers dropped silently, leaving the element unsized.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.2.1"
   date="2026-09-20"
   bump="patch"

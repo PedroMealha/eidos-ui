@@ -214,11 +214,17 @@ try {
   // Falls through to the hint below.
 }
 
-console.log(`\nRelease card written to ${SNIPPET_PATH}`);
-console.log('Copy it from there into src/Releases.mdx (adjust wording/placement as needed),');
+console.log(`%c\nRelease card written to ${SNIPPET_PATH}`, 'color: green;');
+console.log(
+  '%cCopy it from there into src/Releases.mdx (adjust wording/placement as needed),',
+  'color: green;',
+);
 if (formatted) {
-  console.log('then `npm run verify` - it is the only thing that parses .mdx.\n');
+  console.log('%cthen `npm run verify` - it is the only thing that parses .mdx.', 'color: orange;');
 } else {
-  console.log('then `npm run prettier:fix` (auto-format failed) and `npm run verify`.\n');
+  console.log(
+    '%cthen `npm run prettier:fix` (auto-format failed) and `npm run verify`.',
+    'color: orange;',
+  );
 }
 // console.log(snippet);
