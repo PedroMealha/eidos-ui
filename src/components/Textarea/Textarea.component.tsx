@@ -30,6 +30,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ) => {
     const generatedId = useId();
     const textareaId = id || `textarea-${generatedId}`;
+    // Associates the visible error with the control. Without it the message
+    // is just a red line of text sitting near the field - obvious to look
+    // at, absent from the accessibility tree (SC 3.3.1). See the fuller
+    // note in `Input`.
+    const errorId = `${textareaId}-error`;
 
     // Extract defaultValue so it never reaches the native <textarea> alongside `value`.
     // Same reasoning as Input: we always set value={currentValue}, so having defaultValue
@@ -127,6 +132,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             ref={ref}
             id={textareaId}
             className={textareaClasses}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? errorId : undefined}
             rows={rows}
             maxLength={maxLength}
             disabled={disabled || loading}
@@ -151,7 +158,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         </div>
 
         {error && (
-          <div className="eidos-textarea-error-message">
+          <div id={errorId} className="eidos-textarea-error-message">
             <CircleAlert className="eidos-textarea-error-icon" />
             <span>{error}</span>
           </div>

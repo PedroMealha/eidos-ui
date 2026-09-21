@@ -64,16 +64,31 @@ h4 {
   color: var(--dark-color);
 }
 
+// Links are underlined by default.
+//
+// Without it, a link inside a paragraph is distinguished from the text
+// around it by colour alone, and SC 1.4.1 then requires at least 3:1
+// between the two. `--hyperlink-color` against `--dark-color` body text
+// measures **2.90:1** - so the only cue was both the sole cue and an
+// insufficient one. Underlining on `:hover` did not help: it is unavailable
+// to anyone reading rather than pointing, and absent on touch.
+//
+// Tuning the colours instead was rejected: both ends are themeable, so no
+// pair of tokens can guarantee the 3:1 relationship holds for a consumer's
+// palette. An underline is independent of colour entirely.
+//
+// This only affects bare anchors in consumer prose. Every `<a>` the library
+// renders itself - `Breadcrumb`'s crumbs, `Conversation`'s attachment link -
+// already sets its own `text-decoration: none` and is unaffected.
 a {
   color: var(--hyperlink-color);
-  text-decoration: none;
+  text-decoration: underline;
   text-underline-offset: 0.1em;
   transition: all 0.2s ease;
   cursor: pointer;
 
   &:hover {
     color: var(--hyperlink-dark);
-    text-decoration: underline;
   }
 }
 

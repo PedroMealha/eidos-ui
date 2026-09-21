@@ -18,16 +18,30 @@
   // Variant colour themes
   // ========================================================================
 
+  // Titles and icons use `--x-dark`, not `--x-color`.
+  //
+  // Each variant tints its background with 8% of its own hue, which lifts
+  // the surface towards the text painted in that same hue. Measured against
+  // the 8% tint, `--x-color` gives 4.51 / 4.52 / 4.44 / 4.52 / 4.49 for
+  // primary / success / danger / warning / info - three of them scraping
+  // past 4.5:1 by a hundredth and two failing outright. That is not a
+  // palette with one bad variant, it is a pattern sitting on the threshold
+  // where any future palette tweak flips all five.
+  //
+  // `--x-dark` lands at 6.10-6.22 across the set. The icon is darkened with
+  // the title rather than left vivid: it stays far above the 3:1 that SC
+  // 1.4.11 asks of a non-text graphic, and a title and icon in noticeably
+  // different shades of the same hue reads as a mistake.
   &--info {
     @include bg-color-opacity(primary, 0.08);
     @include border-color-opacity(primary, 0.2);
 
     .eidos-alert-icon-wrapper {
-      color: var(--primary-color);
+      color: var(--primary-dark);
     }
 
     .eidos-alert-title {
-      color: var(--primary-color);
+      color: var(--primary-dark);
     }
   }
 
@@ -36,11 +50,11 @@
     @include border-color-opacity(success, 0.2);
 
     .eidos-alert-icon-wrapper {
-      color: var(--success-color);
+      color: var(--success-dark);
     }
 
     .eidos-alert-title {
-      color: var(--success-color);
+      color: var(--success-dark);
     }
   }
 
@@ -49,11 +63,11 @@
     @include border-color-opacity(warning, 0.2);
 
     .eidos-alert-icon-wrapper {
-      color: var(--warning-color);
+      color: var(--warning-dark);
     }
 
     .eidos-alert-title {
-      color: var(--warning-color);
+      color: var(--warning-dark);
     }
   }
 
@@ -62,11 +76,11 @@
     @include border-color-opacity(danger, 0.2);
 
     .eidos-alert-icon-wrapper {
-      color: var(--danger-color);
+      color: var(--danger-dark);
     }
 
     .eidos-alert-title {
-      color: var(--danger-color);
+      color: var(--danger-dark);
     }
   }
 }

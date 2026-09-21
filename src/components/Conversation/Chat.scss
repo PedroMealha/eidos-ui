@@ -97,9 +97,19 @@
     color: inherit;
   }
 
+  // No `opacity` here, deliberately.
+  //
+  // The palette bases are tuned to land just over 4.5:1 against white, so a
+  // filled bubble has roughly 0.5 of contrast headroom - and every way of
+  // muting text spends more than that. Measured on the preset bubble:
+  // opacity 0.75 gives 3.57:1, 0.9 gives 4.40:1, and even 0.95 only reaches
+  // 4.70:1. A custom theme is worse: `pickContrast` only guarantees the
+  // contrast pair clears 3:1, so any muting at all can fail there.
+  //
+  // The timestamp is already secondary by size (xs) and position; it does
+  // not need to be secondary by contrast as well.
   .eidos-message-time--inline {
     color: var(--primary-contrast);
-    opacity: 0.75;
   }
 
   .eidos-message-quote {
@@ -107,9 +117,25 @@
     border-left-color: rgba(var(--white-rgb), 0.5);
   }
 
+  // Darkened, not lightened.
+  //
+  // A white veil over the bubble lifts it *towards* the white text on it:
+  // `rgba(white, 0.15)` measured 3.83:1 on the preset and 3.79-4.15:1 across
+  // the whole palette - failing everywhere. Tinting with black instead moves
+  // the surface away from the text and lands at 6.79-6.87:1 across the same
+  // set. It is also the theme-safe direction: darkening always helps light
+  // text, whatever hue the consumer picks.
   .eidos-message-attachment-link {
-    background: rgba(var(--white-rgb), 0.15);
+    background: rgba(var(--black-rgb), 0.18);
     border-color: rgba(var(--white-rgb), 0.35);
+    color: inherit;
+  }
+
+  // The base rule paints this `--text-muted`, which is a dark grey intended
+  // for light surfaces - on the filled bubble it measured 1.97:1. Muted text
+  // has nowhere to go on a saturated fill (see the timestamp note above), so
+  // it simply inherits.
+  .eidos-message-attachment-size {
     color: inherit;
   }
 }

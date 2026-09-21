@@ -192,6 +192,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
                 multiple
                 accept={attachmentAccept}
                 className="eidos-composer-file-input"
+                aria-label="Attach files"
                 onChange={(event) => addFiles(event.target.files)}
                 disabled={disabled || pending}
               />

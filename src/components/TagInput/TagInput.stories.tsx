@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TagInput } from './TagInput.component';
+import { expectErrorWiring } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Forms/TagInput',
@@ -146,5 +147,21 @@ export const Disabled: Story = {
     label: 'Tags',
     defaultValue: ['React', 'TypeScript'],
     disabled: true,
+  },
+};
+
+// ============================================================================
+// ERROR WIRING - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ * Axe cannot see any of this - see the note on `Input`'s equivalent story.
+ */
+export const ErrorWiring: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { label: 'Tags', error: 'Add at least one tag' },
+  play: async ({ canvas }) => {
+    await expectErrorWiring(canvas.getByRole('textbox', { name: 'Tags' }), 'Add at least one tag');
   },
 };

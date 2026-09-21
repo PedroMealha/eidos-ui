@@ -38,16 +38,39 @@ const rowStyle: React.CSSProperties = {
   fontSize: '0.875rem',
 };
 
-const avatarStyle = (hue: number): React.CSSProperties => ({
+/**
+ * Avatar fills, cycled by row.
+ *
+ * These used to be generated as `hsl(hue, 65%, 55%)` from the row id, which
+ * looks varied and is quietly broken: at a fixed lightness the contrast of
+ * white-on-hue swings with the hue's luminance. Measured across the rows it
+ * ranged from 4.42:1 down to **1.64:1** - yellow-greens were effectively
+ * unreadable. Generated colour cannot promise contrast.
+ *
+ * The palette bases can: every one is tuned to clear 4.5:1 against white
+ * (see the contrast table in `variables.scss`), so cycling them keeps the
+ * example both varied and legible - and demonstrates the tokens rather than
+ * inventing colours a consumer should not copy.
+ */
+const AVATAR_FILLS = [
+  'var(--primary-color)',
+  'var(--success-color)',
+  'var(--danger-color)',
+  'var(--warning-color)',
+  'var(--info-color)',
+  'var(--secondary-color)',
+] as const;
+
+const avatarStyle = (index: number): React.CSSProperties => ({
   flexShrink: 0,
   width: 32,
   height: 32,
   borderRadius: '50%',
-  background: `hsl(${hue}, 65%, 55%)`,
+  background: AVATAR_FILLS[index % AVATAR_FILLS.length],
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '#fff',
+  color: 'var(--white)',
   fontWeight: 600,
   fontSize: '0.75rem',
 });
@@ -98,10 +121,9 @@ function renderItem(item: Item): React.ReactNode {
     .split(' ')
     .map((w) => w[0])
     .join('');
-  const hue = (item.id * 37) % 360;
   return (
     <div style={rowStyle}>
-      <div style={avatarStyle(hue)}>{initials}</div>
+      <div style={avatarStyle(item.id)}>{initials}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={nameStyle}>{item.name}</div>
         <div style={metaStyle}>{item.email}</div>
@@ -223,7 +245,6 @@ function renderVariableItem(item: Item, index: number): React.ReactNode {
     .split(' ')
     .map((w) => w[0])
     .join('');
-  const hue = (item.id * 37) % 360;
 
   return (
     <div
@@ -236,7 +257,7 @@ function renderVariableItem(item: Item, index: number): React.ReactNode {
         gap: isTall ? '0.25rem' : '0.75rem',
       }}
     >
-      {!isTall && <div style={avatarStyle(hue)}>{initials}</div>}
+      {!isTall && <div style={avatarStyle(item.id)}>{initials}</div>}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={nameStyle}>{item.name}</div>
         <div style={metaStyle}>{item.email}</div>

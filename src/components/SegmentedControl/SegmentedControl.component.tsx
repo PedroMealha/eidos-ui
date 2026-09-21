@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Tooltip } from '../Tooltip';
-import { renderIcon } from '../../utils';
+import { renderIcon, devWarn } from '../../utils';
 import type { SegmentedControlProps } from './SegmentedControl.types';
 
 /**
@@ -226,6 +226,18 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         const isActive = activeValue === opt.value;
         const isDisabled = disabled || !!opt.disabled;
 
+        // An icon-only segment has no text to be named by. `tooltip` wraps
+        // it in a `Tooltip`, which contributes nothing to the accessible
+        // name, so such a segment was announced as just "radio" - identical
+        // to every other segment, making the group unusable by voice or
+        // screen reader. Same fallback as `Button`.
+        if (!opt.label && !opt.tooltip) {
+          devWarn(
+            'segmented-icon-only-name',
+            `SegmentedControl: option "${opt.value}" has an icon but no \`label\` or \`tooltip\`, so it has no accessible name.`,
+          );
+        }
+
         const segment = (
           <button
             key={opt.value}
@@ -242,6 +254,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
               .join(' ')}
             onClick={() => !isDisabled && handleSelect(opt.value)}
             onKeyDown={handleKeyDown}
+            aria-label={!opt.label ? opt.tooltip : undefined}
           >
             {opt.icon && renderIcon(opt.icon, 'eidos-segmented-icon')}
             {opt.label && <span className="eidos-segmented-label">{opt.label}</span>}

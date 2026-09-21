@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { TooltipProps, TooltipState } from './Tooltip.types';
+import { FOCUSABLE_SELECTOR } from '../../utils';
 
 export const Tooltip: React.FC<TooltipProps> = ({
   children,
@@ -309,6 +310,17 @@ export const Tooltip: React.FC<TooltipProps> = ({
     return null;
   };
 
+  // Whether the trigger wrapper has to become focusable itself, i.e. whether
+  // the consumer's child is not already a control. Measured from the DOM
+  // rather than guessed from the node type, because `children` is an
+  // arbitrary `ReactNode` and the control may be nested inside it.
+  const [triggerNeedsFocus, setTriggerNeedsFocus] = useState(false);
+
+  useEffect(() => {
+    const el = triggerRef.current;
+    setTriggerNeedsFocus(!!el && el.querySelector(FOCUSABLE_SELECTOR) === null);
+  }, [children, triggerType]);
+
   const getTriggerProps = () => {
     const props: Record<string, unknown> = {
       ref: triggerRef,
@@ -322,13 +334,29 @@ export const Tooltip: React.FC<TooltipProps> = ({
         break;
       case 'click':
         props.onClick = handleClick;
-        props.role = 'button';
-        props.tabIndex = 0;
+        // Only when the trigger has no control of its own. Making this
+        // wrapper a button unconditionally put a button inside a button
+        // whenever the child was one - which is the common case, since
+        // `Button` wraps *itself* in a Tooltip when given `tooltip`. That is
+        // invalid (`nested-interactive`) and gives one action two tab stops.
+        if (triggerNeedsFocus) {
+          props.role = 'button';
+          props.tabIndex = 0;
+          props.onKeyDown = (event: React.KeyboardEvent) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              handleClick();
+            }
+          };
+        }
         break;
       case 'focus':
         props.onFocus = handleFocus;
         props.onBlur = handleBlur;
-        props.tabIndex = 0;
+        // Same reasoning: a focusable child already receives the focus that
+        // opens the tooltip, and adding `tabIndex` here would just add a
+        // second stop in front of it.
+        if (triggerNeedsFocus) props.tabIndex = 0;
         break;
     }
 

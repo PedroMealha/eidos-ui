@@ -31,6 +31,11 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
   ) => {
     const generatedId = useId();
     const inputId = id || `number-input-${generatedId}`;
+    // Associates the visible error with the control. Without it the message
+    // is just a red line of text sitting near the field - obvious to look
+    // at, absent from the accessibility tree (SC 3.3.1). See the fuller
+    // note in `Input`.
+    const errorId = `${inputId}-error`;
 
     // Controlled / uncontrolled bridge
     const isControlled = value !== undefined;
@@ -188,6 +193,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
               readOnly={readOnly}
               inputMode="decimal"
               role="spinbutton"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error && errorMessage ? errorId : undefined}
               aria-valuemin={min}
               aria-valuemax={max}
               aria-valuenow={currentValue}
@@ -234,7 +241,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         {helperText && !error && <span className="eidos-number-input-helper">{helperText}</span>}
 
         {error && errorMessage && (
-          <span className="eidos-number-input-error" role="alert">
+          <span id={errorId} className="eidos-number-input-error" role="alert">
             {errorMessage}
           </span>
         )}

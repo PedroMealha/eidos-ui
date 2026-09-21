@@ -528,12 +528,12 @@ export const Combobox: React.FC<ComboboxProps> = ({
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div
-      ref={containerRef}
-      className={containerClasses}
-      aria-expanded={isOpen}
-      aria-haspopup="listbox"
-    >
+    // No ARIA on this wrapper.
+    //
+    // It carried `aria-expanded` and `aria-haspopup` while having no role at
+    // all, which is invalid - both are only meaningful on an element whose
+    // role supports them. They belong on the input, which is the combobox.
+    <div ref={containerRef} className={containerClasses}>
       <div ref={comboboxTriggerRef} className="eidos-combobox-trigger">
         {/*
           The Input is a direct child of eidos-combobox-trigger.
@@ -558,8 +558,22 @@ export const Combobox: React.FC<ComboboxProps> = ({
           posIcon={posIcon}
           posIconButton
           onPosIconClick={posIconClick}
+          // The same button does two jobs depending on state, so the name
+          // has to follow the icon - "Clear" on a chevron would be a lie.
+          posIconLabel={hasClearableValue ? 'Clear selection' : 'Show options'}
+          // The ARIA 1.2 combobox pattern: the input *is* the combobox.
+          role="combobox"
+          aria-expanded={isOpen}
+          // `Combobox` renders its own error message rather than passing
+          // `error` down, so it does not inherit `Input`'s wiring and has to
+          // associate the message itself (SC 3.3.1).
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${uid}-error` : undefined}
           aria-autocomplete="list"
-          aria-controls={`${uid}-listbox`}
+          // Only while the listbox exists. `aria-controls` pointing at an id
+          // that is not in the document is invalid, and that is what shipped
+          // - the listbox only renders once the dropdown opens.
+          aria-controls={isOpen ? `${uid}-listbox` : undefined}
           aria-activedescendant={focusedIndex >= 0 ? `${uid}-option-${focusedIndex}` : undefined}
         />
 
@@ -603,7 +617,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
       {hint && !error && <span className="eidos-combobox-hint">{hint}</span>}
       {error && (
-        <span className="eidos-combobox-error-message">
+        <span id={`${uid}-error`} className="eidos-combobox-error-message">
           <CircleAlert className="eidos-combobox-error-icon" />
           {error}
         </span>

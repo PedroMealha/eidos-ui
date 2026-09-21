@@ -513,6 +513,9 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         posIcon={displayValue ? X : undefined}
         posIconButton={!!displayValue}
         onPosIconClick={displayValue ? handleClear : undefined}
+        // Latent until a date is picked, which is why no story caught it:
+        // the button only renders once `displayValue` exists.
+        posIconLabel="Clear date"
         {...inputProps}
         clearable={false}
       />

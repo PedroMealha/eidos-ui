@@ -5,6 +5,7 @@ import { CommandPalette } from './CommandPalette.component';
 import type { CommandItem } from './CommandPalette.types';
 import { CMDP_ITEMS } from './CommandPalette.fixtures';
 import { Avatar } from '../Avatar';
+import { expectFocusTrap } from '../../story-a11y.docs';
 
 // ── Meta ───────────────────────────────────────────────────────────────────────
 
@@ -321,5 +322,44 @@ export const WithDisabledItems: Story = {
 <CommandPalette trigger items={items} />`.trim(),
       },
     },
+  },
+};
+
+// ============================================================================
+// FOCUS MANAGEMENT - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`. See
+ * the equivalent story on `Modal` for why this is not attached to `Default`.
+ *
+ * `CommandPalette` was the closest of the three to correct - it already
+ * focused its search input on open - but it still had no trap and no
+ * restore, so Tab left the dialog and closing it stranded focus.
+ */
+export const FocusManagement: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { shortcutKey: null },
+  render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
+    // `trigger` is the built-in button rather than a custom node on purpose.
+    // A custom `trigger` is currently wrapped in
+    // `<div role="button" tabIndex={0}>`, which makes the trigger match twice
+    // by accessible name and is a `nested-interactive` violation in its own
+    // right - the same shape as the `Dropdown` wrapper fixed in 3.3.0, but
+    // worse, because `tabIndex={0}` puts the wrapper in the tab order too.
+    // Fixing that needs an `asChild`-style API change, so it belongs to the
+    // ARIA phase rather than here.
+    <CommandPalette {...args} trigger triggerLabel="Open palette" items={CMDP_ITEMS} />
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    await expectFocusTrap({
+      userEvent,
+      step,
+      trigger: canvas.getByRole('button', { name: 'Open palette' }),
+      // The palette has few tab stops (the search input, and the list is
+      // arrow-key navigated rather than tabbed), so a long cycle only
+      // re-tests the same wrap.
+      cycles: 4,
+    });
   },
 };

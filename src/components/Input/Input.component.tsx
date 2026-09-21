@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useId } from 'react';
 import { Eye, EyeOff, CircleAlert, X, ChevronDown } from 'lucide-react';
-import { renderIcon, fullWidthModifier } from '../../utils';
+import { renderIcon, fullWidthModifier, devWarn } from '../../utils';
 import type { InputProps } from './Input.types';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 
@@ -22,6 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       posIcon,
       posIconButton = false,
       onPosIconClick,
+      posIconLabel,
       type = 'text',
       id,
       name,
@@ -60,6 +61,32 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     // Check if field is required (from props or enhanced register function)
     const isRequired = required || Boolean('required' in restInputProps && restInputProps.required);
+
+    // ── Error identification (SC 3.3.1) ───────────────────────────────
+    //
+    // The error was rendered as a red message next to the field and nothing
+    // more: no `aria-invalid`, and no association between the two. Visually
+    // obvious, entirely absent from the accessibility tree.
+    //
+    // `aria-describedby` is merged rather than assigned, because callers
+    // pass their own - `TagInput` and `Combobox` both describe their fields
+    // with hint text - and overwriting it would trade one missing
+    // description for another.
+    const errorId = `${inputId}-error`;
+    const describedBy =
+      [restInputProps['aria-describedby'], error ? errorId : null].filter(Boolean).join(' ') ||
+      undefined;
+
+    // An icon-only button with no name is announced as just "button", and
+    // only the caller knows what the icon means. Warned rather than enforced
+    // at the type level, which would be a breaking change - see the note on
+    // `posIconLabel` in Input.types.ts.
+    if (posIcon && posIconButton && onPosIconClick && !posIconLabel) {
+      devWarn(
+        'input-pos-icon-label',
+        'Input: `posIconButton` renders an icon-only button, so it needs `posIconLabel` to have an accessible name. Falling back to "Input action".',
+      );
+    }
 
     // Handle number input to allow decimals and negative numbers
     const handleNumberInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -242,6 +269,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             disabled={disabled || loading}
             onKeyDown={handleNumberInput}
             {...restInputProps}
+            aria-invalid={error ? true : restInputProps['aria-invalid']}
+            aria-describedby={describedBy}
             value={currentValue}
             onFocus={(e) => {
               handleFocus();
@@ -260,7 +289,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className={`eidos-input-password-toggle`}
               onClick={() => setShowPassword(!showPassword)}
               disabled={disabled || loading}
-              tabIndex={-1}
+              // The name changes with state so a screen reader announces what
+              // pressing it will do, not what it just did.
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-pressed={showPassword}
             >
               {showPassword ? (
                 <EyeOff className={`eidos-input-password-toggle-icon`} />
@@ -281,7 +313,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 className={`eidos-input-clear-button`}
                 onClick={handleClear}
                 disabled={disabled || loading}
-                tabIndex={-1}
+                aria-label={label ? `Clear ${label}` : 'Clear'}
               >
                 <X className={`eidos-input-clear-button-icon`} />
               </button>
@@ -299,7 +331,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className={`eidos-input-pos-icon-button`}
               onClick={onPosIconClick}
               disabled={disabled || loading}
-              tabIndex={-1}
+              aria-label={posIconLabel ?? 'Input action'}
             >
               {renderIcon(posIcon, `eidos-input-pos-icon-svg`)}
             </button>
@@ -314,7 +346,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && (
-          <div className={`eidos-input-error-message`}>
+          <div id={errorId} className={`eidos-input-error-message`}>
             <CircleAlert className={`eidos-input-error-icon`} />
             <span>{error}</span>
           </div>

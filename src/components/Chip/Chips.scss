@@ -276,6 +276,34 @@
 }
 
 // Remove button styles
+// The chip's own action, rendered only when the chip is *both* clickable and
+// removable. In that case the outer element is a plain container - two
+// controls cannot nest - so this button carries the click and has to be
+// visually invisible: the chip's padding, background and border all live on
+// the container around it.
+//
+// `color: inherit` is load-bearing. `button-reset` does not set a colour, so
+// without it the button falls back to the UA's `buttontext` - black - and a
+// filled chip rendered black-on-primary at 4.18:1.
+.eidos-chip--action {
+  @include button-reset;
+  @include flex-center-y;
+  gap: inherit;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  min-width: 0;
+  flex: 1 1 auto;
+
+  // Inset, because the chip clips to its own border radius and an outward
+  // ring on a nested control would be cropped by it.
+  &:focus-visible {
+    outline: none;
+    border-radius: var(--border-radius-sm);
+    box-shadow: focus-ring-shadow-inset(primary);
+  }
+}
+
 .eidos-chip--remove-button {
   @include button-reset;
   @include flex-center;

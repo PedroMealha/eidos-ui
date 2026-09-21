@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback, useId, useState } from 'react';
+import React, { useEffect, useCallback, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from '../Button';
 import type { DrawerProps } from './Drawer.types';
+import { useDialogFocus } from '../../utils';
 
 export const Drawer: React.FC<DrawerProps> = ({
   isOpen,
@@ -18,6 +19,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 }) => {
   const titleId = useId();
   const bodyId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // ── Animation state ────────────────────────────────────────────────────────
   // isMounted: whether the portal DOM node exists at all.
@@ -88,6 +90,12 @@ export const Drawer: React.FC<DrawerProps> = ({
     [closeOnBackdropClick, onClose],
   );
 
+  // Keyed to `isVisible` rather than `isOpen` or `isMounted` - see the note
+  // on `Modal`. The panel is translated off-screen until `--open` lands two
+  // frames after mounting, and focusing something that is off-screen scrolls
+  // the page to chase it.
+  useDialogFocus(isOpen && isVisible, panelRef);
+
   if (!isMounted) return null;
 
   return createPortal(
@@ -106,6 +114,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 
       {/* Panel */}
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}

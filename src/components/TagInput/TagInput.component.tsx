@@ -238,12 +238,10 @@ export const TagInput: React.FC<TagInputProps> = ({
   const uid = generatedId;
 
   return (
-    <div
-      className={containerClasses}
-      ref={containerRef}
-      aria-expanded={hasSuggestions ? isSuggestionsOpen : undefined}
-      aria-haspopup={hasSuggestions ? 'listbox' : undefined}
-    >
+    // No ARIA on this wrapper - it has no role, so `aria-expanded` and
+    // `aria-haspopup` were invalid here. Same fix as `Combobox`: they belong
+    // on the input, which is the combobox.
+    <div className={containerClasses} ref={containerRef}>
       {label && (
         <label htmlFor={inputId} className="eidos-tag-input-label">
           {label}
@@ -276,9 +274,17 @@ export const TagInput: React.FC<TagInputProps> = ({
           onFocus={handleInputFocus}
           onBlur={() => setIsFocused(false)}
           aria-label={label ? undefined : 'Tag input'}
+          aria-invalid={hasError ? true : undefined}
+          // The ternary is deliberate, not a bug: the hint is unmounted when
+          // an error shows (see the render below), so describing the field
+          // with it would point at an element that is not there.
           aria-describedby={hasError ? errorId : hint ? hintId : undefined}
+          role={hasSuggestions ? 'combobox' : undefined}
+          aria-expanded={hasSuggestions ? isSuggestionsOpen : undefined}
           aria-autocomplete={hasSuggestions ? 'list' : undefined}
-          aria-controls={hasSuggestions ? `${uid}-tag-suggestions` : undefined}
+          // Only while the list is actually rendered - `aria-controls` must
+          // name an element that exists.
+          aria-controls={hasSuggestions && isSuggestionsOpen ? `${uid}-tag-suggestions` : undefined}
           aria-activedescendant={
             hasSuggestions && focusedSuggestionIndex >= 0
               ? `${uid}-tag-suggestion-${focusedSuggestionIndex}`

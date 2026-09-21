@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
+import { expectErrorWiring } from '../../story-a11y.docs';
 import { Mail, Search, User, HelpCircle, DollarSign, Calendar } from 'lucide-react';
 import { Input } from './Input.component';
 import { StoryRow, StoryStack } from '../../story-layout.docs';
@@ -124,6 +125,12 @@ const meta = {
       description: 'Make posIcon clickable as a button',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    posIconLabel: {
+      control: 'text',
+      description:
+        'Accessible name for the `posIconButton`. Required in practice whenever that button is shown - an icon-only button with no name is announced as just "button". Omitting it logs a dev warning.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     width: {
       control: 'text',
       description: 'Custom width (number in px or string with units)',
@@ -215,6 +222,7 @@ export const WithIcons: Story = {
         posIcon={Search}
         posIconButton
         onPosIconClick={action('Search clicked')}
+        posIconLabel="Search"
       />
     </StoryStack>
   ),
@@ -254,4 +262,30 @@ export const FullWidth: Story = {
     fullWidth: true,
   },
   parameters: { layout: 'padded' },
+};
+
+// ============================================================================
+// ERROR WIRING - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Nothing here is visible to axe - a red border beside an unassociated
+ * message is valid DOM. It is also a SC 3.3.1 failure: the error was
+ * conveyed by colour and proximity only, so a screen reader user was told
+ * nothing at all.
+ */
+export const ErrorWiring: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: {
+    label: 'Email',
+    error: 'Enter a valid email address',
+  },
+  play: async ({ canvas }) => {
+    await expectErrorWiring(
+      canvas.getByRole('textbox', { name: 'Email' }),
+      'Enter a valid email address',
+    );
+  },
 };

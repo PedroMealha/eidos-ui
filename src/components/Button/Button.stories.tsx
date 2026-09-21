@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Plus, Trash2, ArrowBigDownDash, ArrowRight, Replace } from 'lucide-react';
 import { Button, IconButton } from './Button.component';
+import { expect } from 'storybook/test';
 import { StoryRow } from '../../story-layout.docs';
 
 const meta = {
@@ -211,7 +212,7 @@ export const WithIcons: Story = {
     <StoryRow>
       <Button preIcon={Download}>Download</Button>
       <Button posIcon={ArrowRight}>Next</Button>
-      <Button icon={Plus} />
+      <Button icon={Plus} tooltip="Add item" />
     </StoryRow>
   ),
 };
@@ -219,7 +220,7 @@ export const WithIcons: Story = {
 export const IconButtons: Story = {
   render: () => (
     <StoryRow>
-      <IconButton icon={Trash2} color="danger" variant="outlined" size="sm" />
+      <IconButton icon={Trash2} color="danger" variant="outlined" size="sm" tooltip="Delete" />
       <IconButton icon={ArrowBigDownDash} tooltip="Icon-only button" />
       <IconButton icon={Replace} tooltip="Icon-only button" size="lg" />
     </StoryRow>
@@ -237,4 +238,39 @@ export const States: Story = {
       <Button tooltip="Helpful hint">With tooltip</Button>
     </StoryRow>
   ),
+};
+
+// ============================================================================
+// ACCESSIBLE NAME - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * axe only checks that an icon-only button has *a* name. This pins *which*
+ * name, which is the part that was wrong: `tooltip` used to describe the
+ * button visually while contributing nothing to its accessible name, so the
+ * pattern in `IconButton`'s own JSDoc shipped a control announced as just
+ * "button".
+ */
+export const AccessibleName: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: () => (
+    <StoryRow>
+      <IconButton icon={Plus} tooltip="Add item" />
+      <IconButton icon={Trash2} tooltip="Move to bin" aria-label="Delete permanently" />
+    </StoryRow>
+  ),
+  play: async ({ canvas, step }) => {
+    await step('tooltip names an icon-only button', async () => {
+      await expect(canvas.getByRole('button', { name: 'Add item' })).toBeInTheDocument();
+    });
+
+    await step('an explicit aria-label wins over the tooltip', async () => {
+      // The caller may want a longer or more precise name than the visible
+      // tooltip, so the explicit one must not be overwritten.
+      await expect(canvas.getByRole('button', { name: 'Delete permanently' })).toBeInTheDocument();
+      await expect(canvas.queryByRole('button', { name: 'Move to bin' })).toBeNull();
+    });
+  },
 };

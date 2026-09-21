@@ -140,6 +140,10 @@ export const WithStartingTheme: Story = {
  * chosen colour.
  */
 export const ContrastDiagnostics: Story = {
+  // The failing pairing is the subject of this story, so axe is skipped for
+  // it rather than allow-listing the nodes somewhere else. See
+  // `scripts/check-a11y-baseline.js`, which reads the same tag.
+  tags: ['a11y-contrast-demo'],
   render: () => (
     <ThemeProvider defaultTheme={{ colors: { primary: '#fde047', success: '#a5b4fc' } }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

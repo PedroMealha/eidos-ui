@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Popover } from './Popover.component';
 import { Button } from '../Button';
+import { expectFocusTrap } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Overlays/Popover',
@@ -252,5 +253,51 @@ export const Disabled: Story = {
     disabled: true,
     placement: 'bottom',
     children: <p style={{ margin: 0 }}>You should not see this.</p>,
+  },
+};
+
+// ============================================================================
+// FOCUS MANAGEMENT - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `Popover` is a **non-modal** dialog (`aria-modal="false"`), so the
+ * expectations are deliberately different from `Modal`'s: focus moves in and
+ * comes back, but Tab must be able to leave. Trapping it would strand a
+ * keyboard user in a panel that never claimed to own the page.
+ *
+ * Moving focus in is not optional here even though it is non-modal: the panel
+ * is portaled to `document.body`, so Tab from the trigger continues into
+ * whatever follows the trigger in the page, and the panel's own buttons are
+ * unreachable by keyboard.
+ */
+export const FocusManagement: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: (args) => (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
+      <Popover {...args} />
+      <Button>Somewhere else to tab to</Button>
+    </div>
+  ),
+  args: {
+    trigger: <Button>Open Popover</Button>,
+    title: 'Focus management',
+    children: (
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Button size="sm">First</Button>
+        <Button size="sm">Second</Button>
+      </div>
+    ),
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    await expectFocusTrap({
+      userEvent,
+      step,
+      trigger: canvas.getByRole('button', { name: 'Open Popover' }),
+      trapped: false,
+      cycles: 6,
+    });
   },
 };

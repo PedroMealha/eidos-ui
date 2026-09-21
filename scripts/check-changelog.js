@@ -15,21 +15,10 @@
 import { execFileSync, execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { BUILD_INPUTS } from './build-inputs.js';
 
 const git = (command) => execSync(`git ${command}`, { encoding: 'utf8' }).trim();
 const gitArgs = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
-
-// Mirrors release-needed.js's own list - keep the two in sync if this ever changes.
-const BUILD_INPUTS = [
-  'src',
-  ':(exclude)*.mdx',
-  ':(exclude)*.stories.tsx',
-  ':(exclude)*.test.tsx',
-  ':(exclude)*.docs.tsx',
-  'tsup.config.ts',
-  'scripts/build-styles.js',
-  'scripts/build.js',
-];
 
 /**
  * Everything between the `## [Unreleased]` heading and the next `## [`

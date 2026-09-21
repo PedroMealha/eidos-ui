@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Drawer } from './Drawer.component';
 import { Button } from '../Button';
 import type { DrawerPlacement, DrawerSize } from './Drawer.types';
+import { expectFocusTrap } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Overlays/Drawer',
@@ -303,5 +304,40 @@ export const BottomSheet: Story = {
         </Drawer>
       </>
     );
+  },
+};
+
+// ============================================================================
+// FOCUS MANAGEMENT - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`. See
+ * the equivalent story on `Modal` for why this is not attached to `Default`.
+ *
+ * `Drawer` failed this worse than `Modal` did: focus escaped on the second
+ * Tab, and closing it dropped focus onto `<body>`, returning a keyboard user
+ * to the top of the document rather than to the control they opened it from.
+ */
+export const FocusManagement: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setIsOpen(true)}>Open Drawer</Button>
+        <Drawer {...args} isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          {drawerBody}
+        </Drawer>
+      </>
+    );
+  },
+  args: { title: 'Focus management', children: drawerBody },
+  play: async ({ canvas, userEvent, step }) => {
+    await expectFocusTrap({
+      userEvent,
+      step,
+      trigger: canvas.getByRole('button', { name: 'Open Drawer' }),
+    });
   },
 };

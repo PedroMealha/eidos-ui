@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 
 import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowUp, Command, CornerDownLeft, Search } from 'lucide-react';
 import type { CommandItem, CommandPaletteProps } from './CommandPalette.types';
+import { useDialogFocus } from '../../utils';
 import { Kbd } from '../Kbd';
 import './CommandPalette.scss';
 
@@ -153,6 +154,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Derived lists - memoised to stabilise scroll-effect deps
@@ -168,12 +170,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     }
   }, [open]);
 
-  // Auto-focus the search input after the entry animation begins
-  useEffect(() => {
-    if (isVisible) {
-      inputRef.current?.focus();
-    }
-  }, [isVisible]);
+  // Focus the search input on open, trap Tab inside the dialog, and return
+  // focus to the trigger on close.
+  //
+  // This replaces a bare `inputRef.current?.focus()` effect. That moved focus
+  // in correctly but nothing kept it there: the first Tab left the dialog for
+  // the page behind it, and closing the palette stranded focus wherever it
+  // happened to be. `initialFocus` preserves the original behaviour of
+  // landing on the search field rather than the first focusable node.
+  useDialogFocus(open && isVisible, dialogRef, { initialFocus: inputRef });
 
   // Reset focused index to 0 whenever the filtered list changes
   useEffect(() => {
@@ -274,169 +279,181 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       </div>
     ) : null;
 
-  if (!isMounted) return triggerNode;
-
   const maxHeightValue = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
 
+  // The root element must not change shape between the closed and open
+  // states.
+  //
+  // This used to `return triggerNode` while closed and a fragment once
+  // mounted. React compares the root by element type, so flipping from
+  // `<button>` to `<Fragment>` unmounted the trigger and mounted a brand new
+  // one - the very element the user had just clicked was destroyed. Focus
+  // was lost with it, which made returning focus on close impossible: the
+  // node to return to no longer existed.
+  //
+  // Always returning the fragment keeps `triggerNode` in a stable position,
+  // so React preserves the DOM node across open and close.
   return (
     <>
       {triggerNode}
-      {createPortal(
-        <div
-          className={['eidos-cmd-backdrop', isVisible && 'eidos-cmd-backdrop--visible']
-            .filter(Boolean)
-            .join(' ')}
-          onClick={handleBackdropClick}
-          aria-hidden={!open}
-        >
+      {isMounted &&
+        createPortal(
           <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Command palette"
-            id={dialogId}
-            className={['eidos-cmd-dialog', isVisible && 'eidos-cmd-dialog--visible', className]
+            className={['eidos-cmd-backdrop', isVisible && 'eidos-cmd-backdrop--visible']
               .filter(Boolean)
               .join(' ')}
-            onKeyDown={handleKeyDown}
+            onClick={handleBackdropClick}
+            aria-hidden={!open}
           >
-            {/* ── Search ──────────────────────────────────────────────────────── */}
-            <div className="eidos-cmd-search">
-              <Search className="eidos-cmd-search-icon" size={18} aria-hidden="true" />
-
-              <input
-                ref={inputRef}
-                type="text"
-                role="combobox"
-                aria-expanded="true"
-                aria-controls={listId}
-                aria-autocomplete="list"
-                aria-label={placeholder}
-                className="eidos-cmd-input"
-                placeholder={placeholder}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                spellCheck={false}
-                autoComplete="off"
-              />
-
-              {/* Reminds users of the configured shortcut, if any */}
-              {shortcutKey && (
-                <div className="eidos-cmd-search-badge" aria-hidden="true">
-                  <Command size={11} />
-                  <span>{shortcutKey.toUpperCase()}</span>
-                </div>
-              )}
-            </div>
-
-            {/* ── Results list ─────────────────────────────────────────────────── */}
             <div
-              id={listId}
-              role="listbox"
-              aria-label="Commands"
-              className="eidos-cmd-list"
-              style={{ maxHeight: maxHeightValue }}
+              ref={dialogRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Command palette"
+              id={dialogId}
+              className={['eidos-cmd-dialog', isVisible && 'eidos-cmd-dialog--visible', className]
+                .filter(Boolean)
+                .join(' ')}
+              onKeyDown={handleKeyDown}
             >
-              {filtered.length === 0 ? (
-                <p className="eidos-cmd-empty" role="status">
-                  {emptyText}
-                </p>
-              ) : (
-                groups.map((group) => (
-                  <div
-                    key={group.label ?? '__ungrouped__'}
-                    role="group"
-                    aria-label={group.label ?? undefined}
-                  >
-                    {group.label && (
-                      <div className="eidos-cmd-group-label" aria-hidden="true">
-                        {group.label}
-                      </div>
-                    )}
+              {/* ── Search ──────────────────────────────────────────────────────── */}
+              <div className="eidos-cmd-search">
+                <Search className="eidos-cmd-search-icon" size={18} aria-hidden="true" />
 
-                    {group.items.map((item) => {
-                      const isFocused = navigable[focusedIndex]?.id === item.id;
-                      const Icon = item.icon;
+                <input
+                  ref={inputRef}
+                  type="text"
+                  role="combobox"
+                  aria-expanded="true"
+                  aria-controls={listId}
+                  aria-autocomplete="list"
+                  aria-label={placeholder}
+                  className="eidos-cmd-input"
+                  placeholder={placeholder}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  spellCheck={false}
+                  autoComplete="off"
+                />
 
-                      return (
-                        <div
-                          key={item.id}
-                          ref={(el) => {
-                            if (el) {
-                              itemRefs.current.set(item.id, el);
-                            } else {
-                              itemRefs.current.delete(item.id);
-                            }
-                          }}
-                          role="option"
-                          aria-selected={isFocused}
-                          aria-disabled={item.disabled}
-                          className={[
-                            'eidos-cmd-item',
-                            isFocused && 'eidos-cmd-item--focused',
-                            item.disabled && 'eidos-cmd-item--disabled',
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                          onClick={() => selectItem(item)}
-                          onMouseEnter={() => {
-                            if (!item.disabled) {
-                              const idx = navigable.findIndex((n) => n.id === item.id);
-                              if (idx !== -1) setFocusedIndex(idx);
-                            }
-                          }}
-                        >
-                          {Icon && (
-                            <span className="eidos-cmd-item-icon" aria-hidden="true">
-                              <Icon size={16} />
-                            </span>
-                          )}
-
-                          <div className="eidos-cmd-item-body">
-                            <div className="eidos-cmd-item-label">{item.label}</div>
-                            {item.description && (
-                              <div className="eidos-cmd-item-description">{item.description}</div>
-                            )}
-                          </div>
-
-                          {item.shortcut && item.shortcut.length > 0 && (
-                            <div
-                              className="eidos-cmd-item-shortcut"
-                              aria-label={`Shortcut: ${item.shortcut.join(' ')}`}
-                            >
-                              {item.shortcut.map((key, i) => (
-                                <kbd key={i} className="eidos-cmd-kbd">
-                                  {key}
-                                </kbd>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                {/* Reminds users of the configured shortcut, if any */}
+                {shortcutKey && (
+                  <div className="eidos-cmd-search-badge" aria-hidden="true">
+                    <Command size={11} />
+                    <span>{shortcutKey.toUpperCase()}</span>
                   </div>
-                ))
-              )}
-            </div>
-
-            {/* ── Footer ───────────────────────────────────────────────────────── */}
-            <div className="eidos-cmd-footer">
-              <div className="eidos-cmd-hints" aria-hidden="true">
-                <span>
-                  <ArrowUp size={11} />
-                  <ArrowDown size={11} /> Navigate
-                </span>
-                <span>
-                  <CornerDownLeft size={11} /> Select
-                </span>
-                <span>Esc Close</span>
+                )}
               </div>
 
-              {footer && <div className="eidos-cmd-footer-slot">{footer}</div>}
+              {/* ── Results list ─────────────────────────────────────────────────── */}
+              <div
+                id={listId}
+                role="listbox"
+                aria-label="Commands"
+                className="eidos-cmd-list"
+                style={{ maxHeight: maxHeightValue }}
+              >
+                {filtered.length === 0 ? (
+                  <p className="eidos-cmd-empty" role="status">
+                    {emptyText}
+                  </p>
+                ) : (
+                  groups.map((group) => (
+                    <div
+                      key={group.label ?? '__ungrouped__'}
+                      role="group"
+                      aria-label={group.label ?? undefined}
+                    >
+                      {group.label && (
+                        <div className="eidos-cmd-group-label" aria-hidden="true">
+                          {group.label}
+                        </div>
+                      )}
+
+                      {group.items.map((item) => {
+                        const isFocused = navigable[focusedIndex]?.id === item.id;
+                        const Icon = item.icon;
+
+                        return (
+                          <div
+                            key={item.id}
+                            ref={(el) => {
+                              if (el) {
+                                itemRefs.current.set(item.id, el);
+                              } else {
+                                itemRefs.current.delete(item.id);
+                              }
+                            }}
+                            role="option"
+                            aria-selected={isFocused}
+                            aria-disabled={item.disabled}
+                            className={[
+                              'eidos-cmd-item',
+                              isFocused && 'eidos-cmd-item--focused',
+                              item.disabled && 'eidos-cmd-item--disabled',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() => selectItem(item)}
+                            onMouseEnter={() => {
+                              if (!item.disabled) {
+                                const idx = navigable.findIndex((n) => n.id === item.id);
+                                if (idx !== -1) setFocusedIndex(idx);
+                              }
+                            }}
+                          >
+                            {Icon && (
+                              <span className="eidos-cmd-item-icon" aria-hidden="true">
+                                <Icon size={16} />
+                              </span>
+                            )}
+
+                            <div className="eidos-cmd-item-body">
+                              <div className="eidos-cmd-item-label">{item.label}</div>
+                              {item.description && (
+                                <div className="eidos-cmd-item-description">{item.description}</div>
+                              )}
+                            </div>
+
+                            {item.shortcut && item.shortcut.length > 0 && (
+                              <div
+                                className="eidos-cmd-item-shortcut"
+                                aria-label={`Shortcut: ${item.shortcut.join(' ')}`}
+                              >
+                                {item.shortcut.map((key, i) => (
+                                  <kbd key={i} className="eidos-cmd-kbd">
+                                    {key}
+                                  </kbd>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* ── Footer ───────────────────────────────────────────────────────── */}
+              <div className="eidos-cmd-footer">
+                <div className="eidos-cmd-hints" aria-hidden="true">
+                  <span>
+                    <ArrowUp size={11} />
+                    <ArrowDown size={11} /> Navigate
+                  </span>
+                  <span>
+                    <CornerDownLeft size={11} /> Select
+                  </span>
+                  <span>Esc Close</span>
+                </div>
+
+                {footer && <div className="eidos-cmd-footer-slot">{footer}</div>}
+              </div>
             </div>
-          </div>
-        </div>,
-        document.body,
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 };

@@ -122,6 +122,10 @@ export const Typography: Story = {
  * result the computation exists to avoid - shown to make the override visible.
  */
 export const PinnedContrast: Story = {
+  // The illegible pairing is the subject of this story, so axe is skipped for
+  // it rather than allow-listing the nodes somewhere else. See
+  // `scripts/check-a11y-baseline.js`, which reads the same tag.
+  tags: ['a11y-contrast-demo'],
   render: () => (
     <ThemeProvider defaultTheme={{ colors: { primary: { base: '#fde047', contrast: '#ffffff' } } }}>
       <Swatches />

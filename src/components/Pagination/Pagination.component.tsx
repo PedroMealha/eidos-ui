@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { Button } from '../Button';
 import { Select } from '../Select';
@@ -63,6 +63,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   onPageSizeChange,
   pageSizeOptions = [10, 25, 50, 100],
 }) => {
+  const pageSizeId = useId();
   const items = usePaginationRange(page, totalPages, siblingCount);
 
   // ── Active-page editable input ─────────────────────────────────────────────
@@ -206,7 +207,9 @@ export const Pagination: React.FC<PaginationProps> = ({
       <div className="eidos-pagination-controls">
         {hasPageSize && (
           <div className="eidos-pagination-size">
-            <label className="eidos-pagination-size-label">Show:</label>
+            <label className="eidos-pagination-size-label" htmlFor={pageSizeId}>
+              Show:
+            </label>
             <Select
               value={String(pageSize)}
               onChange={(val) => onPageSizeChange(Number(val))}
@@ -222,7 +225,12 @@ export const Pagination: React.FC<PaginationProps> = ({
               // because `Input.width` sized the inner <input> and let the
               // chrome overflow it; now that it sizes the field, 3ch left no
               // room for the value at all.
-              inputProps={{ size: 'sm', width: 72 }}
+              // Associated with the visible "Show:" label above rather
+              // than given an `aria-label`. The `<label>` was real but had no
+              // `htmlFor`, so it named nothing; an `aria-label` would have
+              // worked for axe while risking SC 2.5.3 Label in Name, since
+              // the spoken name would no longer contain the visible text.
+              inputProps={{ size: 'sm', width: 72, id: pageSizeId }}
             />
           </div>
         )}

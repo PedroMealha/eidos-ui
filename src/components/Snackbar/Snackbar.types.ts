@@ -52,6 +52,10 @@ interface SnackbarContextValue {
   addSnackbar: (snackbar: Omit<SnackbarProps, 'id'>) => string;
   removeSnackbar: (id: string) => void;
   clearAllSnackbars: () => void;
+  /** Pause a snackbar's auto-dismiss countdown (hover / focus). */
+  pauseSnackbar: (id: string) => void;
+  /** Resume it with whatever time was left. */
+  resumeSnackbar: (id: string) => void;
 }
 
 interface UseSnackbarReturn {

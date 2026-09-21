@@ -121,9 +121,23 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
     .filter(Boolean)
     .join(' ');
 
+  // Associates the visible error with the group. Without it the message is
+  // just a red line of text below the options - obvious to look at, absent
+  // from the accessibility tree (SC 3.3.1). See the fuller note in `Input`.
+  const errorId = `${name}-error`;
+
   return (
     <div>
-      <div className={groupClasses}>
+      {/* `role="radiogroup"` so the options are announced as one choice
+          rather than a run of unrelated radios - and so there is something
+          for the error to attach to. The error belongs to the group, not to
+          any single option. */}
+      <div
+        className={groupClasses}
+        role="radiogroup"
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
+      >
         {options.map((option) => (
           <Radio
             key={option.value}
@@ -142,7 +156,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
       </div>
 
       {error && (
-        <div className="eidos-radio-error-message">
+        <div id={errorId} className="eidos-radio-error-message">
           <CircleAlert />
           <span>{error}</span>
         </div>

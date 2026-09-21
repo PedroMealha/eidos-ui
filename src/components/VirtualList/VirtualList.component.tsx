@@ -106,12 +106,19 @@ function VirtualListInner<T = unknown>({
       className={['eidos-virtual-list', className].filter(Boolean).join(' ')}
       style={containerStyle}
       onScroll={loading ? undefined : handleScroll}
-      role="list"
       aria-busy={loading}
+      // A scrollable region that contains nothing focusable cannot be
+      // scrolled by keyboard at all - the rows here are whatever
+      // `renderRow` returns, and are usually plain content. `tabIndex={0}`
+      // makes the viewport itself focusable so arrow keys and Page Up/Down
+      // work (SC 2.1.1).
+      tabIndex={0}
     >
       {/* ── Loading state ─────────────────────────────────────────────── */}
       {loading && (
-        <div className="eidos-virtual-list-loading" aria-label="Loading content">
+        // No `aria-label`: it is prohibited on an element with no role, and
+        // the container's `aria-busy` is what actually conveys "loading".
+        <div className="eidos-virtual-list-loading">
           {Array.from({ length: loadingRowCount }, (_, idx) => (
             <div
               key={idx}
@@ -141,7 +148,17 @@ function VirtualListInner<T = unknown>({
 
       {/* ── Virtualized content ───────────────────────────────────────── */}
       {!loading && data.length > 0 && (
-        <div className="eidos-virtual-list-inner" style={{ height: virtualizer.getTotalSize() }}>
+        // `role="list"` sits here rather than on the scroll container.
+        //
+        // A list may only contain listitems, and the scroll container also
+        // holds the loading skeletons and the empty state - neither of which
+        // is a list item. Scoping the role to the element that holds only
+        // rows makes the structure honest and keeps the states out of it.
+        <div
+          className="eidos-virtual-list-inner"
+          style={{ height: virtualizer.getTotalSize() }}
+          role="list"
+        >
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = data[virtualItem.index] as T;
             // Prefer the consumer's stable key; fall back to the numeric index.

@@ -343,6 +343,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           posIcon={selectedValues.size > 0 && clearable ? X : undefined}
           posIconButton={selectedValues.size > 0 && clearable}
           onPosIconClick={selectedValues.size > 0 && clearable ? handleClear : undefined}
+          posIconLabel="Clear selection"
           disabled={disabled}
           readOnly={true}
           isSelect={true}

@@ -163,17 +163,37 @@ export const Controlled: Story = {
               key={c}
               type="button"
               onClick={() => setColour(c)}
+              // The hex sits *beside* a swatch rather than on top of it.
+              // Painting text onto the colour being previewed cannot be made
+              // accessible: the background is whatever the user picked, and
+              // these three measured 2.53:1, 3.76:1 and 4.46:1 against white
+              // text. A docs example should not demonstrate that.
               style={{
-                padding: '4px 12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.375rem',
+                padding: '4px 10px',
                 borderRadius: '6px',
                 border: '1px solid var(--gray-200)',
-                background: c,
-                color: '#fff',
+                background: 'var(--white)',
+                color: 'var(--text-muted)',
                 cursor: 'pointer',
                 fontSize: '0.75rem',
                 fontFamily: 'monospace',
               }}
             >
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: 3,
+                  background: c,
+                  // Keeps a pale swatch visible against the white button -
+                  // SC 1.4.11 applies to a graphic that carries meaning.
+                  border: '1px solid var(--gray-300)',
+                }}
+              />
               {c}
             </button>
           ))}

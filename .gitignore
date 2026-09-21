@@ -43,3 +43,9 @@ storybook-static
 # scripts/promote-changelog.js, not an artifact.
 .release-snippet.mdx
 
+# Vitest browser-mode output. Screenshots of a failing test and its
+# attachments - regenerated on every run, and `__screenshots__` appears
+# wherever the failing test lives rather than in one place.
+.vitest-attachments/
+**/__screenshots__/
+

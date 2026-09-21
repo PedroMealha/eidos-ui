@@ -1,8 +1,8 @@
-import React, { useEffect, useCallback, useId, useState } from 'react';
+import React, { useEffect, useCallback, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '../Button/Button.component';
 import type { ModalProps } from './Modal.types';
-import { renderIcon } from '../../utils';
+import { renderIcon, useDialogFocus } from '../../utils';
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -19,6 +19,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   const titleId = useId();
   const bodyId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   // ── Animation state ────────────────────────────────────────────────────────
   // isMounted: whether the portal DOM node exists at all.
@@ -93,12 +94,26 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, handleEscapeKey]);
 
+  // Keyed to `isVisible`, not `isOpen` and not `isMounted`.
+  //
+  // `isOpen` alone is too early: `isMounted` is set in the effect above, one
+  // render later, so the dialog element does not exist yet and the trap would
+  // run against a null ref.
+  //
+  // `isMounted` is *also* too early, and fails more quietly. `.eidos-modal`
+  // starts at `visibility: hidden` and only becomes visible with
+  // `--is-open`, which is two animation frames later - so at mount there is
+  // nothing focusable to find and `.focus()` on the dialog itself is a no-op.
+  // Focus silently stayed on the trigger.
+  useDialogFocus(isOpen && isVisible, dialogRef);
+
   if (!isMounted) return null;
 
   const modalContent = (
     <div className={`eidos-modal ${isVisible ? 'eidos-modal--is-open' : ''} ${className}`}>
       <div className="eidos-modal-backdrop" onClick={handleBackdropClick} aria-hidden="true" />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}

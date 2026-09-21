@@ -263,6 +263,10 @@ const FontRow: React.FC<FontRowProps> = ({
           value={value}
           onChange={(next) => onChange(Array.isArray(next) ? next[0] : next)}
           fullWidth
+          // The row's visible label is a `<span>`, not a `<label htmlFor>`,
+          // so nothing associates it with the control. Naming the input
+          // directly keeps the two in step without restructuring the row.
+          inputProps={{ 'aria-label': label }}
         />
       </div>
 
@@ -307,6 +311,7 @@ const FontRow: React.FC<FontRowProps> = ({
             type="file"
             accept={FONT_ACCEPT}
             className="eidos-theme-editor-file"
+            aria-label="Upload a font file"
             onChange={(event) => {
               void handleFile(event.target.files?.[0]);
               // Allow re-picking the same file after a failure.

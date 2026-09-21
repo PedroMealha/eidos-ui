@@ -6,6 +6,7 @@ import { Button } from '../Button';
 import { UserCircle } from 'lucide-react';
 import type { SnackbarVariant } from './Snackbar.types';
 import { StoryLabel } from '../../story-layout.docs';
+import { expect, screen, waitFor } from 'storybook/test';
 
 // Fires one of each variant, so they can be compared without flipping the
 // playground's `variant` control four times.
@@ -311,5 +312,48 @@ export const CustomComponent: Story = {
         </Button>
       </div>
     );
+  },
+};
+
+// ============================================================================
+// TIMING ADJUSTABLE - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Auto-dismiss was a bare `setTimeout` nothing could stop - a time limit the
+ * user can neither turn off, adjust nor extend (SC 2.2.1, Level A). Axe sees
+ * none of this; only a clock does.
+ *
+ * The deadline here is deliberately short so the test stays fast, and the
+ * assertions are one-sided - "still there after N ms" and "gone eventually"
+ * - rather than measuring elapsed time, which would make the test a
+ * stopwatch race on a loaded CI box.
+ */
+export const TimingAdjustable: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: function TimingAdjustableStory() {
+    const { showInfo } = useSnackbar();
+    return <Button onClick={() => showInfo('Saved. Undo?', { duration: 600 })}>Notify</Button>;
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    await step('hovering holds the countdown open', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Notify' }));
+      const alert = await screen.findByRole('alert');
+
+      await userEvent.hover(alert);
+      // Comfortably past the 600ms deadline. Without a pause it would be gone.
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      expect(
+        screen.queryByRole('alert'),
+        'the snackbar dismissed itself while the pointer was over it',
+      ).not.toBeNull();
+    });
+
+    await step('and it resumes once the pointer leaves', async () => {
+      await userEvent.unhover(screen.getByRole('alert'));
+      await waitFor(() => expect(screen.queryByRole('alert')).toBeNull(), { timeout: 3000 });
+    });
   },
 };

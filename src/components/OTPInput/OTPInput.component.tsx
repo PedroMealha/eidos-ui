@@ -216,6 +216,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
       <div
         className="eidos-otp-slots"
         role="group"
+        aria-invalid={error ? true : undefined}
         aria-labelledby={label ? labelId : undefined}
         aria-describedby={describedBy}
       >

@@ -5,6 +5,7 @@ import { CircleAlert, CircleCheck, Info, CircleX, Trash2 } from 'lucide-react';
 import { Modal } from './Modal.component';
 import { Button } from '../Button';
 import { StoryRow } from '../../story-layout.docs';
+import { expectFocusTrap } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Overlays/Modal',
@@ -273,5 +274,44 @@ export const DestructiveConfirmation: Story = {
         </Modal>
       </>
     );
+  },
+};
+
+// ============================================================================
+// FOCUS MANAGEMENT - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs (`!dev`, `!autodocs`) but still run by
+ * `npm run test:stories`.
+ *
+ * It exists because the `.mdx` documents that overlay stories start closed,
+ * so attaching this `play` to `Default` would contradict the page it is
+ * documented on - a reader clicking `Default` would find the modal already
+ * open. The behaviour itself is described in prose in `Modal.mdx`.
+ *
+ * What it pins is the thing axe cannot see: a dialog declaring
+ * `aria-modal="true"` is promising assistive technology that the rest of the
+ * page is inert. Before this was fixed, focus never entered the dialog and
+ * Tab walked straight back out to the page behind the scrim on the first
+ * press - the promise was false.
+ */
+export const FocusManagement: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: (args) => <ModalWrapper {...args} />,
+  args: {
+    title: 'Focus management',
+    children: <p>Tab should cycle within this dialog, never behind it.</p>,
+    actions: [
+      { id: 'cancel', label: 'Cancel', variant: 'text', onClick: () => {} },
+      { id: 'confirm', label: 'Confirm', variant: 'filled', onClick: () => {} },
+    ],
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    await expectFocusTrap({
+      userEvent,
+      step,
+      trigger: canvas.getByRole('button', { name: 'Open Modal' }),
+    });
   },
 };

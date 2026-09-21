@@ -7,28 +7,39 @@ import './preview-fonts.scss';
 
 const preview: Preview = {
   parameters: {
-    // axe runs against every story, both in the "Accessibility" panel and as
-    // part of `vitest --project=storybook`.
+    // axe runs against every story, in the "Accessibility" panel and as part
+    // of `npm run test:stories`.
     //
-    // `'todo'` reports violations without failing the run, which is honest
-    // about where this actually stands rather than flattering: the first run
-    // after wiring the addon was 207 of 439 stories failing. Two systemic
-    // root causes have been fixed since (see CHANGELOG.md) and the count is
-    // 137, but a real backlog remains - notably `label` (220),
-    // `nested-interactive` on Checkbox/Radio's visually-hidden inputs and
-    // DataGrid's clickable rows (179), and `button-name` on icon-only
-    // controls (64).
+    // **The tag set is pinned deliberately.** The addon's default does not
+    // include `wcag22aa`, which meant `target-size` (SC 2.5.8) was never
+    // evaluated - 99 failing nodes across ColorPicker, DataGrid, Chip,
+    // SplitButton and NumberInput were invisible in every run until the tags
+    // were set explicitly. The target is WCAG 2.2 AA; the tag list has to say
+    // so, because the default quietly means something narrower.
     //
-    // Flip this to `'error'` when that reaches zero. Leaving it at `'error'`
-    // in the meantime would mean a permanently red suite, which teaches
-    // people to ignore it.
+    // `2a/2aa` and `21a/21aa` are listed alongside `22aa` rather than assumed:
+    // WCAG 2.2 is a superset of 2.1 and 2.0, but axe tags rules by the version
+    // that introduced them, so omitting the earlier tags would drop the
+    // criteria 2.2 inherited.
     //
-    // Either way it is a net, not a certificate: axe covers roughly a third
-    // of the WCAG success criteria, so a clean run is necessary and nowhere
-    // near sufficient. Nothing in this Storybook claims a conformance level
-    // on the strength of it.
+    // `test: 'todo'` reports without failing. That is not the end state - see
+    // `scripts/check-a11y-baseline.js`, which is what actually gates: it fails
+    // on any violation beyond the recorded baseline, so the backlog can shrink
+    // monotonically without the suite being permanently red (a red suite
+    // teaches people to ignore it).
+    //
+    // Either way axe is a net, not a certificate: it covers roughly a third of
+    // the WCAG success criteria, so a clean run is necessary and nowhere near
+    // sufficient.
     a11y: {
       test: 'todo',
+      config: {},
+      options: {
+        runOnly: {
+          type: 'tag',
+          values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'],
+        },
+      },
     },
     controls: {
       matchers: {

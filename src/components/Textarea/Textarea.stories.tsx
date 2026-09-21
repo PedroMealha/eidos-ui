@@ -2,6 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { HelpCircle } from 'lucide-react';
 import { Textarea } from './Textarea.component';
+import { expectErrorWiring } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Forms/Textarea',
@@ -284,5 +285,24 @@ export const WithDisclaimer: Story = {
     disclaimerIcon: HelpCircle,
     disclaimerContent: 'This text will be displayed publicly.',
     rows: 4,
+  },
+};
+
+// ============================================================================
+// ERROR WIRING - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ * Axe cannot see any of this - see the note on `Input`'s equivalent story.
+ */
+export const ErrorWiring: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { label: 'Bio', error: 'Bio must be at least 20 characters.' },
+  play: async ({ canvas }) => {
+    await expectErrorWiring(
+      canvas.getByRole('textbox', { name: 'Bio' }),
+      'Bio must be at least 20 characters.',
+    );
   },
 };

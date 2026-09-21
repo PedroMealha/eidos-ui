@@ -23,6 +23,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   ) => {
     const generatedId = useId();
     const checkboxId = id || `checkbox-${generatedId}`;
+    // Associates the visible error with the control. Without it the message
+    // is just a red line of text sitting near the field - obvious to look
+    // at, absent from the accessibility tree (SC 3.3.1). See the fuller
+    // note in `Input`.
+    const errorId = `${checkboxId}-error`;
 
     // Internal ref needed to imperatively set `indeterminate` (not a standard HTML attribute)
     const internalRef = useRef<HTMLInputElement>(null);
@@ -108,6 +113,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             type="checkbox"
             id={checkboxId}
             className="eidos-checkbox-input"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? errorId : undefined}
             disabled={disabled}
             onChange={handleChange}
             onClick={handleClick}
@@ -122,7 +129,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
 
         {error && (
-          <div className="eidos-checkbox-error-message">
+          <div id={errorId} className="eidos-checkbox-error-message">
             <CircleAlert />
             <span>{error}</span>
           </div>

@@ -21,6 +21,16 @@ interface BaseInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   posIcon?: IconType;
   posIconButton?: boolean;
   onPosIconClick?: () => void;
+  /**
+   * Accessible name for the `posIconButton`. Required in practice whenever
+   * that button is rendered - an icon-only button with no name is announced
+   * as just "button", and only the caller knows what the icon means.
+   *
+   * Omitting it logs a `devWarn` and falls back to a generic name, rather
+   * than throwing or silently shipping a nameless control. It is optional
+   * only to avoid a breaking change; treat it as required.
+   */
+  posIconLabel?: string;
   required?: boolean;
   isSelect?: boolean;
   clearable?: boolean;

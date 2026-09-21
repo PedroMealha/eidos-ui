@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
+import { expect } from 'storybook/test';
 import { useState, useEffect } from 'react';
 import { Trash2, Pencil, ShieldOff, FolderInput, Mail, MessageSquare } from 'lucide-react';
 import { DataGrid } from './DataGrid.component';
@@ -1651,5 +1652,66 @@ export const TypedColumns: Story = {
         hasCardView={false}
       />
     );
+  },
+};
+
+// ============================================================================
+// ROW SEMANTICS - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Pins the two things that went wrong together when dnd-kit's `attributes`
+ * were spread onto the `<tr>` instead of onto the drag handle:
+ *
+ * 1. **Every row became `role="button"`.** That is 177 `nested-interactive`
+ *    violations, but the real damage is worse than the rule name suggests -
+ *    a `<tr>` with a button role stops being a row, so the whole table's
+ *    structure disappears for a screen reader. It applied even when
+ *    `draggableRows` was off, because `useSortable` returns its attributes
+ *    regardless of `disabled`.
+ * 2. **The drag handle was not focusable.** `attributes` is what carries
+ *    `tabIndex`, so without it the `KeyboardSensor` had no activator - the
+ *    keyboard alternative to dragging (SC 2.5.7) could never be started.
+ */
+export const RowSemantics: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: function RowSemanticsStory() {
+    const [data, setData] = useState<Person[]>(makePeople());
+    return (
+      <DataGrid<Person>
+        columns={BASE_COLUMNS}
+        data={data}
+        rowKey="id"
+        onChange={setData}
+        draggableRows
+        onRowReorder={setData}
+        selectable
+      />
+    );
+  },
+  play: async ({ canvas, step }) => {
+    await step('rows keep their table semantics', async () => {
+      const rows = canvas.getAllByRole('row');
+      expect(rows.length).toBeGreaterThan(1);
+      for (const row of rows) {
+        expect(row.getAttribute('role'), 'a <tr> must not be given another role').not.toBe(
+          'button',
+        );
+      }
+    });
+
+    await step('the drag handle is focusable, so keyboard reordering can start', async () => {
+      const handles = canvas.getAllByRole('button', { name: /reorder/i });
+      expect(handles.length).toBeGreaterThan(0);
+      handles[0].focus();
+      expect(document.activeElement, 'the drag handle cannot be focused').toBe(handles[0]);
+    });
+
+    await step('row selection still works', async () => {
+      const boxes = canvas.getAllByRole('checkbox', { name: /select row/i });
+      expect(boxes.length).toBeGreaterThan(0);
+    });
   },
 };

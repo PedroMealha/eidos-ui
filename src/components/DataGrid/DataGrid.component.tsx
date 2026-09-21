@@ -176,9 +176,24 @@ function SortableTableRow({
         transition: transition ?? undefined,
         opacity: isDragging ? 0.4 : 1,
       }}
-      {...attributes}
     >
-      {children(listeners ?? {}, isDragging)}
+      {/* `attributes` goes to the handle, not to the <tr>.
+
+          dnd-kit's `attributes` carry `role="button"`, `tabIndex` and
+          `aria-roledescription` - they describe the *activator*, not the
+          element being moved. Spreading them here broke two things at once:
+
+          - Every row became `role="button"`, so it stopped being a row. A
+            screen reader lost the table's entire structure, and axe counted
+            177 `nested-interactive` violations because each of those
+            "buttons" contained checkboxes and menu triggers. It applied even
+            with `draggableRows` off, since `useSortable` returns attributes
+            regardless of `disabled`.
+          - The handle never received `tabIndex`, so it could not be focused
+            - and `KeyboardSensor` has no way to start a drag without a
+            focusable activator. The keyboard alternative to dragging
+            (SC 2.5.7) existed in the sensor list and was unreachable. */}
+      {children({ ...attributes, ...(listeners ?? {}) }, isDragging)}
     </tr>
   );
 }
@@ -1417,6 +1432,12 @@ function DataGridInner<T extends object>({
               /* handled by td onClick */
             }}
             size="sm"
+            // A boolean cell has no visible label of its own - the column
+            // header is the only thing naming it, and a screen reader
+            // reading the checkbox alone gets nothing. Naming it with both
+            // the column and the row keeps every checkbox in the grid
+            // distinguishable from its neighbours.
+            aria-label={`${col.header}, row ${rowIndex + 1}`}
           />
         );
 
@@ -1469,6 +1490,9 @@ function DataGridInner<T extends object>({
             autoFocus
             fullWidth
             clearable={false}
+            // In edit mode the cell is replaced by a bare control with no
+            // visible label - the column header is the only thing naming it.
+            aria-label={col.header}
           />
         );
 
@@ -1483,6 +1507,9 @@ function DataGridInner<T extends object>({
             autoFocus
             fullWidth
             clearable={false}
+            // In edit mode the cell is replaced by a bare control with no
+            // visible label - the column header is the only thing naming it.
+            aria-label={col.header}
           />
         );
 
@@ -1503,7 +1530,9 @@ function DataGridInner<T extends object>({
             value={String(value ?? '')}
             autoOpen
             fullWidth
-            inputProps={{ variant, size }}
+            // Same reason as the text/number/date editors above: in edit
+            // mode the column header is the only thing naming this control.
+            inputProps={{ variant, size, 'aria-label': col.header }}
             onChange={(v) => {
               const selected = Array.isArray(v) ? (v[0] ?? '') : v;
               const newData = localDataRef.current.map<T>((r, i) =>
@@ -1529,6 +1558,9 @@ function DataGridInner<T extends object>({
             autoFocus
             fullWidth
             clearable={false}
+            // In edit mode the cell is replaced by a bare control with no
+            // visible label - the column header is the only thing naming it.
+            aria-label={col.header}
           />
         );
     }
@@ -2094,6 +2126,10 @@ function DataGridInner<T extends object>({
                             checked={isRowSelected}
                             onChange={() => toggleRow(rowKeyValue)}
                             size="sm"
+                            // The number matches the one `showRowNumbers`
+                            // renders, so the spoken label and the visible
+                            // row agree.
+                            aria-label={`Select row ${localIndex + 1}`}
                           />
                         )}
                         {showRowNumbers && (
@@ -2228,6 +2264,10 @@ function DataGridInner<T extends object>({
                           indeterminate={someSelected}
                           onChange={toggleAll}
                           size="sm"
+                          // No visible label - the column header is the
+                          // checkbox itself - so the name has to come from
+                          // `aria-label`. Matches the card view's wording.
+                          aria-label="Select all rows"
                         />
                       </th>
                     )}
@@ -2365,6 +2405,11 @@ function DataGridInner<T extends object>({
                                           .filter(Boolean)
                                           .join(' ')}
                                         title="Drag to reorder"
+                                        // `dragHandleProps` now supplies
+                                        // `role="button"`, so this needs a
+                                        // real name rather than relying on
+                                        // `title` as a last-resort fallback.
+                                        aria-label={`Reorder row ${localIndex + 1}`}
                                       >
                                         <GripVertical size={14} />
                                       </span>
@@ -2419,6 +2464,7 @@ function DataGridInner<T extends object>({
                                         checked={isRowSelected}
                                         onChange={() => toggleRow(rowKeyValue)}
                                         size="sm"
+                                        aria-label={`Select row ${localIndex + 1}`}
                                       />
                                     </td>
                                   )}

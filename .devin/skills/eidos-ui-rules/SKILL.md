@@ -410,10 +410,99 @@ Text on a tint is fine if the foreground is far enough down the ramp:
 pale one. `TreeView`, `Select` and `Calendar` all do this correctly. The rule of
 thumb: **on a tint use `-700`, never the base.**
 
+**Only `gray` and `primary` have a `50-900` ramp.** `danger`, `success`,
+`warning` and `info` have just `-color`, `-dark`, `-light` and `-contrast`, so
+there is no `--danger-700` to reach for - use **`--x-dark`**, which
+`deriveDark` guarantees is darker than the base for any theme.
+
+`Alert` is the cautionary example. Every variant tints its own background
+with `bg-color-opacity(x, 0.08)` and painted the title in `var(--x-color)` -
+the same rule as above, in a form that did not look like a tint. Measured
+against that 8% surface:
+
+| variant | `--x-color` | `--x-dark` |
+| ------- | ----------- | ---------- |
+| primary | 4.51        | 6.17       |
+| success | 4.52        | 6.14       |
+| danger  | **4.44**    | 6.10       |
+| warning | 4.52        | 6.22       |
+| info    | **4.49**    | 6.10       |
+
+Note what that table is really saying: three variants passed by a
+_hundredth_ and two failed. That is not one bad colour, it is a pattern
+parked on the threshold where the next palette tweak flips all five. Only
+`danger` ever appeared in an audit, because no story rendered an `info`
+alert with a title - the other failure was latent.
+
 Derived scales are also where a "relative" mental model quietly breaks. See the
 comment on `buildRamp` - the ramp's ends have to be absolute positions on the
 lightness axis, not offsets from the base, or a dark base yields `--x-50` as a
 mid grey and every tint consumer in the library turns muddy at once.
+
+### You cannot mute text on a saturated fill
+
+There is no room. Every palette base is tuned to land just over 4.5:1 against
+white, so a filled surface has roughly **0.5 of contrast headroom** - and
+every way of de-emphasising text spends more than that.
+
+Measured on the preset bubble in `Chat`:
+
+| white at opacity    | contrast |
+| ------------------- | -------- |
+| 0.75 (what shipped) | 3.57     |
+| 0.90                | 4.40     |
+| 0.95                | 4.70     |
+| 1.00                | 5.02     |
+
+Only full opacity is safe, and that is for the _preset_. A custom theme is
+worse: `pickContrast` only guarantees the contrast pair clears 3:1, so any
+muting at all can fail there.
+
+Two corollaries:
+
+- **Don't reach for `--text-muted` on a coloured fill.** It is a dark grey
+  for light surfaces; `Chat`'s attachment size label used it on the purple
+  bubble and measured **1.97:1**. On a fill, secondary text inherits.
+- **De-emphasise with size and position, not contrast.** `Chat`'s timestamp
+  is already `xs` and tucked to one side; it did not also need to be faded.
+
+### A white veil raises the surface towards white text - tint with black
+
+`rgba(white, 0.15)` over a filled bubble looks like a neutral "inset" tint
+and is the wrong direction: it moves the surface _towards_ the white text
+sitting on it. Measured across the palette it gave **3.79-4.15:1** - failing
+for every single colour. The same overlay in black gave **6.79-6.87:1**.
+
+Darkening is also the theme-safe direction: it always helps light text,
+whatever hue a consumer picks. `--black-rgb` exists for exactly this.
+
+### Generated colour cannot promise contrast
+
+`VirtualList`'s story avatars were `hsl(id * 37 % 360, 65%, 55%)` with white
+initials - varied, tidy-looking, and ranging from 4.42:1 down to **1.64:1**,
+because a fixed HSL lightness says nothing about luminance: yellow-green at
+55% lightness is far brighter than blue at the same value.
+
+If a demo needs several colours, cycle the palette bases. They are tuned to
+clear 4.5:1 on white, so the example stays legible _and_ demonstrates the
+tokens instead of inventing colours a reader might copy.
+
+### Disabled text is exempt - but verify it is actually disabled
+
+SC 1.4.3 exempts "text that is part of an inactive user interface
+component". Seven nodes in the audit are left standing on that basis:
+`Chip`, `ColorPicker`'s label, `InlineEdit`, `OTPInput`'s label and hint, and
+`TagInput`'s chips.
+
+Each was checked against the source before being accepted - they resolve to
+`--text-disabled` or sit under a `--disabled` modifier applying
+`opacity: 0.5`/`0.6`. That check matters: an earlier sweep of `--gray-400`
+found only **11 of 118** uses were genuinely disabled, and the rest were real
+content hiding behind the same assumption.
+
+They stay counted in `scripts/a11y-baseline.json` rather than being tagged
+out. A visible, explained 7 is more honest than a hidden 0, and the
+conformance report lists them with this citation.
 
 ### One `ThemeProvider`, at the root
 
@@ -580,23 +669,91 @@ layout.
 
 ### Accessibility is checked, and the check is honest
 
-`@storybook/addon-a11y` runs axe against every story, both in the
-"Accessibility" panel and under `vitest --project=storybook` (the browser-mode
-project in `vite.config.ts`, which was configured but had no tests in it).
+`@storybook/addon-a11y` runs axe against every story, in the "Accessibility"
+panel and under `npm run test:stories`. What actually **gates** is
+`scripts/check-a11y-baseline.js` - see "The accessibility ratchet" below.
 
-Two things to keep straight:
+Three things to keep straight:
 
-- **`parameters.a11y.test` is `'todo'`, not `'error'`.** The first run after
-  wiring it was 207 of 439 stories failing. Two systemic root causes are
-  fixed; a real backlog remains (`label`, `nested-interactive` on
-  Checkbox/Radio's visually-hidden inputs and DataGrid's clickable rows,
-  `button-name` on icon-only controls). A permanently red suite teaches
-  people to ignore it - flip to `'error'` when it reaches zero, not before.
+- **The axe tag set is pinned in `preview.ts`, and it has to be.** The addon's
+  default does not include `wcag22aa`, so `target-size` (SC 2.5.8) was never
+  evaluated - **99 failing nodes** across ColorPicker, DataGrid, Chip,
+  SplitButton and NumberInput were invisible in every run until the tags were
+  listed explicitly. The target is WCAG 2.2 AA; the configuration has to say
+  so, because the default quietly means something narrower. List the older
+  tags alongside `wcag22aa` too: axe tags each rule by the version that
+  introduced it, so `['wcag22aa']` alone would drop everything 2.2 inherited.
+- **`parameters.a11y.test` is `'todo'`, not `'error'`.** A measured backlog
+  remains (679 nodes across 11 rules at the time of writing). A permanently
+  red suite teaches people to ignore it; the ratchet catches new violations
+  instead. Flip to `'error'` when the baseline reaches zero, not before.
 - **Axe is a net, not a certificate.** It covers roughly a third of the WCAG
-  success criteria. A clean run is necessary and nowhere near sufficient, so
-  **no page in this Storybook claims a conformance level** - `Welcome.mdx`
-  states specifics (measured palette ratios, focus rings, reduced-motion)
-  instead of a WCAG AA badge. Don't add one.
+  success criteria - it cannot see focus traps, focus restoration, or whether
+  an error message is programmatically associated with its field, all of
+  which were found by hand and none of which axe reported. A clean run is
+  necessary and nowhere near sufficient.
+
+### The accessibility ratchet
+
+`scripts/check-a11y-baseline.js` drives axe over every story in
+`storybook-static` and compares per-rule node counts to
+`scripts/a11y-baseline.json`. It fails on **any increase**, and also fails on
+a _decrease_ - telling you to re-record, so an improvement can never silently
+slip back.
+
+Three things about it that are not obvious:
+
+- **It needs a fresh `storybook-static`.** It reads the built output rather
+  than requiring a dev server, so it behaves the same in CI and locally.
+  `verify` therefore only runs it when `build-storybook` just ran.
+- **It must wait for the addon's own axe pass.** `addon-a11y` runs axe when
+  the story renders, and axe refuses concurrent runs. Injecting a second run
+  without retrying failed **58 of 461 stories** with "Axe is already running"
+  - and the dev server's slower timing hid the collision entirely, which is
+    why the first measurements were quietly under-reported.
+
+- **The count has to be deterministic, and getting there is fiddly.** Measure
+  before the story has mounted and the numbers wander: three passes gave
+  `label` counts of 167, 206 and 219, with `nested-interactive` moving in
+  lockstep, because one unrendered grid row costs one unlabelled checkbox and
+  one clickable row. A gate that fails for reasons nobody can act on gets
+  disabled within a week.
+
+  The fix is an explicit signal - `#storybook-root` having children - then a
+  short settle for the ResizeObserver-driven grids. Two things that seemed
+  obviously right and were not:
+
+  - **Watching `document.querySelectorAll('*').length` for stability made it
+    worse.** An empty root is perfectly stable, so it returned _before_ the
+    story had mounted at all.
+  - **Freezing animations did not fix it.** Worth keeping - `reducedMotion`
+    plus zeroed durations, so nothing is mid-transition and therefore
+    invisible to axe when measured - but it was not the cause.
+
+  Verify with three consecutive full runs before trusting a new baseline. The
+  current one reproduces at exactly 679 every time.
+
+- **Opt a story out with the `a11y-contrast-demo` tag**, not an allowlist.
+  `vite.config.ts` reads it via `tags.skip` and the script reads the same tag,
+  so one fact drives both. Only for stories where the failure _is_ the
+  documented subject - currently the two theme demos that render white on pale
+  yellow on purpose.
+
+### Do not add `.storybook/vitest.setup.ts`
+
+Storybook's published docs still show a setup file calling
+`setProjectAnnotations` and listing it in `setupFiles`. **Since Storybook 10.3
+that is wrong for this project.** `@storybook/addon-vitest` applies the preview
+annotations itself, and it _disables_ that automatic provisioning the moment it
+finds a setup file doing it manually.
+
+Adding the documented file broke 9 of 62 suites outright - `Error: Vitest
+failed to find the runner`, importing the addon's own `setup-file.js` - and
+dropped the run from 463 tests to 375. Storybook prints the reason at the top
+of the run, so read the banner before trusting the docs page:
+
+> Found a setup file with "setProjectAnnotations". Skipping automatic
+> provisioning of preview annotations to avoid conflicts.
 
 The two root causes already fixed are worth recognising, because both are the
 library's recurring failure shape - valid CSS/markup, no warning anywhere:
@@ -609,6 +766,218 @@ library's recurring failure shape - valid CSS/markup, no warning anywhere:
 - `Dropdown`'s trigger wrapper carrying `role="button"` around the real
   control, which propagated invalid nested-interactive ARIA to all seven
   components built on it.
+
+### A visible error is not an identified error
+
+Eight components take an `error` prop. Before this work, **none** set
+`aria-invalid`, and most rendered the message as a sibling `<div>` with no
+`id` and no `aria-describedby`. A red border next to some red text is
+perfectly valid DOM and completely silent - SC 3.3.1 (Level A) failing
+across the whole form library, with nothing in axe to show for it.
+
+Three things, together, on every field that can be invalid:
+
+```tsx
+const errorId = `${inputId}-error`;
+...
+aria-invalid={error ? true : undefined}
+aria-describedby={error ? errorId : undefined}
+...
+{error && <div id={errorId}>…</div>}
+```
+
+Watch for two traps:
+
+- **Merge `aria-describedby`, don't assign it.** `Input` receives one from
+  callers (`Combobox` and `TagInput` describe their fields), so overwriting
+  would trade one missing description for another. `expectErrorWiring` in
+  `story-a11y.docs.ts` resolves _every_ id in the list for this reason.
+- **A ternary between hint and error is not automatically a bug.**
+  `TagInput` and `OTPInput` both use `error ? errorId : hintId`, which looks
+  like one clobbering the other - but both _unmount_ the hint when an error
+  shows, so the description correctly mirrors what is on screen. Check the
+  render before "fixing" it.
+
+Components that render their own error rather than delegating to `Input` -
+`Combobox` does - need their own wiring; they inherit nothing.
+
+### An auto-dismissing toast is a time limit
+
+`Snackbar`'s auto-close was `setTimeout(() => remove(id), duration)` with no
+way to stop it. That is SC 2.2.1 (Level A): a time limit that cannot be
+turned off, adjusted or extended. It is worst precisely where the component
+is most useful - `action` puts an "Undo" button inside something that
+deletes itself on a stopwatch.
+
+The fix is a timer that records `remaining` and `startedAt` so it can be
+cancelled and restarted with the remainder, paused from
+`SnackbarContainer` on `onMouseEnter`/`onFocus` and resumed on
+`onMouseLeave`/`onBlur`. Focus matters as much as hover: it is what gives a
+keyboard user time to reach the action, and React's `onFocus` bubbles, so
+focusing the button inside pauses the whole snackbar.
+
+Neither this nor the error wiring above is visible to axe. **The baseline
+did not move by a single node across this entire phase** - which is the
+point: a clean axe run is necessary and nowhere near sufficient.
+
+### Never put an interactive role on a wrapper
+
+This is the single most repeated defect in the library. It has now been
+fixed five times, in five disguises:
+
+| where                               | shape                                                           |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `Dropdown` (3.x)                    | `<div role="button" tabIndex={-1}>` around the trigger          |
+| `DataGrid` rows                     | dnd-kit `attributes` spread onto every `<tr>`                   |
+| `Chip`                              | `<div role="button">` containing the remove `<button>`          |
+| `Tooltip`                           | `role="button"` wrapper around a child that is usually a button |
+| `Popover` / `Combobox` / `TagInput` | `aria-expanded` on a roleless `<div>`                           |
+
+The wrapper exists for layout, a ref, or an event handler. None of those
+need a role. Ask instead **which element the user actually activates**, and
+put the role, the state and the name there:
+
+- If the child is already a control - clone the ARIA onto it (`Popover`), or
+  skip it entirely when the child provides it (`Tooltip` measures this from
+  the DOM with `FOCUSABLE_SELECTOR`, because `children` is an arbitrary
+  `ReactNode`).
+- If there are genuinely two actions - render two sibling controls, never
+  one inside the other (`Chip`).
+- If a library hands you `attributes` - check what is in them. dnd-kit's
+  carry `role="button"` and `tabIndex`, and describe the **activator**, not
+  the element being moved.
+
+`DataGrid` is the cautionary tale, at 177 nodes - but the node count
+undersells it. A `<tr>` with a button role stops being a row, so the entire
+table structure vanished for a screen reader. It applied to every grid in
+the library, including those with `draggableRows` off, because `useSortable`
+returns its attributes regardless of `disabled`.
+
+The mirror-image bug came with it: because `attributes` never reached the
+drag handle, the handle had no `tabIndex`, and `KeyboardSensor` had no
+activator to start from. The keyboard alternative to dragging was in the
+sensor list and unreachable. **A drag handle that is not focusable is not a
+keyboard alternative.**
+
+### `aria-controls` must name an element that exists _now_
+
+`Combobox` and `TagInput` both set `aria-controls` to their listbox id
+unconditionally, while the listbox only renders once the menu is open. A
+dangling reference is invalid (`aria-valid-attr-value`) and a screen reader
+following it finds nothing.
+
+Gate it on the open state, alongside `aria-expanded`:
+
+```tsx
+aria-expanded={isOpen}
+aria-controls={isOpen ? `${uid}-listbox` : undefined}
+```
+
+Note where those two live: on the **input**, which is the combobox, not on
+the wrapper around it. `CommandPalette` already had this right and is the
+reference to copy.
+
+### An icon-only control needs a name, and `tooltip` is what supplies it
+
+`Button` falls back to `tooltip` for `aria-label` when a button is icon-only
+and has no explicit name; `SegmentedControl` does the same for a segment with
+an icon and no `label`. Both `devWarn` when there is neither.
+
+This was not a missing feature, it was a **broken documented pattern**.
+`Tooltip` renders a floating panel and adds no naming attributes to its child
+
+- no `aria-label`, no `aria-describedby` - so `IconButton`'s own JSDoc
+  example, `<IconButton icon={Plus} tooltip="Add item" />`, shipped a control
+  announced as just "button". Making `tooltip` name the button fixed 35 nodes
+  across six components without anyone changing a line of calling code.
+
+An explicit `aria-label` always wins: the caller may want a longer name than
+the visible tooltip.
+
+### A placeholder, a `<span>`, and a `<label>` with no `htmlFor` are all not labels
+
+Three shapes that each looked labelled and were not:
+
+- **`Pagination`** rendered `<label class="...">Show:</label>` next to its
+  page-size control with **no `htmlFor`** - a real `<label>` element naming
+  nothing. Fixed by passing an `id` through `inputProps` and pointing
+  `htmlFor` at it, rather than adding an `aria-label`: an `aria-label` of
+  "Rows per page" would satisfy axe while breaking SC 2.5.3 Label in Name,
+  because the spoken name would no longer contain the visible "Show".
+- **`ThemeEditor`** used `<span class="...__label">` for its row labels,
+  which associates with nothing. Named the control through `inputProps`.
+- **`TableFiltersDropdown`** relied on `placeholder="Enter value"`. A
+  placeholder disappears the moment you type, and several of those rows sit
+  side by side.
+
+Related API gap worth knowing: **`Select` has no `label` prop**, unlike
+`Input`, `Checkbox`, `Radio` and `Textarea`. The capability exists via
+`inputProps={{ label: '…' }}`, but the inconsistency is real and is why two
+`Select` stories shipped unlabelled.
+
+### Controls the audit cannot see
+
+axe only sees what a story renders. Two defects were invisible for that
+reason and were found by reading the source while fixing their neighbours:
+
+- `Input`'s **clear button** only renders when the field has content, and
+  nearly every story starts empty.
+- `DatePicker`'s **clear button** only renders once a date is picked.
+
+Both were nameless and `tabIndex={-1}`. When you fix a family of controls,
+check the conditionally-rendered siblings rather than trusting the node count.
+
+### `tabIndex={-1}` on a real button is a keyboard failure, not a tidy tab order
+
+`Input` had it on all three of its buttons - clear, password toggle and
+`posIcon`. It keeps the tab order short and makes the control **impossible to
+operate by keyboard** (WCAG 2.1.1, Level A). A keyboard user could not reveal
+their own password.
+
+Worth stressing: giving such a button a name _without_ removing
+`tabIndex={-1}` is worse than leaving it alone, because a screen reader then
+announces a control the user still cannot reach. The two fixes belong
+together.
+
+### Every dialog needs `useDialogFocus` - `aria-modal` alone is a lie
+
+`src/utils/useDialogFocus.ts` moves focus into a dialog on open, optionally
+traps Tab, and returns focus to the opener on close. `Modal`, `Drawer`,
+`CommandPalette` (trapped) and `Popover` (`trapTab: false`) all use it.
+
+It exists because all four shipped `role="dialog"` with **no focus management
+at all**. `aria-modal="true"` tells assistive technology the rest of the page
+is inert; measured in a browser, focus never entered the dialog and Tab left
+it on the first press. That is WCAG 2.4.3 (Level A) and **axe reports none of
+it** - a static snapshot of the DOM looks perfectly correct.
+
+Four things that were not obvious, each of which cost a debugging cycle:
+
+- **Activate on _visible_, not _open_ or _mounted_.** These overlays mount
+  first and apply their `--is-open` class two animation frames later.
+  `.focus()` on an element that is still `visibility: hidden` is a silent
+  no-op - it does not throw, focus just stays where it was. The hook also
+  retries across a few frames so it never depends on a particular transition
+  duration.
+- **Restore has to accept focus being on `<body>`.** When the overlay hides,
+  the browser blurs whatever was focused inside it, so by cleanup time
+  `activeElement` is usually already `<body>`. Restoring only when focus is
+  still _inside_ the container meant `CommandPalette` never restored at all.
+- **The opener must survive the open.** `CommandPalette` returned
+  `triggerNode` while closed and a fragment once open, so React saw a
+  different root type and destroyed the very button the user clicked -
+  leaving nothing to return focus to. Keep the root's shape stable and gate
+  the portal inside it.
+- **Non-modal still needs focus moved in.** `Popover` is honestly
+  `aria-modal="false"`, so trapping Tab would strand the user - but its panel
+  is portaled, so without moving focus in, Tab from the trigger goes to
+  whatever follows it in the page and the panel's controls are unreachable.
+
+Test it with `expectFocusTrap` from `src/story-a11y.docs.ts`, on a story
+tagged `['!dev', '!autodocs']` - hidden from the sidebar, still run by
+`npm run test:stories`. Don't attach it to `Default`: the `.mdx` documents
+that overlay stories start closed, and a `play` that opens one contradicts
+the page it is documented on.
 
 ### Interactive overlay stories
 
@@ -901,6 +1270,108 @@ Don't apply this project-wide; most stories are small enough that the
 underlying bug never manifests as more than a console warning, and letting
 Storybook derive source dynamically (so it can't drift from the real story)
 is more valuable there than the (currently theoretical) freeze risk.
+
+---
+
+## Testing
+
+`npm test` runs two Vitest projects, both in a real chromium via
+`@vitest/browser-playwright`.
+
+| Project     | What                                       | Run it                 |
+| ----------- | ------------------------------------------ | ---------------------- |
+| `unit`      | `src/**/*.test.ts` - pure logic            | `npm run test:unit`    |
+| `storybook` | every story, plus `play` functions and axe | `npm run test:stories` |
+
+### Which kind of test to write
+
+- **`play` function in the story** for anything you can only observe by
+  driving the component: keyboard, focus order, ARIA state, open/close, error
+  wiring. It runs in a real browser and shows up in the Interactions panel, so
+  it doubles as documentation. Storybook 10 supplies `canvas` and `userEvent`
+  as parameters - no `within(canvasElement)` boilerplate - and `expect` comes
+  from `storybook/test`.
+- **A `*.test.ts` beside the module** for pure logic a story cannot reach:
+  the colour maths, token emission, class-name helpers. A browser story is the
+  wrong tool for a function that takes a hex and returns a number.
+
+### Write the test before the refactor
+
+Characterisation first: capture the behaviour that is currently _correct_,
+confirm it passes **before** touching the component, then refactor. The point
+is not coverage, it is that the diff is provably behaviour-preserving. This
+matters most for `Combobox`, which `Select`, `TagInput` and `DataGrid`'s
+filters all build on.
+
+### Coverage from the Storybook widget can OOM `storybook dev`
+
+Running the full suite with **Coverage** ticked in the testing widget could
+kill the dev server outright:
+
+```
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+```
+
+It looks alarming and is easy to misread as a broken test. It is neither:
+
+- The tests **pass** first (465 passed, 2 skipped). The crash lands ~140s in,
+  on a run that finished testing at ~38s.
+- The stack is almost entirely `JsonStringify` -> `SerializeArrayLikeSlow`,
+  i.e. the v8 coverage report being serialized - not any component.
+- `npx vitest run --coverage` over the same suite completes in ~73s with a
+  1.5 GB peak. Same stories, same config, no crash.
+
+That "CLI fine, dev UI dies" signature is upstream
+(storybookjs/storybook#35508). `scripts/storybook.js` raises the heap to
+8 GB as a mitigation, reusing `run-with-heap.js` - the same helper the build
+needs for tsup's declaration step.
+
+If it still dies, raise the heap or get coverage from the CLI instead
+(`npm test -- --coverage`). And note Storybook's docs say coverage is not
+calculated while watch mode is active, so the widget's number always comes
+from a non-watch run.
+
+**Do not chase this into the component code.** A plausible-looking theory -
+that the `play` functions pass DOM elements to `expect` and the instrumenter
+serializes the whole tree - is wrong: Storybook's instrumenter reduces an
+`HTMLElement` to `{ prefix, localName, id, classNames, innerText }` before it
+ever reaches the channel.
+
+### The unit project runs in a browser on purpose
+
+Some of this logic is only meaningful against a real DOM (`isFontAvailable`
+measures text on a canvas), and a second environment would invite the class of
+bug where something passes in Node and fails in a browser. Chromium is already
+being started for the story project. Adding jsdom to avoid it would mean a new
+dependency _and_ a third set of rendering semantics.
+
+`screenshotFailures` is off for `unit` - a screenshot of a blank page says
+nothing about why a contrast ratio was wrong, and it litters `src/` with
+`__screenshots__` directories.
+
+### What the existing unit tests are actually protecting
+
+Not coverage for its own sake. Each one pins a claim that is invisible at
+runtime:
+
+- **Every preset base clears 4.5:1 on white.** `ThemeProvider.tokens.ts`
+  asserts this in prose and the conformance report repeats it. Measured worst
+  case is `warning` at **5.00** - about half a point of headroom, so a palette
+  tweak could cross the line with nothing else noticing.
+- **`buildRamp` stays monotonic.** A ramp that stops descending still renders;
+  it just makes hover states jump the wrong way.
+- **`diffFromDefault({})` is empty.** This is what makes an unthemed
+  `ThemeProvider` a genuine no-op. If it ever returns entries, every consumer
+  silently gains inline custom properties shadowing their own stylesheet.
+- **`deriveDark` lightens a near-black base.** Construct the test colour from
+  a known lightness rather than hand-picking a hex - the threshold is
+  `DARK_DELTA * 1.5` (0.129) and is not exported, so `#080b12` _looks_
+  near-black but sits at 0.150 and takes the other branch.
+- **`fontScale` out of range falls back, it does not clamp.** Silently turning
+  a requested 2.0 into 1.25 gives the caller a layout they did not ask for and
+  no signal.
+- **`dualModifier` still emits the legacy alias.** Nothing in this repo would
+  notice if it stopped; a stranger's stylesheet would.
 
 ---
 

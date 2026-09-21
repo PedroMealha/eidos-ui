@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NumberInput } from './NumberInput.component';
+import { expectErrorWiring } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Forms/NumberInput',
@@ -255,5 +256,21 @@ export const Disabled: Story = {
     defaultValue: 7,
     disabled: true,
     label: 'Locked value',
+  },
+};
+
+// ============================================================================
+// ERROR WIRING - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ * Axe cannot see any of this - see the note on `Input`'s equivalent story.
+ */
+export const ErrorWiring: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { label: 'Quantity', value: 120, max: 100, error: true, errorMessage: 'Maximum is 100' },
+  play: async ({ canvas }) => {
+    await expectErrorWiring(canvas.getByRole('spinbutton'), 'Maximum is 100');
   },
 };

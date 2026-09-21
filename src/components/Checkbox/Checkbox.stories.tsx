@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Checkbox } from './Checkbox.component';
+import { expectErrorWiring } from '../../story-a11y.docs';
 
 const meta = {
   title: 'Forms/Checkbox',
@@ -62,6 +63,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    label: 'Accept terms and conditions',
     color: 'primary',
     size: 'md',
     disabled: false,
@@ -140,6 +142,25 @@ export const Colors: Story = {
         <Checkbox color="success" label="Success" defaultChecked />
         <Checkbox color="danger" label="Danger" defaultChecked />
       </div>
+    );
+  },
+};
+
+// ============================================================================
+// ERROR WIRING - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ * Axe cannot see any of this - see the note on `Input`'s equivalent story.
+ */
+export const ErrorWiring: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { label: 'Accept terms', error: 'You must accept the terms to continue' },
+  play: async ({ canvas }) => {
+    await expectErrorWiring(
+      canvas.getByRole('checkbox', { name: 'Accept terms' }),
+      'You must accept the terms to continue',
     );
   },
 };

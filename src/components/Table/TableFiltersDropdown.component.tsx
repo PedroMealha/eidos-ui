@@ -349,6 +349,10 @@ export const TableFiltersDropdown = <T extends object>({
             value={(row.value as string) || ''}
             onChange={(e) => updateFilter(row.id, row.columnKey, e.target.value)}
             placeholder="Enter value"
+            // A placeholder is not a label: it disappears as soon as you
+            // type, and several of these rows sit side by side, so the
+            // column name is what distinguishes them.
+            aria-label={`Filter value${row.columnKey ? ` for ${row.columnKey}` : ''}`}
             size="sm"
             fullWidth
           />
@@ -413,6 +417,7 @@ export const TableFiltersDropdown = <T extends object>({
                       value=""
                       disabled
                       placeholder="Select column first"
+                      aria-label="Filter value (choose a column first)"
                       size="sm"
                       fullWidth
                     />

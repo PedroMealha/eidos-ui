@@ -13,7 +13,100 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
-## [3.3.0] - 2026-09-21
+### Added
+
+- `Input.posIconLabel` - accessible name for the `posIconButton`. Optional
+  only to avoid a breaking change; omitting it logs a dev warning and falls
+  back to a generic name.
+
+### Changed
+
+- Links are underlined by default. In a paragraph they were distinguished
+  from the surrounding text by colour alone, and that colour difference is
+  2.90:1 - under the 3:1 that SC 1.4.1 requires when colour is the only cue.
+  Only bare anchors are affected; `Breadcrumb` and `Conversation` already set
+  their own `text-decoration`.
+
+### Fixed
+
+- Every field with an `error` now says so programmatically. `Input`,
+  `Textarea`, `Checkbox`, `RadioGroup`, `NumberInput`, `Combobox`, `TagInput`
+  and `OTPInput` set `aria-invalid` and point `aria-describedby` at the
+  message. Not one of the eight set `aria-invalid` before, and most left the
+  message unassociated - the error was conveyed by colour and proximity
+  alone (WCAG 3.3.1, Level A).
+- `RadioGroup` is a `radiogroup`. Its options were announced as a run of
+  unrelated radios, and there was nothing for its error to attach to.
+- `Snackbar` pauses its auto-dismiss on hover and on focus, resuming with the
+  remaining time. Auto-dismiss was a fixed `setTimeout` that nothing could
+  stop - a time limit the user could neither turn off, adjust nor extend
+  (WCAG 2.2.1, Level A) - which also meant a snackbar's `action` ("Undo")
+  could disappear mid-reach.
+- `DataGrid` rows are rows again. dnd-kit's `attributes` were spread onto
+  every `<tr>`, giving it `role="button"` and erasing the table's structure
+  for assistive technology - even with `draggableRows` off, since
+  `useSortable` returns them regardless. Moving them to the drag handle also
+  made the handle focusable, so the keyboard alternative to dragging
+  (SC 2.5.7) can actually be started; it previously had no activator.
+- `Combobox` and `TagInput` follow the ARIA 1.2 combobox pattern. The
+  wrapper `<div>` carried `aria-expanded`/`aria-haspopup` with no role at
+  all, the input had no `combobox` role, and `aria-controls` named a listbox
+  that does not exist until the menu opens.
+- `Popover` puts `aria-expanded`/`aria-haspopup` on its trigger element
+  rather than on a roleless wrapper.
+- `Chip` renders its action and its remove button as siblings when it is
+  both clickable and removable. It previously nested one button inside
+  another via `role="button"`.
+- `Tooltip` only makes its wrapper a control when the trigger does not
+  already contain one - `Button` wraps itself in a `Tooltip`, so the
+  `click` trigger reliably produced a button inside a button.
+- `VirtualList` scopes `role="list"` to the element holding the rows, so the
+  loading and empty states are no longer invalid list children; drops an
+  `aria-label` that is prohibited on a roleless element; and makes the scroll
+  viewport focusable so it can be scrolled by keyboard.
+- `Chat`'s outgoing message bubble was the worst contrast surface in the
+  library. Its attachment chip tinted the bubble with white (3.83:1 for the
+  preset, 3.79-4.15:1 across the palette) and now tints with black
+  (6.79-6.87:1); the attachment size label no longer uses `--text-muted`, a
+  dark grey meant for light surfaces, on a saturated fill (1.97:1); and the
+  timestamp is no longer faded to 0.75 opacity (3.57:1).
+- `Alert` titles and icons use `--x-dark` rather than `--x-color`. Each
+  variant tints its background with 8% of its own hue, leaving the title at
+  4.44-4.52:1 - two variants failing AA and three passing by a hundredth.
+  Now 6.10-6.22:1 across the set.
+- **`tooltip` now names an icon-only `Button`.** `<IconButton icon={Plus}
+  tooltip="Add item" />` - the pattern in `IconButton`'s own documentation -
+  produced a button announced as just "button", because `Tooltip` adds no
+  naming attributes to its child. An explicit `aria-label` still wins.
+  `SegmentedControl` had the identical problem for icon-only segments.
+- `Button` and `SegmentedControl` warn in development when an icon-only
+  control has no accessible name at all.
+- `DataGrid` labels the checkboxes it renders itself: row selection, select
+  all, and boolean cells (which are named by their column and row). 194
+  unlabelled checkboxes.
+- `Input`'s clear, password-toggle and `posIcon` buttons have accessible
+  names, and are no longer `tabIndex={-1}` - they were unreachable by
+  keyboard entirely (WCAG 2.1.1). This propagated to `Combobox`, `Select`,
+  `DatePicker` and anything else built on `Input`.
+- `Combobox`, `Select` and `DatePicker` name their clear/expand buttons.
+- `Pagination`'s rows-per-page control is associated with its visible
+  "Show:" label, which was a `<label>` with no `htmlFor`.
+- `DataGrid` and `Table` name their inline-edit and filter inputs from the
+  column header; `ThemeEditor` and `MessageComposer` name their file inputs.
+- `Modal`, `Drawer` and `CommandPalette` now trap keyboard focus while open,
+  move focus into the dialog, and return it to the control that opened them.
+  All three declared `aria-modal="true"` - a promise that the rest of the page
+  is inert - while Tab moved straight out to the page behind the scrim
+  (WCAG 2.4.3 Focus Order, Level A).
+- `Drawer` no longer drops focus onto `<body>` when it closes, which returned
+  keyboard users to the top of the document.
+- `Popover` moves focus into its panel and back to the trigger. Its panel is
+  portaled, so its controls were previously unreachable by keyboard. Tab is
+  deliberately **not** trapped - it is a non-modal dialog.
+- `CommandPalette` no longer remounts its trigger when opening. The root
+  element changed shape between the closed and open states, so React
+  destroyed and recreated the button the user had just clicked, losing focus
+  with it.
 
 ### Added
 

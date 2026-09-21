@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Combobox } from './Combobox.component';
+import { expectErrorWiring } from '../../story-a11y.docs';
 import type { ComboboxOption } from './Combobox.types';
+import { expect, screen, waitFor } from 'storybook/test';
 
 // ─── Sample data ──────────────────────────────────────────────────────────────
 
@@ -346,5 +348,71 @@ export const Controlled: Story = {
         </p>
       </div>
     );
+  },
+};
+
+// ============================================================================
+// ARIA + KEYBOARD - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `Combobox` is what `Select`, `TagInput` and `DataGrid`'s filters are built
+ * on, so its behaviour is pinned here before its ARIA wiring was corrected -
+ * the combobox role, `aria-expanded` and `aria-controls` all moved, and this
+ * is what proves the interaction survived the move.
+ *
+ * It also asserts the wiring itself, which axe can only partly see: axe
+ * catches `aria-controls` pointing at a missing element, but not the reverse
+ * mistake of pointing at the right element under the wrong conditions.
+ */
+export const AriaAndKeyboard: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { options: FLAT_OPTIONS, placeholder: 'Search or select…' },
+  play: async ({ canvas, userEvent, step }) => {
+    const input = canvas.getByRole('combobox');
+
+    await step('is collapsed, and claims no popup, before it opens', async () => {
+      await expect(input).toHaveAttribute('aria-expanded', 'false');
+      // `aria-controls` must not name an element that does not exist yet.
+      await expect(input).not.toHaveAttribute('aria-controls');
+    });
+
+    await step('opens on typing and points at the listbox it rendered', async () => {
+      await userEvent.click(input);
+      await userEvent.type(input, 'a');
+      const listbox = await screen.findByRole('listbox');
+      await waitFor(() => expect(input).toHaveAttribute('aria-expanded', 'true'));
+      await expect(input).toHaveAttribute('aria-controls', listbox.id);
+    });
+
+    await step('arrow keys move the active option, Enter selects it', async () => {
+      await userEvent.keyboard('{ArrowDown}');
+      await waitFor(() => expect(input).toHaveAttribute('aria-activedescendant'));
+      const activeId = input.getAttribute('aria-activedescendant')!;
+      const active = document.getElementById(activeId);
+      expect(active, 'aria-activedescendant must name a real option').not.toBeNull();
+
+      const chosen = active!.textContent!.trim();
+      await userEvent.keyboard('{Enter}');
+      await waitFor(() => expect((input as HTMLInputElement).value).toBe(chosen));
+    });
+  },
+};
+
+// ============================================================================
+// ERROR WIRING - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ * Axe cannot see any of this - see the note on `Input`'s equivalent story.
+ */
+export const ErrorWiring: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { options: FLAT_OPTIONS, label: 'Country', error: 'Choose a country' },
+  play: async ({ canvas }) => {
+    await expectErrorWiring(canvas.getByRole('combobox'), 'Choose a country');
   },
 };

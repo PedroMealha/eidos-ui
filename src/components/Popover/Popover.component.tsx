@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { PopoverProps, PopoverState, PopoverPlacement } from './Popover.types';
+import { useDialogFocus } from '../../utils';
 
 export const Popover: React.FC<PopoverProps> = ({
   trigger,
@@ -268,18 +269,50 @@ export const Popover: React.FC<PopoverProps> = ({
     };
   }, []);
 
+  // Non-modal focus handling: move focus into the panel and return it to the
+  // trigger on close, but leave Tab free.
+  //
+  // `trapTab: false` because this dialog is honestly `aria-modal="false"` -
+  // the rest of the page stays available, so confining Tab would strand the
+  // user. Moving focus in is still required: the panel is portaled to
+  // `document.body`, so Tab from the trigger continues into whatever follows
+  // it in the page and the panel's own controls cannot be reached at all.
+  //
+  // Keyed to `isPositioned`, not `isVisible`: the panel renders off-screen
+  // for one frame while its placement is measured, and focusing it in that
+  // state scrolls the page to wherever it was parked.
+  useDialogFocus(popoverState.isVisible && popoverState.isPositioned, contentRef, {
+    trapTab: false,
+  });
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* Trigger wrapper */}
+      {/* Trigger wrapper.
+      
+          The wrapper carries no ARIA. It had `aria-expanded` and
+          `aria-haspopup` while having no role, which is invalid - both need
+          a role that supports them, and adding `role="button"` here would be
+          worse still, since the trigger inside is usually a real button
+          (that is the `nested-interactive` shape already fixed on
+          `Dropdown`).
+          
+          Instead the state is cloned onto the trigger element, which is the
+          thing a user actually activates. Guarded by `isValidElement`
+          because `trigger` is typed as `ReactNode` and may be a bare string,
+          in which case there is nothing to annotate and the wrapper stays
+          exactly as it was. */}
       <div
         ref={triggerRef}
         className={['eidos-popover-trigger', className].filter(Boolean).join(' ')}
         onClick={toggle}
-        aria-expanded={popoverState.isVisible}
-        aria-haspopup="dialog"
       >
-        {trigger}
+        {React.isValidElement(trigger)
+          ? React.cloneElement(trigger as React.ReactElement<Record<string, unknown>>, {
+              'aria-expanded': popoverState.isVisible,
+              'aria-haspopup': 'dialog',
+            })
+          : trigger}
       </div>
 
       {/* Portal: floating panel */}

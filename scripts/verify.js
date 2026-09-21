@@ -72,13 +72,20 @@ step('prettier', 'npm run prettier:check');
 // README/GETTING_STARTED duplicate the component list and the token names, and
 // nothing else in the toolchain reads prose. Cheap, so it runs before the build.
 step('docs', 'node scripts/check-docs.js');
+// Unit tests plus every story rendered in a real browser. Runs before the
+// build: a broken component should fail here, not 90 seconds later in tsup.
+step('test', 'npm test');
 step('build', 'npm run build');
 
 const mdx = mdxChanged();
 if (mdx.changed) {
   step('build-storybook', 'npm run build-storybook');
+  // Reads `storybook-static`, so it can only run when that was just rebuilt -
+  // auditing a stale build would report yesterday's accessibility.
+  step('a11y', 'node scripts/check-a11y-baseline.js');
 } else {
   console.log(`  ${'build-storybook'.padEnd(18)}skipped  (${mdx.reason})`);
+  console.log(`  ${'a11y'.padEnd(18)}skipped  (needs a fresh storybook-static)`);
 }
 
 console.log(`\n✓ All checks passed in ${secs(started)}.\n`);

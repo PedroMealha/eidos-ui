@@ -11,38 +11,15 @@
  */
 import { execFileSync, execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { BUILD_INPUTS } from './build-inputs.js';
 
 const git = (command) => execSync(`git ${command}`, { encoding: 'utf8' }).trim();
 
 /**
- * Shell-free variant. Required for the exclude pathspecs below, which contain
- * glob characters a shell would try to expand before git ever sees them.
+ * Shell-free variant. Required for `BUILD_INPUTS`'s exclude pathspecs, which
+ * contain glob characters a shell would try to expand before git sees them.
  */
 const gitArgs = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
-
-/**
- * Sources that end up in dist/.
- *
- * `.mdx`, `.stories.tsx` and `.docs.tsx` live under src/ but are
- * Storybook-only - tsup builds from each component's `index.ts`, so they never
- * reach the tarball. Counting them would flag doc-only edits as releasable,
- * which is the exact over-publishing this script exists to prevent.
- */
-const BUILD_INPUTS = [
-  'src',
-  // Bare `*` patterns match at any depth, unlike `src/**/*.mdx`, which misses
-  // files sitting directly in src/ (e.g. src/Introduction.mdx).
-  ':(exclude)*.mdx',
-  ':(exclude)*.stories.tsx',
-  ':(exclude)*.test.tsx',
-  // JSX a guide page needs but can't declare inline - see src/Releases.docs.tsx.
-  ':(exclude)*.docs.tsx',
-  'tsup.config.ts',
-  'scripts/build-styles.js',
-  // The build entry point - it sets the heap limit tsup's declaration step
-  // needs, so a change here can change whether dist/ is produced at all.
-  'scripts/build.js',
-];
 
 /**
  * `@fontsource-variable/*` are devDependencies whose `.woff2` files are copied

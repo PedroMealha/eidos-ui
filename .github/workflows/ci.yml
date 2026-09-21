@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Only `contents: read` is needed, for checkout. Without this block the token
+# inherits the repository default, which is broader than this workflow needs.
+permissions:
+  contents: read
+
+# A second push to the same branch makes the first run's result irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Fast, no browser needed. Split from `test` so a formatting slip reports in
+  # well under a minute instead of waiting behind a Playwright download.
+  static:
+    name: Lint, types, formatting, docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run prettier:check
+      - run: node scripts/check-docs.js
+      - run: node scripts/check-barrel-exports.js
+
+  # Unit tests plus every story rendered in a real browser, then axe over the
+  # built Storybook. These share the Playwright install, so they are one job.
+  test:
+    name: Tests and accessibility
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      # Only chromium: it is the single browser configured in vite.config.ts,
+      # and `--with-deps` pulls the system libraries the runner image lacks.
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
+      - run: npm test
+
+      # `check-a11y-baseline.js` audits the built output, so this is a
+      # prerequisite rather than a separate concern.
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      # Fails on any violation beyond `scripts/a11y-baseline.json`. The backlog
+      # is allowed to exist; it is not allowed to grow.
+      - name: Accessibility ratchet
+        run: node scripts/check-a11y-baseline.js
+
+  # The thing consumers actually install.
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build

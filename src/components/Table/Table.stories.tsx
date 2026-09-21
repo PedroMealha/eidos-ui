@@ -487,7 +487,7 @@ export const WithActionsMenu: Story = {
         align: 'center',
         render: (_value, item) => (
           <Menu
-            trigger={<Button icon={MoreVertical} variant="text" size="sm" />}
+            trigger={<Button icon={MoreVertical} variant="text" size="sm" tooltip="Row actions" />}
             items={[
               {
                 id: 'view',
@@ -703,7 +703,7 @@ const cardViewColumns: TableColumn<User>[] = [
     type: 'action',
     render: (_value, item) => (
       <Menu
-        trigger={<Button variant="text" size="sm" icon={MoreVertical} />}
+        trigger={<Button variant="text" size="sm" icon={MoreVertical} tooltip="Row actions" />}
         items={[
           {
             id: 'view',

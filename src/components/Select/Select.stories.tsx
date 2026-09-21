@@ -182,6 +182,11 @@ export const Default: Story = {
   args: {
     options: basicOptions,
     placeholder: 'Select a fruit...',
+    // A placeholder is not an accessible name - it vanishes on selection.
+    // `Select` has no `label` prop of its own (unlike `Input`, `Checkbox`,
+    // `Radio` and `Textarea`), so the label goes through `inputProps`, which
+    // is forwarded to the underlying `Input`.
+    inputProps: { label: 'Fruit' },
   },
 };
 
@@ -207,6 +212,7 @@ export const MultipleSelectCompactLabel: Story = {
     multiple: true,
     defaultValue: ['apple', 'banana', 'cherry'],
     placeholder: 'Select multiple fruits...',
+    inputProps: { label: 'Fruit' },
   },
   parameters: {
     docs: {
