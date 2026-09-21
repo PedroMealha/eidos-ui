@@ -1,0 +1,45 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { GuideHero, GuideNote } from '../guide-page.docs';
+import { FontStacks, ElementStyles, TypeScale, FontWeights } from './Foundations.docs';
+
+<Meta title="Foundations/Typography" />
+
+{/* All JSX lives in Foundations.docs.tsx - see the note in Colour.mdx. */}
+
+<GuideHero title="Typography">
+  Two stacks, eight sizes, six weights. Read from the token stylesheet at build time, and rendered
+  here in the face and size each token actually produces.
+</GuideHero>
+
+## Stacks
+
+<FontStacks />
+
+## Elements
+
+These are the element defaults from the global stylesheet - what you get before any component is
+involved.
+
+<GuideNote title="Headings do not use the size tokens" hint="worth knowing before you theme">
+  The scale below is written directly on the elements as `rem` values, not drawn from
+  `--font-size-*`. So changing a size token restyles components but leaves a bare `<h2>` where it
+  was. The two scales overlap but are not wired together.
+</GuideNote>
+
+<ElementStyles />
+
+## Scale
+
+<GuideNote title="Sizes are rem, spacing is em" hint="why they behave differently">
+  Font sizes are `rem`, so they answer to the root and to `ThemeProvider`'s `fontScale`. Spacing and
+  radius are `em`, so they scale with whatever font size is in force locally - a `--spacing-sm` gap
+  inside a `sm` control is genuinely smaller than the same token inside an `lg` one. That is the
+  intended behaviour, and it is also why a target sized in `em` can quietly fall under the 24x24
+  that SC 2.5.8 asks for.
+</GuideNote>
+
+<TypeScale />
+
+## Weights
+
+<FontWeights />

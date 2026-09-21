@@ -21,14 +21,50 @@ Entries land here as work happens, not written retroactively at release time
 
 ### Changed
 
+- `h4` is `semibold` rather than `medium`. Heading weight descends from `h1`
+  to `h3` and now floors at `h4`: below `h3` the size steps are small (20px,
+  18px, 16px against a 14px body), so weight carries most of the "this is a
+  heading" signal, and a `medium` `h4` would otherwise have rendered lighter
+  than the new `h5` and `h6`.
 - Links are underlined by default. In a paragraph they were distinguished
   from the surrounding text by colour alone, and that colour difference is
   2.90:1 - under the 3:1 that SC 1.4.1 requires when colour is the only cue.
   Only bare anchors are affected; `Breadcrumb` and `Conversation` already set
   their own `text-decoration`.
 
+### Added
+
+- `h5`, `h6` and `small` are styled. The browser's defaults for `h5` and
+  `h6` are `0.83em` and `0.67em`, which against this library's 14px body
+  resolve to roughly 11.6px and 9.4px - both **smaller than the paragraph
+  beneath them**. Any document using a six-level outline had two heading
+  levels that read as fine print. `small` covers captions and metadata.
+- `ACCESSIBILITY.md` - what is tested against WCAG 2.2 AA and how, the seven
+  documented SC 1.4.3 exemptions, what remains the consuming application's
+  responsibility, and what has not been done. It deliberately does not claim
+  a conformance level.
+- `ColorPicker.ariaLabel` - names the trigger when the label is rendered
+  outside the component, as `ThemeEditor` does. Without it every picker on
+  that page was announced as "Open colour picker".
+
 ### Fixed
 
+- `Tooltip` satisfies SC 1.4.13. Escape now dismisses it for every trigger
+  type rather than only `click` (`hover` is the default, so the failing case
+  was the common one), and the panel is no longer `pointer-events: none`, so
+  the pointer can rest on it to read or select its content.
+- `Pagination` shows a focus ring on every page button. The ring was nested
+  inside the `--active` rule, so tabbing across the other pages showed
+  nothing at all while `outline: none` suppressed the browser default.
+- `CommandPalette`'s search field, `MessageComposer`'s textarea and
+  `ColorPicker`'s hue and alpha sliders have visible focus indicators. All
+  four cleared the outline via a reset and painted nothing in its place.
+- `Pagination` wraps its page buttons, so a long pager reflows at 320px
+  instead of forcing horizontal scrolling (SC 1.4.10).
+- `InlineEdit` and `FileUpload` include their visible text in the accessible
+  name (SC 2.5.3). `InlineEdit` was announced as "Click to edit" regardless
+  of its content, so every instance on a page sounded identical and speech
+  input had nothing to match.
 - Targets meet the 24x24 minimum of WCAG 2.2 SC 2.5.8. `ColorPicker`'s
   preset swatches (20x20), its hue and alpha sliders (20px tall),
   `SplitButton`'s chevron half (20.4px wide) and `NumberInput`'s spinbutton

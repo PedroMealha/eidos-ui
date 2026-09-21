@@ -80,6 +80,12 @@ const preview: Preview = {
           'Getting Started',
           'Content Security Policy',
           'Releases',
+          // The shared vocabulary - tokens and the rules for using them -
+          // between the guides that explain the library and the components
+          // that consume it. `Theming` is separate on purpose: Foundations
+          // is what the tokens *are*, Theming is how to change them at
+          // runtime.
+          'Foundations',
           'Layout',
           'Theming',
           'Elements',

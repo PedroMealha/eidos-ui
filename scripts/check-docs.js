@@ -126,10 +126,24 @@ for (const file of ['README.md', 'GETTING_STARTED.md']) {
 //   /* "override with your brand" */  --primary-color: #0ea5e9;
 //
 // Nothing structural separates them, so comparing values flags every legitimate
-// override example. The stale-value case (README quoted `#6366f1` for a year
-// after the palette moved on) is covered by a convention instead - see the
-// "Documentation freshness" section in the eidos-ui-rules skill: when a palette
-// value changes, grep the docs for the old hex.
+// override example.
+//
+// That reasoning still holds, and the answer turned out to be to remove the
+// ambiguity rather than detect it. Two changes closed the hole without a
+// value check:
+//
+//   1. `Foundations/Colour`, `/Typography` and `/Layout` in Storybook are
+//      generated from `variables.scss` by `.storybook/stats-plugin.ts`. They
+//      are the only place a token *value* is stated, and being generated they
+//      cannot drift.
+//   2. The override examples in both docs now use values that are visibly not
+//      the defaults, so neither can be misread as documenting them. README's
+//      used to quote the real preset, which is precisely how it came to
+//      advertise `#6366f1` for a year after the palette moved on.
+//
+// So there is deliberately still no value check here: after the above, no
+// prose claims to state a default, and a check with nothing to verify is
+// worse than none - it implies a guarantee it is not making.
 
 const variables = readFileSync('./src/styles/variables.scss', 'utf8');
 const declaredTokens = new Set(

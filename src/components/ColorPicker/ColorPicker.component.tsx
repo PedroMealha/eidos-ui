@@ -275,6 +275,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   size = 'md',
   inline = false,
   label,
+  ariaLabel,
   className = '',
 }) => {
   // ── Initial hex (only used on first render by useState) ──────────────────
@@ -660,7 +661,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             type="button"
             className="eidos-color-picker-trigger"
             disabled={disabled}
-            aria-label={label ?? 'Open colour picker'}
+            aria-label={label ?? ariaLabel ?? 'Open colour picker'}
           >
             <span
               className="eidos-color-picker-trigger-swatch"

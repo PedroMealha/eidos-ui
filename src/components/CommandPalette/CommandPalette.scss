@@ -98,6 +98,17 @@
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--gray-200);
   flex-shrink: 0;
+
+  // `input-reset` clears the outline unconditionally and this input painted
+  // nothing in its place, so the global `:focus-visible` fallback was
+  // suppressed with no replacement (SC 2.4.7). The ring goes on the search
+  // row rather than the bare input, matching how `Input` rings its wrapper.
+  //
+  // Inset: the dialog clips to its own radius, so an outward ring on the
+  // top row would be cropped by it.
+  &:focus-within {
+    box-shadow: focus-ring-shadow-inset(primary);
+  }
 }
 
 .eidos-cmd-search-icon {

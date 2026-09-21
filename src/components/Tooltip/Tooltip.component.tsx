@@ -3,6 +3,13 @@ import { createPortal } from 'react-dom';
 import type { TooltipProps, TooltipState } from './Tooltip.types';
 import { FOCUSABLE_SELECTOR } from '../../utils';
 
+/**
+ * How long the tooltip stays open after the pointer leaves, so it can be
+ * moved onto the panel itself (SC 1.4.13, "hoverable"). Long enough to cross
+ * the gap, short enough not to feel stuck.
+ */
+const HOVER_GRACE_MS = 150;
+
 export const Tooltip: React.FC<TooltipProps> = ({
   children,
   message,
@@ -108,12 +115,20 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const handleMouseEnter = useCallback(() => {
     if (disabled || triggerType !== 'hover') return;
 
+    // Cancels a pending hide as well as scheduling the show. Both handlers
+    // are bound to the trigger *and* to the panel, so this is what catches
+    // the pointer as it crosses from one to the other.
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     timeoutRef.current = setTimeout(() => {
-      setTooltipState((prev) => ({
-        ...prev,
-        isVisible: true,
-        isPositioned: false,
-      }));
+      // Left untouched when already open. Re-entering from the panel would
+      // otherwise re-run the open transition and reposition a tooltip the
+      // user is in the middle of reading.
+      setTooltipState((prev) =>
+        prev.isVisible ? prev : { ...prev, isVisible: true, isPositioned: false },
+      );
     }, delay);
   }, [disabled, delay, triggerType]);
 
@@ -123,11 +138,22 @@ export const Tooltip: React.FC<TooltipProps> = ({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    setTooltipState((prev) => ({
-      ...prev,
-      isVisible: false,
-      isPositioned: false,
-    }));
+
+    // Closing is delayed, not immediate.
+    //
+    // SC 1.4.13 requires the pointer to be able to reach the tooltip's own
+    // content. The panel is portaled and sits a few pixels off the trigger,
+    // so an immediate hide made that gap impossible to cross - the tooltip
+    // disappeared the moment the pointer left the trigger, however fast the
+    // user moved. The grace period is what makes "hoverable" reachable in
+    // practice.
+    timeoutRef.current = setTimeout(() => {
+      setTooltipState((prev) => ({
+        ...prev,
+        isVisible: false,
+        isPositioned: false,
+      }));
+    }, HOVER_GRACE_MS);
   }, [triggerType]);
 
   const handleClick = useCallback(() => {
@@ -204,12 +230,14 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
-      if (
-        closeOnEscape &&
-        event.key === 'Escape' &&
-        tooltipState.isVisible &&
-        triggerType === 'click'
-      ) {
+      // Every trigger type, not just `click`.
+      //
+      // SC 1.4.13 requires content shown on hover *or focus* to be
+      // dismissible without moving the pointer or focus - and `hover` is the
+      // default, so the one configuration that could be dismissed was the
+      // one least likely to be used. A tooltip covering the text you are
+      // trying to read had to be escaped by physically moving the mouse.
+      if (closeOnEscape && event.key === 'Escape' && tooltipState.isVisible) {
         setTooltipState((prev) => ({
           ...prev,
           isVisible: false,
@@ -217,7 +245,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         }));
       }
     },
-    [closeOnEscape, tooltipState.isVisible, triggerType],
+    [closeOnEscape, tooltipState.isVisible],
   );
 
   useEffect(() => {
@@ -277,17 +305,29 @@ export const Tooltip: React.FC<TooltipProps> = ({
     };
   }, [tooltipState.isVisible, handleScroll]);
 
+  // Click-outside is only meaningful for a click-triggered tooltip; Escape
+  // is not. Registering them together meant a hover tooltip had no way to be
+  // dismissed from the keyboard at all (SC 1.4.13, "dismissible") - and
+  // `hover` is the default, so the failing case was the common one.
   useEffect(() => {
     if (tooltipState.isVisible && triggerType === 'click') {
       document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscapeKey);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [tooltipState.isVisible, triggerType, handleClickOutside]);
+
+  useEffect(() => {
+    if (tooltipState.isVisible) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [tooltipState.isVisible, triggerType, handleClickOutside, handleEscapeKey]);
+  }, [tooltipState.isVisible, handleEscapeKey]);
 
   useEffect(() => {
     return () => {
@@ -370,6 +410,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
         createPortal(
           <div
             ref={tooltipRef}
+            // SC 1.4.13 "hoverable": the pointer has to be able to reach the
+            // tooltip's own content - to read a long message, or select text
+            // from it - without it vanishing. The panel used to be
+            // `pointer-events: none`, so moving towards it dismissed it.
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             className={`eidos-tooltip eidos-tooltip--${tooltipState.position.placement} ${className}`}
             style={{
               top: tooltipState.position.top,

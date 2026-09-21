@@ -767,6 +767,82 @@ library's recurring failure shape - valid CSS/markup, no warning anywhere:
   control, which propagated invalid nested-interactive ARIA to all seven
   components built on it.
 
+### Foundations pages are generated - never type a token value into prose
+
+`Foundations/Colour`, `/Typography` and `/Layout` render from
+`stats.tokenGroups`, which `.storybook/stats-plugin.ts` parses out of
+`variables.scss` at Vite config time. Contrast figures on those pages use the
+library's own `contrastRatio`, so the docs cannot disagree with the runtime.
+`Foundations/Accessibility` reads `scripts/a11y-baseline.json` for the same
+reason: the page reports whatever the CI gate is enforcing, not a copy of it.
+
+This is the answer to a problem `check-docs.js` had already tried and
+rejected. Value-checking prose is undecidable - `--primary-color: #5c5de8` in
+a `:root` block is either "here are the defaults" or "here is how you
+override", and nothing structural tells them apart. The fix was to remove the
+ambiguity rather than detect it: **exactly one place states a token value,
+and it is generated.** The override examples in `README` and
+`GETTING_STARTED` now use values that are visibly not the defaults, so
+neither can be misread.
+
+Three conventions those pages follow, each fixing something that looked
+wrong on the rendered page rather than in the source:
+
+- **Tables share a column spec.** `COLUMNS` in `Foundations.docs.tsx` plus
+  `table-layout: fixed`. Left to size themselves, eleven tables on the
+  Colour page stepped left and right as `--info-color` and
+  `--hyperlink-color` differ in length, and the grid never settled.
+- **One heading per section, not two.** An MDX `## Breakpoints` above a
+  `<Section title="Breakpoints">` renders the word twice. Name the MDX
+  heading for the theme and the section for the specific table.
+- **Swatches need a backdrop when the thing being shown is subtle.**
+  `--box-shadow-xs` is `0 0 1px rgba(0,0,0,.05)`; a white card carrying it
+  on a white page renders as literally nothing.
+
+If you add a Foundations page, put every scrap of JSX in
+`Foundations.docs.tsx`, and **do not use backticks in a `GuideHero`** - MDX
+turns them into `<code>`, Storybook's docs CSS gives that a near-white
+background, and the hero's light text colour is inherited onto it, producing
+an invisible white box on the purple gradient. There is no inline-style fix,
+and this library deliberately never injects a `<style>` element.
+
+### The library cannot claim WCAG conformance - don't let anyone add one
+
+WCAG 2.2 [§5.2.2](https://www.w3.org/TR/WCAG22/#cc2) is explicit:
+"Conformance (and conformance level) is for full web page(s) only, and cannot
+be achieved if part of a web page is excluded." A component library is not a
+web page, so "eidos-ui is WCAG 2.2 AA" is not a true statement, an
+overcautious one, or a marketing one - it is a category error.
+
+`ACCESSIBILITY.md` is the artefact to update instead: what was tested, how,
+the documented exemptions, what the consumer still owns, and what has _not_
+been done (no screen-reader testing, no user testing, no independent audit).
+If a claim is ever needed for procurement, those three omissions are the gap.
+
+The `AccessibilityNote` on the Welcome page says the same thing in short
+form. Keep the two in step - they are the second-most-copied fact in the
+repo after the component count.
+
+### A focus ring nested in a state modifier rings only that state
+
+`Pagination` painted its focus ring inside `&--active`, so the only page
+button that showed focus was the one you were already on - and `outline:
+none` on the base rule had already suppressed the global fallback. Every
+other page was a silent tab stop.
+
+Two habits that catch this class of bug:
+
+- **Check what a reset removes.** `input-reset` clears `outline`
+  unconditionally (deliberately - see the mixin's note), so any component
+  using it _must_ paint its own ring. `CommandPalette`'s search field and
+  `MessageComposer`'s textarea both forgot, and `global.scss`'s
+  `:focus-visible` fallback cannot save them because they suppressed it.
+- **Verify by pixel, not by selector.** Reading the CSS suggested the
+  `ColorPicker` sliders had a ring; screenshotting them focused and
+  unfocused proved the bytes were identical. Conversely it cleared `Input`,
+  `TreeView` and `Slider`, whose rings live on a wrapper, a child, or a
+  `::-webkit-slider-thumb` where a computed-style probe cannot see them.
+
 ### 24px targets: take the size, not the spacing exception
 
 SC 2.5.8 lets a sub-24px target pass if a 24px circle centred on it clears

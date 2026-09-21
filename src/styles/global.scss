@@ -55,13 +55,51 @@ h3 {
   color: var(--dark-color);
 }
 
+// `semibold`, not `medium`.
+//
+// Weight descends from h1 to h3 and then floors here. Below h3 the size
+// differences are small - 20px, 18px, 16px against a 14px body - so weight
+// is most of what still says "heading", and `medium` was not enough to
+// carry it. Keeping h4-h6 level also stops a smaller heading from rendering
+// heavier than a larger one.
 h4 {
   font-size: 1.25rem;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   line-height: 1.4;
   margin-bottom: var(--spacing-sm);
   letter-spacing: -0.025em;
   color: var(--dark-color);
+}
+
+// h5 and h6 exist because the browser's defaults for them are actively
+// wrong here: `0.83em` and `0.67em` against this 14px body resolve to about
+// 11.6px and 9.4px - *smaller than the paragraph beneath them*. Anything
+// using a six-level heading outline got two levels that read as fine print.
+h5 {
+  font-size: 1.125rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.45;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.02em;
+  color: var(--dark-color);
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.01em;
+  color: var(--dark-color);
+}
+
+// Captions, metadata and fine print. `--text-muted` rather than a lighter
+// grey: it is the only muted role that clears 4.5:1 on every surface the
+// library paints.
+small {
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  color: var(--text-muted);
 }
 
 // Links are underlined by default.

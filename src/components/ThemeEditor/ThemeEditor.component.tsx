@@ -441,7 +441,16 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 {/* `md` rather than `sm`: the size drives the panel's
                     saturation/brightness canvas, and 120px is cramped for
                     picking a lightness precisely. */}
-                <ColorPicker value={base} onChange={(hex) => setColor(key, hex)} size="md" />
+                <ColorPicker
+                  value={base}
+                  onChange={(hex) => setColor(key, hex)}
+                  size="md"
+                  // The row draws its own visible label, so the picker must
+                  // not draw a second one - but without a name of its own
+                  // every picker here announced as "Open colour picker" and
+                  // they were indistinguishable.
+                  ariaLabel={COLOR_LABELS[key]}
+                />
 
                 <div className="eidos-theme-editor-row__diagnostics">
                   <Tooltip message={detail}>

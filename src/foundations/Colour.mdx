@@ -1,0 +1,35 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { GuideHero, GuideNote } from '../guide-page.docs';
+import { ColourGroups, TextRoles } from './Foundations.docs';
+
+<Meta title="Foundations/Colour" />
+
+{/* Nothing but imports may sit above <Meta />, and no multi-line JSX may sit */}
+{/* below it - MDX re-parses JSX children as markdown. All of it lives in */}
+{/* Foundations.docs.tsx. See the note at the top of guide-page.docs.tsx. */}
+
+<GuideHero title="Colour">
+  Every value on this page is read from the token stylesheet when Storybook builds, and every
+  contrast ratio is computed with the same function ThemeProvider uses to derive its contrast pairs.
+  Nothing here is transcribed, so nothing here can drift.
+</GuideHero>
+
+## Text roles
+
+<GuideNote title="Use a text role, never a raw --gray-N" hint="SC 1.4.3">
+  The greys are a *surface* ramp. Reaching into them for a label is how the library once ended up
+  with 99 declarations of `color: var(--gray-400)` on placeholders, hints and timestamps - `#94a3b8`
+  measures 2.56:1 on white, against the 4.5:1 that SC 1.4.3 requires. `--text-disabled` is the one
+  deliberate exception: disabled controls are exempt, and are *supposed* to look unavailable.
+</GuideNote>
+
+<TextRoles />
+
+## Palette
+
+Each base is chosen so that white text on it clears 4.5:1 with a little margin - they all sit near
+5:1. That headroom is deliberate and thin, which is why muted or faded text on a filled surface does
+not work: there is nothing left to spend. Pick a foreground with `--x-contrast` rather than
+hardcoding white.
+
+<ColourGroups />

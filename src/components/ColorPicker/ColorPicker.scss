@@ -455,6 +455,27 @@
   gap: var(--spacing-xs);
 }
 
+// ── Focus ring for the two range sliders ──────────────────────────────────
+//
+// `%range-base` clears the outline (needed, or the browser draws a box round
+// the whole transparent track), and nothing replaced it - so tabbing to the
+// hue or alpha slider produced no visible change whatsoever. Verified by
+// screenshotting the control focused and unfocused: identical pixels.
+// That is SC 2.4.7 (Focus Visible).
+//
+// The ring goes on the thumb, which is the part that moves and the part the
+// eye follows - the same approach `Slider` already uses.
+.eidos-color-picker-hue,
+.eidos-color-picker-alpha {
+  &:focus-visible::-webkit-slider-thumb {
+    box-shadow: focus-ring-shadow(primary, 2px, 3px);
+  }
+
+  &:focus-visible::-moz-range-thumb {
+    box-shadow: focus-ring-shadow(primary, 2px, 3px);
+  }
+}
+
 // 24px, not 20px with a wider gap.
 //
 // SC 2.5.8 offers a spacing exception - a sub-24px target passes if a 24px

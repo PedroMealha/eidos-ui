@@ -189,6 +189,12 @@ npm install
 npm run storybook
 ```
 
+For accessibility, [ACCESSIBILITY.md](./ACCESSIBILITY.md) covers what is tested
+against WCAG 2.2 AA and how, what remains the consuming application's
+responsibility, and what has not been done. It does not claim a conformance
+level - [WCAG §5.2.2](https://www.w3.org/TR/WCAG22/#cc2) defines conformance
+for full pages, so no component library can have one.
+
 ## Theming
 
 Every design token is a CSS custom property. There are two ways to change them, depending on whether the theme is fixed at build time or chosen by the user.
@@ -200,17 +206,23 @@ Redeclare any token in your own stylesheet:
 ```css
 :root {
   /* Colours - each family also has -dark, -light, -rgb and -contrast */
-  --primary-color: #5c5de8;
-  --secondary-color: #617087;
+  --primary-color: #0f766e;
+  --secondary-color: #4b5563;
 
   /* Spacing (em-based, so it scales with font size) */
-  --spacing-md: 1em;
-  --spacing-lg: 1.5em;
+  --spacing-md: 1.1em;
+  --spacing-lg: 1.6em;
 
   /* Border radius */
-  --border-radius-md: 8px;
+  --border-radius-md: 10px;
 }
 ```
+
+The values above are deliberately _not_ the defaults - this is what an override
+looks like. For the shipped values, see **Foundations → Colour** (and Typography,
+and Layout) in Storybook: those pages are generated from
+`src/styles/variables.scss` at build time, so they are the one place a token
+value is stated and the only place it cannot go stale.
 
 Individual components can also be targeted directly, following each component's `eidos-<name>` BEM-style class names:
 

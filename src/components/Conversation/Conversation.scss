@@ -353,6 +353,19 @@
   @include input-reset;
   width: 100%;
   resize: none;
+
+  // `input-reset` clears the outline unconditionally, and nothing replaced
+  // it here - so the global `:focus-visible` fallback was suppressed and the
+  // composer had no focus indicator at all (SC 2.4.7).
+  //
+  // The ring sits on the textarea rather than a wrapper because
+  // `MessageComposer` is mounted in two different shells (`Chat` and
+  // `CommentThread`), which own different containers around it. Inset, so a
+  // composer pinned to the bottom of a scroll container is not clipped.
+  &:focus-visible {
+    box-shadow: focus-ring-shadow-inset(primary);
+    border-radius: var(--border-radius-sm);
+  }
   @include font-size(sm);
   color: var(--dark-color);
   line-height: 1.55;

@@ -56,6 +56,13 @@
 .eidos-pagination-nav {
   @include flex-center-y;
   gap: var(--spacing-xs);
+  // The parent `.eidos-pagination` wraps, but the page buttons live in here
+  // - so without this they formed one unbreakable row. With many pages that
+  // measured 469px and forced horizontal scrolling below ~480px, which is a
+  // genuine SC 1.4.10 (Reflow) failure at the 320px target rather than a
+  // story-fixture artefact.
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 // ── Page number buttons (custom - not using Button to enforce square) ─────────
@@ -70,6 +77,16 @@
   -webkit-appearance: none;
   font-family: inherit;
   outline: none;
+
+  // The ring belongs on every page button.
+  //
+  // It used to live inside `&--active`, so only the page you were already on
+  // showed focus - tabbing across the others showed nothing at all, while
+  // `outline: none` above suppressed the global fallback. That is SC 2.4.7
+  // (Focus Visible) for every button in the control except one.
+  &:focus-visible {
+    box-shadow: focus-ring-shadow(primary);
+  }
   padding: 0;
   margin: 0;
 

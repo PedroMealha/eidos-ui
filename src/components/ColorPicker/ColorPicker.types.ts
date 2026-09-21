@@ -40,5 +40,13 @@ export interface ColorPickerProps {
   /** Render the picker panel inline - no popover trigger. Default: false */
   inline?: boolean;
   label?: string;
+  /**
+   * Accessible name for the trigger when no visible `label` is rendered.
+   *
+   * Needed when the label lives outside the component - `ThemeEditor` draws
+   * its own row labels, so without this every picker on the page is
+   * announced as "Open colour picker" and they cannot be told apart.
+   */
+  ariaLabel?: string;
   className?: string;
 }

@@ -17,7 +17,9 @@
   box-shadow: var(--box-shadow-lg);
   max-width: 300px;
   word-wrap: break-word;
-  pointer-events: none;
+  // Deliberately *not* `pointer-events: none`. The pointer must be able to
+  // rest on the tooltip without dismissing it (SC 1.4.13, "hoverable"); the
+  // panel's own mouseenter/mouseleave keep it open while it is there.
   transition:
     opacity 0.2s ease-in-out,
     transform 0.2s ease-in-out;

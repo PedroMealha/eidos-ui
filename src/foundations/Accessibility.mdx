@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { GuideHero, GuideNote } from '../guide-page.docs';
+import { AuditSummary, AccessibilityReport } from './Foundations.docs';
+
+<Meta title="Foundations/Accessibility" />
+
+{/* All JSX lives in Foundations.docs.tsx - see the note in Colour.mdx. */}
+
+<GuideHero title="Accessibility">
+  Every story is audited against WCAG 2.2 AA on each build. The result below is read from the gate's
+  own record, and the report beneath it is the repository's ACCESSIBILITY.md rendered in place -
+  neither is retyped, so neither can drift from what CI enforces.
+</GuideHero>
+
+## Current audit
+
+<AuditSummary />
+
+## The report
+
+<GuideNote title="This is ACCESSIBILITY.md, rendered" hint="one source, two places to read it">
+  The rest of this page is the repository's accessibility report, shown here so it can be read
+  without leaving Storybook. The file remains the standalone artefact - it is what appears on GitHub
+  and what a procurement reviewer would be sent - so it is rendered rather than restated.
+</GuideNote>
+
+<AccessibilityReport />
+
+## Building on it
+
+These are the library-specific habits that keep a page conformant - the report above covers the
+standard, this covers using this library.
+
+- Reach for a **text role** (`--text-muted`, `--text-disabled`), never a raw `--gray-N`. See
+  [Colour](?path=/docs/foundations-colour--docs).
+- Pair any `background-color: var(--x-color)` with `var(--x-contrast)` rather than hardcoding
+  white.
+- Give an icon-only `Button` a `tooltip` - it supplies the accessible name as well as the visible
+  hint.
+- Pass `posIconLabel` whenever you pass `posIconButton`, and `aria-label` to any control whose
+  label you render yourself.

@@ -133,7 +133,17 @@ export const InlineEdit: React.FC<InlineEditProps> = ({
     <span
       role="button"
       tabIndex={disabled ? undefined : 0}
-      aria-label={disabled ? undefined : 'Click to edit'}
+      // The visible text has to be *in* the name (SC 2.5.3 Label in Name).
+      //
+      // This was a flat "Click to edit", which shares nothing with the value
+      // on screen - so a speech-input user saying what they can see ("Page
+      // title") matched nothing, and a screen reader announced an edit
+      // affordance without ever saying what it edits. Every `InlineEdit` on
+      // a page was also announced identically.
+      //
+      // Left off entirely when there is no value: the placeholder is then
+      // the visible text and `textContent` already provides the name.
+      aria-label={disabled || isEmpty ? undefined : `${value}, click to edit`}
       className={[
         'eidos-inline-edit',
         `eidos-inline-edit--${size}`,

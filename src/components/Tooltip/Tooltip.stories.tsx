@@ -3,6 +3,7 @@ import { Tooltip } from './Tooltip.component';
 import { Button } from '../Button';
 import { Info } from 'lucide-react';
 import { StoryRow } from '../../story-layout.docs';
+import { expect, screen, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Overlays/Tooltip',
@@ -184,4 +185,57 @@ export const CommonUseCases: Story = {
       </Tooltip>
     </StoryRow>
   ),
+};
+
+// ============================================================================
+// CONTENT ON HOVER OR FOCUS - test-only
+// ============================================================================
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * SC 1.4.13 asks three things of content shown on hover or focus, and the
+ * default `hover` tooltip failed two of them. Axe tests none of it, and the
+ * component is everywhere - `Button` wraps itself in one whenever it is
+ * given `tooltip`, which is also how icon-only buttons get their name.
+ */
+export const ContentOnHover: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { message: 'Saves without closing the dialog', triggerType: 'hover', delay: 0 },
+  render: (args) => (
+    <StoryRow>
+      <Tooltip {...args}>
+        <Button>Save</Button>
+      </Tooltip>
+    </StoryRow>
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    const trigger = canvas.getByRole('button', { name: 'Save' });
+
+    await step('hoverable: the pointer can rest on the tooltip itself', async () => {
+      await userEvent.hover(trigger);
+      const tip = await screen.findByRole('tooltip');
+
+      // The panel is portaled and sits off the trigger, so this is the move
+      // that used to dismiss it: leave the trigger, enter the panel.
+      await userEvent.unhover(trigger);
+      await userEvent.hover(tip);
+      await new Promise((resolve) => setTimeout(resolve, 400));
+
+      expect(
+        screen.queryByRole('tooltip'),
+        'the tooltip vanished when the pointer moved onto it',
+      ).not.toBeNull();
+    });
+
+    await step('dismissible: Escape closes it without moving the pointer', async () => {
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() =>
+        expect(
+          screen.queryByRole('tooltip'),
+          'Escape did not dismiss a hover-triggered tooltip',
+        ).toBeNull(),
+      );
+    });
+  },
 };

@@ -1,0 +1,47 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+import { GuideHero, GuideNote } from '../guide-page.docs';
+import {
+  ScaleBars,
+  RadiusSwatches,
+  ShadowSwatches,
+  Breakpoints,
+  PlainGroup,
+} from './Foundations.docs';
+
+<Meta title="Foundations/Layout" />
+
+{/* All JSX lives in Foundations.docs.tsx - see the note in Colour.mdx. */}
+
+<GuideHero title="Spacing, radius and layout">
+  The measurements every component is built from - spacing, corner radius, elevation, breakpoints
+  and stacking order. Read from the token stylesheet at build time.
+</GuideHero>
+
+## Spacing
+
+<GuideNote title="The bars scale with their context" hint="not a rendering quirk">
+  Spacing tokens are `em`, so the bars below are drawn at whatever the surrounding font size makes
+  them. That is the point: the same token produces a tighter gap inside a small control than inside
+  a large one.
+</GuideNote>
+
+<ScaleBars groupName="Spacing" title="Spacing scale" />
+
+## Radius and elevation
+
+<RadiusSwatches />
+
+<ShadowSwatches />
+
+## Responsive thresholds
+
+Components measure their own container rather than the viewport, so these thresholds are mostly for
+page-level layout. They are also exposed as `--breakpoint-*` custom properties for JavaScript that
+needs to read one - but they cannot be used in a media query condition; use the `media-up` /
+`media-down` mixins there.
+
+<Breakpoints />
+
+## Stacking order
+
+<PlainGroup groupName="Z-index layers" />

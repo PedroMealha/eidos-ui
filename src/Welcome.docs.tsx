@@ -140,9 +140,11 @@ export const Features = () => (
     </Feature>
     <Feature title="Accessibility, specifically">
       Palette bases clear 4.5:1 on white as text, and muted text clears AA on every surface the
-      library paints. Every interactive control has a visible focus ring, and decorative motion
-      stops under <code style={{ fontSize: 12 }}>prefers-reduced-motion</code> while spinners and
-      progress bars keep running.
+      library paints. Modal dialogs trap and restore focus, fields in error are marked{' '}
+      <code style={{ fontSize: 12 }}>aria-invalid</code> and point at their message, targets meet
+      24x24, and every interactive control renders a visible focus ring. Decorative motion stops
+      under <code style={{ fontSize: 12 }}>prefers-reduced-motion</code> while spinners and progress
+      bars keep running.
     </Feature>
     <Feature title="One runtime dependency">
       Only <code style={{ fontSize: 12 }}>{stats.runtimeDependencies.join(', ')}</code>, installed
@@ -186,6 +188,16 @@ export const Categories = () => {
 
 // ── Honest accessibility note ─────────────────────────────────────────────────
 
+/**
+ * Deliberately short, and deliberately free of specifics.
+ *
+ * `Foundations/Accessibility` owns the detail - the current audit (read live
+ * from the CI gate's own record), the criteria tested beyond axe, and the
+ * conformance argument in full. This note used to repeat all three, plus a
+ * hardcoded "seven nodes" that would have been wrong the first time anyone
+ * fixed a violation. Welcome's job is to state the position once and point
+ * at the page that keeps it current.
+ */
 export const AccessibilityNote = () => (
   <div
     style={{
@@ -197,16 +209,19 @@ export const AccessibilityNote = () => (
     }}
   >
     <div style={{ fontSize: 14, fontWeight: 700, color: '#5b21b6', marginBottom: 6 }}>
-      No conformance claim - here's what is actually true
+      Built for WCAG 2.2 AA - but the claim is yours to make, not ours
     </div>
     <div style={{ fontSize: 13, color: '#5b21b6', lineHeight: 1.65 }}>
-      axe-core runs against all {stats.storyCount} stories, and you can see its findings for any
-      component in the <strong>Accessibility</strong> panel beside its Controls. But axe covers only
-      about a third of the WCAG success criteria, so passing it proves much less than it appears to
-      - <strong>this library does not claim a WCAG conformance level</strong>, and you should not
-      inherit one from using it. The properties listed above are the ones that have been measured
-      and fixed; known gaps remain, and the panel is the honest place to check before you rely on
-      any given component.
+      Every story is audited against WCAG 2.2 AA on each build, and the criteria automation cannot
+      reach have their own tests.{' '}
+      <strong>
+        This is not a WCAG conformance claim, because a component library cannot make one
+      </strong>{' '}
+      - §5.2.2 scopes conformance to full pages, so the claim belongs to what you build.{' '}
+      <a href="?path=/docs/foundations-accessibility--docs" style={{ color: '#5b21b6' }}>
+        Foundations → Accessibility
+      </a>{' '}
+      has the current audit and what it does and does not cover.
     </div>
   </div>
 );

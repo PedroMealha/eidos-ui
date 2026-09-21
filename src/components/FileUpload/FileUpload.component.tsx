@@ -178,7 +178,10 @@ export function FileUpload({
         onKeyDown={handleKeyDown}
         role="button"
         tabIndex={disabled ? -1 : 0}
-        aria-label="Upload files - click or drag and drop"
+        // Starts with the visible "Click to upload" so the name contains the
+        // label a speech-input user can see (SC 2.5.3). The previous
+        // "Upload files - click or drag and drop" paraphrased it instead.
+        aria-label="Click to upload, or drag and drop"
         aria-disabled={disabled || undefined}
       >
         <div className="eidos-file-upload-icon" aria-hidden="true">
