@@ -1,6 +1,6 @@
 {
   "name": "eidos-ui",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "A modern React component library with TypeScript and SCSS",
   "type": "module",
   "main": "./dist/index.cjs",
