@@ -570,7 +570,7 @@ layout.
    `storybook/actions` (core, no addon to install - `Select` was already
    using the `action:` argType form). `alert()` blocks the thread and pops a
    modal dialog over a Docs page rendering dozens of stories; a `console.log`
-   is invisible unless devtools happen to be open, which makes the one thing
+   is invisible unless devtools happen to be open, which makes the one thing  
    the story demonstrates undiscoverable. Where the _outcome_ is the point,
    render it in the story instead (see `FileUpload`'s `WithCallbacks`).
 
@@ -659,10 +659,79 @@ discipline" below) - it has its own mock/example release entries clearly
 marked with a banner and a `MOCK DATA BELOW` comment; leave them until real
 entries have shipped and replaced them, don't delete them just to tidy up.
 
+### MDX re-parses multi-line JSX children as markdown - in three different ways
+
+The header comment in `Introduction.mdx` already warns that MDX parses a
+multi-line JSX element's children as markdown flow content. What it does not
+say is how many different ways that bites. All three of these shipped on
+"Getting Started" simultaneously, and all three came from the same thing -
+whether a value happened to be written on one line or two:
+
+| Written across lines               | Becomes    | Symptom                                                      |
+| ---------------------------------- | ---------- | ------------------------------------------------------------ |
+| `1` inside a coloured circle       | `<p>`      | `.sbdocs p` colour wins over inherited white - **1.79:1**    |
+| `Required` inside a badge `<span>` | `<p>`      | 18px pill renders as a **60px block**                        |
+| `- all components are fully typed` | `<ul><li>` | leading `- ` read as a list marker: **bullet + 56px header** |
+
+The colour one is the least obvious: Storybook's `.sbdocs p { color: #2E3438 }`
+beats any `color` the element was inheriting, because an explicit rule
+outranks inheritance.
+
+That is what happened to the "Getting Started" step markers. Written this way,
+the number is wrapped and turns dark:
+
+```jsx
+<div style={{ background: '#6d28d9', color: '#fff' }}>1</div>
+```
+
+Written inline, it stays a text node and inherits white:
+
+```jsx
+<div style={{ background: '#6d28d9', color: '#fff' }}>1</div>
+```
+
+Three copies of the same marker, two written the first way and one the second,
+so steps 1 and 2 rendered at **1.79:1** and step 3 at 7.10:1. Valid markup, no
+warning, and invisible unless you look at all three together.
+
+The fix is not to write it inline - that only works until someone's formatter
+wraps the line. That is not hypothetical: after the step markers were fixed,
+a single `prettier --write` on `Introduction.mdx` expanded the `<span>` behind
+the "REQUIRED" badge across lines and reintroduced the identical bug, turning
+an 18px pill into a 60px block. The same run also collapsed the leading spaces
+inside the code-sample string literals (`'  return ('` came back as
+`' return ('`), mangling the indentation of every rendered snippet.
+
+**Move anything with nested JSX or significant whitespace into a `.tsx`
+file.** There, prettier formats it as TypeScript, JSX children are never
+re-parsed as markdown, and string contents are left alone. The `.mdx` keeps
+prose and section structure only. `GuideHero`, `GuideStep`, `GuideSteps`,
+`GuideCallout`, `GuideCode` and `GuideNote` in `src/guide-page.docs.tsx`, plus
+the page-specific `src/Introduction.docs.tsx`, exist for exactly this.
+
+**Pass short labels as props, not children.** `GuideNote` takes `title` and
+`hint` as strings precisely so the header cannot be markdown-parsed; only the
+body copy stays as children, where a `<p>` is what you want anyway. Its `hint`
+separator is a middot rather than `- ` so it cannot read as a list marker even
+if the markup moves back into markdown.
+
+Watch for the same shape anywhere a guide page sets `color` on a container and
+lets children inherit it - a coloured badge, a callout header, a dark panel -
+or puts a short label beginning with `-`, `*`, `>` or a digit-dot next to a
+heading.
+
+### A timeline's last step must not draw a connector
+
+`GuideSteps` derives `isLast` from child position and tells the final
+`GuideStep` to omit its connector. It is derived rather than a `last` prop so
+that inserting or reordering a step cannot strand a line - which is the state
+"Getting Started" was in: the third step's connector ran the full height of
+its content (**1680px**) and terminated in empty space above the next section.
+
 ### Guide pages share one hero - don't write a second one
 
 `Welcome.mdx` and `Introduction.mdx` both render `GuideHero` from
-`src/guide-hero.docs.tsx`, which owns the gradient banner, the decorative
+`src/guide-page.docs.tsx`, which owns the gradient banner, the decorative
 circles and the version chip. They each had their own copy, and the copies had
 already drifted into rendering the _same design at two different scales_ -
 title 35px vs 40px, subtitle 15px vs 17px, different padding - purely because

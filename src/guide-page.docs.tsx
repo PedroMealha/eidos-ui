@@ -1,0 +1,395 @@
+import { Children, cloneElement, isValidElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import pkg from '../package.json';
+
+/**
+ * Shared building blocks for the top-level guide pages (`Welcome.mdx`,
+ * `Introduction.mdx`). Storybook-only - `*.docs.tsx` is excluded from
+ * `release-needed.js` and `check-changelog.js`, so editing it cannot flag a
+ * release.
+ *
+ * Living in a `.tsx` file is load-bearing, not just tidy. MDX parses a
+ * multi-line JSX element's children as **markdown flow content** and wraps
+ * them in a `<p>`; Storybook's `.sbdocs p { color: #2E3438 }` then beats the
+ * white `color` inherited from the parent, because an explicit rule outranks
+ * inheritance. That is precisely what happened to this page's step markers:
+ * steps 1 and 2 had their number on its own line and rendered dark-on-purple
+ * at **1.79:1**, while step 3 happened to be written inline (`}}>3</div>`)
+ * and rendered white at 7.10:1. Same markup, three copies, two different
+ * results, and a contrast failure in two of them.
+ *
+ * JSX children in a `.tsx` file are never re-parsed as markdown, so moving
+ * these here makes that class of bug impossible rather than merely fixed.
+ *
+ * It exists because `Welcome` and `Getting Started` had each grown their own
+ * copy of the same banner - same gradient, same decorative circles, same
+ * version chip - and the copies had already drifted:
+ *
+ * | | Getting Started | Welcome |
+ * | --- | --- | --- |
+ * | title | `2.5rem` -> **35px** | `40px` |
+ * | subtitle | `1.0625rem` -> ~15px | `17px` |
+ * | padding | `2.5rem 2.5rem 2rem` | `40px 40px 36px` |
+ *
+ * Two banners that are meant to read as the same component rendering at two
+ * different scales, purely because one was written in `rem` and the other in
+ * `px`. One implementation makes that impossible.
+ *
+ * On `rem` vs `px` here: the skill file's "guide pages must use fixed px"
+ * rule is based on the Docs page rendering in Storybook's *manager* frame at
+ * a 16px root. Measured against Storybook 10.6, that is not what happens -
+ * a Docs page renders in the **preview iframe**, where `global.scss`'s
+ * `html { font-size: 14px }` applies and `1rem` resolves to `14px`, the same
+ * as any story. Fixed px is kept anyway: it is what the rule says, it is
+ * unambiguous, and it costs nothing here. See the note in SKILL.md.
+ */
+
+const TEXT = 'rgba(255,255,255,0.85)';
+
+export const GuideHero = ({ title, children }: { title: string; children: ReactNode }) => (
+  <div
+    style={{
+      background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%)',
+      borderRadius: 16,
+      padding: '35px 35px 28px',
+      marginBottom: 35,
+      position: 'relative',
+      overflow: 'hidden',
+    }}
+  >
+    {/* decorative circles */}
+    <div
+      style={{
+        position: 'absolute',
+        top: -40,
+        right: -40,
+        width: 180,
+        height: 180,
+        borderRadius: '50%',
+        background: 'rgba(255,255,255,0.04)',
+      }}
+    />
+    <div
+      style={{
+        position: 'absolute',
+        bottom: -30,
+        right: 80,
+        width: 120,
+        height: 120,
+        borderRadius: '50%',
+        background: 'rgba(255,255,255,0.04)',
+      }}
+    />
+
+    <div style={{ position: 'relative' }}>
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          background: 'rgba(255,255,255,0.1)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: 6,
+          padding: '4px 10px',
+          marginBottom: 16,
+        }}
+      >
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: '#a78bfa',
+            display: 'inline-block',
+          }}
+        />
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: TEXT,
+            WebkitTextFillColor: TEXT,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}
+        >
+          eidos-ui
+        </span>
+        <span
+          style={{
+            width: 1,
+            height: 10,
+            background: 'rgba(255,255,255,0.25)',
+            display: 'inline-block',
+          }}
+        />
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: TEXT,
+            WebkitTextFillColor: TEXT,
+            letterSpacing: '0.02em',
+          }}
+        >
+          v{pkg.version}
+        </span>
+      </span>
+
+      <div
+        style={{
+          fontSize: 35,
+          fontWeight: 800,
+          letterSpacing: '-0.04em',
+          color: '#fff',
+          WebkitTextFillColor: '#fff',
+          margin: '0 0 11px',
+          lineHeight: 1.1,
+        }}
+      >
+        {title}
+      </div>
+      <div
+        style={{
+          fontSize: 15,
+          color: TEXT,
+          WebkitTextFillColor: TEXT,
+          lineHeight: 1.65,
+          margin: 0,
+          maxWidth: 480,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  </div>
+);
+
+// ── Numbered timeline ────────────────────────────────────────────────────────
+
+/**
+ * One step in the "Getting Started" timeline: a numbered marker, the
+ * connector down to the next step, and the step's content.
+ *
+ * `isLast` is supplied by `GuideSteps` - don't pass it by hand.
+ */
+export const GuideStep = ({
+  n,
+  title,
+  isLast = false,
+  children,
+}: {
+  n: number;
+  title: string;
+  isLast?: boolean;
+  children: ReactNode;
+}) => (
+  <div style={{ display: 'flex', gap: 18 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+      <div
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          background: '#6d28d9',
+          color: '#fff',
+          WebkitTextFillColor: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 11,
+          fontWeight: 800,
+          flexShrink: 0,
+          boxShadow: '0 0 0 4px #ede9fe',
+        }}
+      >
+        {n}
+      </div>
+      {/* A connector on the final step has nothing to connect to: it ran the
+          full height of that step's content - 1680px on this page - and ended
+          in empty space above the next section. */}
+      {!isLast && (
+        <div style={{ width: 2, flex: 1, background: '#e4e4e7', minHeight: 24, marginTop: 4 }} />
+      )}
+    </div>
+    <div style={{ flex: 1, paddingBottom: isLast ? 0 : 28 }}>
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 700,
+          color: '#09090b',
+          margin: '7px 0 10px',
+          lineHeight: 1,
+        }}
+      >
+        {title}
+      </div>
+      {children}
+    </div>
+  </div>
+);
+
+/**
+ * Wraps the steps and tells the last one to drop its connector.
+ *
+ * Derived from position rather than taking a `last` prop on the step itself,
+ * so inserting or reordering a step cannot leave a dangling line behind -
+ * which is exactly the state this page was in.
+ */
+export const GuideSteps = ({ children }: { children: ReactNode }) => {
+  const steps = Children.toArray(children).filter(isValidElement);
+  return (
+    <div style={{ marginBottom: 35 }}>
+      {steps.map((step, i) =>
+        cloneElement(step as ReactElement<{ isLast?: boolean }>, {
+          isLast: i === steps.length - 1,
+        }),
+      )}
+    </div>
+  );
+};
+
+// ── Callout ──────────────────────────────────────────────────────────────────
+
+/**
+ * A titled panel with a status badge - used on "Getting Started" for the two
+ * components that need a context provider.
+ *
+ * `tone` picks the pairing: `required` is the purple, attention-seeking one;
+ * `optional` is the neutral dark one.
+ */
+export const GuideCallout = ({
+  title,
+  badge,
+  tone,
+  children,
+}: {
+  title: string;
+  badge: string;
+  tone: 'required' | 'optional';
+  children: ReactNode;
+}) => {
+  const required = tone === 'required';
+  return (
+    <div
+      style={{
+        borderRadius: 12,
+        overflow: 'hidden',
+        border: `1px solid ${required ? '#ddd6fe' : '#e4e4e7'}`,
+        marginBottom: 18,
+      }}
+    >
+      <div
+        style={{
+          background: required ? 'linear-gradient(90deg, #6d28d9 0%, #7c3aed 100%)' : '#18181b',
+          padding: '10px 18px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#fff', WebkitTextFillColor: '#fff' }}>
+          {title}
+        </span>
+        <span
+          style={{
+            fontSize: 9,
+            fontWeight: 700,
+            color: required ? '#6d28d9' : '#a1a1aa',
+            WebkitTextFillColor: required ? '#6d28d9' : '#a1a1aa',
+            background: required ? '#fff' : '#27272a',
+            border: required ? 'none' : '1px solid #3f3f46',
+            borderRadius: 3,
+            padding: '2px 7px',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            lineHeight: 1.6,
+          }}
+        >
+          {badge}
+        </span>
+      </div>
+      <div style={{ padding: '14px 18px 4px', background: required ? '#faf5ff' : '#fff' }}>
+        <div
+          style={{
+            fontSize: 12,
+            color: required ? '#5b21b6' : '#52525b',
+            margin: '0 0 10px',
+            lineHeight: 1.6,
+          }}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Inline code inside a `GuideCallout` or step body.
+ *
+ * `tinted` paints the purple chip used on the `required` callout, whose own
+ * background would otherwise swallow Storybook's default code styling. Left
+ * off, only `font-size` is set so `.sbdocs code` still supplies the chip -
+ * overriding `background` to `transparent` here made these render flat while
+ * a plain `<code>` elsewhere on the page kept its chip.
+ */
+export const GuideCode = ({
+  tinted = false,
+  children,
+}: {
+  tinted?: boolean;
+  children: ReactNode;
+}) => (
+  <code
+    style={
+      tinted
+        ? { fontSize: 11, background: 'rgba(109,40,217,0.1)', padding: '1px 4px', borderRadius: 3 }
+        : { fontSize: 11 }
+    }
+  >
+    {children}
+  </code>
+);
+
+// ── Reference note ───────────────────────────────────────────────────────────
+
+/**
+ * A tinted reference card - "TypeScript", "Icons", "Theming" and friends at
+ * the foot of "Getting Started".
+ *
+ * `title` and `hint` are **strings, not children**, and that is the whole
+ * point. Written inline in the `.mdx` these headers drifted three ways at
+ * once, because MDX re-parses a multi-line JSX element's children as markdown:
+ *
+ * - `<span>` holding `- all components are fully typed` across two lines
+ *   became `<ul><li>…</li></ul>` - the leading `- ` read as a list marker -
+ *   so that card sprouted a bullet and a 56px header.
+ * - `<span>Peer dependencies</span>` split across lines became a `<p>`,
+ *   giving another 56px header.
+ * - The three written on a single line stayed as text nodes at 17px.
+ *
+ * Passing them as props keeps the header entirely inside this file, where a
+ * hyphen is a hyphen. The separator is a middot rather than `- ` so it cannot
+ * be mistaken for a list marker even if someone moves this back into markdown.
+ *
+ * `children` stays markdown prose in the `.mdx` - it renders as a `<p>` in
+ * every card, which is both uniform and what body copy should be.
+ */
+export const GuideNote = ({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  children: ReactNode;
+}) => (
+  <div style={{ background: '#f4f4f5', borderRadius: 12, padding: '18px 21px', marginBottom: 18 }}>
+    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4 }}>
+      <span style={{ fontSize: 12, fontWeight: 700, color: '#09090b' }}>{title}</span>
+      {hint ? <span style={{ fontSize: 10, color: '#475569' }}>· {hint}</span> : null}
+    </div>
+    {children}
+  </div>
+);
