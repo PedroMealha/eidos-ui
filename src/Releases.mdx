@@ -14,6 +14,161 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
 <ReleaseDivider />
 
 <ReleaseCard
+  version="3.5.0"
+  date="2026-09-22"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>Dropdown.role</Code> - ARIA role for the portaled content, for panels that own their
+          own semantics.
+        </>,
+        <>
+          <Code>Dropdown.open</Code> / <Code>Dropdown.onOpenChange</Code> - controlled open state,
+          alongside the existing uncontrolled <Code>defaultOpen</Code>.
+        </>,
+        <>
+          <Code>Select.label</Code> and <Code>DatePicker.label</Code> - visible labels, matching{' '}
+          <Code>Input</Code>, <Code>Combobox</Code>, <Code>TagInput</Code>, <Code>Checkbox</Code>,{' '}
+          <Code>Radio</Code>, <Code>Switch</Code> and <Code>Textarea</Code>.
+        </>,
+        <>
+          <Code>Popover.open</Code> - canonical name for the controlled open state, matching{' '}
+          <Code>Dropdown</Code> and <Code>CommandPalette</Code>. <Code>isOpen</Code> still works and
+          is deprecated.
+        </>,
+        <>
+          <Code>MenuPanel.onRequestClose</Code> - lets a submenu ask the panel that owns it to
+          close, which is what <Code>ArrowLeft</Code> needs.
+        </>,
+        <>
+          <Code>Select</Code> and <Code>DatePicker</Code> warn in development when they have no
+          accessible name.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>Dropdown</Code>'s content no longer defaults to <Code>role="menu"</Code>; it has no
+          role unless one is passed. Pass <Code>role="menu"</Code> if you were relying on it.
+        </>,
+        <>
+          <Code>Menu</Code> items are keyboard-operable: the menu is a single tab stop with
+          arrow-key navigation, <Code>Home</Code>/<Code>End</Code>, <Code>Enter</Code>/
+          <Code>Space</Code> to activate and <Code>ArrowRight</Code> to open a submenu.
+        </>,
+        <>
+          <Code>Menu</Code> moves focus into itself when it opens and back to the trigger when it
+          closes.
+        </>,
+        <>
+          <Code>Select</Code>, <Code>Combobox</Code>, <Code>TagInput</Code>, <Code>DatePicker</Code>
+          , <Code>TableFiltersDropdown</Code> and <Code>Menu</Code> no longer remount their dropdown
+          to close it, so the panel's DOM is preserved across open and close.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Dropdown</Code>, <Code>Popover</Code> and <Code>Tooltip</Code> now stay anchored to
+          their trigger when the scroll container is an ancestor element rather than the page -
+          which includes every dropdown inside <Code>PageLayout</Code>.
+        </>,
+        <>
+          <Code>Toolbar</Code> now correctly displays elements on the right side when{' '}
+          <Code>breadcrumbs</Code> are absent.
+        </>,
+        <>
+          <Code>Menu</Code>, <Code>ContextMenu</Code> and <Code>SplitButton</Code> expose their
+          items as <Code>menuitem</Code>s of a <Code>menu</Code> instead of a plain list, so
+          assistive technology can present them.
+        </>,
+        <>
+          <Code>Select</Code>, <Code>Combobox</Code>, <Code>TagInput</Code>, <Code>DatePicker</Code>
+          , <Code>ColorPicker</Code> and the <Code>Table</Code>/<Code>DataGrid</Code> toolbar panels
+          no longer nest their content inside a <Code>role="menu"</Code> element.
+        </>,
+        <>
+          <Code>Modal</Code>, <Code>Drawer</Code>, <Code>CommandPalette</Code>,{' '}
+          <Code>Dropdown</Code>, <Code>Popover</Code> and <Code>Select</Code> (<Code>autoOpen</Code>
+          ) no longer throw during server rendering when they are open on their first render; the
+          portal is deferred to the client.
+        </>,
+        <>
+          <Code>Select</Code> can be opened from the keyboard: <Code>ArrowDown</Code>,{' '}
+          <Code>ArrowUp</Code>, <Code>Enter</Code> and <Code>Space</Code> open the listbox,{' '}
+          <Code>Escape</Code> closes it, and focus stays on the field after a selection instead of
+          being dropped onto{' '}
+          <Code>
+            {'<'}body{'>'}
+          </Code>
+          .
+        </>,
+        <>
+          <Code>Select</Code>'s options carry the ids its <Code>aria-activedescendant</Code>{' '}
+          references, so focusing or hovering one no longer points that attribute at a missing
+          element.
+        </>,
+        <>
+          <Code>Select</Code> only sets <Code>aria-controls</Code> while its listbox is rendered.
+        </>,
+        <>
+          <Code>Menu</Code> items paint a focus ring.
+        </>,
+        <>
+          <Code>Menu</Code> nested items honour <Code>disabled</Code>, which was accepted and
+          ignored.
+        </>,
+        <>
+          <Code>Menu</Code> and <Code>SplitButton</Code> triggers advertise{' '}
+          <Code>aria-haspopup="menu"</Code>, and <Code>Menu</Code>'s trigger now also reports{' '}
+          <Code>aria-expanded</Code>.
+        </>,
+        <>
+          Activating a <Code>Menu</Code> item no longer closes unrelated open dropdowns: it used to
+          fake a click outside by dispatching <Code>mousedown</Code> at <Code>document</Code>, which
+          a keyboard user never made.
+        </>,
+        <>
+          <Code>TableFiltersDropdown</Code>'s trigger reports <Code>aria-expanded</Code>.
+        </>,
+        <>
+          <Code>DatePicker</Code>'s calendar navigation buttons have accessible names instead of
+          being announced as just "button", and its month and year selects are labelled.
+        </>,
+        <>
+          <Code>TableFiltersDropdown</Code>'s column and value pickers, and <Code>DataGrid</Code>'s
+          quick filters, have accessible names instead of relying on a placeholder.
+        </>,
+        <>
+          <Code>DatePicker</Code> can be opened from the keyboard: <Code>ArrowDown</Code>,{' '}
+          <Code>Enter</Code> and <Code>Space</Code> open the calendar and move focus into it,{' '}
+          <Code>Escape</Code> closes it and returns focus to the field. Its field is exposed as a{' '}
+          <Code>combobox</Code> with <Code>aria-expanded</Code>.
+        </>,
+        <>
+          <Code>Menu</Code>'s submenu triggers report <Code>aria-expanded</Code>, and{' '}
+          <Code>ArrowLeft</Code> closes a submenu and returns focus to the item that opened it.
+        </>,
+        <>
+          <Code>CommandPalette</Code>'s custom trigger is operable by keyboard: a non-interactive
+          one becomes a real control, and an interactive one is no longer wrapped in a second,
+          nameless tab stop.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseDivider />
+
+<ReleaseCard
   version="3.4.0"
   date="2026-09-21"
   bump="minor"
