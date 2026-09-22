@@ -27,6 +27,33 @@ const fail = (title, ...lines) => {
 
 const requested = process.argv[2];
 
+/** `npm stage` does not exist below this - it fails as an unknown command. */
+const MIN_NPM_FOR_STAGE = '11.15.0';
+
+const parseVersion = (value) => {
+  const match = /^(\d+)\.(\d+)\.(\d+)/.exec(String(value).trim());
+  return match ? match.slice(1, 4).map(Number) : null;
+};
+
+const isAtLeast = (actual, minimum) => {
+  const a = parseVersion(actual);
+  const b = parseVersion(minimum);
+  if (!a || !b) return true; // unreadable version - let the real command report
+  for (let i = 0; i < 3; i += 1) {
+    if (a[i] !== b[i]) return a[i] > b[i];
+  }
+  return true;
+};
+
+/**
+ * Runs a command capturing BOTH streams, so a failure's actual text is
+ * available to report. `execSync`'s default leaves stderr inherited, which
+ * means `error.stderr` is null and the only thing left to print is Node's
+ * own "Command failed: ..." - useless for diagnosing why npm refused.
+ */
+const capture = (command) =>
+  execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+
 /**
  * Publishes the version CI staged, without copy-pasting a UUID by hand. The id
  * can't come from the release run itself - that finishes when the tag is
@@ -38,11 +65,38 @@ const requested = process.argv[2];
 if (requested === 'approve') {
   const { name, version } = JSON.parse(readFileSync('./package.json', 'utf8'));
 
+  // Checked up front rather than left to surface as an opaque command failure:
+  // which npm is on PATH depends on how the shell was started (a login,
+  // non-interactive shell does not source ~/.zshrc, so nvm never initialises
+  // and a system/Homebrew npm wins), and the resulting "Unknown command" is
+  // nothing to do with the release itself.
+  let npmVersion;
+  try {
+    npmVersion = capture('npm --version').trim();
+  } catch {
+    npmVersion = null;
+  }
+
+  if (npmVersion && !isAtLeast(npmVersion, MIN_NPM_FOR_STAGE)) {
+    fail(
+      `npm ${MIN_NPM_FOR_STAGE} or newer is required to approve a release; this shell has ${npmVersion}.`,
+      '`npm stage` does not exist before that version.',
+      '',
+      `  node   ${process.execPath}`,
+      '',
+      'If this works in your terminal but not from an editor task, the task is',
+      'running a login, non-interactive shell, which does not source ~/.zshrc -',
+      'so a version manager set up there never initialises and a different npm',
+      'is picked up. Either run it from your normal terminal, or move the version',
+      'manager init into ~/.zprofile.',
+    );
+  }
+
   let staged;
   try {
-    staged = JSON.parse(execSync(`npm stage list ${name} --json`, { encoding: 'utf8' }));
+    staged = JSON.parse(capture(`npm stage list ${name} --json`));
   } catch (error) {
-    const detail = String(error.stderr || error.message);
+    const detail = String(error.stderr || error.stdout || error.message);
     // npm CLI sessions are short-lived, and approving is the only step in the
     // whole release that needs npm auth at all - so an expired login shows up
     // here and nowhere else. Say so plainly rather than relaying npm's wall.

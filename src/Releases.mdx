@@ -15,6 +15,24 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="3.5.1"
+  date="2026-09-22"
+  bump="patch"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Accordion</Code> keeps an open panel at its content's height instead of the height
+          measured when it opened, so content that reflows afterwards - a narrower viewport, a
+          late-loading font, a nested collapsible - is no longer silently clipped.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="3.5.0"
   date="2026-09-22"
   bump="minor"
