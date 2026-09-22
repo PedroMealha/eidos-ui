@@ -73,6 +73,9 @@ Entries land here as work happens, not written retroactively at release time
   being announced as just "button", and its month and year selects are labelled.
 - `TableFiltersDropdown`'s column and value pickers, and `DataGrid`'s quick
   filters, have accessible names instead of relying on a placeholder.
+- `DatePicker` can be opened from the keyboard: `ArrowDown`, `Enter` and `Space`
+  open the calendar and move focus into it, `Escape` closes it and returns focus
+  to the field. Its field is exposed as a `combobox` with `aria-expanded`.
 - `Menu`'s submenu triggers report `aria-expanded`, and `ArrowLeft` closes a
   submenu and returns focus to the item that opened it.
 - `CommandPalette`'s custom trigger is operable by keyboard: a non-interactive

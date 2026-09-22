@@ -374,7 +374,8 @@ export const ClosesOnCommit: StoryObj<typeof DatePicker> = {
   },
   play: async ({ canvas, userEvent, step }) => {
     const panels = () => document.querySelectorAll('[data-dropdown-content]');
-    const field = () => canvas.getByRole('textbox');
+    // The field is a `combobox`: read-only, and it opens a dialog.
+    const field = () => canvas.getByRole('combobox');
 
     await step('clicking the field opens the calendar', async () => {
       await userEvent.click(field());
@@ -394,6 +395,64 @@ export const ClosesOnCommit: StoryObj<typeof DatePicker> = {
 
     await step('and it can be reopened afterwards', async () => {
       await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * The field is read-only and opens a calendar, so it is a combobox with a dialog
+ * popup: arrow keys, `Enter` and `Space` open it, `Escape` closes it and returns
+ * focus to the field. Focus moves into the panel on open, because the panel is
+ * portaled to `document.body` - leaving focus on the field would put the whole
+ * rest of the page between the two in the tab order.
+ */
+export const KeyboardOperation: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function KeyboardStory() {
+    const [value, setValue] = useState<DateTimeValue<'single'> | undefined>(undefined);
+    return (
+      <DatePicker mode="single" value={value} onChange={setValue} inputProps={{ label: 'Date' }} />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = () => canvas.getByRole('combobox');
+
+    await step('the field announces that it opens a dialog, and is collapsed', async () => {
+      expect(field()).toHaveAttribute('aria-haspopup', 'dialog');
+      expect(field()).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    await step('Enter opens the calendar and moves focus into it', async () => {
+      field().focus();
+      await userEvent.keyboard('{Enter}');
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(field()).toHaveAttribute('aria-expanded', 'true');
+      await waitFor(() =>
+        expect(
+          panels()[0].contains(document.activeElement),
+          'focus stayed on the field, so the calendar is unreachable by keyboard',
+        ).toBe(true),
+      );
+    });
+
+    await step('Escape closes it and returns focus to the field', async () => {
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      await waitFor(() => expect(document.activeElement).toBe(field()));
+    });
+
+    await step('Space and ArrowDown open it too', async () => {
+      await userEvent.keyboard(' ');
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(panels()).toHaveLength(0));
+
+      field().focus();
+      await userEvent.keyboard('{ArrowDown}');
       await waitFor(() => expect(panels()).toHaveLength(1));
     });
   },

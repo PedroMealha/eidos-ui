@@ -9,6 +9,19 @@ A calendar-based date/time input supporting single date, date range, and multipl
 
 > **Note**: `DatePicker` is generic over the selection `mode`. The `value` and `onChange` types are inferred from the `mode` prop, so always pass the mode explicitly to get accurate TypeScript types.
 
+## Keyboard
+
+The field is read-only and opens a calendar, so it behaves as a combobox with a dialog popup.
+
+| Key               | Action                                                    |
+| ----------------- | --------------------------------------------------------- |
+| `ArrowDown`       | Open the calendar                                         |
+| `Enter` / `Space` | Open the calendar                                         |
+| `Escape`          | Close it, returning focus to the field                    |
+| `Tab`             | Move through the calendar's own controls while it is open |
+
+Focus moves into the panel when it opens and back to the field when it closes. That matters because the panel is rendered in a portal: leaving focus on the field would put the rest of the page between the two in the tab order.
+
 ## Usage
 
 ```tsx

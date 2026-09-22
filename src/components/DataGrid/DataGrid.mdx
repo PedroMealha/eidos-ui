@@ -77,7 +77,7 @@ Two column variants address no field at all, and take a free-form `key`:
 
 <Canvas of={DataGridStories.TypedColumns} />
 
-> **Note**: an index signature on your row type switches all of this off. `interface Person extends Record<string, unknown>` widens `keyof Person` to `string`, so every key check passes and every `value` degrades to `unknown`. This used to be required to satisfy the old `T extends Record<string, unknown>` constraint - it no longer is, and adding it back will quietly cost you the checking rather than failing loudly. Plain `interface` or `type` both work.
+> **Note**: an index signature on your row type switches all of this off. `interface Person extends Record<string, unknown>` widens `keyof Person` to `string`, so every key check passes and every `value` degrades to `unknown`. Nothing here requires one, and adding it costs you the checking quietly rather than failing loudly. Plain `interface` or `type` both work.
 
 ## Default
 

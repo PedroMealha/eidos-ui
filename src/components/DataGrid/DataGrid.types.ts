@@ -27,10 +27,10 @@ export interface DataGridSelectOption {
 export interface DataGridFilterField<T extends object = Record<string, unknown>> {
   /**
    * Row data key this filter reads/writes. Does not need to match a `columns`
-   * entry - the decoupling from `columns` is intact, so filtering an
-   * undisplayed field still works. It does have to be a real field of `T`,
-   * because the filter evaluates `row[key]`: a name that isn't on the row
-   * type used to compile fine and then silently match nothing.
+   * entry, so filtering an undisplayed field works. It does have to be a real
+   * field of `T`, because the filter evaluates `row[key]` - the type enforces
+   * that, so a name that is not on the row type fails to compile rather than
+   * silently matching nothing.
    */
   key: RowKey<T>;
   label: string;
@@ -212,10 +212,10 @@ export interface DataGridValueColumn<
  * from several fields. `key` is free-form here because nothing reads
  * `row[key]`: it's only an identity for React keys, sorting and `data-col-key`.
  *
- * This is the home for what used to be expressible by pointing `key` at a
- * field that didn't exist. Not editable - there is no single field to write
- * back to - so `editable`, `required`, `validate` and `renderEditor` are all
- * absent by design.
+ * Use it for a derived or composed column, whose content comes from several
+ * fields or from none. Not editable - there is no single field to write back
+ * to - so `editable`, `required`, `validate` and `renderEditor` are all absent
+ * by design.
  */
 export interface DataGridCustomColumn<T extends object> extends DataGridColumnCommon {
   /** Free-form - must only be unique within `columns`. */
@@ -231,8 +231,7 @@ export interface DataGridCustomColumn<T extends object> extends DataGridColumnCo
 }
 
 /**
- * The row-actions column. Addresses no field, so it needs no `key` at all -
- * previously this had to carry a required placeholder string that nothing read.
+ * The row-actions column. Addresses no field, so it needs no `key` at all.
  */
 export interface DataGridActionsColumn<T extends object> extends DataGridColumnCommon {
   /** Optional, and unused - only ever an identity for React keys. */

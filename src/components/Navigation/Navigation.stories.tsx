@@ -283,9 +283,8 @@ export const CollapseBelowBreakpoint: Story = {
  * viewport is narrower than `0px`, so the rail keeps whatever state it was
  * given and only the toggle button changes it.
  *
- * Paired with `defaultCollapsed` here, which is the combination that used to
- * be impossible: the breakpoint applied its answer on mount regardless, so a
- * rail asked to start collapsed sprang open on the first commit.
+ * Paired with `defaultCollapsed` here: with the breakpoint opted out, a rail
+ * asked to start collapsed stays collapsed until the toggle says otherwise.
  */
 export const CollapseDisabled: Story = {
   render: () => (

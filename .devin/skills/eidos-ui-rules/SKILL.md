@@ -971,6 +971,45 @@ tempting shortcut here - an ambient `declare module 'eidos-ui/fonts'` - would
 have made the error disappear while also hiding the removal of that entry
 from the `exports` map, which nothing else validates.
 
+### Consumer-facing docs are written in the present tense
+
+**State what the component does.** A reader has not seen any earlier version, so
+"this is no longer hardcoded", "the wrapper now measures what it was given" or
+"previously this had to carry a placeholder" asks them to hold a history they do
+not have in order to use something today - and it advertises, for no benefit,
+that the library shipped the broken version. What changed belongs in
+`CHANGELOG.md` and `Releases.mdx`, which is where a reader goes _asking_ the
+historical question.
+
+This is a habit, not a component-specific note: writing docs in the same sitting
+as the fix makes the fix feel like the subject. Every phrasing above came from
+shipped docs, spread across `Dropdown`, `Select`, `DataGrid`, `Table`,
+`Navigation`, `Toolbar`, `ThemeProvider` and `ACCESSIBILITY.md`. Assume the
+instinct will recur and re-read for it before finishing.
+
+This applies to everything a consumer can read, which is more than the `.mdx`
+files:
+
+| Surface                                               | Renders where                                         |
+| ----------------------------------------------------- | ----------------------------------------------------- |
+| `*.mdx`                                               | the docs page                                         |
+| prop JSDoc in `*.types.ts`                            | **the Controls table**, via react-docgen              |
+| story JSDoc                                           | the section description above that story's `<Canvas>` |
+| `ACCESSIBILITY.md`, `README.md`, `GETTING_STARTED.md` | docs page / repo front door                           |
+
+Prop JSDoc is the one that surprises people: it is written while thinking about
+the implementation and it surfaces in the Controls panel next to the control.
+
+**Source comments are the exception, and deliberately so.** In `.component.tsx`,
+in this file, and in the JSDoc of a story tagged `['!dev', '!autodocs']` (which
+renders nowhere), the history is the most valuable thing you can write - it is
+what stops the next person reinstating the bug. Keep those. The test is simply
+_who reads this surface_.
+
+Two phrasings that are **not** historical framing and are fine: a conditional
+("once the viewport can no longer fit every column…") and a property that holds
+in spite of something ("a text field in a menu still works normally").
+
 ### Storybook is for consumers; the repo is for contributors
 
 A reader in Storybook installed the package from npm. They have `dist/` and

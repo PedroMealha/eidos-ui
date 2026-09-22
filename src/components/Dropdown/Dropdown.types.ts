@@ -20,15 +20,10 @@ export interface DropdownProps {
    * open/closed decision entirely; omit both to let `Dropdown` manage itself
    * (optionally seeded by `defaultOpen`).
    *
-   * This exists because the open state being private forced every consumer in
-   * this library to fake it: `Select`, `Combobox`, `TagInput`, `DatePicker` and
-   * `TableFiltersDropdown` all forced a close by remounting the dropdown
-   * through a changing `key`, `Menu` dispatched a synthetic `mousedown` at
-   * `document`, and `Combobox` opens by synthesising a click on a hidden
-   * zero-height span. Worse than ugly, it was wrong: a component cannot set
-   * `aria-expanded` truthfully about a state it has to guess at, and `Select`
-   * could not be opened from the keyboard at all because its own idea of
-   * "open" reached nothing.
+   * Reach for this when something other than the trigger decides: content that
+   * dismisses itself on commit, a keyboard shortcut, or a trigger that has to
+   * describe the state - `aria-expanded` can only be honest about a state its
+   * owner can read.
    */
   open?: boolean;
   /**
@@ -51,18 +46,14 @@ export interface DropdownProps {
   /**
    * ARIA role for the portaled content element. Defaults to no role.
    *
-   * `Dropdown` is a positioning primitive and cannot know what its content is,
-   * so there is no correct default other than none. It used to hardcode
-   * `role="menu"`, which was wrong for nearly every consumer: `Select`,
-   * `Combobox` and `TagInput` render their own `role="listbox"` inside it (a
-   * listbox is not a valid child of a menu), and `DatePicker`, `ColorPicker`,
-   * `TableFiltersDropdown` and the `Table`/`DataGrid` toolbars are plain
-   * panels that were announced as menus with no items.
+   * `Dropdown` positions a panel and does not know what is in it, so pass a
+   * role only when the panel itself carries the semantics. When its content
+   * already provides them - a `role="listbox"` you render inside, for instance -
+   * leave this unset, or you nest one interactive role inside another.
    *
-   * For a real menu, use `Menu`/`MenuPanel`: the role belongs on the element
-   * that directly contains the items, together with the keyboard model that
-   * role implies (arrow keys, Home/End, Enter/Space). Setting `role="menu"`
-   * here on a `<div>` of arbitrary content promises both and supplies neither.
+   * A role also implies an interaction contract: `role="menu"` promises arrow-key
+   * navigation. For a menu, use `Menu`, which supplies the roles, the roving tab
+   * stop and the keys together.
    */
   role?: React.AriaRole;
   closeOnClickOutside?: boolean;

@@ -179,8 +179,7 @@ export const WithContent: Story = {
 
 /**
  * Every prop is optional - a bare `<Toolbar />` renders an empty bar. Here
- * only a single breadcrumb is given, with no user, so no avatar is rendered
- * at all (it used to be a hardcoded "John Doe" placeholder).
+ * only a single breadcrumb is given, and no `user`, so no avatar is rendered.
  */
 export const Minimal: Story = {
   args: {

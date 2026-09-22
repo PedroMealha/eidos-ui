@@ -87,8 +87,7 @@ type Story = StoryObj<typeof meta>;
  * With no theme supplied, nothing is written and the preset renders as-is.
  *
  * Args-driven, so editing `defaultTheme` in the Controls panel re-themes the
- * swatches live - the point of the component. It previously used
- * `render: () =>`, which ignored args, so the panel the .mdx renders was inert.
+ * swatches live - which is the point of the component.
  */
 export const Default: Story = {
   render: (args) => <ThemeProvider {...args} />,

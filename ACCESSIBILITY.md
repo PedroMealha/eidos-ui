@@ -20,7 +20,7 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **496 stories** covering **58
+Against **WCAG 2.2 Level AA**, across **497 stories** covering **58
 components**.
 
 |                     |                                                                                                                                                                                                                  |
@@ -90,47 +90,40 @@ that applies to a component is covered as follows.
 ### 2.1.1 is two claims, and they need different evidence
 
 **Reachability** - can you get to the control? - is what the focus sweep
-measures: ~2350 tab stops enumerated and checked. That is how `Input`'s clear
-and password-reveal buttons and `DataGrid`'s drag handle were found.
+measures: ~2350 tab stops enumerated and checked, including `Input`'s clear and
+password-reveal buttons and `DataGrid`'s drag handle.
 
 **Operability** - once there, does a key do anything? - is not something that
 sweep can answer, in either direction:
 
-- A control that is **not a tab stop at all** is invisible to it. `Menu`'s
-  items were `<li onClick>` with no `tabIndex` and no key handler, so menu
-  items in `Menu`, `ContextMenu`, `SplitButton` and `Table`/`DataGrid` row
-  actions could only be used with a mouse - and an enumeration of tab stops
-  could not have found them, because they never appeared in it.
-- A control that **is** a tab stop can still do nothing when activated; the
-  sweep checks that focus lands and is visible, not that Enter works.
+- A control that is **not a tab stop** never appears in the enumeration, so the
+  sweep cannot report on it at all.
+- A control that **is** a tab stop may still do nothing when activated. The
+  sweep checks that focus lands and is visible, not that `Enter` works.
 
-Operability is therefore pinned by story tests that drive the component with a
-keyboard, which is what now covers the menus: a single tab stop per menu,
-arrow keys to move with wrapping, `Home`/`End`, `Enter`/`Space` to activate,
-`ArrowRight` to open a submenu, focus moved in on open and returned to the
-trigger on close.
+Operability is therefore covered by story tests that drive each component with a
+keyboard. What those tests hold to:
 
-This is also how `Select` was found to be unusable by keyboard, and fixed.
-`ArrowDown`, `ArrowUp`, `Enter` and `Space` updated a flag that reached nothing,
-because the underlying overlay kept the real open state to itself. So the list
-never appeared, `Enter` still committed the option at that invisible index, and
-selecting dropped focus onto `<body>`. axe reported none of it, because the
-state only existed after a keypress. `Select` now follows the ARIA
-select-only-combobox pattern (arrow keys, `Enter`, `Space` open it; `Escape`
-closes it; focus stays on the field throughout), pinned by a story test.
-
-`CommandPalette`'s custom trigger was the same shape and is also fixed. Passing
-`trigger={<YourNode />}` wrapped it in an element that announced itself as a
-button, took focus, and did nothing when activated - in the one configuration
-the documentation demonstrates. The wrapper now measures what it was given: a
-non-interactive child makes it a real control with a key handler, an interactive
-one leaves it as plain layout, so there is no second tab stop and no nested
-button. Pinned by a story test.
+- **Menus** (`Menu`, `ContextMenu`, `SplitButton`, `Table` and `DataGrid` row
+  actions) are a single tab stop each, with arrow keys moving between items and
+  wrapping at the ends, `Home`/`End`, `Enter`/`Space` to activate, `ArrowRight`
+  to open a submenu and `ArrowLeft` to close one. Focus enters on open and
+  returns to the trigger on close.
+- **`Select`** follows the ARIA select-only-combobox pattern: arrow keys,
+  `Enter` and `Space` open the listbox, `Escape` closes it, and focus stays on
+  the field throughout, including after a selection.
+- **`DatePicker`** is a combobox with a dialog popup: arrow keys, `Enter` and
+  `Space` open the calendar, focus moves into it, and `Escape` closes it and
+  returns focus to the field.
+- **`CommandPalette`'s trigger** is operable whether it is the built-in button
+  or your own node. A non-interactive node becomes a real control; an
+  interactive one is left as-is, so there is no second tab stop and no nested
+  button.
 
 No gaps of this kind are currently known. That is a statement about what has
-been driven and measured, not a guarantee - the two above were found by
-operating components rather than by scanning them, and both had been shipping
-for some time.
+been driven and measured, not a guarantee: this class of defect is invisible to
+axe and to any static check, so the only evidence for it is a test that presses
+the key.
 
 ## What remains yours
 

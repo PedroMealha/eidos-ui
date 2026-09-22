@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useId } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -7,7 +7,7 @@ import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Calendar } from './Calendar.component';
 import { TimeInput } from './TimeInput.component';
-import { fullWidthModifier } from '../../utils';
+import { fullWidthModifier, useDialogFocus } from '../../utils';
 import type {
   DatePickerProps,
   DateSelectionMode,
@@ -56,6 +56,15 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   // remounted the whole subtree - the only lever available while the overlay
   // kept that state private.
   const [isOpen, setIsOpen] = useState(false);
+  const panelId = `${useId()}-date-panel`;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Focus moves into the calendar when it opens, and back to the field when it
+  // closes. Not optional: the panel is portaled to `document.body`, so `Tab`
+  // from the field would otherwise walk the rest of the page before reaching
+  // it. `trapTab: false` because this is not a modal dialog - the page stays
+  // available.
+  useDialogFocus(isOpen, panelRef, { trapTab: false });
   // Two different, deliberately different, notions of "timezone" are in
   // play here, matching two genuinely different kinds of value:
   //
@@ -500,6 +509,21 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
     <div
       ref={triggerRef}
       className={`eidos-date-picker-trigger${fullWidth ? ` ${fullWidthModifier('eidos-date-picker-trigger')}` : ''}`}
+      // Handled here rather than on the `Input` so the keys work wherever inside
+      // the field they are pressed. A click opens the calendar because it
+      // bubbles to the overlay's trigger wrapper; a keypress has nothing
+      // equivalent, so without this the field can be focused and cannot be
+      // opened at all.
+      onKeyDown={(event) => {
+        if (disabled) return;
+        if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
+          event.preventDefault();
+          setIsOpen(true);
+        } else if (event.key === 'Escape' && isOpen) {
+          event.preventDefault();
+          setIsOpen(false);
+        }
+      }}
     >
       <Input
         value={displayValue}
@@ -508,6 +532,13 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         required={required}
         name={name}
         id={id}
+        // A read-only field that opens a calendar is a combobox with a dialog
+        // popup. `aria-controls` is gated on the panel existing - it is only
+        // rendered while open, and naming an absent element is invalid.
+        role="combobox"
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        aria-controls={isOpen ? panelId : undefined}
         // Forwarded, not just set on the wrapper above: the wrapper stretching
         // to 100% does nothing on its own while the Input inside it keeps its
         // own intrinsic width. Mirrors Select, which forwards it the same way.
@@ -528,7 +559,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
   // Create dropdown content with calendar(s) and time inputs
   const dropdownContent = (
-    <div className={'eidos-date-picker-content'}>
+    <div ref={panelRef} id={panelId} className={'eidos-date-picker-content'}>
       {/* Multiple calendars with container-level navigation */}
       <div className={'eidos-date-picker-calendars-wrapper'}>
         {Array.from({ length: numberOfCalendars }, (_, index) => {

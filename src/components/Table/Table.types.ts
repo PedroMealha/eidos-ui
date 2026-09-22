@@ -103,9 +103,8 @@ interface TableValueColumn<T extends object, K extends RowKey<T>> extends TableC
  * `data-col-key`.
  *
  * `'icon'` and `'action'` carry their existing cell styling; `'custom'` styles
- * like a normal data cell but takes a free-form key, which is the home for a
- * derived column (previously expressible only by pointing `key` at a field
- * that didn't exist).
+ * like a normal data cell but takes a free-form key, for a derived column
+ * whose content comes from several fields or from none.
  */
 interface TableCustomColumn<T extends object> extends TableColumnCommon {
   /** Free-form - must only be unique within `columns`. */
