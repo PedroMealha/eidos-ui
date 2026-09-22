@@ -55,6 +55,7 @@ const meta = {
     trigger: { table: { disable: true } },
     children: { table: { disable: true } },
     isOpen: { table: { disable: true } },
+    open: { table: { disable: true } },
     defaultOpen: { table: { disable: true } },
     onOpenChange: { table: { disable: true } },
     closeOnClickOutside: { table: { disable: true } },
@@ -219,7 +220,7 @@ export const Controlled: Story = {
       >
         <Popover
           trigger={<Button>{isOpen ? 'Close Popover' : 'Open Popover'}</Button>}
-          isOpen={isOpen}
+          open={isOpen}
           onOpenChange={setIsOpen}
           title="Controlled Popover"
           showCloseButton

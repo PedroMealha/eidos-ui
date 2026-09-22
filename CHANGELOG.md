@@ -19,13 +19,14 @@ Entries land here as work happens, not written retroactively at release time
   their own semantics.
 - `Dropdown.open` / `Dropdown.onOpenChange` - controlled open state, alongside
   the existing uncontrolled `defaultOpen`.
-- `Select.label` - visible label, matching `Input`, `Checkbox`, `Radio` and
-  `Textarea`. It was previously reachable only through `inputProps`.
+- `Select.label` and `DatePicker.label` - visible labels, matching `Input`,
+  `Combobox`, `TagInput`, `Checkbox`, `Radio`, `Switch` and `Textarea`.
 - `Popover.open` - canonical name for the controlled open state, matching
   `Dropdown` and `CommandPalette`. `isOpen` still works and is deprecated.
 - `MenuPanel.onRequestClose` - lets a submenu ask the panel that owns it to
   close, which is what `ArrowLeft` needs.
-- `Select` warns in development when it has no accessible name.
+- `Select` and `DatePicker` warn in development when they have no accessible
+  name.
 
 ### Changed
 

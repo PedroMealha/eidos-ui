@@ -235,10 +235,17 @@ this was live. Any component that is only auditable in an open state needs a
 story that _stays_ open after its `play` function - `Menu`'s `OpenMenuAria`
 holds one of every item type for exactly this reason.
 
-Known remaining gap: a submenu trigger carries a static `aria-haspopup="menu"`
-but no `aria-expanded`, because `Dropdown` owns the open state and exposes no
-controlled `open`/`onOpenChange` API to read it from. That API is the
-prerequisite for fixing it - don't paper over it by tracking the state twice.
+A submenu trigger carries `aria-haspopup="menu"` and `aria-expanded`, and
+`MenuPanel` owns which submenu is open so that both are true. That ownership is
+also what makes `ArrowLeft` able to close one level (`onRequestClose`).
+
+Known remaining gap: **Escape closes the whole menu stack, not just the
+innermost submenu.** Every open `Dropdown` registers its own `document` listener,
+so one keypress reaches all of them. The ARIA pattern asks for innermost-only.
+Fixing it means moving Escape ownership out of `Dropdown`'s document listener for
+every overlay, which is a dismissal-path change across the library for a
+deviation that is not a WCAG failure - worth doing deliberately, not as a
+by-product of something else.
 
 ### Dropdown viewport clamping
 

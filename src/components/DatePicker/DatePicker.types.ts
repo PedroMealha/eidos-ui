@@ -95,6 +95,16 @@ interface DatePickerProps<T extends DateSelectionMode = 'single'> {
   format?: DateFormatConfig;
 
   // Input integration
+  /**
+   * Visible label, rendered as a real `<label>` bound to the field - the same
+   * prop `Input`, `Select`, `Combobox` and the other fields take.
+   *
+   * For a field that must stay visually unlabelled, pass
+   * `inputProps={{ 'aria-label': '…' }}` instead. One of the two is needed: a
+   * `placeholder` is not a label, since it disappears as soon as a date is
+   * chosen. Omitting both logs a development warning.
+   */
+  label?: string;
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;

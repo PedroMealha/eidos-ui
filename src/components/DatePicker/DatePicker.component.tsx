@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo, useId } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useId, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -7,7 +7,7 @@ import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Calendar } from './Calendar.component';
 import { TimeInput } from './TimeInput.component';
-import { fullWidthModifier, useDialogFocus } from '../../utils';
+import { fullWidthModifier, useDialogFocus, devWarn } from '../../utils';
 import type {
   DatePickerProps,
   DateSelectionMode,
@@ -33,6 +33,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
     timeFormat: 'HH:mm',
     timezone: 'UTC',
   },
+  label,
   placeholder = 'Select date...',
   disabled = false,
   required = false,
@@ -65,6 +66,25 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   // it. `trapTab: false` because this is not a modal dialog - the page stays
   // available.
   useDialogFocus(isOpen, panelRef, { trapTab: false });
+
+  // A field with no accessible name is announced as just "combobox". Measured
+  // from the DOM rather than from props, so naming it from outside - a wrapping
+  // `<label>`, or a `<label for>` - counts. Mirrors `Select`.
+  const fieldRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const element = fieldRef.current;
+    if (!element) return;
+    const named =
+      (element.labels?.length ?? 0) > 0 ||
+      element.hasAttribute('aria-label') ||
+      element.hasAttribute('aria-labelledby');
+    if (!named) {
+      devWarn(
+        'date-picker-missing-label',
+        'DatePicker: no accessible name. Pass `label` for a visible one, or `inputProps={{ "aria-label": "..." }}` where it must stay visually unlabelled - otherwise the field is announced as just "combobox". A placeholder is not a label, and disappears as soon as a date is chosen.',
+      );
+    }
+  }, []);
   // Two different, deliberately different, notions of "timezone" are in
   // play here, matching two genuinely different kinds of value:
   //
@@ -526,7 +546,9 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       }}
     >
       <Input
+        ref={fieldRef}
         value={displayValue}
+        label={label}
         placeholder={placeholder}
         disabled={disabled}
         required={required}

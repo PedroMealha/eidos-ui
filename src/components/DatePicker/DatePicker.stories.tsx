@@ -23,6 +23,12 @@ const meta: Meta<typeof DatePicker> = {
       description: 'Date selection mode',
       table: { type: { summary: '"single" | "multiple" | "range"' } },
     },
+    label: {
+      control: 'text',
+      description:
+        'Visible label, rendered as a real `<label>` bound to the field. For a field that must stay visually unlabelled, pass `inputProps={{ "aria-label": "..." }}` instead.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     placeholder: {
       control: 'text',
       description: 'Input placeholder text',
@@ -94,6 +100,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     mode: 'single',
+    label: 'Date',
     placeholder: 'Select a date...',
     disabled: false,
     required: false,
@@ -162,6 +169,7 @@ export const SingleDate: Story = {
           mode="single"
           value={value}
           onChange={setValue}
+          label="Date"
           placeholder="Select a date..."
         />
         <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
@@ -183,6 +191,7 @@ export const DateRange: Story = {
           mode="range"
           value={value}
           onChange={setValue}
+          label="Date range"
           placeholder="Select date range..."
         />
         <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
@@ -207,6 +216,7 @@ export const MultipleSelection: Story = {
           mode="multiple"
           value={value}
           onChange={setValue}
+          label="Dates"
           placeholder="Select multiple dates..."
         />
         <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
@@ -238,6 +248,7 @@ export const WithTime: Story = {
       <div style={{ width: '300px' }}>
         <DatePicker
           mode="single"
+          label="Date and time"
           value={value}
           onChange={setValue}
           time={{ enabled: true, includeSeconds: false }}
@@ -272,6 +283,7 @@ export const DateRangeWithTime: Story = {
       <div style={{ width: '300px' }}>
         <DatePicker
           mode="range"
+          label="Date range and time"
           value={value}
           onChange={setValue}
           time={{ enabled: true, includeSeconds: false }}
@@ -302,6 +314,7 @@ export const IndependentCalendars: Story = {
           value={value}
           onChange={setValue}
           calendar={{ independent: true }}
+          label="Date range"
           placeholder="Select date range..."
         />
         <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
@@ -338,6 +351,7 @@ export const DateConstraints: Story = {
     return (
       <div style={{ width: '300px' }}>
         <DatePicker
+          label="Date"
           mode="single"
           value={value}
           onChange={setValue}
