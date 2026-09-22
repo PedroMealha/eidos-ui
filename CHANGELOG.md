@@ -19,6 +19,9 @@ Entries land here as work happens, not written retroactively at release time
   their own semantics.
 - `Dropdown.open` / `Dropdown.onOpenChange` - controlled open state, alongside
   the existing uncontrolled `defaultOpen`.
+- `Select.label` - visible label, matching `Input`, `Checkbox`, `Radio` and
+  `Textarea`. It was previously reachable only through `inputProps`.
+- `Select` warns in development when it has no accessible name.
 
 ### Changed
 
@@ -29,6 +32,9 @@ Entries land here as work happens, not written retroactively at release time
   `ArrowRight` to open a submenu.
 - `Menu` moves focus into itself when it opens and back to the trigger when it
   closes.
+- `Select`, `Combobox`, `TagInput`, `DatePicker`, `TableFiltersDropdown` and
+  `Menu` no longer remount their dropdown to close it, so the panel's DOM is
+  preserved across open and close.
 
 ### Fixed
 
@@ -53,7 +59,16 @@ Entries land here as work happens, not written retroactively at release time
 - `Select` only sets `aria-controls` while its listbox is rendered.
 - `Menu` items paint a focus ring.
 - `Menu` nested items honour `disabled`, which was accepted and ignored.
-- `Menu` and `SplitButton` triggers advertise `aria-haspopup="menu"`.
+- `Menu` and `SplitButton` triggers advertise `aria-haspopup="menu"`, and
+  `Menu`'s trigger now also reports `aria-expanded`.
+- Activating a `Menu` item no longer closes unrelated open dropdowns: it used to
+  fake a click outside by dispatching `mousedown` at `document`, which a
+  keyboard user never made.
+- `TableFiltersDropdown`'s trigger reports `aria-expanded`.
+- `DatePicker`'s calendar navigation buttons have accessible names instead of
+  being announced as just "button", and its month and year selects are labelled.
+- `TableFiltersDropdown`'s column and value pickers, and `DataGrid`'s quick
+  filters, have accessible names instead of relying on a placeholder.
 
 
 ## [3.4.0] - 2026-09-21

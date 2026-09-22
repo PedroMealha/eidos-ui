@@ -27,6 +27,22 @@ const options = [
 
 <Controls of={SelectStories.Default} />
 
+## Labelling
+
+`label` renders a real `<label>` bound to the field, the same as [Input](?path=/docs/forms-input--docs), `Checkbox`, `Radio` and `Textarea`:
+
+```tsx
+<Select label="Fruit" options={options} />
+```
+
+Where the design genuinely has no room for a visible label - a compact toolbar, a filter row - give it an invisible one instead:
+
+```tsx
+<Select inputProps={{ 'aria-label': 'Filter column' }} options={options} />
+```
+
+One of the two is required. A `placeholder` is **not** a label: it disappears as soon as something is chosen, so the control becomes anonymous exactly when it has a value worth reading. `Select` logs a development warning if it ends up with no accessible name, and it checks the rendered field rather than its own props - so naming it from the outside, with a wrapping `<label>` or a `<label for>`, counts.
+
 ## Keyboard
 
 `Select` is a **select-only** combobox - the field is not editable - so it follows that ARIA pattern rather than [Combobox](?path=/docs/forms-combobox--docs)'s.

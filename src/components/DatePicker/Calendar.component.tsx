@@ -215,7 +215,12 @@ export const Calendar: React.FC<CalendarProps> = ({
         {showNavigation ? (
           granularity === 'month' ? (
             <>
-              <Button variant="text" icon={ChevronLeft} onClick={handlePrevYear} />
+              <Button
+                variant="text"
+                icon={ChevronLeft}
+                onClick={handlePrevYear}
+                aria-label="Previous year"
+              />
 
               <div className={'eidos-calendar-selectors'}>
                 <Select
@@ -223,17 +228,28 @@ export const Calendar: React.FC<CalendarProps> = ({
                   value={currentDate.year().toString()}
                   onChange={handleYearSelect}
                   clearable={false}
+                  inputProps={{ 'aria-label': 'Year' }}
                   dropdownProps={{
                     dropdownGroup: 'calendar-navigation',
                   }}
                 />
               </div>
 
-              <Button variant="text" icon={ChevronRight} onClick={handleNextYear} />
+              <Button
+                variant="text"
+                icon={ChevronRight}
+                onClick={handleNextYear}
+                aria-label="Next year"
+              />
             </>
           ) : (
             <>
-              <Button variant="text" icon={ChevronLeft} onClick={handlePrevMonth} />
+              <Button
+                variant="text"
+                icon={ChevronLeft}
+                onClick={handlePrevMonth}
+                aria-label="Previous month"
+              />
 
               <div className={'eidos-calendar-selectors'}>
                 <Select
@@ -241,6 +257,7 @@ export const Calendar: React.FC<CalendarProps> = ({
                   value={currentDate.month().toString()}
                   onChange={handleMonthSelect}
                   clearable={false}
+                  inputProps={{ 'aria-label': 'Month' }}
                   dropdownProps={{
                     dropdownGroup: 'calendar-navigation',
                   }}
@@ -250,13 +267,19 @@ export const Calendar: React.FC<CalendarProps> = ({
                   value={currentDate.year().toString()}
                   onChange={handleYearSelect}
                   clearable={false}
+                  inputProps={{ 'aria-label': 'Year' }}
                   dropdownProps={{
                     dropdownGroup: 'calendar-navigation',
                   }}
                 />
               </div>
 
-              <Button variant="text" icon={ChevronRight} onClick={handleNextMonth} />
+              <Button
+                variant="text"
+                icon={ChevronRight}
+                onClick={handleNextMonth}
+                aria-label="Next month"
+              />
             </>
           )
         ) : (

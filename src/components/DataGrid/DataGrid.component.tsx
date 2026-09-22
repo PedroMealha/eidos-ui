@@ -1779,7 +1779,10 @@ function DataGridInner<T extends object>({
           return (
             <Select
               fullWidth
-              inputProps={{ size: 'sm' }}
+              // Named after the filter it drives. The placeholder below is not
+              // a substitute: it disappears the moment a value is chosen, and
+              // several of these sit side by side in the toolbar.
+              inputProps={{ size: 'sm', 'aria-label': label }}
               disabled={disabled}
               placeholder={quickFilter.placeholder ?? label}
               clearable={quickFilter.clearable ?? true}

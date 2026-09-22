@@ -3,7 +3,7 @@ import { X, Check } from 'lucide-react';
 import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import type { SelectProps, SelectOption } from './Select.types';
-import { renderIcon, fullWidthModifier } from '../../utils';
+import { renderIcon, fullWidthModifier, devWarn } from '../../utils';
 
 export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
   (
@@ -14,6 +14,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       onChange,
       className = '',
       multiple = false,
+      label,
       placeholder = 'Select an option...',
       disabled = false,
       inputProps = {},
@@ -143,6 +144,31 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       },
       [multiple, onChange, isControlled],
     );
+
+    // A form control with no accessible name is announced as just "combobox".
+    // `Select` was the only field in the library that could not be labelled
+    // without knowing about `inputProps`, and three call sites duly shipped
+    // without one - so the gap is closed from both ends: a first-class `label`
+    // prop, and this warning.
+    //
+    // Measured from the DOM rather than from props, because a caller may name
+    // the field with an external `<label for>` - `Pagination`'s page-size
+    // picker does exactly that, and a props-only check would cry wolf at it.
+    // `HTMLInputElement.labels` covers both wrapping and `for` labels.
+    useEffect(() => {
+      const element = inputRef.current;
+      if (!element) return;
+      const named =
+        (element.labels?.length ?? 0) > 0 ||
+        element.hasAttribute('aria-label') ||
+        element.hasAttribute('aria-labelledby');
+      if (!named) {
+        devWarn(
+          'select-missing-label',
+          'Select: no accessible name. Pass `label` for a visible one, or `inputProps={{ "aria-label": "..." }}` where it must stay visually unlabelled - otherwise the field is announced as just "combobox". A placeholder is not a label, and disappears as soon as something is chosen.',
+        );
+      }
+    }, []);
 
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
@@ -368,6 +394,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           disabled={disabled}
           readOnly={true}
           isSelect={true}
+          label={label}
           name={name}
           id={id}
           required={required}

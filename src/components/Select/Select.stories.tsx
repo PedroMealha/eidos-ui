@@ -33,6 +33,12 @@ const meta: Meta<typeof Select> = {
         type: { summary: '(value: string | string[]) => void' },
       },
     },
+    label: {
+      control: 'text',
+      description:
+        'Visible label, rendered as a real `<label>` bound to the field - the same prop `Input`, `Checkbox`, `Radio` and `Textarea` take. For a field that must stay visually unlabelled, pass `inputProps={{ "aria-label": "..." }}` instead.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     multiple: {
       control: 'boolean',
       description: 'Enable multiple selection',
@@ -182,18 +188,18 @@ const optionsWithDisabled = [
 export const Default: Story = {
   args: {
     options: basicOptions,
-    placeholder: 'Select a fruit...',
     // A placeholder is not an accessible name - it vanishes on selection.
-    // `Select` has no `label` prop of its own (unlike `Input`, `Checkbox`,
-    // `Radio` and `Textarea`), so the label goes through `inputProps`, which
-    // is forwarded to the underlying `Input`.
-    inputProps: { label: 'Fruit' },
+    // `Select` takes a first-class `label`, like every other field in the
+    // library; it used to be reachable only through `inputProps`.
+    label: 'Fruit',
+    placeholder: 'Select a fruit...',
   },
 };
 
 export const WithComponentIcons: Story = {
   args: {
     options: optionsWithComponentIcons,
+    label: 'Contact detail',
     placeholder: 'Select an option...',
   },
 };
@@ -202,6 +208,7 @@ export const MultipleSelect: Story = {
   args: {
     options: basicOptions,
     multiple: true,
+    label: 'Fruits',
     placeholder: 'Select multiple fruits...',
   },
 };
@@ -212,6 +219,7 @@ export const MultipleSelectCompactLabel: Story = {
     options: basicOptions,
     multiple: true,
     defaultValue: ['apple', 'banana', 'cherry'],
+    label: 'Fruits',
     placeholder: 'Select multiple fruits...',
     inputProps: { label: 'Fruit' },
   },
@@ -229,6 +237,7 @@ export const MultipleSelectCompactLabel: Story = {
 export const WithDisabledOptions: Story = {
   args: {
     options: optionsWithDisabled,
+    label: 'Availability',
     placeholder: 'Some options are disabled...',
   },
 };
@@ -237,6 +246,7 @@ export const Disabled: Story = {
   args: {
     options: basicOptions,
     disabled: true,
+    label: 'Fruit',
     placeholder: 'This select is disabled...',
   },
 };
@@ -245,6 +255,7 @@ export const NotClearable: Story = {
   args: {
     options: basicOptions,
     clearable: false,
+    label: 'Fruit',
     placeholder: 'Select without clear button...',
   },
 };
@@ -253,6 +264,7 @@ export const FullWidth: Story = {
   args: {
     options: basicOptions,
     fullWidth: true,
+    label: 'Fruit',
     placeholder: 'Full width select...',
   },
   decorators: [
@@ -273,6 +285,7 @@ export const ControlledExample: Story = {
         <Select
           {...args}
           options={basicOptions}
+          label="Fruit"
           value={value}
           onChange={(newValue) => setValue(newValue as string)}
           placeholder="Select a fruit..."
@@ -292,6 +305,7 @@ export const MultipleControlled: Story = {
         <Select
           {...args}
           options={basicOptions}
+          label="Fruits"
           multiple
           value={values}
           onChange={(newValues) => setValues(newValues as string[])}
@@ -312,6 +326,7 @@ export const MultipleControlled: Story = {
 export const CustomInputStyling: Story = {
   args: {
     options: optionsWithComponentIcons,
+    label: 'Fruit',
     placeholder: 'Success variant...',
     inputProps: { variant: 'filled', color: 'success' },
   },
@@ -349,7 +364,7 @@ export const KeyboardOperation: StoryObj<typeof Select> = {
   tags: ['!dev', '!autodocs'],
   render: () => (
     <Select
-      inputProps={{ label: 'Fruit' }}
+      label="Fruit"
       options={[
         { id: 'a', value: 'a', label: 'Apple' },
         { id: 'b', value: 'b', label: 'Banana' },
@@ -443,7 +458,7 @@ export const AutoOpensOnMount: StoryObj<typeof Select> = {
   render: () => (
     <Select
       autoOpen
-      inputProps={{ label: 'Fruit' }}
+      label="Fruit"
       options={[
         { id: 'a', value: 'a', label: 'Apple' },
         { id: 'b', value: 'b', label: 'Banana' },
@@ -467,11 +482,7 @@ export const OpensAndCommitsByMouse: StoryObj<typeof Select> = {
   tags: ['!dev', '!autodocs'],
   render: () => (
     <Select
-      // `Select` has no `label` prop of its own - the accessible name has to go
-      // through `inputProps`. Leaving it off makes the field unlabelled, which
-      // is a fault in the story rather than in the component, and it is why this
-      // story added a `label` violation before the name was passed.
-      inputProps={{ label: 'Fruit' }}
+      label="Fruit"
       options={[
         { id: 'a', value: 'a', label: 'Apple' },
         { id: 'b', value: 'b', label: 'Banana' },

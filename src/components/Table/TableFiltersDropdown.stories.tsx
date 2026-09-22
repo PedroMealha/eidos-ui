@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TableFiltersDropdown } from './TableFiltersDropdown.component';
 import type { TableColumn, TableFilters } from './Table.types';
+import { expect, waitFor } from 'storybook/test';
 
 // ── Story-local row type ──────────────────────────────────────────────────────
 // Concrete type used across all stories so TypeScript can resolve column keys.
@@ -148,7 +149,10 @@ export const Default: Story = {
   // filter rows. `filters`/`onFiltersChange` stay owned by the story, since a
   // controlled component needs someone to hold the state.
   render: function DefaultStory(args) {
-    const [filters, setFilters] = useState<TableFilters>({});
+    // Seeded with an active filter so the panel renders its "Clear All"
+    // action: the apply/discard pair only appears once something is pending,
+    // and the close-on-commit path is the same either way.
+    const [filters, setFilters] = useState<TableFilters>({ name: 'abc' });
 
     return (
       <div
@@ -183,7 +187,10 @@ const [filters, setFilters] = useState<TableFilters>({});
 
 export const MultipleFilters: Story = {
   render: () => {
-    const [filters, setFilters] = useState<TableFilters>({});
+    // Seeded with an active filter so the panel renders its "Clear All"
+    // action: the apply/discard pair only appears once something is pending,
+    // and the close-on-commit path is the same either way.
+    const [filters, setFilters] = useState<TableFilters>({ name: 'abc' });
 
     return (
       <div
@@ -224,7 +231,10 @@ const [filters, setFilters] = useState<TableFilters>({});
 
 export const PreFilledFilters: Story = {
   render: () => {
-    const [filters, setFilters] = useState<TableFilters>({});
+    // Seeded with an active filter so the panel renders its "Clear All"
+    // action: the apply/discard pair only appears once something is pending,
+    // and the close-on-commit path is the same either way.
+    const [filters, setFilters] = useState<TableFilters>({ name: 'abc' });
 
     const defaultFilters: TableFilters = {
       name: 'Alice',
@@ -262,5 +272,51 @@ const [filters, setFilters] = useState<TableFilters>({ name: 'Alice', role: 'Adm
 />`.trim(),
       },
     },
+  },
+};
+
+// ============================================================================
+// CHARACTERISATION - pinned before the panel stops closing itself by remounting
+// ============================================================================
+
+export const ClosesOnApply: StoryObj<typeof TableFiltersDropdown> = {
+  tags: ['!dev', '!autodocs'],
+  render: function CharacterisationStory() {
+    // Seeded with an active filter so the panel renders its "Clear All"
+    // action: the apply/discard pair only appears once something is pending,
+    // and the close-on-commit path is the same either way.
+    const [filters, setFilters] = useState<TableFilters>({ name: 'abc' });
+    return (
+      <TableFiltersDropdown
+        columns={[{ key: 'name', label: 'Name', filterable: true }]}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+
+    await step('the toolbar button opens the panel', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: /Filters/ }));
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
+
+    await step('committing from inside the panel closes it', async () => {
+      // Queried out of the panel by hand: the content is portaled, and the
+      // footer buttons are only rendered for some states, so a document-wide
+      // role query is the wrong tool here.
+      const clear = Array.from(panels()[0].querySelectorAll<HTMLButtonElement>('button')).find(
+        (button) => button.textContent?.includes('Clear All'),
+      );
+      expect(clear, 'the panel rendered no "Clear All" action').toBeDefined();
+      await userEvent.click(clear!);
+      await waitFor(() => expect(panels()).toHaveLength(0));
+    });
+
+    await step('and it reopens afterwards', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: /Filters/ }));
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
   },
 };

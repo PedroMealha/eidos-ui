@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TagInput } from './TagInput.component';
 import { expectErrorWiring } from '../../story-a11y.docs';
+import { expect, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Forms/TagInput',
@@ -163,5 +164,51 @@ export const ErrorWiring: Story = {
   args: { label: 'Tags', error: 'Add at least one tag' },
   play: async ({ canvas }) => {
     await expectErrorWiring(canvas.getByRole('textbox', { name: 'Tags' }), 'Add at least one tag');
+  },
+};
+
+// ============================================================================
+// CHARACTERISATION - pinned before the suggestions stop being opened by a fake
+// click and closed by a remount
+// ============================================================================
+
+export const SuggestionsOpenAndClose: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { label: 'Tags', suggestions: ['react', 'redux', 'remix'] },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = canvas.getByRole('combobox', { name: 'Tags' });
+
+    await step('typing opens the suggestion list', async () => {
+      await userEvent.click(field);
+      await userEvent.type(field, 're');
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(field).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    await step('ArrowDown moves through the suggestions', async () => {
+      await userEvent.keyboard('{ArrowDown}');
+      await waitFor(() => expect(field.getAttribute('aria-activedescendant')).toBeTruthy());
+      const active = field.getAttribute('aria-activedescendant')!;
+      expect(document.getElementById(active)).not.toBeNull();
+    });
+
+    await step('Enter commits the focused suggestion and closes the list', async () => {
+      await userEvent.keyboard('{Enter}');
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(field).toHaveAttribute('aria-expanded', 'false');
+      expect(canvas.getByText('react')).toBeInTheDocument();
+    });
+
+    await step('typing again reopens it', async () => {
+      await userEvent.type(field, 'red');
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
+
+    await step('Escape closes it, keeping focus in the field', async () => {
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(document.activeElement).toBe(field);
+    });
   },
 };

@@ -1268,10 +1268,29 @@ Three shapes that each looked labelled and were not:
   placeholder disappears the moment you type, and several of those rows sit
   side by side.
 
-Related API gap worth knowing: **`Select` has no `label` prop**, unlike
-`Input`, `Checkbox`, `Radio` and `Textarea`. The capability exists via
-`inputProps={{ label: '…' }}`, but the inconsistency is real and is why two
-`Select` stories shipped unlabelled.
+**`Select` now takes a `label` prop, and this note used to say it did not.**
+Worth reading as a lesson about notes rather than about `Select`: it recorded
+the inconsistency (every other field had `label`; here the capability existed
+only through `inputProps={{ label: '…' }}`) and it named the consequence - two
+stories shipped unlabelled - and then it sat there while the same defect
+appeared in three more places: the `DatePicker` calendar's own month and year
+pickers, `TableFiltersDropdown`'s column and value pickers, and `DataGrid`'s
+quick filters. **A recorded gap is not a closed one.** If a note explains why a
+defect keeps recurring, the note is the bug report, and it should be read as
+one every time it is passed.
+
+The API gap is closed from both ends now:
+
+- a first-class `label`, matching `Input`, `Checkbox`, `Radio` and `Textarea`;
+- a `devWarn` when the field ends up with no accessible name at all.
+
+That warning is **measured from the DOM in an effect**, not from props -
+`element.labels.length`, `aria-label`, `aria-labelledby` - and that distinction
+is load-bearing. A props-only check would have cried wolf at `Pagination`,
+which names its page-size picker with an external `<label for>`, and at the
+`dev/` app, which wraps its `Select`s in a `<label>` element. Both are valid
+labelling that no prop on `Select` can see. A warning that fires on correct
+code gets muted, and then it protects nothing.
 
 ### Controls the audit cannot see
 

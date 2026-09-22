@@ -3,6 +3,7 @@ import { action } from 'storybook/actions';
 import { User, Settings, LogOut, FileText, Copy, Trash2, Share2, Mail } from 'lucide-react';
 import { Menu } from './Menu.component';
 import { Button } from '../Button';
+import { Dropdown } from '../Dropdown';
 import type { MenuItemType } from './Menu.types';
 import { StoryRow } from '../../story-layout.docs';
 import { expect, screen, waitFor } from 'storybook/test';
@@ -346,6 +347,64 @@ export const KeyboardOperation: Story = {
       await waitFor(() =>
         expect(document.activeElement, 'focus was not returned to the trigger').toBe(trigger),
       );
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `Menu` used to close itself by dispatching a synthetic `mousedown` at
+ * `document` on a 10ms timer - a fake "click outside", because the overlay's
+ * open state was private and this was the only lever it had. For a mouse user
+ * that is indistinguishable from the real click they just made. For a keyboard
+ * user it is not: activating an item with `Enter` produces no outside click, yet
+ * the fake one closed **every other open dropdown on the page** that dismisses
+ * on outside clicks.
+ *
+ * So the menu is opened here from the keyboard, with an unrelated dropdown left
+ * open beside it, and that dropdown has to survive.
+ */
+export const ItemActivationDoesNotCloseUnrelatedOverlays: Story = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { layout: 'padded' },
+  render: (args) => (
+    <StoryRow>
+      <Dropdown
+        trigger={<Button variant="outlined">Unrelated</Button>}
+        content={<div style={{ padding: 'var(--spacing-md)' }}>Still here</div>}
+      />
+      <Menu {...args} />
+    </StoryRow>
+  ),
+  args: {
+    trigger: <Button variant="outlined">Actions</Button>,
+    items: [{ type: 'item', id: '1', label: 'Copy', icon: Copy, onClick: action('Copy') }],
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panelCount = () => document.querySelectorAll('[data-dropdown-content]').length;
+
+    await step('open the unrelated dropdown', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Unrelated' }));
+      await waitFor(() => expect(panelCount()).toBe(1));
+    });
+
+    await step('open the menu from the keyboard, leaving the other one open', async () => {
+      // Focused rather than clicked: a real click would be a genuine
+      // outside-click for the other dropdown and would close it legitimately,
+      // which is the case this test has to avoid.
+      canvas.getByRole('button', { name: 'Actions' }).focus();
+      await userEvent.keyboard('{Enter}');
+      await waitFor(() => expect(panelCount()).toBe(2));
+    });
+
+    await step('activating an item closes the menu only', async () => {
+      await userEvent.keyboard('{Enter}');
+      await waitFor(() => expect(panelCount()).toBe(1));
+      expect(
+        screen.getByText('Still here'),
+        'activating a menu item closed an unrelated dropdown',
+      ).toBeInTheDocument();
     });
   },
 };

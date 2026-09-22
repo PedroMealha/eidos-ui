@@ -260,42 +260,41 @@ export const Menu: React.FC<MenuWrapperProps> = ({
   closeOnItemClick = true,
   tooltip,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleItemClick = useCallback(
     (_item: MenuItem) => {
-      // Note: item.onClick is already called in MenuPanel's handleItemClick
-      // Here we only handle closing the dropdown if needed
-
-      if (closeOnItemClick) {
-        // Use a small delay to ensure the onClick handler completes
-        setTimeout(() => {
-          // Create a synthetic click event outside the dropdown to close it
-          const event = new MouseEvent('mousedown', {
-            bubbles: true,
-            cancelable: true,
-            view: window,
-          });
-          document.dispatchEvent(event);
-        }, 10);
-      }
+      // `item.onClick` has already run, in `MenuPanel`. All that is left is
+      // closing.
+      //
+      // This used to dispatch a synthetic `mousedown` at `document` on a 10ms
+      // timer - a counterfeit "click outside" - because the overlay owned its
+      // open state privately and that was the only lever available. It worked by
+      // being indistinguishable from the click a mouse user had just made, and
+      // it broke the moment nobody had clicked: activating an item with the
+      // keyboard closed every other dropdown on the page that dismisses on
+      // outside clicks.
+      if (closeOnItemClick) setIsOpen(false);
     },
     [closeOnItemClick],
   );
 
   // The trigger opens a menu, and nothing said so: `Dropdown` adds no ARIA to
   // its trigger (deliberately - it does not know what its content is), so a
-  // screen reader announced a plain button. `Menu` does know, so it clones the
-  // one attribute that is true regardless of state.
-  //
-  // `aria-expanded` is the missing half and needs `Dropdown` to expose its open
-  // state; see the note on the nested trigger above.
+  // screen reader announced a plain button. `Menu` does know, and now that it
+  // owns the open state it can describe that too (SC 4.1.2), which was the
+  // missing half while the state was private.
   const describedTrigger = React.isValidElement(trigger)
-    ? React.cloneElement(trigger as React.ReactElement<{ 'aria-haspopup'?: string }>, {
-        'aria-haspopup': 'menu',
-      })
+    ? React.cloneElement(
+        trigger as React.ReactElement<{ 'aria-haspopup'?: string; 'aria-expanded'?: boolean }>,
+        { 'aria-haspopup': 'menu', 'aria-expanded': isOpen },
+      )
     : trigger;
 
   const dropdown = (
     <Dropdown
+      open={isOpen}
+      onOpenChange={setIsOpen}
       trigger={describedTrigger}
       content={<MenuPanel items={items} onItemClick={handleItemClick} />}
       minWidth={minWidth}

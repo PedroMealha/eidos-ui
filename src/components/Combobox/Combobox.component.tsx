@@ -47,7 +47,6 @@ export const Combobox: React.FC<ComboboxProps> = ({
   const comboboxTriggerRef = useRef<HTMLDivElement>(null);
 
   /** The 0-height span that IS the Dropdown trigger element - programmatically clicked to open */
-  const dropdownSpanRef = useRef<HTMLSpanElement>(null);
 
   /** Native input element */
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,7 +91,6 @@ export const Combobox: React.FC<ComboboxProps> = ({
   }, []);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [menuKey, setMenuKey] = useState(0);
   const [focusedIndex, setFocusedIndex] = useState(-1);
 
   // ─── Sync controlled value ────────────────────────────────────────────────
@@ -169,21 +167,23 @@ export const Combobox: React.FC<ComboboxProps> = ({
    */
   const openDropdown = useCallback(() => {
     if (isOpenRef.current || disabled) return;
-    dropdownSpanRef.current?.click(); // opens the Dropdown (bubbles to trigger)
+    // This used to synthesise a click on a hidden zero-height `span` so it would
+    // bubble to the dropdown's trigger wrapper, because the overlay kept its
+    // open state private and a click was the only way to change it.
     isOpenRef.current = true;
     setIsOpen(true);
   }, [disabled]);
 
   /**
-   * Close the dropdown by remounting it (menuKey increment resets internal state).
-   * Optionally revert inputValue to the last committed value.
+   * Close the dropdown, optionally reverting `inputValue` to the last committed
+   * value. This used to close it by remounting the whole subtree through a
+   * changing `key`.
    */
   const closeDropdown = useCallback(
     (revertInput = false) => {
       isOpenRef.current = false;
       setIsOpen(false);
       setFocusedIndex(-1);
-      setMenuKey((prev) => prev + 1);
 
       if (revertInput) {
         const match = options.find((o) => o.value === committedValueRef.current);
@@ -207,7 +207,6 @@ export const Combobox: React.FC<ComboboxProps> = ({
       isOpenRef.current = false;
       setIsOpen(false);
       setFocusedIndex(-1);
-      setMenuKey((prev) => prev + 1);
 
       const current = inputValueRef.current;
       const committed = committedValueRef.current;
@@ -278,7 +277,6 @@ export const Combobox: React.FC<ComboboxProps> = ({
       isOpenRef.current = false;
       setIsOpen(false);
       setFocusedIndex(-1);
-      setMenuKey((prev) => prev + 1);
 
       // Validate
       if (!allowFreeText) {
@@ -586,14 +584,12 @@ export const Combobox: React.FC<ComboboxProps> = ({
           those interactions in our mousedown listener and onKeyDown handler.
         */}
         <Dropdown
-          key={menuKey}
-          trigger={
-            <span
-              ref={dropdownSpanRef}
-              className="eidos-combobox-dropdown-anchor"
-              aria-hidden="true"
-            />
-          }
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          // Positioning comes from `triggerRef` below; this span is only here
+          // because a trigger is required. It used to carry a ref so that
+          // `openDropdown` could click it.
+          trigger={<span className="eidos-combobox-dropdown-anchor" aria-hidden="true" />}
           content={
             <div
               id={`${uid}-listbox`}

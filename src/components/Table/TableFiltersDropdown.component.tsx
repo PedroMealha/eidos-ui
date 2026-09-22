@@ -29,8 +29,10 @@ export const TableFiltersDropdown = <T extends object>({
   defaultFilters = {},
   className = '',
 }: TableFiltersDropdownProps<T>) => {
-  // State for forcing dropdown to close by remounting
-  const [dropdownKey, setDropdownKey] = useState(0);
+  // Controlled open state, handed to `Dropdown`. This used to be a counter
+  // whose only job was to change the dropdown's `key` and remount it, because
+  // the overlay owned the real state privately.
+  const [isOpen, setIsOpen] = useState(false);
 
   // Local state for pending filters (before Apply is clicked)
   const [pendingFilters, setPendingFilters] = useState<TableFilters>(() => {
@@ -212,7 +214,7 @@ export const TableFiltersDropdown = <T extends object>({
     onFiltersChange(cleanedFilters);
 
     // Close dropdown after applying filters
-    setDropdownKey((prev) => prev + 1);
+    setIsOpen(false);
   };
 
   // Reset to current filters (discard pending changes)
@@ -233,7 +235,7 @@ export const TableFiltersDropdown = <T extends object>({
     onFiltersChange({}); // Apply the reset immediately (no temp filters)
 
     // Close dropdown after clearing filters
-    setDropdownKey((prev) => prev + 1);
+    setIsOpen(false);
   };
 
   // Render filter input based on column type
@@ -249,7 +251,10 @@ export const TableFiltersDropdown = <T extends object>({
             options={column.filterOptions || []}
             placeholder="Select value"
             clearable={true}
-            inputProps={{ size: 'sm' }}
+            inputProps={{
+              size: 'sm',
+              'aria-label': `Filter value${column.label ? ` for ${column.label}` : ''}`,
+            }}
             fullWidth
           />
         );
@@ -267,7 +272,10 @@ export const TableFiltersDropdown = <T extends object>({
             ]}
             placeholder="Select value"
             clearable={false}
-            inputProps={{ size: 'sm' }}
+            inputProps={{
+              size: 'sm',
+              'aria-label': `Filter value${column.label ? ` for ${column.label}` : ''}`,
+            }}
             fullWidth
           />
         );
@@ -372,6 +380,12 @@ export const TableFiltersDropdown = <T extends object>({
         size="sm"
         icon={Funnel}
         aria-label={hasActiveFilters ? `Filters (${activeFilterCount} active)` : 'Filters'}
+        // Now that the open state lives here it can be described honestly. The
+        // trigger is a real `button`, which supports `aria-expanded`; `DatePicker`'s
+        // is a bare text input, which does not - giving that one a truthful
+        // expanded state needs it to become a `combobox` first, the way `Select`'s
+        // trigger already is.
+        aria-expanded={isOpen}
         className={hasActiveFilters ? 'eidos-table-active-filter-button' : ''}
       />
     </Badge>
@@ -404,7 +418,7 @@ export const TableFiltersDropdown = <T extends object>({
                     options={allColumns}
                     placeholder="Select column"
                     clearable={false}
-                    inputProps={{ size: 'sm' }}
+                    inputProps={{ size: 'sm', 'aria-label': 'Filter column' }}
                     fullWidth
                   />
                 </div>
@@ -486,7 +500,8 @@ export const TableFiltersDropdown = <T extends object>({
 
   return (
     <Dropdown
-      key={dropdownKey}
+      open={isOpen}
+      onOpenChange={setIsOpen}
       trigger={triggerButton}
       content={dropdownContent}
       placement="bottom"

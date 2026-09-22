@@ -51,7 +51,11 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   maxHeight,
   autoWidth = false,
 }: DatePickerProps<T>) => {
-  const [dropdownKey, setDropdownKey] = useState(0);
+  // The picker owns whether it is open and hands it to `Dropdown` as a
+  // controlled value. It used to force a close by incrementing a `key`, which
+  // remounted the whole subtree - the only lever available while the overlay
+  // kept that state private.
+  const [isOpen, setIsOpen] = useState(false);
   // Two different, deliberately different, notions of "timezone" are in
   // play here, matching two genuinely different kinds of value:
   //
@@ -259,7 +263,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           };
 
           onChange?.(newValue);
-          setDropdownKey((prev) => prev + 1); // Close dropdown
+          setIsOpen(false);
           break;
         }
 
@@ -350,7 +354,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
             };
 
             onChange?.(newValue);
-            setDropdownKey((prev) => prev + 1); // Close dropdown after completing range
+            setIsOpen(false); // the range is complete
           }
           break;
         }
@@ -486,7 +490,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       })();
 
       onChange?.(clearedValue);
-      setDropdownKey((prev) => prev + 1); // Close dropdown
+      setIsOpen(false);
     },
     [mode, time, onChange, defaultStartTime, defaultEndTime],
   );
@@ -687,7 +691,8 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       className={`eidos-date-picker-container${fullWidth ? ` ${fullWidthModifier('eidos-date-picker-container')}` : ''} ${className}`.trim()}
     >
       <Dropdown
-        key={dropdownKey}
+        open={isOpen}
+        onOpenChange={setIsOpen}
         trigger={triggerElement}
         content={dropdownContent}
         placement="bottom"

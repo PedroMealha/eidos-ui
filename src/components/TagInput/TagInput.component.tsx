@@ -36,12 +36,17 @@ export const TagInput: React.FC<TagInputProps> = ({
   const fieldRef = useRef<HTMLDivElement>(null);
 
   /** The 0-height span that IS the Dropdown trigger element - programmatically clicked to open */
-  const dropdownSpanRef = useRef<HTMLSpanElement>(null);
 
   const hasSuggestions = suggestions !== undefined;
-  const isSuggestionsOpenRef = useRef(false);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
-  const [suggestionsMenuKey, setSuggestionsMenuKey] = useState(0);
+  // Read synchronously by the document `mousedown` listener and the key
+  // handlers, where a value captured at render would be stale. Kept in step by
+  // an effect rather than assigned at every call site, which is how the two
+  // used to drift apart.
+  const isSuggestionsOpenRef = useRef(isSuggestionsOpen);
+  useEffect(() => {
+    isSuggestionsOpenRef.current = isSuggestionsOpen;
+  }, [isSuggestionsOpen]);
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
 
   const isControlled = value !== undefined;
@@ -115,7 +120,9 @@ export const TagInput: React.FC<TagInputProps> = ({
 
   const openSuggestions = useCallback(() => {
     if (isSuggestionsOpenRef.current || disabled || !hasSuggestions) return;
-    dropdownSpanRef.current?.click(); // opens the Dropdown (bubbles to trigger)
+    // This used to synthesise a click on a hidden zero-height `span` so that it
+    // would bubble to the dropdown's trigger wrapper - the only way in, while
+    // the overlay owned its open state privately.
     isSuggestionsOpenRef.current = true;
     setIsSuggestionsOpen(true);
   }, [disabled, hasSuggestions]);
@@ -124,7 +131,6 @@ export const TagInput: React.FC<TagInputProps> = ({
     isSuggestionsOpenRef.current = false;
     setIsSuggestionsOpen(false);
     setFocusedSuggestionIndex(-1);
-    setSuggestionsMenuKey((prev) => prev + 1);
   }, []);
 
   const selectSuggestion = useCallback(
@@ -294,14 +300,12 @@ export const TagInput: React.FC<TagInputProps> = ({
 
         {hasSuggestions && (
           <Dropdown
-            key={suggestionsMenuKey}
-            trigger={
-              <span
-                ref={dropdownSpanRef}
-                className="eidos-tag-input-dropdown-anchor"
-                aria-hidden="true"
-              />
-            }
+            open={isSuggestionsOpen}
+            onOpenChange={setIsSuggestionsOpen}
+            // Positioning is anchored to the field via `triggerRef` below; this
+            // span is only here because a trigger is required. It used to carry
+            // a ref purely so `openSuggestions` could click it.
+            trigger={<span className="eidos-tag-input-dropdown-anchor" aria-hidden="true" />}
             content={
               <div
                 id={`${uid}-tag-suggestions`}

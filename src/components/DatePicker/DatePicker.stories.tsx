@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DatePicker } from './DatePicker.component';
 import { useState } from 'react';
 import type { DateTimeValue } from './DatePicker.types';
+import { expect, waitFor } from 'storybook/test';
 
 const meta: Meta<typeof DatePicker> = {
   title: 'Data/DatePicker',
@@ -349,5 +350,51 @@ export const DateConstraints: Story = {
         </div>
       </div>
     );
+  },
+};
+
+// ============================================================================
+// CHARACTERISATION - pinned before the picker stops closing itself by remounting
+// ============================================================================
+//
+// `DatePicker` forced its dropdown shut by incrementing a `key`, because the
+// overlay's open state was private. Replacing that with a controlled open state
+// must not change any of what follows.
+
+export const ClosesOnCommit: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function CharacterisationStory() {
+    const [value, setValue] = useState<DateTimeValue<'single'> | undefined>(undefined);
+    return (
+      // Named through `inputProps` - `DatePicker` has no `label` prop of its
+      // own, and without a name the field is an unlabelled input, which is the
+      // story's fault rather than the component's.
+      <DatePicker mode="single" value={value} onChange={setValue} inputProps={{ label: 'Date' }} />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = () => canvas.getByRole('textbox');
+
+    await step('clicking the field opens the calendar', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
+
+    await step('picking a day commits it and closes the calendar', async () => {
+      const days = document.querySelectorAll<HTMLButtonElement>(
+        '.eidos-calendar-date-cell:not(.eidos-calendar-other-month):not([disabled])',
+      );
+      expect(days.length, 'no selectable day was rendered').toBeGreaterThan(0);
+      await userEvent.click(days[10]);
+
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      await waitFor(() => expect(field()).not.toHaveValue(''));
+    });
+
+    await step('and it can be reopened afterwards', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
   },
 };

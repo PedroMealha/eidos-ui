@@ -20,7 +20,7 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **491 stories** covering **58
+Against **WCAG 2.2 Level AA**, across **495 stories** covering **58
 components**.
 
 |                     |                                                                                                                                                                                                                  |
@@ -111,14 +111,13 @@ arrow keys to move with wrapping, `Home`/`End`, `Enter`/`Space` to activate,
 trigger on close.
 
 This is also how `Select` was found to be unusable by keyboard, and fixed.
-`ArrowDown`, `ArrowUp`, `Enter` and `Space` updated a flag that reached nothing
-
-- the underlying overlay kept the real open state to itself - so the list never
-  appeared, `Enter` still committed the option at that invisible index, and
-  selecting dropped focus onto `<body>`. axe reported none of it, because the
-  state only existed after a keypress. `Select` now follows the ARIA
-  select-only-combobox pattern (arrow keys, `Enter`, `Space` open it; `Escape`
-  closes it; focus stays on the field throughout), pinned by a story test.
+`ArrowDown`, `ArrowUp`, `Enter` and `Space` updated a flag that reached nothing,
+because the underlying overlay kept the real open state to itself. So the list
+never appeared, `Enter` still committed the option at that invisible index, and
+selecting dropped focus onto `<body>`. axe reported none of it, because the
+state only existed after a keypress. `Select` now follows the ARIA
+select-only-combobox pattern (arrow keys, `Enter`, `Space` open it; `Escape`
+closes it; focus stays on the field throughout), pinned by a story test.
 
 One known gap of this kind remains: **`CommandPalette`'s custom trigger.** The
 `trigger={<YourNode />}` form (not the built-in button) wraps a non-interactive
