@@ -502,6 +502,11 @@ export const KeyboardSubmenu: Story = {
     const submenuTrigger = await screen.findByRole('menuitem', { name: /Send to/ });
     await waitFor(() => expect(document.activeElement).not.toBe(trigger));
 
+    await step('the closed submenu trigger reports that it is collapsed', async () => {
+      expect(submenuTrigger).toHaveAttribute('aria-haspopup', 'menu');
+      expect(submenuTrigger).toHaveAttribute('aria-expanded', 'false');
+    });
+
     await step('ArrowRight opens the submenu and moves focus into it', async () => {
       await userEvent.keyboard('{ArrowDown}');
       expect(document.activeElement).toBe(submenuTrigger);
@@ -515,6 +520,20 @@ export const KeyboardSubmenu: Story = {
           screen.getByRole('menuitem', { name: /Email/ }),
           'focus did not move into the submenu',
         ).toBe(document.activeElement),
+      );
+      expect(submenuTrigger).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    await step('ArrowLeft closes the submenu only, and returns focus to it', async () => {
+      await userEvent.keyboard('{ArrowLeft}');
+
+      await waitFor(() => expect(screen.getAllByRole('menu')).toHaveLength(1));
+      expect(submenuTrigger).toHaveAttribute('aria-expanded', 'false');
+      await waitFor(() =>
+        expect(
+          document.activeElement,
+          'closing a submenu must put focus back on the item that opened it',
+        ).toBe(submenuTrigger),
       );
     });
   },

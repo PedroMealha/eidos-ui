@@ -14,6 +14,7 @@ export const Popover: React.FC<PopoverProps> = ({
   closeOnEscape = true,
   disabled = false,
   isOpen,
+  open: openProp,
   defaultOpen,
   onOpenChange,
   maxWidth = 320,
@@ -25,9 +26,14 @@ export const Popover: React.FC<PopoverProps> = ({
   const isClient = useIsClient();
 
   // ── Controlled / uncontrolled bridge ──────────────────────────────────────
-  const isControlled = isOpen !== undefined;
+  //
+  // `open` is the canonical name, matching `Dropdown` and `CommandPalette`.
+  // `isOpen` is the original spelling, kept working rather than renamed out
+  // from under anyone.
+  const controlledOpen = openProp ?? isOpen;
+  const isControlled = controlledOpen !== undefined;
   const [localOpen, setLocalOpen] = useState(defaultOpen ?? false);
-  const isVisible = isControlled ? isOpen! : localOpen;
+  const isVisible = isControlled ? controlledOpen! : localOpen;
 
   // ── Positioning state ─────────────────────────────────────────────────────
   const [popoverState, setPopoverState] = useState<PopoverState>({

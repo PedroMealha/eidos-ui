@@ -38,6 +38,15 @@ export interface MenuProps {
   items: MenuItemType[];
   className?: string;
   onItemClick?: (item: MenuItem) => void;
+  /**
+   * Called when the panel itself asks to be dismissed - `ArrowLeft` in a
+   * submenu, which the ARIA menu pattern defines as "close this level and go
+   * back to the item that opened it".
+   *
+   * A submenu cannot close itself: the overlay holding it belongs to the
+   * parent panel. Whoever renders the panel owns that, so it is passed in.
+   */
+  onRequestClose?: () => void;
 }
 
 export interface NestedMenuProps {

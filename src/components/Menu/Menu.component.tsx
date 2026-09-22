@@ -32,7 +32,12 @@ import { renderIcon, useDialogFocus } from '../../utils';
  * move, Home/End to jump, Enter/Space to activate, ArrowRight to open a
  * submenu. Focus enters on open and returns to the trigger on close.
  */
-export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemClick }) => {
+export const MenuPanel: React.FC<MenuProps> = ({
+  items,
+  className = '',
+  onItemClick,
+  onRequestClose,
+}) => {
   const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef(new Map<string, HTMLElement>());
 
@@ -82,6 +87,11 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
   );
 
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  // Which submenu is open, owned here rather than inside each nested overlay:
+  // the trigger has to advertise `aria-expanded`, and `ArrowLeft` in the child
+  // has to be able to close it. Both were impossible while the overlay kept
+  // that state to itself.
+  const [openSubmenuId, setOpenSubmenuId] = useState<string | null>(null);
   // Validated rather than trusted: `items` can change while the menu is open
   // (a filtered list, an action that disables its neighbour), which would
   // otherwise leave the roving tabIndex on an id that no longer renders - and
@@ -121,11 +131,21 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
           event.preventDefault();
           focusAt(navigableIds.length - 1);
           break;
+        case 'ArrowLeft':
+          // Only meaningful in a submenu. `stopPropagation` keeps the parent
+          // panel - which is a React ancestor, portal notwithstanding - from
+          // treating the same keypress as its own.
+          if (onRequestClose) {
+            event.preventDefault();
+            event.stopPropagation();
+            onRequestClose();
+          }
+          break;
         default:
           break;
       }
     },
-    [navigableIds, activeId],
+    [navigableIds, activeId, onRequestClose],
   );
 
   // Render individual menu item
@@ -190,10 +210,8 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
           <div
             ref={(element) => registerItem(item.id, element)}
             role="menuitem"
-            // Honest but static. `aria-expanded` would be better still, and
-            // cannot be set from here: `Dropdown` owns the open state and
-            // exposes no controlled `open`/`onOpenChange` API to read it from.
             aria-haspopup="menu"
+            aria-expanded={openSubmenuId === item.id}
             aria-disabled={item.disabled || undefined}
             tabIndex={!item.disabled && item.id === activeId ? 0 : -1}
             className={[
@@ -205,12 +223,12 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
             onKeyDown={(event) => {
               if (item.disabled) return;
               // ArrowRight is the menu idiom for "open this submenu"; Enter and
-              // Space do the same. Clicking the element is what opens it -
-              // `Dropdown`'s trigger wrapper is the click target - and the
-              // submenu's own `MenuPanel` then moves focus into itself.
+              // Space do the same. This used to synthesise a click on itself so
+              // the event would reach the overlay's trigger wrapper; the state
+              // is now right here.
               if (event.key === 'ArrowRight' || event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
-                event.currentTarget.click();
+                setOpenSubmenuId(item.id);
               }
             }}
           >
@@ -223,8 +241,19 @@ export const MenuPanel: React.FC<MenuProps> = ({ items, className = '', onItemCl
         return (
           <li key={item.id} role="none" className={`eidos-menu-nested-item`}>
             <Dropdown
+              open={openSubmenuId === item.id}
+              onOpenChange={(next) => setOpenSubmenuId(next ? item.id : null)}
               trigger={triggerElement}
-              content={<MenuPanel items={item.items} onItemClick={onItemClick} />}
+              content={
+                <MenuPanel
+                  items={item.items}
+                  onItemClick={onItemClick}
+                  // Lets `ArrowLeft` in the child close this level. Focus
+                  // returns to the trigger on its own - `useDialogFocus`
+                  // restores it when the panel unmounts.
+                  onRequestClose={() => setOpenSubmenuId(null)}
+                />
+              }
               placement="right"
               isNested={true}
               fullWidth

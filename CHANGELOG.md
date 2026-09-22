@@ -21,6 +21,10 @@ Entries land here as work happens, not written retroactively at release time
   the existing uncontrolled `defaultOpen`.
 - `Select.label` - visible label, matching `Input`, `Checkbox`, `Radio` and
   `Textarea`. It was previously reachable only through `inputProps`.
+- `Popover.open` - canonical name for the controlled open state, matching
+  `Dropdown` and `CommandPalette`. `isOpen` still works and is deprecated.
+- `MenuPanel.onRequestClose` - lets a submenu ask the panel that owns it to
+  close, which is what `ArrowLeft` needs.
 - `Select` warns in development when it has no accessible name.
 
 ### Changed
@@ -69,6 +73,11 @@ Entries land here as work happens, not written retroactively at release time
   being announced as just "button", and its month and year selects are labelled.
 - `TableFiltersDropdown`'s column and value pickers, and `DataGrid`'s quick
   filters, have accessible names instead of relying on a placeholder.
+- `Menu`'s submenu triggers report `aria-expanded`, and `ArrowLeft` closes a
+  submenu and returns focus to the item that opened it.
+- `CommandPalette`'s custom trigger is operable by keyboard: a non-interactive
+  one becomes a real control, and an interactive one is no longer wrapped in a
+  second, nameless tab stop.
 
 
 ## [3.4.0] - 2026-09-21

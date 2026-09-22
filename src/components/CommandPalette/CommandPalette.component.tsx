@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 
 import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowUp, Command, CornerDownLeft, Search } from 'lucide-react';
 import type { CommandItem, CommandPaletteProps } from './CommandPalette.types';
-import { useDialogFocus, useIsClient } from '../../utils';
+import { useDialogFocus, useIsClient, FOCUSABLE_SELECTOR } from '../../utils';
 import { Kbd } from '../Kbd';
 import './CommandPalette.scss';
 
@@ -264,6 +264,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     [close],
   );
 
+  // Whether the custom trigger wrapper has to be the control itself, i.e.
+  // whether what the caller passed contains nothing focusable. Measured after
+  // render, like `Tooltip`'s equivalent.
+  const customTriggerRef = useRef<HTMLDivElement>(null);
+  const [customTriggerIsControl, setCustomTriggerIsControl] = useState(false);
+
+  useEffect(() => {
+    const element = customTriggerRef.current;
+    setCustomTriggerIsControl(!!element && element.querySelector(FOCUSABLE_SELECTOR) === null);
+  }, [trigger]);
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   // The inline trigger (if any) must render regardless of `isMounted` - it's
@@ -271,7 +282,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   // the portal's own mount state.
   const triggerNode =
     trigger === true ? (
-      <button type="button" className="eidos-cmd-trigger-default" onClick={openPalette}>
+      <button
+        type="button"
+        className="eidos-cmd-trigger-default"
+        onClick={openPalette}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+      >
         <span>{triggerLabel}</span>
         {shortcutKey && (
           <Kbd size="sm" className="eidos-cmd-trigger-kbd">
@@ -281,7 +298,39 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         )}
       </button>
     ) : trigger ? (
-      <div className="eidos-cmd-trigger" role="button" tabIndex={0} onClick={openPalette}>
+      // The wrapper only becomes a control when what it wraps is not one.
+      //
+      // It used to be `role="button" tabIndex={0}` unconditionally, with no key
+      // handler, which was wrong in both directions at once: around an
+      // interactive child it produced a button inside a button and a second tab
+      // stop, and around a non-interactive one - `Avatar`, which is the
+      // documented example - it produced a focusable element that announced
+      // itself as a button and did nothing when activated.
+      //
+      // Measured from the DOM rather than guessed from the node type, because
+      // `trigger` is an arbitrary `ReactNode` and the control may be nested
+      // inside it. Same approach as `Tooltip`.
+      <div
+        ref={customTriggerRef}
+        className="eidos-cmd-trigger"
+        onClick={openPalette}
+        {...(customTriggerIsControl
+          ? {
+              role: 'button',
+              tabIndex: 0,
+              'aria-haspopup': 'dialog' as const,
+              'aria-expanded': open,
+              onKeyDown: (event: React.KeyboardEvent) => {
+                // A `div` is not a button: Enter and Space produce no click of
+                // their own.
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  openPalette();
+                }
+              },
+            }
+          : {})}
+      >
         {trigger}
       </div>
     ) : null;

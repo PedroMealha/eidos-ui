@@ -393,3 +393,57 @@ export const FocusEntersWhenOpenOnFirstRender: Story = {
     });
   },
 };
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * A custom `trigger` that is not itself interactive - the documented example is
+ * an `Avatar` - used to be wrapped in `<div role="button" tabIndex={0}>` with no
+ * key handler. So it took focus, announced itself as a button, and did nothing
+ * when activated: WCAG 2.1.1, in the one configuration the docs demonstrate.
+ *
+ * The wrapper now measures what it was handed, the way `Tooltip` does: a
+ * non-interactive child makes the wrapper a real control, and an interactive
+ * one leaves the wrapper as plain layout so there is no second tab stop and no
+ * button inside a button.
+ */
+export const CustomTriggerIsOperableByKeyboard: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { shortcutKey: null },
+  render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
+    <CommandPalette
+      {...args}
+      trigger={<Avatar name="Ada Lovelace" size="sm" />}
+      items={CMDP_ITEMS}
+    />
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    const trigger = canvas.getByRole('button');
+
+    await step('the wrapper is reachable and says what it does', async () => {
+      expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+      expect(trigger).toHaveAttribute('aria-expanded', 'false');
+      trigger.focus();
+      expect(document.activeElement).toBe(trigger);
+    });
+
+    await step('Enter opens the palette', async () => {
+      await userEvent.keyboard('{Enter}');
+      const dialog = await screen.findByRole('dialog');
+      // Focus lands a few frames after mount - the panel is hidden until its
+      // entrance transition applies, and focus cannot go to a hidden element.
+      // Pressing Escape before then would test nothing: the key would still be
+      // going to the trigger.
+      await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true));
+    });
+
+    await step('Escape closes it, and Space opens it again', async () => {
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+
+      trigger.focus();
+      await userEvent.keyboard(' ');
+      await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+    });
+  },
+};

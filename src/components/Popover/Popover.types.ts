@@ -26,7 +26,14 @@ export interface PopoverProps {
   /** Disable the trigger from opening the popover. */
   disabled?: boolean;
   /** Controlled open state. */
+  /**
+   * @deprecated Use `open`. Kept as an alias so nothing breaks; `open` is what
+   * `Dropdown` and `CommandPalette` take, and one name across the library is
+   * worth more than this one's head start.
+   */
   isOpen?: boolean;
+  /** Controlled open state. Takes precedence over the deprecated `isOpen`. */
+  open?: boolean;
   /** Uncontrolled initial open state. */
   defaultOpen?: boolean;
   /** Callback when open state changes. */

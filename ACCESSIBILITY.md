@@ -20,7 +20,7 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **495 stories** covering **58
+Against **WCAG 2.2 Level AA**, across **496 stories** covering **58
 components**.
 
 |                     |                                                                                                                                                                                                                  |
@@ -119,11 +119,18 @@ state only existed after a keypress. `Select` now follows the ARIA
 select-only-combobox pattern (arrow keys, `Enter`, `Space` open it; `Escape`
 closes it; focus stays on the field throughout), pinned by a story test.
 
-One known gap of this kind remains: **`CommandPalette`'s custom trigger.** The
-`trigger={<YourNode />}` form (not the built-in button) wraps a non-interactive
-node in an element that announces as a button but has no key handler, so `Enter`
-does nothing there. The built-in trigger and an interactive custom trigger are
-both unaffected.
+`CommandPalette`'s custom trigger was the same shape and is also fixed. Passing
+`trigger={<YourNode />}` wrapped it in an element that announced itself as a
+button, took focus, and did nothing when activated - in the one configuration
+the documentation demonstrates. The wrapper now measures what it was given: a
+non-interactive child makes it a real control with a key handler, an interactive
+one leaves it as plain layout, so there is no second tab stop and no nested
+button. Pinned by a story test.
+
+No gaps of this kind are currently known. That is a statement about what has
+been driven and measured, not a guarantee - the two above were found by
+operating components rather than by scanning them, and both had been shipping
+for some time.
 
 ## What remains yours
 
