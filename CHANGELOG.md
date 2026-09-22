@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [3.5.0] - 2026-09-22
+
 ### Added
 
 - `Dropdown.role` - ARIA role for the portaled content, for panels that own
@@ -82,7 +84,6 @@ Entries land here as work happens, not written retroactively at release time
 - `CommandPalette`'s custom trigger is operable by keyboard: a non-interactive
   one becomes a real control, and an interactive one is no longer wrapped in a
   second, nameless tab stop.
-
 
 ## [3.4.0] - 2026-09-21
 
