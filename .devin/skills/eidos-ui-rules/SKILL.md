@@ -1620,6 +1620,52 @@ collapses a function's closing `);`/`};` onto one line, independent of any
 manual edit. Disable format-on-save for `.mdx` there before trusting further
 edits to stick.
 
+### A repeated guide-page element wraps itself - don't nest a list of them in MDX
+
+`Releases.mdx` renders a release as a collapsed `<ReleaseCard>`, and each card
+is **its own single-item `Accordion`** rather than seventeen children of one
+shared `<ReleaseAccordion>`. The shared wrapper is the tidier structure and the
+wrong choice here: it puts a long list of JSX elements _inside_ a multi-line JSX
+element, which is the exact construct every bug in the section above came from,
+and a formatter re-indenting those children is enough to change what they parse
+as. The flat version also keeps the snippet `promote-changelog.js` generates
+pasteable anywhere in the file, with no wrapper to land inside.
+
+Two consequences worth copying if another guide page grows a repeated element:
+
+- **Derive per-instance state, don't pass it.** Which card starts open is
+  `version === packageVersion`, not a `defaultOpen` prop - a prop would have to
+  be moved from one card to the next by hand at every release, and nothing would
+  fail if it were forgotten. Same rule as the derived counts on `Welcome`.
+- **One accordion per item means no single-open coordination.** That was wanted
+  here (two releases can be compared); check it is wanted before copying.
+
+Also note what collapsing content costs: a closed panel is still in the DOM,
+clipped to zero height, so browser find-in-page matches text nobody can see.
+Acceptable on `Releases` because the trigger rows carry the version numbers
+people actually search for - but it is a real trade, not a free one.
+
+### Guide-page styling that a pseudo-class needs goes in `.storybook/preview-docs.scss`
+
+Guide-page JSX styles inline in its `*.docs.tsx`, and that stays the default.
+`preview-docs.scss` exists only for what an inline `style` structurally cannot
+express - a pseudo-class, a descendant selector - because a runtime `<style>`
+element is not an option here (this library deliberately never generates one).
+It is imported from `preview.ts`, so it is Storybook-only and never reaches
+`dist/`.
+
+It currently holds exactly one rule, and the reason generalises: in the
+`default` `Accordion` variant an item gets a bottom border and a `:first-child`
+gets a top one, and **a single-item accordion's item is always both** - so
+stacking per-card accordions renders 2px between every pair. Dropping the bottom
+border leaves one rule above each card, including the first, which doubles as
+the separator from the intro prose. Whenever a variant's borders are written
+against sibling position, check what they do when every instance is an only
+child.
+
+Don't migrate existing inline guide-page styles into this file wholesale; a
+second place for the same concern is how the `GuideHero` duplication happened.
+
 ### Storybook's own CSP posture is not this library's to fix
 
 Storybook's manager UI and `addon-docs` blocks (`<Canvas>`/`<Controls>`,

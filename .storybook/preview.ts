@@ -4,6 +4,8 @@ import type { Preview } from '@storybook/react-vite';
 // system fallback rather than the theme's own Plus Jakarta Sans.
 import '../src/styles/index.scss';
 import './preview-fonts.scss';
+// Storybook-only, for the guide pages - see the file's own header.
+import './preview-docs.scss';
 
 const preview: Preview = {
   parameters: {

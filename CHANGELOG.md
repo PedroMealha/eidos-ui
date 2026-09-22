@@ -13,6 +13,13 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- `Accordion` keeps an open panel at its content's height instead of the height
+  measured when it opened, so content that reflows afterwards - a narrower
+  viewport, a late-loading font, a nested collapsible - is no longer silently
+  clipped.
+
 ## [3.5.0] - 2026-09-22
 
 ### Added
@@ -92,6 +99,18 @@ Entries land here as work happens, not written retroactively at release time
 - `Input.posIconLabel` - accessible name for the `posIconButton`. Optional
   only to avoid a breaking change; omitting it logs a dev warning and falls
   back to a generic name.
+- `h5`, `h6` and `small` are styled. The browser's defaults for `h5` and
+  `h6` are `0.83em` and `0.67em`, which against this library's 14px body
+  resolve to roughly 11.6px and 9.4px - both **smaller than the paragraph
+  beneath them**. Any document using a six-level outline had two heading
+  levels that read as fine print. `small` covers captions and metadata.
+- `ACCESSIBILITY.md` - what is tested against WCAG 2.2 AA and how, the seven
+  documented SC 1.4.3 exemptions, what remains the consuming application's
+  responsibility, and what has not been done. It deliberately does not claim
+  a conformance level.
+- `ColorPicker.ariaLabel` - names the trigger when the label is rendered
+  outside the component, as `ThemeEditor` does. Without it every picker on
+  that page was announced as "Open colour picker".
 
 ### Changed
 
@@ -105,21 +124,6 @@ Entries land here as work happens, not written retroactively at release time
   2.90:1 - under the 3:1 that SC 1.4.1 requires when colour is the only cue.
   Only bare anchors are affected; `Breadcrumb` and `Conversation` already set
   their own `text-decoration`.
-
-### Added
-
-- `h5`, `h6` and `small` are styled. The browser's defaults for `h5` and
-  `h6` are `0.83em` and `0.67em`, which against this library's 14px body
-  resolve to roughly 11.6px and 9.4px - both **smaller than the paragraph
-  beneath them**. Any document using a six-level outline had two heading
-  levels that read as fine print. `small` covers captions and metadata.
-- `ACCESSIBILITY.md` - what is tested against WCAG 2.2 AA and how, the seven
-  documented SC 1.4.3 exemptions, what remains the consuming application's
-  responsibility, and what has not been done. It deliberately does not claim
-  a conformance level.
-- `ColorPicker.ariaLabel` - names the trigger when the label is rendered
-  outside the component, as `ThemeEditor` does. Without it every picker on
-  that page was announced as "Open colour picker".
 
 ### Fixed
 
@@ -227,6 +231,8 @@ Entries land here as work happens, not written retroactively at release time
   element changed shape between the closed and open states, so React
   destroyed and recreated the button the user had just clicked, losing focus
   with it.
+
+## [3.3.0] - 2026-09-21
 
 ### Added
 

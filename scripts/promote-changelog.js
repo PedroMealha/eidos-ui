@@ -18,6 +18,7 @@
  */
 import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { c, token } from './ansi.js';
 import { BOILERPLATE, impliedBump, rank, unreleasedContent } from './changelog-bump.js';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -169,8 +170,8 @@ if (rank(bump) < rank(implied)) {
       ? 'a literal "**Breaking**" entry requires major'
       : 'an "### Added" entry requires at least minor';
   console.error(
-    `✖ [Unreleased] requires a ${implied} bump, but this run is ${bump} - ${why}.\n` +
-      `  Re-run as \`npm run release -- ${implied}\`.`,
+    `${c.red('✖')} [Unreleased] requires a ${implied} bump, but this run is ${bump} - ${why}.\n` +
+      `  Re-run as ${token(`npm run release -- ${implied}`)}.`,
   );
   process.exit(1);
 }
@@ -182,9 +183,12 @@ const promoted = changelog.replace(
 writeFileSync('./CHANGELOG.md', promoted);
 execSync('git add CHANGELOG.md');
 
-console.log(`✓ CHANGELOG.md: [Unreleased] → [${newVersion}] - ${date}`);
+console.log(`${c.green('✓')} CHANGELOG.md: [Unreleased] → [${newVersion}] - ${date}`);
 
-const snippet = `<ReleaseDivider />\n\n${buildSnippet(newVersion, date, bump, sections)}\n`;
+// No separator element to prepend: each card renders as its own single-item
+// `Accordion` and supplies its own rule (see `ReleaseCard` in
+// `src/Releases.docs.tsx`), so the card is the whole paste.
+const snippet = `${buildSnippet(newVersion, date, bump, sections)}\n`;
 
 // Also written to disk, not just printed: a long bullet wraps at the terminal
 // width, and copying a wrapped line out of scrollback silently breaks a word in
@@ -214,17 +218,15 @@ try {
   // Falls through to the hint below.
 }
 
-console.log(`%c\nRelease card written to ${SNIPPET_PATH}`, 'color: green;');
+console.log(`\nRelease card written to ${token(SNIPPET_PATH)}`);
 console.log(
-  '%cCopy it from there into src/Releases.mdx (adjust wording/placement as needed),',
-  'color: green;',
+  `Copy it from there into ${token('src/Releases.mdx')} (adjust wording/placement as needed),`,
 );
 if (formatted) {
-  console.log('%cthen `npm run verify` - it is the only thing that parses .mdx.', 'color: orange;');
+  console.log(`then ${token('npm run verify')} - it is the only thing that parses .mdx.`);
 } else {
   console.log(
-    '%cthen `npm run prettier:fix` (auto-format failed) and `npm run verify`.',
-    'color: orange;',
+    `then ${token('npm run prettier:fix')} (auto-format failed) and ${token('npm run verify')}.`,
   );
 }
 // console.log(snippet);

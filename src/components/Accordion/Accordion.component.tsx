@@ -86,19 +86,44 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
 }) => {
   const { openValues, toggle, size, color } = useAccordion();
   const isOpen = openValues.includes(value);
-  const contentRef = useRef<HTMLDivElement>(null);
+  // The unclipped content itself, not the wrapper around it. The wrapper's own
+  // height is what `maxHeight` below sets, so observing it would feed the
+  // observer its own output; the inner node is always laid out at its natural
+  // height regardless of the wrapper's clipping, so its size genuinely changes
+  // when its content does.
+  const innerRef = useRef<HTMLDivElement>(null);
   const triggerId = useId();
   const panelId = useId();
 
   // Drives the max-height CSS transition.
-  // On open: set to scrollHeight so the wrapper animates to its natural height.
+  // On open: set to the content's height so the wrapper animates to it.
   // On close: set to 0 so the wrapper animates shut.
   // The CSS transition on .eidos-accordion-content-wrapper handles the animation.
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
+  // `max-height` is a fixed px value, so it goes stale the moment the panel's
+  // content reflows after opening - a narrower viewport rewrapping prose, a
+  // font finishing loading, an image arriving, a nested collapsible opening.
+  // The wrapper is `overflow: hidden` with no scrollbar, so a stale value
+  // silently clips the tail of the panel with nothing on screen to suggest
+  // content is missing. Tracking the content for as long as the panel stays
+  // open is therefore part of the technique, not a refinement of it - which is
+  // what `DataGrid`'s row expansion (`useExpandAnimation`) already does.
   useEffect(() => {
-    if (!contentRef.current) return;
-    setMaxHeight(isOpen ? contentRef.current.scrollHeight : 0);
+    if (!isOpen) {
+      setMaxHeight(0);
+      return;
+    }
+
+    const node = innerRef.current;
+    if (!node) return;
+
+    const update = () => setMaxHeight(node.scrollHeight);
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
   }, [isOpen]);
 
   const itemClasses = [
@@ -139,11 +164,12 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
         id={panelId}
         role="region"
         aria-labelledby={triggerId}
-        ref={contentRef}
         className="eidos-accordion-content-wrapper"
         style={{ maxHeight: `${maxHeight}px` }}
       >
-        <div className="eidos-accordion-content">{children}</div>
+        <div ref={innerRef} className="eidos-accordion-content">
+          {children}
+        </div>
       </div>
     </div>
   );

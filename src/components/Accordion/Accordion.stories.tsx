@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChevronRight, Settings, User, Star, Bell, Lock } from 'lucide-react';
+import { expect, waitFor } from 'storybook/test';
+import { Button } from '../Button';
 import { Accordion, AccordionItem } from './Accordion.component';
 
 const meta = {
@@ -319,6 +321,65 @@ export const Disabled: Story = {
       </AccordionItem>
     </Accordion>
   ),
+};
+
+// ============================================================================
+// REGRESSION - hidden from the sidebar, still run by `npm run test:stories`
+// ============================================================================
+
+/**
+ * An open panel is `overflow: hidden` clipped to a `max-height` measured in JS,
+ * and that measurement used to be taken exactly once, when the item opened.
+ * Anything that changed the content's height afterwards - a narrower viewport
+ * rewrapping prose, a font finishing loading, a nested collapsible, content
+ * arriving from a fetch - left the panel pinned at the old height, silently
+ * clipping its tail with no scrollbar and nothing on screen to suggest
+ * anything was missing.
+ *
+ * Every other story here holds a sentence or two, which is why this went
+ * unnoticed: the bug needs content that can actually grow. `Releases.mdx`
+ * (~30 bullets of prose per release) is what surfaced it.
+ *
+ * The assertion is `clientHeight === scrollHeight` on the clipped wrapper -
+ * i.e. nothing is cut off - rather than a specific pixel height, which would
+ * be a font-metrics dependency. Without the `ResizeObserver` it fails by the
+ * height of the paragraph the play function adds.
+ */
+export const TracksContentHeightWhileOpen: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: function GrowingPanelStory() {
+    const [extra, setExtra] = useState(0);
+    return (
+      <Accordion defaultValue="grows">
+        <AccordionItem value="grows" label="Panel whose content grows">
+          <p style={{ margin: 0 }}>The paragraph this panel opened with.</p>
+          {Array.from({ length: extra }, (_, i) => (
+            <p key={i} style={{ margin: 0 }}>
+              A paragraph added after the panel was already open.
+            </p>
+          ))}
+          <Button size="sm" variant="outlined" onClick={() => setExtra((n) => n + 1)}>
+            Add a paragraph
+          </Button>
+        </AccordionItem>
+      </Accordion>
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panel = canvas.getByRole('region');
+
+    await step('the panel settles at its content height', async () => {
+      await waitFor(() => expect(panel.clientHeight).toBeGreaterThan(0));
+      await waitFor(() => expect(panel.clientHeight).toBe(panel.scrollHeight));
+    });
+
+    await step('growing the content re-measures instead of clipping', async () => {
+      const before = panel.clientHeight;
+      await userEvent.click(canvas.getByRole('button', { name: 'Add a paragraph' }));
+      await waitFor(() => expect(panel.clientHeight).toBeGreaterThan(before));
+      await waitFor(() => expect(panel.clientHeight).toBe(panel.scrollHeight));
+    });
+  },
 };
 
 // ============================================================================

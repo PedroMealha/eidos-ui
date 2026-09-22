@@ -1,0 +1,22 @@
+// Storybook-only styling for the top-level guide pages. Never shipped - it is
+// not part of `src/styles/index.scss` and so never reaches `dist/index.css`.
+//
+// Guide-page styling normally lives inline in the page's `*.docs.tsx`
+// companion, and should stay there. This file is for the cases inline styles
+// structurally cannot express - a pseudo-class, a descendant selector - and a
+// `<style>` element injected at runtime is not an option (this library
+// deliberately never generates one, see `src/ContentSecurityPolicy.mdx`).
+
+// `Releases.mdx` renders each release as its own single-item `Accordion`
+// (see the comment on `ReleaseCard` for why it is per-card rather than one
+// shared accordion). In the `default` variant every item gets a bottom border
+// and a `:first-child` gets a top one - and a single-item accordion's item is
+// always both, so stacking the cards puts two 1px rules against each other and
+// renders a 2px line between every pair of releases.
+//
+// Dropping the bottom border leaves exactly one rule above each release,
+// including the first, which doubles as the separator from the page's intro
+// prose - so the page needs no explicit divider anywhere.
+.eidos-accordion--default.eidos-releases-release .eidos-accordion-item {
+  border-bottom: 0;
+}

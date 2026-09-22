@@ -66,6 +66,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { createRequire } from 'node:module';
 import { availableParallelism } from 'node:os';
+import { c } from './ansi.js';
 
 const require_ = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -113,14 +114,6 @@ const WORKERS = (() => {
   if (Number.isInteger(override) && override > 0) return override;
   return Math.min(6, Math.max(2, Math.floor(availableParallelism() / 2)));
 })();
-
-const c = {
-  red: (s) => `\x1b[31m${s}\x1b[0m`,
-  green: (s) => `\x1b[32m${s}\x1b[0m`,
-  yellow: (s) => `\x1b[33m${s}\x1b[0m`,
-  dim: (s) => `\x1b[2m${s}\x1b[0m`,
-  bold: (s) => `\x1b[1m${s}\x1b[0m`,
-};
 
 function die(message) {
   console.error(`\n${c.red('✖')} ${message}\n`);

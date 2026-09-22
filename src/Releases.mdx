@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/addon-docs/blocks';
-import { Code, ReleaseCard, ReleaseDivider, VersionTag, packageVersion } from './Releases.docs';
+import { Code, ReleaseCard, VersionTag, packageVersion } from './Releases.docs';
 
 <Meta title="Releases" />
 
@@ -11,7 +11,8 @@ in the repository.
 
 Current version: <VersionTag>v{packageVersion}</VersionTag>
 
-<ReleaseDivider />
+Every release below is collapsed to its version, bump and date - expand one to
+read its entries. The current version starts open.
 
 <ReleaseCard
   version="3.5.0"
@@ -166,8 +167,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="3.4.0"
   date="2026-09-21"
@@ -180,6 +179,24 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
           <Code>Input.posIconLabel</Code> - accessible name for the <Code>posIconButton</Code>.
           Optional only to avoid a breaking change; omitting it logs a dev warning and falls back to
           a generic name.
+        </>,
+        <>
+          <Code>h5</Code>, <Code>h6</Code> and <Code>small</Code> are styled. The browser's defaults
+          for <Code>h5</Code> and <Code>h6</Code> are <Code>0.83em</Code> and <Code>0.67em</Code>,
+          which against this library's 14px body resolve to roughly 11.6px and 9.4px - both{' '}
+          <strong>smaller than the paragraph beneath them</strong>. Any document using a six-level
+          outline had two heading levels that read as fine print. <Code>small</Code> covers captions
+          and metadata.
+        </>,
+        <>
+          <Code>ACCESSIBILITY.md</Code> - what is tested against WCAG 2.2 AA and how, the seven
+          documented SC 1.4.3 exemptions, what remains the consuming application's responsibility,
+          and what has not been done. It deliberately does not claim a conformance level.
+        </>,
+        <>
+          <Code>ColorPicker.ariaLabel</Code> - names the trigger when the label is rendered outside
+          the component, as <Code>ThemeEditor</Code> does. Without it every picker on that page was
+          announced as "Open colour picker".
         </>,
       ],
     },
@@ -199,29 +216,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
           that SC 1.4.1 requires when colour is the only cue. Only bare anchors are affected;{' '}
           <Code>Breadcrumb</Code> and <Code>Conversation</Code> already set their own{' '}
           <Code>text-decoration</Code>.
-        </>,
-      ],
-    },
-    {
-      category: 'added',
-      items: [
-        <>
-          <Code>h5</Code>, <Code>h6</Code> and <Code>small</Code> are styled. The browser's defaults
-          for <Code>h5</Code> and <Code>h6</Code> are <Code>0.83em</Code> and <Code>0.67em</Code>,
-          which against this library's 14px body resolve to roughly 11.6px and 9.4px - both{' '}
-          <strong>smaller than the paragraph beneath them</strong>. Any document using a six-level
-          outline had two heading levels that read as fine print. <Code>small</Code> covers captions
-          and metadata.
-        </>,
-        <>
-          <Code>ACCESSIBILITY.md</Code> - what is tested against WCAG 2.2 AA and how, the seven
-          documented SC 1.4.3 exemptions, what remains the consuming application's responsibility,
-          and what has not been done. It deliberately does not claim a conformance level.
-        </>,
-        <>
-          <Code>ColorPicker.ariaLabel</Code> - names the trigger when the label is rendered outside
-          the component, as <Code>ThemeEditor</Code> does. Without it every picker on that page was
-          announced as "Open colour picker".
         </>,
       ],
     },
@@ -415,40 +409,8 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
         </>,
       ],
     },
-    {
-      category: 'added',
-      items: [
-        <>
-          <Code>--text-muted</Code> and <Code>--text-disabled</Code> tokens for text colour, so a
-          raw <Code>--gray-N</Code> surface step is never picked for a label again.
-        </>,
-      ],
-    },
-    {
-      category: 'fixed',
-      items: [
-        <>
-          Muted text meets WCAG 1.4.3 AA. 99 declarations across 39 components painted placeholders,
-          hints, timestamps, counts and empty-state copy in <Code>--gray-400</Code>, which is 2.56:1
-          on white against the required 4.5:1.
-        </>,
-        <>
-          <Code>Dropdown</Code>'s trigger wrapper no longer sets <Code>role="button"</Code>, which
-          wrapped the real control in a second, non-keyboard-operable one - invalid ARIA across{' '}
-          <Code>Select</Code>, <Code>Combobox</Code>, <Code>Menu</Code>, <Code>Popover</Code>,{' '}
-          <Code>ContextMenu</Code>, <Code>ColorPicker</Code> and <Code>TagInput</Code>.
-        </>,
-        <>
-          <Code>Skeleton</Code> and <Code>VirtualList</Code> accept a unitless numeric string for{' '}
-          <Code>width</Code> and <Code>height</Code>; <Code>'240'</Code> previously produced an
-          invalid CSS declaration that browsers dropped silently, leaving the element unsized.
-        </>,
-      ],
-    },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="3.3.0"
@@ -487,8 +449,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="3.2.1"
@@ -585,8 +545,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="3.2.0"
@@ -798,8 +756,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="3.1.1"
   date="2026-09-18"
@@ -837,8 +793,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="3.1.0"
@@ -931,8 +885,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="3.0.0"
@@ -1063,8 +1015,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="2.1.0"
@@ -1235,8 +1185,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="2.0.0"
   date="2026-09-16"
@@ -1314,8 +1262,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="1.2.0"
   date="2026-09-16"
@@ -1357,8 +1303,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="1.1.0"
   date="2026-09-15"
@@ -1395,8 +1339,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="1.0.2"
   date="2026-09-15"
@@ -1431,8 +1373,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="1.0.1"
   date="2026-09-14"
@@ -1454,8 +1394,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="1.0.0"
@@ -1494,8 +1432,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
   ]}
 />
 
-<ReleaseDivider />
-
 <ReleaseCard
   version="0.1.1"
   date="2026-09-14"
@@ -1511,8 +1447,6 @@ Current version: <VersionTag>v{packageVersion}</VersionTag>
     },
   ]}
 />
-
-<ReleaseDivider />
 
 <ReleaseCard
   version="0.1.0"

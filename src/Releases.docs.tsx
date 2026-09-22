@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import pkg from '../package.json';
-import { Divider } from './components/Divider';
+import { Accordion, AccordionItem } from './components/Accordion';
 
 /**
  * Presentational pieces for the "Releases" Storybook guide page
@@ -56,16 +56,6 @@ const CATEGORY_META: Record<ReleaseCategory, { label: string; color: string }> =
 };
 
 export const packageVersion: string = pkg.version;
-
-/**
- * The separator between two release cards. Wrapping `Divider` here rather than
- * using it directly in `Releases.mdx` keeps the page's spacing identical at
- * every separator, and keeps the `.mdx` free of a directory import
- * (`./components/Divider` resolves through that folder's `index.ts`, which the
- * MDX language server doesn't resolve because it doesn't apply this project's
- * `moduleResolution: bundler`).
- */
-export const ReleaseDivider = () => <Divider style={{ margin: '24px 0' }} />;
 
 export const Code = ({ children }: { children: ReactNode }) => {
   return (
@@ -144,6 +134,29 @@ export const CategoryLabel = ({ category }: { category: ReleaseCategory }) => {
   );
 };
 
+/**
+ * One release, collapsed to its version header until opened.
+ *
+ * **Each card is its own single-item `Accordion`, deliberately** - not one
+ * shared `Accordion` wrapping every card. The alternative would nest eighteen
+ * `<ReleaseCard/>` children inside a JSX element in `Releases.mdx`, which is
+ * the precise construct this page has repeatedly been broken by (see the
+ * header comment above, and the MDX notes in the project rules): children of a
+ * multi-line JSX element are re-parsed as markdown flow content, and an
+ * indentation change from a formatter is enough to turn them into something
+ * else. Per-card accordions keep the `.mdx` a flat list of self-contained
+ * elements, which also means the snippet `scripts/promote-changelog.js`
+ * generates at release time can be pasted anywhere in the file as-is.
+ *
+ * The trade-off accepted: with one item per accordion there is no
+ * single-open-at-a-time coordination between releases. That is the behaviour
+ * you want here anyway - two versions can be compared side by side.
+ *
+ * Which card starts open is **derived**, not passed in: the one matching the
+ * installed version, which is always the newest. A `defaultOpen` prop would
+ * have to be moved from the previous card to the new one by hand at every
+ * release, and nothing would fail if it were forgotten.
+ */
 export const ReleaseCard = ({
   version,
   date,
@@ -156,37 +169,58 @@ export const ReleaseCard = ({
   sections: readonly ReleaseSection[];
 }) => {
   return (
-    <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '22px', fontWeight: 800, color: 'var(--dark-color)' }}>
-          v{version}
-        </span>
-        <BumpTag bump={bump} />
-        {date && <span style={{ fontSize: '13px', color: 'var(--gray-400)' }}>{date}</span>}
-      </div>
-      <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {sections.map((section) => (
-          <div key={section.category}>
-            <CategoryLabel category={section.category} />
-            <ul style={{ margin: '6px 0 0', paddingLeft: '18px' }}>
-              {section.items.map((item, i) => (
-                <li
-                  key={i}
-                  style={{
-                    fontSize: '14px',
-                    color: 'var(--gray-600)',
-                    lineHeight: 1.6,
-                    marginBottom: '4px',
-                  }}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Accordion
+      // See `.storybook/preview-docs.scss` - the class drops the bottom border
+      // `default` gives an item that is also a `:first-child`, which every
+      // single-item accordion's item is.
+      className="eidos-releases-release"
+      defaultValue={version === packageVersion ? version : undefined}
+    >
+      <AccordionItem
+        value={version}
+        label={
+          // `white-space: normal` resets the `text-truncate` the trigger's
+          // label span carries, so this row wraps on a narrow viewport instead
+          // of being clipped by the span's `overflow: hidden`.
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              flexWrap: 'wrap',
+              whiteSpace: 'normal',
+            }}
+          >
+            <span style={{ fontSize: '16px', fontWeight: 700 }}>v{version}</span>
+            <BumpTag bump={bump} />
+            {date && <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{date}</span>}
+          </span>
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {sections.map((section) => (
+            <div key={section.category}>
+              <CategoryLabel category={section.category} />
+              <ul style={{ margin: '6px 0 0', paddingLeft: '18px' }}>
+                {section.items.map((item, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      fontSize: '14px',
+                      color: 'var(--gray-600)',
+                      lineHeight: 1.6,
+                      marginBottom: '4px',
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

@@ -418,7 +418,12 @@ export const CustomTriggerIsOperableByKeyboard: Story = {
     />
   ),
   play: async ({ canvas, userEvent, step }) => {
-    const trigger = canvas.getByRole('button');
+    // `findByRole`, not `getByRole`: whether this wrapper needs to be a control
+    // is measured from the rendered child, so the role arrives on the render
+    // after mount. A synchronous query races that and fails with "there are no
+    // accessible roles" - it passed locally and failed in CI, which is the
+    // usual shape of this mistake.
+    const trigger = await canvas.findByRole('button');
 
     await step('the wrapper is reachable and says what it does', async () => {
       expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');

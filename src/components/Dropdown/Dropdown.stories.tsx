@@ -411,7 +411,7 @@ export const IsHiddenUntilPositioned: Story = {
           'the positioned modifier never landed, so the panel stays `visibility: hidden`',
         ).toBe(true),
       );
-      expect(getComputedStyle(panel).visibility).toBe('visible');
+      await waitFor(() => expect(getComputedStyle(panel).visibility).toBe('visible'));
     });
   },
 };
@@ -436,7 +436,10 @@ export const OpensOnMountWithDefaultOpen: Story = {
 export const DefersOpeningByDelay: Story = {
   tags: ['!dev', '!autodocs'],
   args: {
-    delay: 300,
+    // Long enough that the "not yet mounted" assertion below cannot lose a race
+    // with it on a slow machine. The story is hidden, so the extra wait costs
+    // nothing but test time.
+    delay: 600,
     trigger: <Button variant="outlined">Delayed</Button>,
     content: <div style={{ padding: 'var(--spacing-md)' }}>Panel</div>,
   },
