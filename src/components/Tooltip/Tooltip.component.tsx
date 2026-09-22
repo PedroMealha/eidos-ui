@@ -294,14 +294,15 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   useEffect(() => {
     if (tooltipState.isVisible) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-
-      document.body.addEventListener('scroll', handleScroll, { passive: true });
+      // Capture phase on `document` - see the note in `Dropdown`. `scroll` does
+      // not bubble, so listeners on `window`/`document.body` miss every
+      // ancestor scroll container and the portaled tooltip detaches from its
+      // trigger.
+      document.addEventListener('scroll', handleScroll, { capture: true, passive: true });
     }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.body.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll, { capture: true });
     };
   }, [tooltipState.isVisible, handleScroll]);
 

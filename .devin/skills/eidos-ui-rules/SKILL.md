@@ -161,6 +161,44 @@ Same silent-failure family as `rgb(var(--x-rgb) / 0.3)` and
 `@media (max-width: var(--breakpoint-lg))`: valid-looking CSS, no warning,
 element just gone.
 
+### An anchored overlay must listen for scroll on `document`, in the capture phase
+
+`scroll` does not bubble from an element, so a listener on `window` or
+`document.body` only ever sees the **page** scrolling. `Dropdown`, `Popover`
+and `Tooltip` all had exactly that pair of listeners, which meant their
+portaled, `position: fixed` content never repositioned when the scroller was
+any other container - it stayed at its original viewport coordinates while the
+trigger moved away.
+
+This was not an edge case: `PageLayout`'s `&__content` is `overflow: auto` and
+is the layout's only scrollport, so **inside `PageLayout` no dropdown followed
+its trigger** - `Select`, `Combobox`, `DatePicker`, `Menu`, `DataGrid` row
+actions, the pagination page-size picker, quick filters. Two of the library's
+own components were mutually incompatible, and the drift is the full scroll
+distance (measured: 220px of `scrollTop`, 220px of detachment).
+
+```ts
+document.addEventListener('scroll', handleScroll, { capture: true, passive: true });
+```
+
+One listener replaces both - page-level scrolling still reaches it. `DataGrid`
+and `ContextMenu` already did this; the three overlay components did not.
+
+Two related gaps worth knowing rather than assuming fixed:
+
+- **`resize` has the same shape of problem.** `window`'s `resize` does not fire
+  when a scroll container changes size without the window changing (a sidebar
+  collapsing, a panel splitter). A `ResizeObserver` on the trigger would cover
+  it; the components currently only listen on `window`.
+- **Repositioning is not the same as staying useful.** Once the trigger scrolls
+  out of its clipping ancestor the content is still painted, now anchored to a
+  trigger nobody can see. Closing on that transition (an
+  `IntersectionObserver`) is the more complete behaviour.
+
+Regression test: `Dropdown`'s `RepositionsOnAncestorScroll` story - it asserts
+the 8px gap between trigger and content survives an ancestor's `scrollTop`
+change, and fails by exactly the scroll distance without the capture listener.
+
 ### Dropdown viewport clamping
 
 `Dropdown`'s `calculateOptimalPosition` must clamp its position against **both**

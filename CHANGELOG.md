@@ -13,6 +13,15 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- `Dropdown`, `Popover` and `Tooltip` now stay anchored to their trigger when
+  the scroll container is an ancestor element rather than the page - which
+  includes every dropdown inside `PageLayout`.
+- `Toolbar` now correctly displays elements on the right side when `breadcrumbs`
+  are absent.
+
+
 ## [3.4.0] - 2026-09-21
 
 ### Added

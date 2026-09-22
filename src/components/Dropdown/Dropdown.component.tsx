@@ -380,14 +380,18 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 
   useEffect(() => {
     if (dropdownState.isVisible) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-
-      document.body.addEventListener('scroll', handleScroll, { passive: true });
+      // Capture phase on `document`, which is the only way to see scrolling in
+      // an arbitrary ancestor: `scroll` does not bubble from an element, so the
+      // previous listeners on `window` and `document.body` only ever fired for
+      // the page itself. Any other scroll container - `PageLayout`'s
+      // `&__content` is the layout's scrollport, so this is every dropdown
+      // inside it - moved the trigger while the portaled, `position: fixed`
+      // content stayed at its original viewport coordinates.
+      document.addEventListener('scroll', handleScroll, { capture: true, passive: true });
     }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.body.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll, { capture: true });
     };
   }, [dropdownState.isVisible, handleScroll]);
 

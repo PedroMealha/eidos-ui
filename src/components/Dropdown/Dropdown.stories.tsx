@@ -4,6 +4,7 @@ import { ChevronDown, Settings, User, LogOut, HelpCircle } from 'lucide-react';
 import { Dropdown } from './Dropdown.component';
 import { Button } from '../Button';
 import { StoryRow } from '../../story-layout.docs';
+import { expect, screen, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Overlays/Dropdown',
@@ -284,5 +285,72 @@ export const CustomTrigger: Story = {
         </p>
       </div>
     ),
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * The content is portaled and `position: fixed`, so it only stays anchored
+ * because a scroll listener re-measures the trigger. `scroll` does not bubble,
+ * so listeners on `window`/`document.body` see nothing when the scroller is an
+ * arbitrary ancestor - which is every dropdown inside `PageLayout`, whose
+ * `&__content` is the layout's scrollport. The listener has to be on `document`
+ * in the capture phase.
+ */
+export const RepositionsOnAncestorScroll: Story = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { layout: 'padded' },
+  args: {
+    trigger: <Button variant="outlined">Open</Button>,
+    // `Dropdown` hardcodes `role="menu"` on its content, and this is the only
+    // audited story that leaves one open - so the content has to be a valid
+    // menu (`role="menuitem"` children) or axe reports
+    // `aria-required-children` against the library.
+    content: (
+      <div style={{ minWidth: 200 }}>
+        <button
+          type="button"
+          role="menuitem"
+          style={{ ...menuItemStyle, width: '100%', background: 'transparent', border: 0 }}
+        >
+          Anchored content
+        </button>
+      </div>
+    ),
+  },
+  render: (args) => (
+    <div data-testid="scroller" style={{ height: 300, overflow: 'auto' }}>
+      <div style={{ height: 120 }} />
+      <Dropdown {...args} />
+      <div style={{ height: 800 }} />
+    </div>
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    const scroller = canvas.getByTestId('scroller');
+    const trigger = canvas.getByRole('button', { name: 'Open' });
+
+    await userEvent.click(trigger);
+    const content = await screen.findByRole('menu');
+
+    // `gap` in calculateOptimalPosition.
+    const GAP = 8;
+    const offset = () =>
+      content.getBoundingClientRect().top - trigger.getBoundingClientRect().bottom;
+
+    await step('anchored on open', async () => {
+      await waitFor(() => expect(offset()).toBeCloseTo(GAP, 0));
+    });
+
+    await step('still anchored after the ancestor scroller moves', async () => {
+      scroller.scrollTop = 60;
+
+      await waitFor(() =>
+        expect(
+          offset(),
+          'the dropdown did not follow its trigger when an ancestor (not the page) scrolled',
+        ).toBeCloseTo(GAP, 0),
+      );
+    });
   },
 };

@@ -43,6 +43,7 @@
     // breadcrumb trail (or, failing that, the row wrapping to a second
     // line) is what accommodates a narrow viewport instead.
     flex-wrap: wrap;
+    margin-inline-start: auto;
   }
 
   // Free-form consumer content (`content`). Laid out as a centered row so an

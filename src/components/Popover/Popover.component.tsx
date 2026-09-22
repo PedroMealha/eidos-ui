@@ -206,13 +206,15 @@ export const Popover: React.FC<PopoverProps> = ({
   // ── Scroll listener registration ─────────────────────────────────────────
   useEffect(() => {
     if (popoverState.isVisible) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      document.body.addEventListener('scroll', handleScroll, { passive: true });
+      // Capture phase on `document` - see the note in `Dropdown`. `scroll` does
+      // not bubble, so listeners on `window`/`document.body` miss every
+      // ancestor scroll container and the portaled panel detaches from its
+      // trigger.
+      document.addEventListener('scroll', handleScroll, { capture: true, passive: true });
     }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.body.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', handleScroll, { capture: true });
     };
   }, [popoverState.isVisible, handleScroll]);
 
@@ -289,14 +291,14 @@ export const Popover: React.FC<PopoverProps> = ({
   return (
     <>
       {/* Trigger wrapper.
-      
+
           The wrapper carries no ARIA. It had `aria-expanded` and
           `aria-haspopup` while having no role, which is invalid - both need
           a role that supports them, and adding `role="button"` here would be
           worse still, since the trigger inside is usually a real button
           (that is the `nested-interactive` shape already fixed on
           `Dropdown`).
-          
+
           Instead the state is cloned onto the trigger element, which is the
           thing a user actually activates. Guarded by `isValidElement`
           because `trigger` is typed as `ReactNode` and may be a bare string,
