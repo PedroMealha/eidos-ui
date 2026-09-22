@@ -6,6 +6,7 @@ import { Modal } from './Modal.component';
 import { Button } from '../Button';
 import { StoryRow } from '../../story-layout.docs';
 import { expectFocusTrap } from '../../story-a11y.docs';
+import { expect, screen, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Overlays/Modal',
@@ -312,6 +313,46 @@ export const FocusManagement: Story = {
       userEvent,
       step,
       trigger: canvas.getByRole('button', { name: 'Open Modal' }),
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `FocusManagement` above opens the modal by clicking, which means the portal
+ * is created while the page is already interactive. This one is open from its
+ * very first render - a legitimate case (a modal driven by a URL param, a
+ * server-decided state) and a materially different code path, because the
+ * portal is deliberately deferred by one render so that server rendering does
+ * not touch `document`.
+ *
+ * That deferral broke this: `isVisible` flipped before the portal existed, so
+ * the focus hook ran against a null ref, returned early, and never ran again -
+ * focus stayed outside a dialog declaring `aria-modal="true"`. Nothing else
+ * noticed, because every other overlay story opens by clicking.
+ *
+ * Deliberately starts open, which the "overlays start closed" rule forbids for
+ * documented stories - it is excluded from the sidebar and from autodocs for
+ * exactly that reason.
+ */
+export const FocusEntersWhenOpenOnFirstRender: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: {
+    isOpen: true,
+    title: 'Open from the first render',
+    children: <p>Focus belongs in here, not on the page behind.</p>,
+    actions: [{ id: 'ok', label: 'OK', variant: 'filled', onClick: () => {} }],
+  },
+  play: async ({ step }) => {
+    await step('focus enters the dialog', async () => {
+      const dialog = await screen.findByRole('dialog');
+      await waitFor(() =>
+        expect(
+          dialog.contains(document.activeElement),
+          'focus never entered a modal that was open on its first render',
+        ).toBe(true),
+      );
     });
   },
 };

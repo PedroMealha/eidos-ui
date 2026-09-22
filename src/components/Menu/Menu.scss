@@ -20,6 +20,11 @@
   color: var(--dark-color);
   user-select: none;
 
+  // Inset, not outward: an item spans the full width of the panel, and the
+  // panel is a scrollport whenever `maxHeight` is set, which clips an outward
+  // shadow or outline identically.
+  @include focus-ring-inset;
+
   &:hover {
     background-color: var(--gray-50);
   }
@@ -87,12 +92,26 @@
   color: var(--dark-color);
   user-select: none;
 
+  @include focus-ring-inset;
+
   &:hover {
     background-color: var(--gray-50);
   }
 
   &.eidos-menu-nested-trigger--open {
     background-color: var(--gray-50);
+  }
+
+  // Matches `.eidos-menu-item--disabled`. The `disabled` flag on a nested item
+  // was accepted and ignored, so there was nothing to style.
+  &.eidos-menu-nested-trigger--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--text-disabled);
+
+    &:hover {
+      background-color: transparent;
+    }
   }
 }
 

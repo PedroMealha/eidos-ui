@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { fullWidthModifier } from '../../utils';
+import { devWarn, fullWidthModifier, useIsClient } from '../../utils';
 import type { DropdownProps, DropdownState } from './Dropdown.types';
 import { DropdownProvider } from './Dropdown.context';
 import { useDropdownContext } from './Dropdown.hooks';
@@ -13,8 +13,11 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   delay = 0,
   disabled = false,
   defaultOpen = false,
+  open,
+  onOpenChange,
   triggerClassName = '',
   contentClassName = '',
+  role,
   closeOnClickOutside = true,
   closeOnEscape = true,
   minWidth,
@@ -30,11 +33,68 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 }) => {
   const context = useDropdownContext();
   const actualLevel = dropdownLevel !== undefined ? dropdownLevel : context.level;
+  // `defaultOpen` makes the portal reachable on the first render, which cannot
+  // happen on a server - see `useIsClient`.
+  const isClient = useIsClient();
   const [dropdownState, setDropdownState] = useState<DropdownState>({
     isVisible: defaultOpen,
     isPositioned: false,
     position: { top: 0, left: 0, placement: preferredPlacement },
   });
+
+  // ── Controlled / uncontrolled open state ──────────────────────────────────
+  //
+  // `dropdownState.isVisible` stays the *uncontrolled* value and is kept in
+  // step even while controlled, so removing `open` later leaves coherent state.
+  // Everything downstream reads `isVisible` below, never the field directly.
+  //
+  // `DropdownState` is exported from the package root, so it keeps its shape:
+  // splitting `isVisible` out of it would be a breaking type change for a
+  // consumer who imports it, in exchange for nothing a reader of this file
+  // needs.
+  const isControlled = open !== undefined;
+  const isVisible = isControlled ? open : dropdownState.isVisible;
+
+  const wasControlled = useRef(isControlled);
+  if (wasControlled.current !== isControlled) {
+    devWarn(
+      'dropdown-controlled-switch',
+      'Dropdown: `open` switched between controlled and uncontrolled. Pick one for the lifetime of the component - the dropdown keeps its own state as a fallback, so switching makes it jump to whatever that happens to be.',
+    );
+    wasControlled.current = isControlled;
+  }
+
+  /**
+   * The single place the open state changes. Every route - trigger click,
+   * click-outside, Escape, a group sibling, the `delay` timer - goes through
+   * here, so a controlled consumer sees all of them and cannot desync.
+   */
+  const setOpen = useCallback(
+    (next: boolean) => {
+      setDropdownState((prev) => ({ ...prev, isVisible: next, isPositioned: false }));
+      onOpenChange?.(next);
+    },
+    [onOpenChange],
+  );
+
+  // A controlled caller can flip `open` without going through `setOpen`, which
+  // would leave `isPositioned` true from the previous open and paint the panel
+  // at its old coordinates for a frame. Re-arm the positioning pass from the
+  // transition itself.
+  useEffect(() => {
+    if (!isVisible) {
+      setDropdownState((prev) => (prev.isPositioned ? { ...prev, isPositioned: false } : prev));
+    }
+  }, [isVisible]);
+
+  // A pending `delay` timer outlives a controlled close otherwise, and reopens
+  // the panel a moment after the consumer closed it.
+  useEffect(() => {
+    if (!isVisible && timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = undefined;
+    }
+  }, [isVisible]);
   const triggerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -56,14 +116,19 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   );
 
   const calculateDynamicSizing = useCallback(
-    (triggerRect: DOMRect) => {
+    // Only the width is read, so the parameter is the narrowest shape that
+    // satisfies it rather than a `DOMRect`. The caller used to fall back to
+    // `new DOMRect()`, which is a browser-only global evaluated *during
+    // render* - it was the first thing to throw when an open dropdown was
+    // server-rendered, before `document.body` ever got a chance to.
+    (triggerRect: { width: number } | null) => {
       // Shrink the panel to its content by default. This prevents the
       // position:fixed element from expanding to viewport width when children
       // use `width:100%` or `flex:1`. `minWidth` (set below) still wins when
       // the trigger is wider than the content, as CSS min-width overrides width.
       const styles: Record<string, string | number> = { width: 'max-content' };
 
-      if (autoWidth && (externalTriggerRef?.current || triggerRef.current)) {
+      if (autoWidth && triggerRect && (externalTriggerRef?.current || triggerRef.current)) {
         const triggerWidth = triggerRect.width;
         styles.minWidth = triggerWidth;
       }
@@ -182,7 +247,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
   );
 
   const handleScroll = useCallback(() => {
-    if (!dropdownState.isVisible || !dropdownState.isPositioned || isScrollingRef.current) return;
+    if (!isVisible || !dropdownState.isPositioned || isScrollingRef.current) return;
 
     isScrollingRef.current = true;
 
@@ -202,22 +267,13 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 
       isScrollingRef.current = false;
     });
-  }, [
-    dropdownState.isVisible,
-    dropdownState.isPositioned,
-    calculateOptimalPosition,
-    getTriggerElement,
-  ]);
+  }, [isVisible, dropdownState.isPositioned, calculateOptimalPosition, getTriggerElement]);
 
   const handleTriggerClick = useCallback(() => {
     if (disabled) return;
 
-    if (dropdownState.isVisible) {
-      setDropdownState((prev) => ({
-        ...prev,
-        isVisible: false,
-        isPositioned: false,
-      }));
+    if (isVisible) {
+      setOpen(false);
     } else {
       if (dropdownGroup) {
         const siblingDropdowns = document.querySelectorAll(
@@ -231,32 +287,16 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       }
 
       if (delay > 0) {
-        timeoutRef.current = setTimeout(() => {
-          setDropdownState((prev) => ({
-            ...prev,
-            isVisible: true,
-            isPositioned: false,
-          }));
-        }, delay);
+        timeoutRef.current = setTimeout(() => setOpen(true), delay);
       } else {
-        setDropdownState((prev) => ({
-          ...prev,
-          isVisible: true,
-          isPositioned: false,
-        }));
+        setOpen(true);
       }
     }
-  }, [disabled, dropdownState.isVisible, delay, dropdownGroup]);
+  }, [disabled, isVisible, delay, dropdownGroup, setOpen]);
 
   useEffect(() => {
     const handleCloseSibling = () => {
-      if (dropdownState.isVisible) {
-        setDropdownState((prev) => ({
-          ...prev,
-          isVisible: false,
-          isPositioned: false,
-        }));
-      }
+      if (isVisible) setOpen(false);
     };
 
     const currentContentRef = contentRef.current;
@@ -269,11 +309,11 @@ const DropdownInternal: React.FC<DropdownProps> = ({
         currentContentRef.removeEventListener('closeSibling', handleCloseSibling);
       }
     };
-  }, [dropdownState.isVisible]);
+  }, [isVisible, setOpen]);
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
-      if (!closeOnClickOutside || !dropdownState.isVisible) return;
+      if (!closeOnClickOutside || !isVisible) return;
 
       const target = event.target as Node;
 
@@ -300,36 +340,23 @@ const DropdownInternal: React.FC<DropdownProps> = ({
         }
       }
 
-      setDropdownState((prev) => ({
-        ...prev,
-        isVisible: false,
-        isPositioned: false,
-      }));
+      setOpen(false);
     },
-    [closeOnClickOutside, dropdownState.isVisible, actualLevel, getTriggerElement],
+    [closeOnClickOutside, isVisible, actualLevel, getTriggerElement, setOpen],
   );
 
   const handleEscapeKey = useCallback(
     (event: KeyboardEvent) => {
-      if (closeOnEscape && event.key === 'Escape' && dropdownState.isVisible) {
-        setDropdownState((prev) => ({
-          ...prev,
-          isVisible: false,
-          isPositioned: false,
-        }));
+      if (closeOnEscape && event.key === 'Escape' && isVisible) {
+        setOpen(false);
       }
     },
-    [closeOnEscape, dropdownState.isVisible],
+    [closeOnEscape, isVisible, setOpen],
   );
 
   useEffect(() => {
     const triggerElement = getTriggerElement();
-    if (
-      dropdownState.isVisible &&
-      !dropdownState.isPositioned &&
-      contentRef.current &&
-      triggerElement
-    ) {
+    if (isVisible && !dropdownState.isPositioned && contentRef.current && triggerElement) {
       const triggerRect = triggerElement.getBoundingClientRect();
       const contentRect = contentRef.current.getBoundingClientRect();
 
@@ -342,21 +369,23 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       }));
     }
   }, [
-    dropdownState.isVisible,
+    isVisible,
     dropdownState.isPositioned,
     calculateOptimalPosition,
     getTriggerElement,
+    // Load-bearing, not incidental. With `defaultOpen` the panel is "visible"
+    // from the first render, but the portal is deferred one render for SSR
+    // safety - so this effect's first run finds `contentRef.current` still
+    // null, measures nothing, and without `isClient` in the deps it would never
+    // run again. The panel then stays `visibility: hidden` forever: mounted,
+    // unpositioned, invisible. Caught by `OpensOnMountWithDefaultOpen`.
+    isClient,
   ]);
 
   useEffect(() => {
     const handleResize = () => {
       const triggerElement = getTriggerElement();
-      if (
-        dropdownState.isVisible &&
-        dropdownState.isPositioned &&
-        contentRef.current &&
-        triggerElement
-      ) {
+      if (isVisible && dropdownState.isPositioned && contentRef.current && triggerElement) {
         const triggerRect = triggerElement.getBoundingClientRect();
         const contentRect = contentRef.current.getBoundingClientRect();
 
@@ -371,15 +400,10 @@ const DropdownInternal: React.FC<DropdownProps> = ({
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [
-    dropdownState.isVisible,
-    dropdownState.isPositioned,
-    calculateOptimalPosition,
-    getTriggerElement,
-  ]);
+  }, [isVisible, dropdownState.isPositioned, calculateOptimalPosition, getTriggerElement]);
 
   useEffect(() => {
-    if (dropdownState.isVisible) {
+    if (isVisible) {
       // Capture phase on `document`, which is the only way to see scrolling in
       // an arbitrary ancestor: `scroll` does not bubble from an element, so the
       // previous listeners on `window` and `document.body` only ever fired for
@@ -393,10 +417,10 @@ const DropdownInternal: React.FC<DropdownProps> = ({
     return () => {
       document.removeEventListener('scroll', handleScroll, { capture: true });
     };
-  }, [dropdownState.isVisible, handleScroll]);
+  }, [isVisible, handleScroll]);
 
   useEffect(() => {
-    if (dropdownState.isVisible) {
+    if (isVisible) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('keydown', handleEscapeKey);
     }
@@ -405,7 +429,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [dropdownState.isVisible, handleClickOutside, handleEscapeKey]);
+  }, [isVisible, handleClickOutside, handleEscapeKey]);
 
   useEffect(() => {
     return () => {
@@ -449,7 +473,8 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       >
         {trigger}
       </div>
-      {dropdownState.isVisible &&
+      {isClient &&
+        isVisible &&
         createPortal(
           <div
             ref={contentRef}
@@ -460,11 +485,13 @@ const DropdownInternal: React.FC<DropdownProps> = ({
             style={{
               top: dropdownState.position.top,
               left: dropdownState.position.left,
-              ...calculateDynamicSizing(
-                getTriggerElement()?.getBoundingClientRect() || new DOMRect(),
-              ),
+              ...calculateDynamicSizing(getTriggerElement()?.getBoundingClientRect() ?? null),
             }}
-            role="menu"
+            // No default role: see the `role` prop's note in `Dropdown.types`.
+            // This was `role="menu"` unconditionally, which made a menu out of
+            // every `Select` listbox, date picker and toolbar panel in the
+            // library.
+            role={role}
           >
             {content}
           </div>,

@@ -6,6 +6,7 @@ import type { CommandItem } from './CommandPalette.types';
 import { CMDP_ITEMS } from './CommandPalette.fixtures';
 import { Avatar } from '../Avatar';
 import { expectFocusTrap } from '../../story-a11y.docs';
+import { expect, screen, waitFor } from 'storybook/test';
 
 // ── Meta ───────────────────────────────────────────────────────────────────────
 
@@ -360,6 +361,35 @@ export const FocusManagement: Story = {
       // arrow-key navigated rather than tabbed), so a long cycle only
       // re-tests the same wrap.
       cycles: 4,
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `defaultOpen` puts the palette on screen from its first render, which is the
+ * path where the portal is deferred by one render for SSR safety. The focus
+ * hook has to wait for that, or it runs against a ref whose portal does not
+ * exist yet and never runs again - leaving the search field unfocused in a
+ * dialog that has just taken over the screen.
+ */
+export const FocusEntersWhenOpenOnFirstRender: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { shortcutKey: null },
+  render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
+    <CommandPalette {...args} defaultOpen items={CMDP_ITEMS} />
+  ),
+  play: async ({ step }) => {
+    await step('focus lands on the search field', async () => {
+      const dialog = await screen.findByRole('dialog');
+      await waitFor(() =>
+        expect(
+          dialog.contains(document.activeElement),
+          'focus never entered a palette that was open on its first render',
+        ).toBe(true),
+      );
+      expect(document.activeElement?.tagName).toBe('INPUT');
     });
   },
 };

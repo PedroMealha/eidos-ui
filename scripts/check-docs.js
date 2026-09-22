@@ -227,9 +227,54 @@ for (const file of [...PROSE_FILES, ...PROSE_GLOB_DIRS.flatMap(mdxFiles)]) {
 }
 
 // ---------------------------------------------------------------------------
+// 5. ACCESSIBILITY.md's figures match what the audit actually measured
+// ---------------------------------------------------------------------------
+//
+// That file states a story count and a violation total, and then says of them:
+// "These numbers are not hand-maintained ... If this table is ever wrong, the
+// build is already red." That was half true. The per-rule violation counts are
+// ratcheted by `check-a11y-baseline.js`, so those genuinely cannot drift - but
+// the story count was plain prose, and it drifted from 475 to 480 without a
+// single check noticing, in the same session that added the stories.
+//
+// A document whose entire value is that its numbers are verifiable must not
+// contain a number nobody verifies. So the two figures it states are compared
+// against the recorded baseline here, and `check-a11y-baseline.js` refuses to
+// let that baseline's own `storiesAudited` go stale.
+//
+// The test count that used to sit beside them was removed rather than checked:
+// there is no cheap authoritative source for it short of running the suite,
+// and an unverifiable number is exactly what this section exists to prevent.
+
+const baseline = JSON.parse(readFileSync('./scripts/a11y-baseline.json', 'utf8'));
+const a11yDoc = readFileSync('./ACCESSIBILITY.md', 'utf8');
+
+const statedStories = a11yDoc.match(/across \*\*(\d+) stories\*\*/)?.[1];
+if (!statedStories) {
+  note('ACCESSIBILITY.md', 'no longer states a story count - expected "across **N stories**"');
+} else if (Number(statedStories) !== baseline.storiesAudited) {
+  note(
+    'ACCESSIBILITY.md',
+    `claims ${statedStories} stories audited but the baseline recorded ${baseline.storiesAudited}`,
+  );
+}
+
+const statedViolations = a11yDoc.match(/\|\s*axe-core violations\s*\|\s*\*\*(\d+)\*\*/)?.[1];
+if (!statedViolations) {
+  note('ACCESSIBILITY.md', 'no longer states an axe-core violation total in its results table');
+} else if (Number(statedViolations) !== baseline.totalNodes) {
+  note(
+    'ACCESSIBILITY.md',
+    `claims ${statedViolations} axe violations but the baseline recorded ${baseline.totalNodes}`,
+  );
+}
+
+// ---------------------------------------------------------------------------
 
 if (problems.length === 0) {
-  console.log('✓ README.md and GETTING_STARTED.md are consistent with the source.');
+  console.log(
+    '✓ README.md, GETTING_STARTED.md and ACCESSIBILITY.md are consistent with the source.',
+  );
   process.exit(0);
 }
 

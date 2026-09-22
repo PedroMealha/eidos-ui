@@ -65,6 +65,9 @@ export const SplitButton: React.FC<SplitButtonProps> = ({
       className={`${baseClass} eidos-split-button__chevron`}
       disabled={disabledOrLoading}
       aria-label="More options"
+      // The chevron opens a `MenuPanel`. `Dropdown` adds no ARIA to its trigger,
+      // so without this the control is announced as a plain button.
+      aria-haspopup="menu"
     >
       <ChevronDown className="eidos-split-button__chevron-icon" aria-hidden="true" />
     </button>

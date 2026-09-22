@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { Button } from '../Button';
 import type { DrawerProps } from './Drawer.types';
-import { useDialogFocus } from '../../utils';
+import { useDialogFocus, useIsClient } from '../../utils';
 
 export const Drawer: React.FC<DrawerProps> = ({
   isOpen,
@@ -20,6 +20,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   const titleId = useId();
   const bodyId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
+  const isClient = useIsClient();
 
   // ── Animation state ────────────────────────────────────────────────────────
   // isMounted: whether the portal DOM node exists at all.
@@ -94,9 +95,13 @@ export const Drawer: React.FC<DrawerProps> = ({
   // on `Modal`. The panel is translated off-screen until `--open` lands two
   // frames after mounting, and focusing something that is off-screen scrolls
   // the page to chase it.
-  useDialogFocus(isOpen && isVisible, panelRef);
+  // `isClient` for the same reason as `Modal`: a drawer that starts open would
+  // otherwise run this against a ref whose portal has not rendered yet.
+  useDialogFocus(isClient && isOpen && isVisible, panelRef);
 
-  if (!isMounted) return null;
+  // Same reason as `Modal`: `isMounted` starts as `isOpen`, so a drawer that
+  // starts open would portal on its first render and throw under SSR.
+  if (!isClient || !isMounted) return null;
 
   return createPortal(
     <div

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 
 import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowUp, Command, CornerDownLeft, Search } from 'lucide-react';
 import type { CommandItem, CommandPaletteProps } from './CommandPalette.types';
-import { useDialogFocus } from '../../utils';
+import { useDialogFocus, useIsClient } from '../../utils';
 import { Kbd } from '../Kbd';
 import './CommandPalette.scss';
 
@@ -123,6 +123,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   // Closing:  isVisible=false → CSS transitions reverse → after TRANSITION_MS → isMounted=false
   const [isMounted, setIsMounted] = useState(open);
   const [isVisible, setIsVisible] = useState(open);
+  // `isMounted` starts as `open`, so a palette opened by `open`/`defaultOpen`
+  // would portal on its first render, which throws under SSR. The trigger
+  // below still renders on the server - only the portal is deferred.
+  const isClient = useIsClient();
 
   useEffect(() => {
     let raf1 = 0;
@@ -178,7 +182,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   // the page behind it, and closing the palette stranded focus wherever it
   // happened to be. `initialFocus` preserves the original behaviour of
   // landing on the search field rather than the first focusable node.
-  useDialogFocus(open && isVisible, dialogRef, { initialFocus: inputRef });
+  // `isClient` for the same reason as `Modal`: a palette opened by `open` or
+  // `defaultOpen` has no portal on its first render, and this would run against
+  // a null ref and never re-run.
+  useDialogFocus(isClient && open && isVisible, dialogRef, { initialFocus: inputRef });
 
   // Reset focused index to 0 whenever the filtered list changes
   useEffect(() => {
@@ -296,7 +303,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   return (
     <>
       {triggerNode}
-      {isMounted &&
+      {isClient &&
+        isMounted &&
         createPortal(
           <div
             className={['eidos-cmd-backdrop', isVisible && 'eidos-cmd-backdrop--visible']

@@ -5,7 +5,9 @@ import * as DropdownStories from './Dropdown.stories';
 
 # Dropdown
 
-A low-level floating panel anchored to any trigger element. It handles positioning, focus, keyboard dismissal, and z-index layering - making it the foundation for Menu, Select, Combobox, and other compound components. Use it directly when you need a custom floating panel not covered by those higher-level components.
+A low-level floating panel anchored to any trigger element. It handles positioning, dismissal (click-outside and Escape), and z-index layering - making it the foundation for Menu, Select, Combobox, and other compound components. Use it directly when you need a custom floating panel not covered by those higher-level components.
+
+It deliberately does **not** manage roles or focus: those depend entirely on what the panel contains, which only the component above it knows. See "Roles and semantics" below.
 
 > **Note**: For mutual exclusion between multiple dropdowns (only one open at a time), wrap them with `DropdownProvider` and pass a shared `dropdownGroup` string to each.
 
@@ -34,11 +36,41 @@ The primary interactive story - use the Controls panel to explore `placement`, `
 
 <Controls of={DropdownStories.Default} />
 
-## As a menu
+## Controlling the open state
 
-For a real menu prefer the [Menu](?path=/docs/overlays-menu--docs) component, which builds this on top of `Dropdown` with keyboard navigation and roles already handled. Use `Dropdown` directly when the panel is not a menu.
+By default `Dropdown` owns whether it is open, seeded by `defaultOpen`. Pass `open` together with `onOpenChange` to own it yourself:
 
-<Canvas of={DropdownStories.AsAMenu} />
+```tsx
+const [open, setOpen] = useState(false);
+
+<Dropdown open={open} onOpenChange={setOpen} trigger={...} content={...} />;
+```
+
+`onOpenChange` fires for every route the dropdown would otherwise take itself - a trigger click, a click outside, `Escape`, a `dropdownGroup` sibling opening, the `delay` timer elapsing - so a controlled consumer sees all of them. While `open` is passed, the dropdown never moves on its own.
+
+Reach for this when the panel's contents need to drive dismissal (commit on select, close on submit), or when the trigger has to describe the state - `aria-expanded` can only be honest about a state its owner can read.
+
+## Roles and semantics
+
+The content element carries **no role by default**, and there is no correct default other than none - a `Dropdown` may hold a listbox, a calendar, a form or a menu, and only the caller knows which.
+
+Pass `role` when the panel itself is the thing with semantics. When its _content_ already provides them - a `<ul role="menu">`, a `role="listbox"` - leave `role` unset, or you nest one interactive role inside another:
+
+```tsx
+// The panel *is* a menu: its own children are the menuitems.
+<Dropdown role="menu" trigger={...} content={<MyItems />} />
+
+// The panel merely *holds* a listbox, which owns the semantics.
+<Dropdown trigger={...} content={<ul role="listbox">...</ul>} />
+```
+
+A role also implies an interaction contract. `role="menu"` promises arrow-key navigation; if you are not implementing that, use [Menu](?path=/docs/overlays-menu--docs), which provides the roles, the roving tab stop and the full keyboard model.
+
+## As a panel of actions
+
+`Dropdown` gives you positioning only, so the panel's contents must be real controls - buttons here, not clickable `<div>`s. For anything menu-shaped, prefer [Menu](?path=/docs/overlays-menu--docs) rather than rebuilding its semantics.
+
+<Canvas of={DropdownStories.AsAnActionPanel} />
 
 ## Placements
 

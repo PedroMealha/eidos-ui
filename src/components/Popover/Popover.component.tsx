@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { PopoverProps, PopoverState, PopoverPlacement } from './Popover.types';
-import { useDialogFocus } from '../../utils';
+import { useDialogFocus, useIsClient } from '../../utils';
 
 export const Popover: React.FC<PopoverProps> = ({
   trigger,
@@ -20,6 +20,10 @@ export const Popover: React.FC<PopoverProps> = ({
   className,
   contentClassName,
 }) => {
+  // `isOpen`/`defaultOpen` make the portal reachable on the first render,
+  // which cannot happen on a server - see `useIsClient`.
+  const isClient = useIsClient();
+
   // ── Controlled / uncontrolled bridge ──────────────────────────────────────
   const isControlled = isOpen !== undefined;
   const [localOpen, setLocalOpen] = useState(defaultOpen ?? false);
@@ -153,7 +157,10 @@ export const Popover: React.FC<PopoverProps> = ({
         isPositioned: true,
       }));
     }
-  }, [popoverState.isVisible, popoverState.isPositioned, calculateOptimalPosition]);
+    // `isClient` for the same reason as `Dropdown`: with `defaultOpen` the
+    // portal arrives one render after this effect first runs, and without it in
+    // the deps the panel is never measured and never becomes visible.
+  }, [popoverState.isVisible, popoverState.isPositioned, calculateOptimalPosition, isClient]);
 
   // ── Scroll repositioning ─────────────────────────────────────────────────
   const handleScroll = useCallback(() => {
@@ -318,7 +325,8 @@ export const Popover: React.FC<PopoverProps> = ({
       </div>
 
       {/* Portal: floating panel */}
-      {popoverState.isVisible &&
+      {isClient &&
+        popoverState.isVisible &&
         createPortal(
           <div
             ref={contentRef}

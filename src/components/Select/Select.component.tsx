@@ -42,9 +42,14 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       }
       return new Set();
     });
-    const [menuKey, setMenuKey] = useState(0);
+
     const [focusedIndex, setFocusedIndex] = useState(-1);
-    const [isOpen, setIsOpen] = useState(false);
+    // `Select` owns the open state and hands it to `Dropdown` as a controlled
+    // value. It used to keep this flag *and* force the dropdown closed by
+    // remounting it through a changing `key`, because `Dropdown`'s own state was
+    // private - which meant this flag drove the ARIA attributes while reaching
+    // nothing that renders, so the keyboard could not open the listbox at all.
+    const [isOpen, setIsOpen] = useState(autoOpen);
 
     const inputRef = useRef<HTMLInputElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
@@ -111,7 +116,11 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
 
         if (!multiple) {
           setIsOpen(false);
-          setMenuKey((prev) => prev + 1);
+          // Focus is returned explicitly because a click lands on an option
+          // `div`, which is not focusable - without this, choosing with the
+          // mouse would leave focus on `<body>` and the field would be
+          // unreachable by keyboard until tabbed to again.
+          inputRef.current?.focus();
         }
       },
       [multiple, onChange, selectedValues, isControlled],
@@ -127,7 +136,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         }
 
         setIsOpen(false);
-        setMenuKey((prev) => prev + 1);
+        inputRef.current?.focus();
         if (onChange) {
           onChange(multiple ? [] : '');
         }
@@ -197,7 +206,6 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             if (isOpen) {
               setIsOpen(false);
               setFocusedIndex(-1);
-              setMenuKey((prev) => prev + 1);
             }
             break;
 
@@ -296,6 +304,14 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             return (
               <div
                 key={option.id}
+                // The trigger points `aria-activedescendant` at
+                // `${id}-option-${focusedIndex}`, and nothing carried that id -
+                // so the moment an option was hovered or arrowed to, the
+                // attribute referenced an element that did not exist
+                // (`aria-valid-attr-value`, critical). Invisible to axe until a
+                // story left the listbox open, because the attribute is only
+                // set once something is focused.
+                id={`${id || 'select'}-option-${index}`}
                 ref={(el) => {
                   optionRefs.current[index] = el;
                 }}
@@ -319,7 +335,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           })}
         </div>
       ),
-      [options, selectedValues, focusedIndex, handleOptionSelect, handleOptionsMount],
+      [options, selectedValues, focusedIndex, handleOptionSelect, handleOptionsMount, id],
     );
 
     const triggerElement = (
@@ -331,7 +347,12 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         role="combobox"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        aria-controls={`${id || 'select'}-options`}
+        // Only while the listbox exists. An `aria-controls` pointing at an id
+        // that is not in the document is invalid, and the listbox only renders
+        // while open - `Combobox`, `TagInput` and `CommandPalette` already gate
+        // theirs this way. It could not be gated here before, because `isOpen`
+        // did not track whether the panel had actually rendered.
+        aria-controls={isOpen ? `${id || 'select'}-options` : undefined}
         aria-activedescendant={
           focusedIndex >= 0 ? `${id || 'select'}-option-${focusedIndex}` : undefined
         }
@@ -364,8 +385,8 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         } ${className}`}
       >
         <Dropdown
-          key={menuKey}
-          defaultOpen={autoOpen}
+          open={isOpen}
+          onOpenChange={setIsOpen}
           trigger={triggerElement}
           content={
             <div id={`${id || 'select'}-options`} role="listbox" aria-multiselectable={multiple}>

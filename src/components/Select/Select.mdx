@@ -27,6 +27,21 @@ const options = [
 
 <Controls of={SelectStories.Default} />
 
+## Keyboard
+
+`Select` is a **select-only** combobox - the field is not editable - so it follows that ARIA pattern rather than [Combobox](?path=/docs/forms-combobox--docs)'s.
+
+| Key                     | Action                                                  |
+| ----------------------- | ------------------------------------------------------- |
+| `ArrowDown` / `ArrowUp` | Open the listbox, or move to the next / previous option |
+| `Enter` / `Space`       | Open the listbox, or commit the active option           |
+| `Home` / `End`          | Move to the first / last option                         |
+| `Escape`                | Close the listbox, keeping focus on the field           |
+
+Focus stays on the field the whole time: the active option is advertised with `aria-activedescendant` rather than being focused itself, so a selection never moves focus away.
+
+The one deliberate difference from `Combobox` is that focusing a `Select` does **not** open it. `Combobox` opens on focus because its list filters as you type, so seeing it immediately is useful. A `Select` opening on focus would pop a listbox over whatever follows it every time a keyboard user tabbed through a form.
+
 ## With icons
 
 Each option accepts an `icon` property (a Lucide or compatible icon component) rendered before the label in both the trigger and the dropdown.

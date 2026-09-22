@@ -13,6 +13,23 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `Dropdown.role` - ARIA role for the portaled content, for panels that own
+  their own semantics.
+- `Dropdown.open` / `Dropdown.onOpenChange` - controlled open state, alongside
+  the existing uncontrolled `defaultOpen`.
+
+### Changed
+
+- `Dropdown`'s content no longer defaults to `role="menu"`; it has no role
+  unless one is passed. Pass `role="menu"` if you were relying on it.
+- `Menu` items are keyboard-operable: the menu is a single tab stop with
+  arrow-key navigation, `Home`/`End`, `Enter`/`Space` to activate and
+  `ArrowRight` to open a submenu.
+- `Menu` moves focus into itself when it opens and back to the trigger when it
+  closes.
+
 ### Fixed
 
 - `Dropdown`, `Popover` and `Tooltip` now stay anchored to their trigger when
@@ -20,6 +37,23 @@ Entries land here as work happens, not written retroactively at release time
   includes every dropdown inside `PageLayout`.
 - `Toolbar` now correctly displays elements on the right side when `breadcrumbs`
   are absent.
+- `Menu`, `ContextMenu` and `SplitButton` expose their items as `menuitem`s of a
+  `menu` instead of a plain list, so assistive technology can present them.
+- `Select`, `Combobox`, `TagInput`, `DatePicker`, `ColorPicker` and the
+  `Table`/`DataGrid` toolbar panels no longer nest their content inside a
+  `role="menu"` element.
+- `Modal`, `Drawer`, `CommandPalette`, `Dropdown`, `Popover` and `Select`
+  (`autoOpen`) no longer throw during server rendering when they are open on
+  their first render; the portal is deferred to the client.
+- `Select` can be opened from the keyboard: `ArrowDown`, `ArrowUp`, `Enter` and
+  `Space` open the listbox, `Escape` closes it, and focus stays on the field
+  after a selection instead of being dropped onto `<body>`.
+- `Select`'s options carry the ids its `aria-activedescendant` references, so
+  focusing or hovering one no longer points that attribute at a missing element.
+- `Select` only sets `aria-controls` while its listbox is rendered.
+- `Menu` items paint a focus ring.
+- `Menu` nested items honour `disabled`, which was accepted and ignored.
+- `Menu` and `SplitButton` triggers advertise `aria-haspopup="menu"`.
 
 
 ## [3.4.0] - 2026-09-21

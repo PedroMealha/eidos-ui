@@ -26,11 +26,15 @@ A handful of components set `style={{ ... }}` at runtime for values that are gen
 
 ### Components that are always safe, including under SSR
 
-These portal-based, interaction-only components never render their dynamic-position styles into a server-rendered payload at all - they mount into `document.body` only after a client-side interaction opens them, and start closed by default:
+These components render their floating surface through a portal, and a portal is client-only: the panel is created in `document.body` after the component has mounted in a browser, so its dynamic-position style cannot appear in a server-rendered payload at all.
 
 `Combobox` · `Select` · `TagInput` (suggestions) · `Menu` · `Dropdown` · `Popover` · `ContextMenu` · `Tooltip` · `Snackbar` · `CommandPalette`
 
 Nothing to configure for these - `style-src-attr 'self'` (i.e. no `unsafe-inline`) is sufficient.
+
+Note that the guarantee rests on the portal boundary, **not** on the panel happening to be closed. A few of these can be open on their very first render - `Dropdown`'s `defaultOpen`, `Popover`'s `defaultOpen`/`isOpen`, `Select`'s `autoOpen`, `CommandPalette`'s `open` - and that makes no difference here: the portal is deferred until the component is running in a browser, so the server renders nothing for the panel either way.
+
+This is re-checked on every build. Each of these components is rendered with no DOM present, open and closed, and the build fails if any of them emits a `style` attribute into the output - so the claim above cannot quietly stop being true.
 
 ### Navigation logo
 

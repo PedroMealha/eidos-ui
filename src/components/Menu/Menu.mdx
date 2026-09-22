@@ -32,6 +32,20 @@ import { User, Settings, LogOut } from 'lucide-react';
 
 <Controls of={MenuStories.Default} />
 
+## Keyboard
+
+The menu is a **single tab stop**; arrow keys move between items inside it. Focus enters the menu when it opens and returns to the trigger when it closes.
+
+| Key                | Action                                                 |
+| ------------------ | ------------------------------------------------------ |
+| `Enter` / `Space`  | Open from the trigger, or activate the focused item    |
+| `ArrowDown` / `Up` | Move to the next / previous item, wrapping at the ends |
+| `Home` / `End`     | Move to the first / last item                          |
+| `ArrowRight`       | Open the focused submenu and move focus into it        |
+| `Escape`           | Close the menu                                         |
+
+Disabled items are skipped rather than being dead stops, and separators are never focused. `component` items are not part of the arrow sequence - whatever you render inside one keeps its own focus behaviour and its own keys, so a text field in a menu still works normally.
+
 ## With keyboard shortcuts
 
 A `shortcut` string on an item is rendered as a [Kbd](?path=/docs/elements-kbd--docs) on the trailing edge. It is a label only - binding the actual key is the app's job.

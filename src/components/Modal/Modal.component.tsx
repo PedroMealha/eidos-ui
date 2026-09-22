@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '../Button/Button.component';
 import type { ModalProps } from './Modal.types';
-import { renderIcon, useDialogFocus } from '../../utils';
+import { renderIcon, useDialogFocus, useIsClient } from '../../utils';
 
 export const Modal: React.FC<ModalProps> = ({
   isOpen,
@@ -20,6 +20,7 @@ export const Modal: React.FC<ModalProps> = ({
   const titleId = useId();
   const bodyId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
+  const isClient = useIsClient();
 
   // ── Animation state ────────────────────────────────────────────────────────
   // isMounted: whether the portal DOM node exists at all.
@@ -105,9 +106,17 @@ export const Modal: React.FC<ModalProps> = ({
   // `--is-open`, which is two animation frames later - so at mount there is
   // nothing focusable to find and `.focus()` on the dialog itself is a no-op.
   // Focus silently stayed on the trigger.
-  useDialogFocus(isOpen && isVisible, dialogRef);
+  // `isClient` is part of the gate, not just the render below: a modal that
+  // starts open flips `isVisible` before the portal exists, so the hook would
+  // find a null ref, return early, and never re-run - leaving focus outside a
+  // dialog claiming `aria-modal`.
+  useDialogFocus(isClient && isOpen && isVisible, dialogRef);
 
-  if (!isMounted) return null;
+  // `isMounted` is initialised to `isOpen`, so a modal that starts open reaches
+  // `createPortal` on its very first render - which throws under SSR, where
+  // there is no `document`. The animation flag cannot cover that; `isClient`
+  // can. See `useIsClient`.
+  if (!isClient || !isMounted) return null;
 
   const modalContent = (
     <div className={`eidos-modal ${isVisible ? 'eidos-modal--is-open' : ''} ${className}`}>

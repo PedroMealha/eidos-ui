@@ -20,18 +20,25 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **475 stories** covering **58
+Against **WCAG 2.2 Level AA**, across **491 stories** covering **58
 components**.
 
 |                     |                                                                                                                                                                                                                  |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | axe-core violations | **7**, all documented exemptions (below)                                                                                                                                                                         |
-| Story tests         | 528                                                                                                                                                                                                              |
 | Rules at zero       | `label`, `button-name`, `nested-interactive`, `target-size`, `aria-allowed-attr`, `aria-valid-attr-value`, `link-in-text-block`, `scrollable-region-focusable`, `aria-required-children`, `aria-prohibited-attr` |
 
 These numbers are not hand-maintained. Every build re-runs the audit across
-every story and fails if any rule's count has risen. If this table is ever
-wrong, the build is already red.
+every story and fails if any rule's count has risen, **and** fails if the
+figures written here disagree with what the audit measured. If this table is
+ever wrong, the build is already red.
+
+**Overlays are audited open.** axe only sees what is rendered, so a panel that
+is closed in every story is a panel whose ARIA is never checked - "zero" would
+then mean "never looked". Stories that hold a menu, submenu and dropdown open
+are part of the audited set, which is what makes
+`aria-required-children: 0` above a measurement rather than an artefact of
+when the screenshot was taken.
 
 ## The 7 remaining nodes
 
@@ -63,22 +70,61 @@ explained 7 is more honest than a hidden 0.
 axe covers roughly a third of WCAG success criteria. The rest of the AA set
 that applies to a component is covered as follows.
 
-| SC                               | Level | How it was verified                                                                                  |
-| -------------------------------- | ----- | ---------------------------------------------------------------------------------------------------- |
-| 1.4.4 Resize Text                | AA    | Every story re-rendered at 200% root font size; no horizontal overflow                               |
-| 1.4.10 Reflow                    | AA    | Every story at 320x640. No component has an intrinsic minimum width that overflows                   |
-| 1.4.12 Text Spacing              | AA    | Required spacing overrides injected; no clipped or overlapping content                               |
-| 1.4.13 Content on Hover or Focus | AA    | `Tooltip` is dismissible on Escape, hoverable, and persistent - pinned by a story test               |
-| 2.1.1 Keyboard                   | A     | Focus sweep over ~2350 tab stops; `Input`'s buttons and `DataGrid`'s drag handle made reachable      |
-| 2.1.2 No Keyboard Trap           | A     | Same sweep; the only traps are modal dialogs, all escapable                                          |
-| 2.2.1 Timing Adjustable          | A     | `Snackbar` pauses auto-dismiss on hover and focus - pinned by a story test                           |
-| 2.4.3 Focus Order                | A     | Focus enters, is trapped in modal dialogs, and returns to the opener - pinned per overlay            |
-| 2.4.7 Focus Visible              | AA    | Every tab stop across 5712 samples; ambiguous cases confirmed by screenshotting focused vs unfocused |
-| 2.4.11 Focus Not Obscured        | AA    | `elementFromPoint` sweep over every tab stop                                                         |
-| 2.5.3 Label in Name              | A     | Every named control compared against its visible text                                                |
-| 2.5.7 Dragging Movements         | AA    | `DataGrid` row reorder has a keyboard path via a focusable drag handle                               |
-| 2.5.8 Target Size (Minimum)      | AA    | axe, plus a deliberate choice to meet 24x24 rather than rely on the spacing exception                |
-| 3.3.1 Error Identification       | A     | All 8 components with an `error` prop set `aria-invalid` and associate the message                   |
+| SC                               | Level | How it was verified                                                                                       |
+| -------------------------------- | ----- | --------------------------------------------------------------------------------------------------------- |
+| 1.4.4 Resize Text                | AA    | Every story re-rendered at 200% root font size; no horizontal overflow                                    |
+| 1.4.10 Reflow                    | AA    | Every story at 320x640. No component has an intrinsic minimum width that overflows                        |
+| 1.4.12 Text Spacing              | AA    | Required spacing overrides injected; no clipped or overlapping content                                    |
+| 1.4.13 Content on Hover or Focus | AA    | `Tooltip` is dismissible on Escape, hoverable, and persistent - pinned by a story test                    |
+| 2.1.1 Keyboard                   | A     | Two parts, below - reachability by sweep, operability by story test                                       |
+| 2.1.2 No Keyboard Trap           | A     | Same sweep; the only traps are modal dialogs, all escapable                                               |
+| 2.2.1 Timing Adjustable          | A     | `Snackbar` pauses auto-dismiss on hover and focus - pinned by a story test                                |
+| 2.4.3 Focus Order                | A     | Focus enters, is trapped in modal dialogs, and returns to the opener - pinned per overlay, menus included |
+| 2.4.7 Focus Visible              | AA    | Every tab stop across 5712 samples; ambiguous cases confirmed by screenshotting focused vs unfocused      |
+| 2.4.11 Focus Not Obscured        | AA    | `elementFromPoint` sweep over every tab stop                                                              |
+| 2.5.3 Label in Name              | A     | Every named control compared against its visible text                                                     |
+| 2.5.7 Dragging Movements         | AA    | `DataGrid` row reorder has a keyboard path via a focusable drag handle                                    |
+| 2.5.8 Target Size (Minimum)      | AA    | axe, plus a deliberate choice to meet 24x24 rather than rely on the spacing exception                     |
+| 3.3.1 Error Identification       | A     | All 8 components with an `error` prop set `aria-invalid` and associate the message                        |
+
+### 2.1.1 is two claims, and they need different evidence
+
+**Reachability** - can you get to the control? - is what the focus sweep
+measures: ~2350 tab stops enumerated and checked. That is how `Input`'s clear
+and password-reveal buttons and `DataGrid`'s drag handle were found.
+
+**Operability** - once there, does a key do anything? - is not something that
+sweep can answer, in either direction:
+
+- A control that is **not a tab stop at all** is invisible to it. `Menu`'s
+  items were `<li onClick>` with no `tabIndex` and no key handler, so menu
+  items in `Menu`, `ContextMenu`, `SplitButton` and `Table`/`DataGrid` row
+  actions could only be used with a mouse - and an enumeration of tab stops
+  could not have found them, because they never appeared in it.
+- A control that **is** a tab stop can still do nothing when activated; the
+  sweep checks that focus lands and is visible, not that Enter works.
+
+Operability is therefore pinned by story tests that drive the component with a
+keyboard, which is what now covers the menus: a single tab stop per menu,
+arrow keys to move with wrapping, `Home`/`End`, `Enter`/`Space` to activate,
+`ArrowRight` to open a submenu, focus moved in on open and returned to the
+trigger on close.
+
+This is also how `Select` was found to be unusable by keyboard, and fixed.
+`ArrowDown`, `ArrowUp`, `Enter` and `Space` updated a flag that reached nothing
+
+- the underlying overlay kept the real open state to itself - so the list never
+  appeared, `Enter` still committed the option at that invisible index, and
+  selecting dropped focus onto `<body>`. axe reported none of it, because the
+  state only existed after a keypress. `Select` now follows the ARIA
+  select-only-combobox pattern (arrow keys, `Enter`, `Space` open it; `Escape`
+  closes it; focus stays on the field throughout), pinned by a story test.
+
+One known gap of this kind remains: **`CommandPalette`'s custom trigger.** The
+`trigger={<YourNode />}` form (not the built-in button) wraps a non-interactive
+node in an element that announces as a button but has no key handler, so `Enter`
+does nothing there. The built-in trigger and an interactive custom trigger are
+both unaffected.
 
 ## What remains yours
 
@@ -126,8 +172,14 @@ between this document and one.
 
 ```bash
 npm run verify        # includes the full axe sweep over every story
-npm test              # 528 story + unit tests, including the a11y behaviours
+npm test              # story + unit tests, including the a11y behaviours
 ```
+
+`scripts/check-docs.js` compares the story count and the violation total stated
+above against `scripts/a11y-baseline.json`, so this document cannot drift from
+the audit. The baseline is re-recorded with
+`node scripts/check-a11y-baseline.js --update`, which is also what you run when
+adding stories changes the audited count.
 
 Per-component findings are also in Storybook's **Accessibility** panel, beside
 each component's Controls.

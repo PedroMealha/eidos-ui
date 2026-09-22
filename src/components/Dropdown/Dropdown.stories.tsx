@@ -4,7 +4,7 @@ import { ChevronDown, Settings, User, LogOut, HelpCircle } from 'lucide-react';
 import { Dropdown } from './Dropdown.component';
 import { Button } from '../Button';
 import { StoryRow } from '../../story-layout.docs';
-import { expect, screen, waitFor } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Overlays/Dropdown',
@@ -46,6 +46,24 @@ const meta = {
       control: 'number',
       description: 'Delay in milliseconds before showing the dropdown',
       table: { type: { summary: 'number' }, defaultValue: { summary: '0' } },
+    },
+    open: {
+      control: false,
+      description:
+        'Controlled open state. Pass with `onOpenChange` to own the open/closed decision; omit both to let Dropdown manage itself.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'undefined' } },
+    },
+    onOpenChange: { table: { disable: true } },
+    defaultOpen: {
+      control: 'boolean',
+      description: 'Open on first mount, when uncontrolled.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    role: {
+      control: 'text',
+      description:
+        'ARIA role for the portaled content. Defaults to none - pass one only when the panel itself carries the semantics.',
+      table: { type: { summary: 'React.AriaRole' }, defaultValue: { summary: 'undefined' } },
     },
     disabled: {
       control: 'boolean',
@@ -136,15 +154,26 @@ export const Default: Story = {
   },
 };
 
+// Real buttons, not clickable `div`s. `Dropdown` supplies positioning and
+// nothing else, so a panel of actions is only operable by keyboard if its
+// contents are - this story is the one people copy.
 const menuItemStyle: React.CSSProperties = {
   padding: 'var(--spacing-sm) var(--spacing-md)',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   gap: 'var(--spacing-sm)',
+  width: '100%',
+  background: 'transparent',
+  border: 0,
+  font: 'inherit',
+  color: 'inherit',
+  textAlign: 'left',
 };
 
-export const AsAMenu: Story = {
+// Named "action panel", not "menu": it has no menu semantics, and `Dropdown`
+// no longer claims any. A real menu is `Menu`.
+export const AsAnActionPanel: Story = {
   args: {
     trigger: (
       <Button variant="outlined" posIcon={ChevronDown}>
@@ -153,24 +182,25 @@ export const AsAMenu: Story = {
     ),
     content: (
       <div style={{ minWidth: 200 }}>
-        <div style={menuItemStyle} onClick={action('Profile clicked')}>
+        <button type="button" style={menuItemStyle} onClick={action('Profile clicked')}>
           <User size={16} />
           <span>Profile</span>
-        </div>
-        <div style={menuItemStyle} onClick={action('Settings clicked')}>
+        </button>
+        <button type="button" style={menuItemStyle} onClick={action('Settings clicked')}>
           <Settings size={16} />
           <span>Settings</span>
-        </div>
+        </button>
         <div style={{ height: 1, background: 'var(--gray-200)', margin: 'var(--spacing-sm) 0' }} />
         {/* `--danger-color`, not `--danger` - the latter does not exist, so it
             silently fell back to the inherited colour. */}
-        <div
+        <button
+          type="button"
           style={{ ...menuItemStyle, color: 'var(--danger-color)' }}
           onClick={action('Logout clicked')}
         >
           <LogOut size={16} />
           <span>Logout</span>
-        </div>
+        </button>
       </div>
     ),
   },
@@ -288,6 +318,175 @@ export const CustomTrigger: Story = {
   },
 };
 
+// ============================================================================
+// CHARACTERISATION - the open/close state machine as it behaves today
+// ============================================================================
+//
+// These pin behaviour that is about to be refactored: `Dropdown` owns its open
+// state privately, and every consumer works around that (`Select`, `Combobox`,
+// `TagInput`, `DatePicker` and `TableFiltersDropdown` force a close by
+// remounting via `key`; `Menu` dispatches a synthetic `document` mousedown;
+// `Combobox` synthesises a click on a 0-height span to open). Giving the
+// component a controlled `open`/`onOpenChange` API means rewriting the state
+// machine underneath all of them.
+//
+// So the point of these is not coverage - it is that the diff can be shown to
+// preserve behaviour. They were written and confirmed green *before* any of
+// that refactor started. The project rules call for exactly this ("write the
+// test before the refactor"), naming `Combobox` as the component everything
+// else builds on.
+
+/** The portaled panel. Roleless by design, so queried by its data attribute. */
+const panels = () => Array.from(document.querySelectorAll<HTMLElement>('[data-dropdown-content]'));
+
+export const OpensAndClosesByEveryRoute: Story = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { layout: 'padded' },
+  args: {
+    trigger: <Button variant="outlined">Toggle</Button>,
+    content: <div style={{ padding: 'var(--spacing-md)' }}>Panel</div>,
+  },
+  render: (args) => (
+    <div>
+      <Dropdown {...args} />
+      <button type="button" data-testid="outside">
+        Elsewhere
+      </button>
+    </div>
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    const trigger = canvas.getByRole('button', { name: 'Toggle' });
+
+    await step('the trigger opens it', async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
+
+    await step('the trigger toggles it closed again', async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(panels()).toHaveLength(0));
+    });
+
+    await step('Escape closes it', async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(panels()).toHaveLength(0));
+    });
+
+    await step('a click outside closes it', async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.click(canvas.getByTestId('outside'));
+      await waitFor(() => expect(panels()).toHaveLength(0));
+    });
+  },
+};
+
+/**
+ * The invariant most at risk in the refactor, and the one that fails silently.
+ *
+ * `isVisible` and `isPositioned` live in one state object today and every
+ * mutation sets both. Splitting them - which a controlled `open` prop requires,
+ * since `open` comes from outside while `isPositioned` stays internal - risks a
+ * panel that is mounted, correctly positioned and permanently
+ * `visibility: hidden`. Nothing in lint, tsc or a DOM query notices that.
+ */
+export const IsHiddenUntilPositioned: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: {
+    trigger: <Button variant="outlined">Open</Button>,
+    content: <div style={{ padding: 'var(--spacing-md)' }}>Panel</div>,
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Open' }));
+
+    await step('the panel ends up visible, and says so in its class list', async () => {
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      const panel = panels()[0];
+
+      await waitFor(() =>
+        expect(
+          panel.classList.contains('eidos-dropdown-content--positioned'),
+          'the positioned modifier never landed, so the panel stays `visibility: hidden`',
+        ).toBe(true),
+      );
+      expect(getComputedStyle(panel).visibility).toBe('visible');
+    });
+  },
+};
+
+export const OpensOnMountWithDefaultOpen: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: {
+    defaultOpen: true,
+    trigger: <Button variant="outlined">Already open</Button>,
+    content: <div style={{ padding: 'var(--spacing-md)' }}>Panel</div>,
+  },
+  play: async ({ step }) => {
+    await step('no interaction needed - and it still becomes visible', async () => {
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await waitFor(() =>
+        expect(panels()[0].classList.contains('eidos-dropdown-content--positioned')).toBe(true),
+      );
+    });
+  },
+};
+
+export const DefersOpeningByDelay: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: {
+    delay: 300,
+    trigger: <Button variant="outlined">Delayed</Button>,
+    content: <div style={{ padding: 'var(--spacing-md)' }}>Panel</div>,
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Delayed' }));
+
+    await step('nothing is mounted immediately', async () => {
+      expect(panels()).toHaveLength(0);
+    });
+
+    await step('and the panel arrives after the delay', async () => {
+      await waitFor(() => expect(panels()).toHaveLength(1), { timeout: 2000 });
+    });
+  },
+};
+
+/**
+ * Mutual exclusion is implemented by dispatching a `closeSibling` `CustomEvent`
+ * straight at the other panel's DOM node, bypassing React state entirely. A
+ * controlled `open` prop has to route this through the same setter as every
+ * other transition, or a consumer's state will say "open" while the panel is
+ * gone.
+ */
+export const GroupExcludesSiblings: Story = {
+  tags: ['!dev', '!autodocs'],
+  parameters: { layout: 'padded' },
+  render: () => (
+    <StoryRow>
+      {[1, 2].map((n) => (
+        <Dropdown
+          key={n}
+          dropdownGroup="characterisation"
+          trigger={<Button variant="outlined">Open {n}</Button>}
+          content={<div style={{ padding: 'var(--spacing-md)' }}>Panel {n}</div>}
+        />
+      ))}
+    </StoryRow>
+  ),
+  play: async ({ canvas, userEvent, step }) => {
+    await userEvent.click(canvas.getByRole('button', { name: 'Open 1' }));
+    await waitFor(() => expect(panels()).toHaveLength(1));
+
+    await step('opening the second closes the first', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Open 2' }));
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(panels()[0].textContent).toBe('Panel 2');
+    });
+  },
+};
+
 /**
  * Hidden from the sidebar and docs, but run by `npm run test:stories`.
  *
@@ -303,21 +502,7 @@ export const RepositionsOnAncestorScroll: Story = {
   parameters: { layout: 'padded' },
   args: {
     trigger: <Button variant="outlined">Open</Button>,
-    // `Dropdown` hardcodes `role="menu"` on its content, and this is the only
-    // audited story that leaves one open - so the content has to be a valid
-    // menu (`role="menuitem"` children) or axe reports
-    // `aria-required-children` against the library.
-    content: (
-      <div style={{ minWidth: 200 }}>
-        <button
-          type="button"
-          role="menuitem"
-          style={{ ...menuItemStyle, width: '100%', background: 'transparent', border: 0 }}
-        >
-          Anchored content
-        </button>
-      </div>
-    ),
+    content: <div style={{ padding: 'var(--spacing-md)', minWidth: 200 }}>Anchored content</div>,
   },
   render: (args) => (
     <div data-testid="scroller" style={{ height: 300, overflow: 'auto' }}>
@@ -331,7 +516,14 @@ export const RepositionsOnAncestorScroll: Story = {
     const trigger = canvas.getByRole('button', { name: 'Open' });
 
     await userEvent.click(trigger);
-    const content = await screen.findByRole('menu');
+    // Queried by the component's own data attribute: the content is portaled
+    // (so outside `canvas`) and deliberately carries no role - `Dropdown` is a
+    // positioning primitive and does not know what its content is.
+    const content = await waitFor(() => {
+      const element = document.querySelector<HTMLElement>('[data-dropdown-content]');
+      expect(element, 'the dropdown content never rendered').not.toBeNull();
+      return element!;
+    });
 
     // `gap` in calculateOptimalPosition.
     const GAP = 8;

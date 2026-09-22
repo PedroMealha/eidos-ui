@@ -39,11 +39,23 @@ function step(label, command) {
 }
 
 /**
- * Any `.mdx` touched since the last release, whether committed, staged or just
- * edited. Storybook is the only thing in the toolchain that parses `.mdx` - tsc
- * and eslint both ignore it - but it costs ~60s, so it runs only when needed.
+ * Anything that changes the built Storybook since the last release, whether
+ * committed, staged or just edited: `src/` (components, stories and the `.mdx`
+ * guide pages) and `.storybook/`.
+ *
+ * This used to match `*.mdx` only, on the reasoning that Storybook is the one
+ * thing in the toolchain that parses `.mdx` - tsc and eslint both ignore it.
+ * That reasoning covers `build-storybook`, but the step behind the same gate is
+ * the axe ratchet, and the ratchet audits *rendered components*. So a `.tsx`
+ * change was never accessibility-audited unless a docs page happened to change
+ * alongside it: precisely the regression the ratchet exists to catch, invisible
+ * to the gate that decides whether to run it.
+ *
+ * The two steps now cost ~50s together rather than ~250s, which is what makes
+ * running them on nearly every change affordable.
  */
-function mdxChanged() {
+function storybookAffected() {
+  const paths = ['src', '.storybook'];
   let lastTag;
   try {
     lastTag = gitArgs(['describe', '--tags', '--abbrev=0']);
@@ -52,16 +64,18 @@ function mdxChanged() {
   }
 
   const files = new Set([
-    ...gitArgs(['diff', '--name-only', lastTag, '--', '*.mdx']).split('\n').filter(Boolean),
-    ...gitArgs(['status', '--porcelain', '--', '*.mdx'])
+    ...gitArgs(['diff', '--name-only', lastTag, '--', ...paths])
+      .split('\n')
+      .filter(Boolean),
+    ...gitArgs(['status', '--porcelain', '--', ...paths])
       .split('\n')
       .filter(Boolean)
       .map((line) => line.slice(3)),
   ]);
 
   return files.size > 0
-    ? { changed: true, reason: `${files.size} .mdx changed since ${lastTag}` }
-    : { changed: false, reason: `no .mdx changes since ${lastTag}` };
+    ? { changed: true, reason: `${files.size} file(s) changed since ${lastTag}` }
+    : { changed: false, reason: `no src/ or .storybook/ changes since ${lastTag}` };
 }
 
 const started = Date.now();
@@ -83,15 +97,20 @@ step('docs', 'node scripts/check-docs.js');
 // build: a broken component should fail here, not 90 seconds later in tsup.
 step('test', 'npm test');
 step('build', 'npm run build');
+// Renders the built package with no DOM at all. Guards two things nothing else
+// can see: that an overlay opened on its first render defers its portal rather
+// than throwing, and that no component serialises a `style` attribute into an
+// SSR payload - which is the claim `ContentSecurityPolicy.mdx` makes.
+step('ssr', 'node scripts/check-ssr.js');
 
-const mdx = mdxChanged();
-if (mdx.changed) {
+const storybook = storybookAffected();
+if (storybook.changed) {
   step('build-storybook', 'npm run build-storybook');
   // Reads `storybook-static`, so it can only run when that was just rebuilt -
   // auditing a stale build would report yesterday's accessibility.
   step('a11y', 'node scripts/check-a11y-baseline.js');
 } else {
-  console.log(`  ${'build-storybook'.padEnd(18)}skipped  (${mdx.reason})`);
+  console.log(`  ${'build-storybook'.padEnd(18)}skipped  (${storybook.reason})`);
   console.log(`  ${'a11y'.padEnd(18)}skipped  (needs a fresh storybook-static)`);
 }
 

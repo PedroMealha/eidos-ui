@@ -199,6 +199,47 @@ Regression test: `Dropdown`'s `RepositionsOnAncestorScroll` story - it asserts
 the 8px gap between trigger and content survives an ancestor's `scrollTop`
 change, and fails by exactly the scroll distance without the capture listener.
 
+### A role belongs on the element that owns it - and it is a promise about keys
+
+`Dropdown` hardcoded `role="menu"` on its portaled content `<div>`. It is a
+positioning primitive with no idea what it contains, so that was wrong nearly
+everywhere: `Select`, `Combobox` and `TagInput` render a `role="listbox"`
+inside it (a listbox is not a valid child of a menu), and `DatePicker`,
+`ColorPicker`, `TableFiltersDropdown` and the `Table`/`DataGrid` toolbars are
+plain panels that announced themselves as menus with no items. It now takes a
+`role` prop and defaults to none.
+
+The same mistake in the other direction sat one level in: `MenuPanel`'s items
+were `<li onClick>` with **no role, no `tabIndex` and no key handler**, so every
+menu in the library - `Menu`, `ContextMenu`, `SplitButton`, `Table` and
+`DataGrid` row actions - was operable by mouse only. That is WCAG 2.1.1, Level
+A.
+
+Two rules, and they are inseparable:
+
+- **The role goes on the element that directly contains the items.** For a menu
+  that is the `<ul>`, not the overlay around it. One level out and the menu's
+  only child is a list, which is `aria-required-children` and a structure no
+  screen reader can present as a menu.
+- **`role="menu"` is a promise that arrow keys work.** Adding the role without
+  the keyboard model is the same trap as naming a button while leaving
+  `tabIndex={-1}` on it - it advertises a control the user cannot operate. The
+  model that ships: roving `tabIndex` (one tab stop per menu), Up/Down with
+  wrapping, Home/End, Enter/Space to activate, ArrowRight to open a submenu,
+  focus moved in on open and returned to the trigger on close via
+  `useDialogFocus(…, { trapTab: false })`.
+
+Why none of this was caught: **axe only sees what is rendered, and every menu
+story rendered closed.** The library's own a11y gate reported 7 nodes while
+this was live. Any component that is only auditable in an open state needs a
+story that _stays_ open after its `play` function - `Menu`'s `OpenMenuAria`
+holds one of every item type for exactly this reason.
+
+Known remaining gap: a submenu trigger carries a static `aria-haspopup="menu"`
+but no `aria-expanded`, because `Dropdown` owns the open state and exposes no
+controlled `open`/`onOpenChange` API to read it from. That API is the
+prerequisite for fixing it - don't paper over it by tracking the state twice.
+
 ### Dropdown viewport clamping
 
 `Dropdown`'s `calculateOptimalPosition` must clamp its position against **both**
@@ -721,10 +762,17 @@ Three things to keep straight:
   so, because the default quietly means something narrower. List the older
   tags alongside `wcag22aa` too: axe tags each rule by the version that
   introduced it, so `['wcag22aa']` alone would drop everything 2.2 inherited.
-- **`parameters.a11y.test` is `'todo'`, not `'error'`.** A measured backlog
-  remains (679 nodes across 11 rules at the time of writing). A permanently
-  red suite teaches people to ignore it; the ratchet catches new violations
-  instead. Flip to `'error'` when the baseline reaches zero, not before.
+- **`parameters.a11y.test` is `'todo'`, not `'error'`, and that is now
+  permanent.** It was written as a temporary concession to a backlog of 679
+  nodes across 11 rules; the backlog is gone (7 nodes, one rule - read
+  `scripts/a11y-baseline.json`, never this sentence). But the advice that came
+  with it - "flip to `'error'` when the baseline reaches zero" - can never be
+  taken, because the baseline **cannot** reach zero by design: all 7 remaining
+  nodes are SC 1.4.3 disabled-control exemptions that are deliberately counted
+  rather than tagged out ("a visible, explained 7 is more honest than a hidden
+  0"). `'error'` would therefore fail every run forever. Those two rules
+  contradicted each other for as long as both were written down. Keep `'todo'`,
+  and let the ratchet be the gate.
 - **Axe is a net, not a certificate.** It covers roughly a third of the WCAG
   success criteria - it cannot see focus traps, focus restoration, or whether
   an error message is programmatically associated with its field, all of
@@ -743,7 +791,11 @@ Three things about it that are not obvious:
 
 - **It needs a fresh `storybook-static`.** It reads the built output rather
   than requiring a dev server, so it behaves the same in CI and locally.
-  `verify` therefore only runs it when `build-storybook` just ran.
+  `verify` therefore only runs it when `build-storybook` just ran - and gates
+  both on anything under `src/` or `.storybook/` having changed since the last
+  tag. That gate used to be `*.mdx` only, which meant a `.tsx` change was never
+  audited unless a docs page happened to change alongside it: the ratchet's
+  whole purpose, invisible to the gate deciding whether to run it.
 - **It must wait for the addon's own axe pass.** `addon-a11y` runs axe when
   the story renders, and axe refuses concurrent runs. Injecting a second run
   without retrying failed **58 of 461 stories** with "Axe is already running"
@@ -757,25 +809,114 @@ Three things about it that are not obvious:
   one clickable row. A gate that fails for reasons nobody can act on gets
   disabled within a week.
 
-  The fix is an explicit signal - `#storybook-root` having children - then a
-  short settle for the ResizeObserver-driven grids. Two things that seemed
-  obviously right and were not:
+  **The one thing that must not be weakened is the wait for `storyFinished`.**
+  That event fires after render, after `play` and after every `afterEach` hook,
+  which also means the addon's axe pass above has already finished. Everything
+  else about the audit's speed rests on it, and it fails _downwards_ - a story
+  measured early reports fewer nodes, so the ratchet announces improvements
+  that never happened. Three things that seemed obviously right and were not:
 
-  - **Watching `document.querySelectorAll('*').length` for stability made it
-    worse.** An empty root is perfectly stable, so it returned _before_ the
-    story had mounted at all.
+  - **A fixed delay is not a substitute.** 250ms was simultaneously too long
+    (64% of a 186s step) and too short - the slowest `play` function here takes
+    2.4s, so those stories were audited mid-interaction. It is also
+    machine-dependent in the worst direction: fine on a laptop, too short on a
+    slower CI box.
+  - **Parallelism plus a _timed_ settle silently corrupts the counts.** With 6
+    workers and a DOM-stability settle, `--all-rules` returned 1498, then 1176,
+    then 1360 `region` nodes: under CPU contention the story has not finished
+    rendering when axe measures it. A `requestIdleCallback` settle failed the
+    same way. With `storyFinished` the counts are identical at 1, 5 and 8
+    workers, which is what makes `A11Y_WORKERS` safe to vary per machine.
   - **Freezing animations did not fix it.** Worth keeping - `reducedMotion`
     plus zeroed durations, so nothing is mid-transition and therefore
     invisible to axe when measured - but it was not the cause.
 
-  Verify with three consecutive full runs before trusting a new baseline. The
-  current one reproduces at exactly 679 every time.
+  **Re-validate any change to the waiting with `--all-rules`, never with the
+  default tag set.** The recorded baseline is one rule (`color-contrast`, 7
+  nodes) which is insensitive to partial rendering - it reported a clean 7 on
+  every corrupted run above. `--all-rules` drops the tag filter and reports
+  ~2882 nodes, of which `region` alone counts every element outside a landmark,
+  i.e. it measures directly how much of each story had rendered. Two runs of it
+  must agree with each other and across `A11Y_WORKERS=1` and the default.
 
 - **Opt a story out with the `a11y-contrast-demo` tag**, not an allowlist.
   `vite.config.ts` reads it via `tags.skip` and the script reads the same tag,
   so one fact drives both. Only for stories where the failure _is_ the
   documented subject - currently the two theme demos that render white on pale
   yellow on purpose.
+
+### A claim in a doc must be checked by something, or it is decoration
+
+`ACCESSIBILITY.md` is rendered into Storybook, so its figures are published
+claims. It stated "across **475 stories**" and "Story tests 528" while
+asserting, two lines later, that "these numbers are not hand-maintained ... if
+this table is ever wrong, the build is already red".
+
+Half of that was true. The per-rule violation counts _are_ ratcheted. The story
+and test counts were plain prose, and the story count drifted 475 → 480 in the
+same session that added the stories, with nothing to notice - `--update` would
+have rewritten `storiesAudited` in the baseline without comment too.
+
+Three rules came out of it:
+
+- **`check-docs.js` compares the figures in `ACCESSIBILITY.md` against
+  `a11y-baseline.json`**, so the file's own claim about itself is true.
+- **`check-a11y-baseline.js` fails when the audited count differs from the
+  recorded `storiesAudited`**, so the baseline cannot become the stale half of
+  a self-consistent pair of wrong numbers. It is not a regression - no
+  violation has appeared - so it reads like the "improved, re-record" branch,
+  and it doubles as the prompt to ask whether the new stories cover states
+  nothing had looked at before.
+- **A number with no cheap authoritative source gets deleted, not checked.**
+  The test count went, rather than acquiring a check that would have to run the
+  suite to know the answer.
+
+The general form: before writing a number or a guarantee into a doc, decide
+what will fail when it stops being true. If the answer is "nothing", either
+wire up the check or do not make the claim.
+
+### An overlay that is open on its first render cannot be server-rendered
+
+Every overlay portals into `document.body`, and a portal is client-only.
+Measured against the built package, before this was fixed:
+
+```
+renderToString(<Modal isOpen>)          ReferenceError: document is not defined
+renderToString(<Dropdown defaultOpen>)  ReferenceError: DOMRect is not defined
+renderToString(<Select autoOpen>)       ReferenceError: DOMRect is not defined
+```
+
+Not a rendering glitch - the whole server render dies. `Select autoOpen` is not
+hypothetical; `DataGrid`'s select cell editor uses it.
+
+Three things worth keeping straight:
+
+- **`isMounted` is not a guard against this.** `Modal`, `Drawer` and
+  `CommandPalette` each have one and all three threw: it is initialised to
+  `useState(isOpen)`, so it is already `true` on the first render. It sequences
+  the open/close _animation_ and nothing else. Use `useIsClient`, which is
+  `false` until the first effect.
+- **`typeof document !== 'undefined'` is the wrong check.** It is true during
+  hydration, so the client's first render would disagree with the server's - a
+  hydration mismatch. A state flag set in an effect makes them agree by
+  construction.
+- **Browser-only globals in the render path count too.** `Dropdown` threw on
+  `new DOMRect()` before it ever reached `document.body`, from a fallback in
+  its sizing call. Only the width was read, so the parameter is now
+  `{ width: number } | null`.
+
+`scripts/check-ssr.js` (in `verify`, after `build`) renders every overlay in
+both states with no DOM present and fails on a throw **or** on any `style`
+attribute in the output. That second assertion is what makes
+`ContentSecurityPolicy.mdx`'s "safe under SSR" claim enforced rather than
+argued - and note the claim now rests on the portal boundary, not on overlays
+"starting closed by default", which `defaultOpen`/`autoOpen` had already made
+untrue.
+
+It is a plain node script rather than a Vitest project on purpose: both test
+projects run in a real chromium, and an SSR check needs the _absence_ of a DOM,
+which chromium cannot provide. A node-environment project would be a third set
+of rendering semantics.
 
 ### Do not add `.storybook/vitest.setup.ts`
 

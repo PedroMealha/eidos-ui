@@ -5,6 +5,7 @@ import { Drawer } from './Drawer.component';
 import { Button } from '../Button';
 import type { DrawerPlacement, DrawerSize } from './Drawer.types';
 import { expectFocusTrap } from '../../story-a11y.docs';
+import { expect, screen, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Overlays/Drawer',
@@ -338,6 +339,31 @@ export const FocusManagement: Story = {
       userEvent,
       step,
       trigger: canvas.getByRole('button', { name: 'Open Drawer' }),
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * The same case as `Modal`'s `FocusEntersWhenOpenOnFirstRender`, and it needs
+ * its own test rather than trusting the shared hook: the portal is deferred one
+ * render so that server rendering never touches `document`, and each overlay
+ * decides for itself when to activate focus management. Drawer got this wrong
+ * in exactly the way Modal did.
+ */
+export const FocusEntersWhenOpenOnFirstRender: Story = {
+  tags: ['!dev', '!autodocs'],
+  args: { isOpen: true, title: 'Open from the first render', children: drawerBody },
+  play: async ({ step }) => {
+    await step('focus enters the panel', async () => {
+      const dialog = await screen.findByRole('dialog');
+      await waitFor(() =>
+        expect(
+          dialog.contains(document.activeElement),
+          'focus never entered a drawer that was open on its first render',
+        ).toBe(true),
+      );
     });
   },
 };
