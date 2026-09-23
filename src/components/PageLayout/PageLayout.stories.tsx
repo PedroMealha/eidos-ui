@@ -280,7 +280,9 @@ export const ScrollRestoration: Story = {
   render: (args) => <ScrollRestorationDemo {...args} />,
 };
 
-const ScrollRestorationDemo: React.FC<Partial<ComponentProps<typeof PageLayout>>> = (args) => {
+const ScrollRestorationDemo: React.FC<
+  Partial<ComponentProps<typeof PageLayout>> & { renderBody?: (label: string) => React.ReactNode }
+> = ({ renderBody = (label) => longContent(`${label} section`), ...args }) => {
   const [page, setPage] = useState(PAGES[0]);
 
   return (
@@ -299,10 +301,26 @@ const ScrollRestorationDemo: React.FC<Partial<ComponentProps<typeof PageLayout>>
       }}
       header={{ title: page.label, subtitle: `Simulated route: /${page.id}` }}
     >
-      {longContent(`${page.label} section`)}
+      {renderBody(page.label)}
     </PageLayout>
   );
 };
+
+/**
+ * A body of an exact, font-independent height, for the regression test below.
+ *
+ * Deliberately a fixed `height` rather than a pile of real content: the test
+ * scrolls to a specific offset, so the region has to be scrollable by at least
+ * that much in every environment. Text-driven height is not - the same story
+ * measured 143px of scroll range on macOS and over 200px on Chromatic's Linux
+ * runner, which is what made the test pass locally and fail there.
+ */
+const FixedHeightBody: React.FC<{ label: string }> = ({ label }) => (
+  <div style={{ height: 3000 }}>
+    <h4>{label}</h4>
+    <p>A fixed-height block, so the scroll range does not depend on font metrics.</p>
+  </div>
+);
 
 /**
  * Hidden from the sidebar and docs, but run by `npm run test:stories`.
@@ -312,30 +330,52 @@ const ScrollRestorationDemo: React.FC<Partial<ComponentProps<typeof PageLayout>>
  * browser has clamped `scrollTop` to its height, so the outgoing offset is
  * gone. Drop the scroll listener and this still looks correct on a fresh
  * navigation - only returning to a page shows the loss.
+ *
+ * It renders `FixedHeightBody` rather than the demo's text, and asserts the
+ * available scroll range before using it. The first version did neither, and so
+ * asserted an offset it did not control: `scrollTo(…, 200)` silently clamped to
+ * the range the environment happened to give it - 143px locally, over 200px on
+ * Chromatic - which is a test that can disagree with itself across machines.
  */
 export const RestoresScrollPerKey: Story = {
   tags: ['!dev', '!autodocs'],
-  render: (args) => <ScrollRestorationDemo {...args} />,
+  render: (args) => (
+    <ScrollRestorationDemo {...args} renderBody={(label) => <FixedHeightBody label={label} />} />
+  ),
   play: async ({ canvas, userEvent, step }) => {
     const content = canvas.getByRole('main');
     const go = (name: string) => userEvent.click(canvas.getByRole('button', { name }));
 
-    const ticketsOffset = await scrollTo(content, 200);
-    expect(ticketsOffset, 'the story content is not tall enough to scroll').toBeGreaterThan(0);
+    const TICKETS_OFFSET = 200;
+    const TEAM_OFFSET = 80;
+
+    // Checked first: every assertion below is an exact offset, so a region that
+    // cannot scroll that far would clamp and report a mismatch that looks like
+    // broken restoration rather than an unscrollable story.
+    const range = content.scrollHeight - content.clientHeight;
+    expect(range, 'the content region cannot scroll far enough to test this').toBeGreaterThan(
+      TICKETS_OFFSET,
+    );
+
+    expect(await scrollTo(content, TICKETS_OFFSET)).toBe(TICKETS_OFFSET);
 
     await step('a page not seen before starts at the top', async () => {
       await go('Team');
       await waitFor(() => expect(content.scrollTop, "kept the previous page's offset").toBe(0));
     });
 
-    const teamOffset = await scrollTo(content, 80);
+    expect(await scrollTo(content, TEAM_OFFSET)).toBe(TEAM_OFFSET);
 
     await step('returning to a page restores its own offset', async () => {
       await go('Tickets');
-      await waitFor(() => expect(content.scrollTop).toBe(ticketsOffset));
+      await waitFor(() =>
+        expect(content.scrollTop, "did not restore Tickets' offset").toBe(TICKETS_OFFSET),
+      );
 
       await go('Team');
-      await waitFor(() => expect(content.scrollTop).toBe(teamOffset));
+      await waitFor(() =>
+        expect(content.scrollTop, "did not restore Team's offset").toBe(TEAM_OFFSET),
+      );
     });
   },
 };
