@@ -50,20 +50,32 @@ The chrome each individual page needs (its `header`, and the leaf of the breadcr
 1. **A route table** for the static parts - title, breadcrumb parent chain, which navigation item is active. Resolve this from the current path, so the correct chrome is present on the very first paint.
 2. **A context the page registers into** for the parts only the page knows - a title that depends on loaded data, an action's `loading` state, a status indicator.
 
+Both of those live in your application. `PageLayout` takes its chrome as props and nothing more: deciding what the current URL means is routing, and this library has no router opinion. Your router very likely offers a better seam for it than a generic hook could - route handles, nested layouts, or loader data.
+
+The sketch below is one way to wire it. Everything imported here is your own code:
+
 ```tsx
-// One instance, in the layout - not in any page.
-const { route } = matchRoute(path);
-const pageChrome = useResolvedChrome(); // route defaults <- page overrides
+// Your own modules - eidos-ui exports none of these.
+import { matchRoute, breadcrumbsFor } from './routes';
+import { useResolvedChrome } from './page-chrome';
+
+// One instance, in your layout - not in any page.
+const { route, params } = matchRoute(path);
+const chrome = useResolvedChrome(route); // route defaults <- page overrides
 
 <PageLayout
   navigation={{ brand, items: navItems }}
   toolbar={{ breadcrumbs: { items: breadcrumbsFor(route) }, user, userMenu }}
-  header={pageChrome.header}
+  header={chrome.header}
 >
   {route.render(params)}
 </PageLayout>;
+```
 
-// In a page - declares chrome, renders no layout.
+```tsx
+// In a page - declares its chrome, renders no layout.
+import { usePageChrome } from './page-chrome';
+
 usePageChrome(
   useMemo(
     () => ({ title: member?.name, actions: [{ children: 'Save', onClick: save }] }),
@@ -87,6 +99,47 @@ The `main` content area is the layout's only scroll region. The toolbar and navi
 When the page content is shorter than the scroll region, the body absorbs the leftover space, so the footer sits on the bottom edge rather than floating up under the content.
 
 <Canvas of={PageLayoutStories.Scrolling} />
+
+## Scroll position across navigations
+
+That `main` region is the same element for the whole life of the layout - a navigation only swaps what is inside it - so its scroll offset carries over to the next page unless something resets it. `window.scrollTo` cannot help, because the document is not what scrolls here.
+
+`scrollRestorationKey` identifies the current page. Each key's offset is remembered and applied when the key changes, so a page you have seen before reopens where you left it and a new one starts at the top:
+
+```tsx
+<PageLayout scrollRestorationKey={location.pathname} header={header}>
+  {children}
+</PageLayout>
+```
+
+What you pass decides the behaviour:
+
+| Key                    | Behaviour                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| `location.pathname`    | One offset per path - a path always reopens where you left it, however you got there       |
+| A per-history-entry id | The browser's own behaviour: Back restores, a fresh link to the same URL starts at the top |
+| Omitted                | The scroll position is left alone entirely                                                 |
+
+Keep the key unchanged across a transition that should not move the page - a filter or a sort written to the query string, say.
+
+<Canvas of={PageLayoutStories.ScrollRestoration} />
+
+## Controlling the scroll region
+
+For anything beyond that, `contentRef` points at the region itself. A ref passed through the usual HTML attributes lands on the layout's outer element, which never scrolls:
+
+```tsx
+const contentRef = useRef<HTMLElement>(null);
+
+// On navigation, say:
+contentRef.current?.scrollTo({ top: 0 });
+
+<PageLayout contentRef={contentRef} header={{ title }}>
+  {children}
+</PageLayout>;
+```
+
+<Canvas of={PageLayoutStories.ControllingTheScrollRegion} />
 
 ## The page gutter
 

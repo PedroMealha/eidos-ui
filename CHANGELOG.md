@@ -13,6 +13,18 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `PageLayout.scrollRestorationKey` - remembers the content region's scroll
+  offset per page and applies it when the key changes.
+- `PageLayout.contentRef` - ref to the `main` content region, the layout's only
+  scroll container, for driving its scroll position.
+
+### Fixed
+
+- `PageLayout`'s content region is focusable, so a page whose body holds
+  nothing focusable can still be scrolled by keyboard.
+
 ## [3.5.1] - 2026-09-22
 
 ### Fixed

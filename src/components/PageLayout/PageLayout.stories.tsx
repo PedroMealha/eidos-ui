@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
 import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
@@ -6,6 +7,30 @@ import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 import { Avatar } from '../Avatar';
 import { Divider } from '../Divider';
 import { Pill } from '../Pill';
+
+/** Stand-ins for routes in the scroll restoration story below. */
+const PAGES = [
+  { id: 'tickets', label: 'Tickets', icon: Ticket },
+  { id: 'team', label: 'Team', icon: Users },
+  { id: 'settings', label: 'Settings', icon: Settings },
+];
+
+/** Enough body content to make the content region actually scroll. */
+const longContent = (label = 'Section') => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
+    {Array.from({ length: 12 }, (_, index) => (
+      <section key={index}>
+        <h4>
+          {label} {index + 1}
+        </h4>
+        <p>
+          Each of these blocks sizes to its own content, and the body region grows with them rather
+          than clipping them - the overflow ends up on the scroll container, not inside the body.
+        </p>
+      </section>
+    ))}
+  </div>
+);
 
 const meta = {
   title: 'Layout/PageLayout',
@@ -155,6 +180,16 @@ const meta = {
         defaultValue: { summary: "{ copyright: '© <year> Eidos UI' }" },
       },
     },
+    contentRef: { table: { disable: true } },
+    scrollRestorationKey: {
+      control: 'text',
+      description:
+        "Identifies the current page. Each key's scroll offset is remembered and applied when the key changes. Omit to leave the scroll position alone.",
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
   },
 } satisfies Meta<typeof PageLayout>;
 
@@ -171,20 +206,79 @@ export const Default: Story = {};
  */
 export const Scrolling: Story = {
   args: {
-    children: (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-        {Array.from({ length: 12 }, (_, index) => (
-          <section key={index}>
-            <h4>Section {index + 1}</h4>
-            <p>
-              Each of these blocks sizes to its own content, and the body region grows with them
-              rather than clipping them - the overflow ends up on the scroll container, not inside
-              the body.
-            </p>
-          </section>
-        ))}
-      </div>
-    ),
+    children: longContent(),
+  },
+};
+
+/**
+ * `contentRef` points at that `main` region - the element that actually
+ * scrolls. A ref passed through `HTMLAttributes` reaches the outer element
+ * instead, which never does, so this is the way to drive the scroll position
+ * imperatively. Scrolling back to the top on navigation is the usual reason
+ * to want it.
+ *
+ * Scroll the canvas below, then press **Back to top**.
+ */
+export const ControllingTheScrollRegion: Story = {
+  render: (args) => {
+    const contentRef = useRef<HTMLElement>(null);
+
+    return (
+      <PageLayout
+        {...args}
+        contentRef={contentRef}
+        header={{
+          title: 'Page Title',
+          subtitle: 'Page Subtitle',
+          actions: [
+            {
+              children: 'Back to top',
+              preIcon: 'arrow-up',
+              variant: 'outlined',
+              onClick: () => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' }),
+            },
+          ],
+        }}
+      >
+        {longContent()}
+      </PageLayout>
+    );
+  },
+};
+
+/**
+ * `scrollRestorationKey` identifies the current page, so each one's scroll
+ * offset is remembered and applied when the key changes - a page you have
+ * seen before reopens where you left it, a new one starts at the top.
+ *
+ * Scroll down inside **Tickets**, switch to **Team**, and come back: Tickets
+ * is where you left it, and Team started at the top. Without the key the
+ * content region simply keeps whatever offset the previous page had, because
+ * it is the same element throughout - only its contents change.
+ */
+export const ScrollRestoration: Story = {
+  render: (args) => {
+    const [page, setPage] = useState(PAGES[0]);
+
+    return (
+      <PageLayout
+        {...args}
+        scrollRestorationKey={page.id}
+        navigation={{
+          brand: { name: 'Eidos' },
+          items: PAGES.map((item) => ({
+            id: item.id,
+            label: item.label,
+            icon: item.icon,
+            active: item.id === page.id,
+            onClick: () => setPage(item),
+          })),
+        }}
+        header={{ title: page.label, subtitle: `Simulated route: /${page.id}` }}
+      >
+        {longContent(`${page.label} section`)}
+      </PageLayout>
+    );
   },
 };
 

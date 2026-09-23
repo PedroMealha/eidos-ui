@@ -53,6 +53,15 @@
     min-height: 0;
     min-width: 0;
     overflow: auto;
+
+    // The region is focusable so keyboard users can scroll it. The ring is
+    // inset because an inset shadow paints on the border box and so stays put
+    // while the content scrolls, where an outward one sits on the edge of a
+    // region that fills the page.
+    &:focus-visible {
+      outline: none;
+      box-shadow: focus-ring-shadow-inset(primary);
+    }
   }
 
   &__header,
