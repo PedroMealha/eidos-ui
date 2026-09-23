@@ -50,6 +50,18 @@
 // ----------------------------------------------------------------------------
 
 .eidos-message--comment {
+  // The time (and `edited`, which follows it) sit against the right edge of the
+  // header, away from the identity group on the left. The row is full width
+  // here, unlike a chat bubble, so packing five items together at the start
+  // left a lot of empty space and read as one run-on line.
+  //
+  // Note the right edge is ragged across reply levels, since replies are
+  // indented - this separates identity from metadata rather than creating a
+  // column to scan.
+  .eidos-message-header .eidos-message-time {
+    margin-left: auto;
+  }
+
   .eidos-message-bubble {
     padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--gray-200);

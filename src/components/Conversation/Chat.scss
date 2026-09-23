@@ -125,10 +125,23 @@
   // the surface away from the text and lands at 6.79-6.87:1 across the same
   // set. It is also the theme-safe direction: darkening always helps light
   // text, whatever hue the consumer picks.
+  //
+  // That fixed the chip's *text* and stopped there. The chip as an object was
+  // still 1.36:1 against the bubble, with a `rgba(white, 0.35)` border at
+  // 1.61:1 - legible content inside an edge nobody could see. The border is
+  // now `--primary-contrast`, which is the one colour `pickContrast` already
+  // guarantees against this exact fill, so it cannot fall below 3:1 for any
+  // theme (5.02:1 for the preset). Do not swap it back to a white alpha: on a
+  // pale custom primary, white is the bubble's own direction and vanishes.
   .eidos-message-attachment-link {
     background: rgba(var(--black-rgb), 0.18);
-    border-color: rgba(var(--white-rgb), 0.35);
+    border-color: var(--primary-contrast);
     color: inherit;
+  }
+
+  a.eidos-message-attachment-link:hover {
+    background: rgba(var(--black-rgb), 0.3);
+    border-color: var(--primary-contrast);
   }
 
   // The base rule paints this `--text-muted`, which is a dark grey intended

@@ -13,6 +13,19 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Changed
+
+- `Chat` shows every message's time at the foot of its bubble, instead of in the
+  header for the first message of a group and in the bubble for the rest.
+- `CommentThread` aligns a comment's time to the right of its header.
+
+### Fixed
+
+- Message attachment chips are legible against the bubble behind them; the
+  border was effectively invisible at 1.10:1.
+- An attachment without a `url` no longer shows hover feedback, having never
+  been clickable.
+
 ## [3.6.2] - 2026-09-23
 
 ### Fixed

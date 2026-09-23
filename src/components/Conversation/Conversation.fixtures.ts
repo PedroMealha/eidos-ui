@@ -29,6 +29,27 @@ export const CHIARA: MessageAuthor = {
 /** Fixed offsets from "now" so the stories always show plausible timestamps. */
 const at = (minutesAgo: number): string => new Date(Date.now() - minutesAgo * 60_000).toISOString();
 
+/**
+ * A real, downloadable `url` for the attachment below.
+ *
+ * `MessageItem` renders an attachment as an `<a download>` only when it has a
+ * `url`, and as an inert label otherwise - so a fixture without one documented
+ * "attachments render as download chips" with a chip that does nothing when
+ * clicked. A `data:` URL keeps the fixture a plain JSON-serialisable string,
+ * which is the property `ConversationMessage` exists to preserve.
+ */
+const PATCH_FILE =
+  'data:text/plain;charset=utf-8,' +
+  encodeURIComponent(
+    [
+      '--- a/export.ts',
+      '+++ b/export.ts',
+      '@@',
+      '-const columns = BASE;',
+      '+const columns = ALL;',
+    ].join('\n'),
+  );
+
 export const CHAT_MESSAGES: ConversationMessage[] = [
   {
     id: 'm-1',
@@ -59,7 +80,7 @@ export const CHAT_MESSAGES: ConversationMessage[] = [
     author: ANA,
     body: 'Exactly. Patch is up for review, should ship this afternoon.',
     sentAt: at(45),
-    attachments: [{ id: 'a-1', name: 'export-fix.patch', size: 4_812 }],
+    attachments: [{ id: 'a-1', name: 'export-fix.patch', size: 4_812, url: PATCH_FILE }],
   },
   {
     id: 'm-6',

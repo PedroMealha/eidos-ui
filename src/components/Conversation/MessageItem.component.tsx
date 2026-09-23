@@ -88,6 +88,15 @@ export const MessageItem: React.FC<MessageItemProps> = ({
   // permissions note in Conversation.types.ts.
   const hasActions = Boolean(actions && actions.length > 0);
 
+  // One placement per layout, rather than one per message.
+  //
+  // `chat` puts the time at the foot of the bubble, where a grouped message
+  // already had it; it used to appear in the header for the first message of a
+  // group and inside the bubble for the rest, so a single thread showed the
+  // same fact in two places. `comment` keeps it in the header, where the row is
+  // full width and has space for it.
+  const timeInBubble = layout === 'chat';
+
   return (
     <li
       className={classNames(
@@ -120,9 +129,11 @@ export const MessageItem: React.FC<MessageItemProps> = ({
                 {author.role}
               </Pill>
             )}
-            <time className="eidos-message-time" dateTime={message.sentAt}>
-              {timestamp}
-            </time>
+            {!timeInBubble && (
+              <time className="eidos-message-time" dateTime={message.sentAt}>
+                {timestamp}
+              </time>
+            )}
             {message.edited && <span className="eidos-message-edited">edited</span>}
           </div>
         )}
@@ -145,7 +156,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({
             <AttachmentList attachments={message.attachments} />
           )}
 
-          {grouped && (
+          {(timeInBubble || grouped) && (
             <time
               className="eidos-message-time eidos-message-time--inline"
               dateTime={message.sentAt}

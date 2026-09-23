@@ -262,14 +262,25 @@
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-mono);
+  line-height: 1;
 }
 
 .eidos-message-attachment-link {
   @include flex-center-y;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--gray-200);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  // `--gray-500`, not the `--gray-200` this used to be. The chip is white on a
+  // `--gray-100` bubble, so its own fill is 1.10:1 against the surface behind
+  // it and a `--gray-200` border is 1.13:1 - the chip did not read as a
+  // separate object at all. `--gray-300` (1.36:1) and `--gray-400` (2.34:1) are
+  // both still too light; `--gray-500` is the first step that clears 3:1, at
+  // 4.34:1. That is also the weight this library gives every other outlined
+  // element, so the chip now matches `Chip`/`Pill` rather than being a
+  // suggestion of an edge.
+  border: 1px solid var(--gray-500);
   border-radius: var(--border-radius-sm);
   background: var(--white);
   @include font-size(xs);
@@ -282,9 +293,18 @@
     height: 12px;
     flex-shrink: 0;
   }
+}
 
+// Scoped to the anchor, which is the only form that does anything.
+//
+// `MessageItem` renders an `<a download>` when the attachment has a `url` and a
+// plain `<span>` when it does not, both carrying the class above. These rules
+// used to sit on the class, so the inert `<span>` lit up on hover and reserved
+// a focus ring it could never show: it advertised a download that was not
+// there. An attachment with no `url` is now visibly just a label.
+a.eidos-message-attachment-link {
   &:hover {
-    border-color: var(--gray-300);
+    border-color: var(--gray-600);
     background: var(--gray-50);
   }
 
@@ -301,6 +321,7 @@
 }
 
 .eidos-message-attachment-size {
+  margin-left: var(--spacing-md);
   color: var(--text-muted);
   flex-shrink: 0;
 }

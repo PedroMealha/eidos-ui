@@ -40,6 +40,10 @@ jobs:
       - run: npm run typecheck
       - run: npm run prettier:check
       - run: node scripts/check-docs.js
+      # Keep this list in step with `scripts/verify.js`. `check-story-docs.js`
+      # was added to `verify` and not here, so for a while the docs-structure
+      # rule was enforced only on whoever happened to run `verify` locally.
+      - run: node scripts/check-story-docs.js
       - run: node scripts/check-barrel-exports.js
 
   # Unit tests plus every story rendered in a real browser, then axe over the

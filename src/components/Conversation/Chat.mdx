@@ -144,6 +144,6 @@ Layout responds to the **component's own width**, not the viewport's, using cont
 
 ## Attachments
 
-Attachments on a message render as download chips. Setting `allowAttachments` adds the attach control to the composer; the selected `File`s arrive on the draft.
+An attachment with a `url` renders as a download chip; one without is an inert label, since there is nothing to link to. Setting `allowAttachments` adds the attach control to the composer; the selected `File`s arrive on the draft, and uploading them - and producing the `url` - is yours to do.
 
 <Canvas of={ChatStories.WithAttachments} />
