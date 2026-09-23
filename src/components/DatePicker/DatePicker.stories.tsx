@@ -97,7 +97,7 @@ type Story = StoryObj<typeof meta>;
 // The docs source override shows a clean real-world usage snippet.
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     mode: 'single',
     label: 'Date',

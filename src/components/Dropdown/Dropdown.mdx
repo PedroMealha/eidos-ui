@@ -28,14 +28,6 @@ import { Button } from 'eidos-ui';
 />;
 ```
 
-## Default
-
-The primary interactive story - use the Controls panel to explore `placement`, `delay`, `disabled`, `closeOnClickOutside`, `closeOnEscape`, `autoWidth`, `minWidth`, `maxWidth`, `minHeight`, and `maxHeight`.
-
-<Canvas of={DropdownStories.Default} />
-
-<Controls of={DropdownStories.Default} />
-
 ## Controlling the open state
 
 By default `Dropdown` owns whether it is open, seeded by `defaultOpen`. Pass `open` together with `onOpenChange` to own it yourself:
@@ -66,11 +58,31 @@ Pass `role` when the panel itself is the thing with semantics. When its _content
 
 A role also implies an interaction contract. `role="menu"` promises arrow-key navigation; if you are not implementing that, use [Menu](?path=/docs/overlays-menu--docs), which provides the roles, the roving tab stop and the full keyboard model.
 
+## Playground
+
+The primary interactive story - use the Controls panel to explore `placement`, `delay`, `disabled`, `closeOnClickOutside`, `closeOnEscape`, `autoWidth`, `minWidth`, `maxWidth`, `minHeight`, and `maxHeight`.
+
+<Canvas of={DropdownStories.Playground} />
+
+<Controls of={DropdownStories.Playground} />
+
 ## As a panel of actions
 
 `Dropdown` gives you positioning only, so the panel's contents must be real controls - buttons here, not clickable `<div>`s. For anything menu-shaped, prefer [Menu](?path=/docs/overlays-menu--docs) rather than rebuilding its semantics.
 
 <Canvas of={DropdownStories.AsAnActionPanel} />
+
+## Custom trigger
+
+The trigger keeps its own semantics - `Dropdown` wraps it in a plain positioning `div` carrying no `role` and no `tabIndex`. A custom trigger must therefore be a real interactive element itself, or it will be unreachable by keyboard and invisible to assistive technology.
+
+<Canvas of={DropdownStories.CustomTrigger} />
+
+## Grouped (mutual exclusion)
+
+Give several dropdowns the same `dropdownGroup` and wrap them in `DropdownProvider` so only one can be open at a time.
+
+<Canvas of={DropdownStories.Grouped} />
 
 ## Placements
 
@@ -85,15 +97,3 @@ A role also implies an interaction contract. `role="menu"` promises arrow-key na
 ## With a delay
 
 <Canvas of={DropdownStories.WithDelay} />
-
-## Grouped (mutual exclusion)
-
-Give several dropdowns the same `dropdownGroup` and wrap them in `DropdownProvider` so only one can be open at a time.
-
-<Canvas of={DropdownStories.Grouped} />
-
-## Custom trigger
-
-The trigger keeps its own semantics - `Dropdown` wraps it in a plain positioning `div` carrying no `role` and no `tabIndex`. A custom trigger must therefore be a real interactive element itself, or it will be unreachable by keyboard and invisible to assistive technology.
-
-<Canvas of={DropdownStories.CustomTrigger} />

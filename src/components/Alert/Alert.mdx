@@ -19,21 +19,15 @@ import { Alert } from 'eidos-ui';
 </Alert>;
 ```
 
-## Default
+## Playground
 
-<Canvas of={AlertStories.Default} />
+<Canvas of={AlertStories.Playground} />
 
-<Controls of={AlertStories.Default} />
+<Controls of={AlertStories.Playground} />
 
-## With title
+## All variants
 
-<Canvas of={AlertStories.WithTitle} />
-
-## With action
-
-Provide an `action` prop to render a call-to-action button inside the alert body.
-
-<Canvas of={AlertStories.WithAction} />
+<Canvas of={AlertStories.AllVariants} />
 
 ## Dismissable
 
@@ -47,6 +41,12 @@ Set `icon={false}` to suppress the variant icon - the `icon` prop also accepts a
 
 <Canvas of={AlertStories.NoIcon} />
 
-## All variants
+## With action
 
-<Canvas of={AlertStories.AllVariants} />
+Provide an `action` prop to render a call-to-action button inside the alert body.
+
+<Canvas of={AlertStories.WithAction} />
+
+## With title
+
+<Canvas of={AlertStories.WithTitle} />

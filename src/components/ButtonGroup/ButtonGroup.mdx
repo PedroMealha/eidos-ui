@@ -21,13 +21,13 @@ import { ButtonGroup, Button } from 'eidos-ui';
 </ButtonGroup>;
 ```
 
-## Default
+## Playground
 
 The classic segmented action bar. Use the controls below to explore the available props.
 
-<Canvas of={ButtonGroupStories.Default} />
+<Canvas of={ButtonGroupStories.Playground} />
 
-<Controls of={ButtonGroupStories.Default} />
+<Controls of={ButtonGroupStories.Playground} />
 
 ## Filled
 
@@ -39,18 +39,18 @@ Works with `IconButton`. Ideal for view-switcher or text-formatting toolbars.
 
 <Canvas of={ButtonGroupStories.IconOnly} />
 
-## Vertical
-
-Stack buttons top-to-bottom with `orientation="vertical"`.
-
-<Canvas of={ButtonGroupStories.Vertical} />
-
-## Sizes
-
-<Canvas of={ButtonGroupStories.Sizes} />
-
 ## Per-child overrides
 
 Each child can override the group's `variant`, `color`, or `size`. Here the delete button switches to `color="danger"` and `variant="filled"` independently while the rest inherit the group's `outlined` style.
 
 <Canvas of={ButtonGroupStories.PerChildOverride} />
+
+## Sizes
+
+<Canvas of={ButtonGroupStories.Sizes} />
+
+## Vertical
+
+Stack buttons top-to-bottom with `orientation="vertical"`.
+
+<Canvas of={ButtonGroupStories.Vertical} />

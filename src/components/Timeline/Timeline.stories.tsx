@@ -16,7 +16,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // Required props live at meta level so the render-only stories below
-  // satisfy the type, and so Default's controls start from real values.
+  // satisfy the type, and so Playground's controls start from real values.
   args: { items: [] },
 } satisfies Meta<typeof Timeline>;
 
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - mixed colors with timestamps
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     items: [
       {

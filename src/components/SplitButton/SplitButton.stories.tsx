@@ -94,9 +94,9 @@ type Story = StoryObj<typeof meta>;
 
 // ─── Shared options ───────────────────────────────────────────────────────────
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Playground ──────────────────────────────────────────────────────────────────
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     preIcon: Save,
     variant: 'filled',

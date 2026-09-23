@@ -79,7 +79,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // `items` is required, so it lives here to satisfy the type for the
-  // render-only stories below as well as seeding the Default controls. The
+  // render-only stories below as well as seeding the Playground controls. The
   // file previously dropped the `Story` annotation from every story to dodge
   // this, which left them all untyped.
   args: { items: CMDP_ITEMS },
@@ -100,7 +100,7 @@ type Story = StoryObj<typeof meta>;
  * them at once (see `Uncontrolled`, the one place this is meant to be
  * demonstrated), so it's disabled here. Still fully overridable via Controls.
  */
-export const Default: Story = {
+export const Playground: Story = {
   args: { shortcutKey: null },
   render: (args: Partial<ComponentProps<typeof CommandPalette>>) => (
     <CommandPalette {...args} trigger items={CMDP_ITEMS} />
@@ -332,7 +332,7 @@ export const WithDisabledItems: Story = {
 
 /**
  * Hidden from the sidebar and docs, but run by `npm run test:stories`. See
- * the equivalent story on `Modal` for why this is not attached to `Default`.
+ * the equivalent story on `Modal` for why this is not attached to `Playground`.
  *
  * `CommandPalette` was the closest of the three to correct - it already
  * focused its search input on open - but it still had no trap and no

@@ -67,7 +67,7 @@ const meta = {
     },
   },
   // `children` and `message` are required, so they live here to satisfy the
-  // type for the render-only stories below as well as seeding Default.
+  // type for the render-only stories below as well as seeding Playground.
   args: {
     message: 'This is a helpful tooltip',
     children: <Button>Hover me</Button>,
@@ -81,7 +81,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - Primary interactive example with all controls
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     placement: 'top',
     triggerType: 'hover',
@@ -90,7 +90,7 @@ export const Default: Story = {
   },
 };
 
-// `MessageTooltip` was a byte-identical copy of Default, referenced by no .mdx.
+// `MessageTooltip` was a byte-identical copy of Playground, referenced by no .mdx.
 
 // ============================================================================
 // COMPONENT TOOLTIP - Custom component instead of string

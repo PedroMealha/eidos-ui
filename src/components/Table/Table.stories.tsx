@@ -197,7 +197,7 @@ const defaultColumns: TableColumn<User>[] = [
   { key: 'status', label: 'Status' },
 ];
 
-export const Default: Story = {
+export const Playground: Story = {
   name: 'Default (interactive controls)',
   args: {
     loading: false,

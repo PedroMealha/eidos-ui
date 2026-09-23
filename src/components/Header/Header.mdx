@@ -23,41 +23,11 @@ import { Header } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={HeaderStories.Default} />
+<Canvas of={HeaderStories.Playground} />
 
-<Controls of={HeaderStories.Default} />
-
-## With multiple actions
-
-Icon-only and labeled actions can be freely mixed within the same `actions` array.
-
-<Canvas of={HeaderStories.WithMultipleActions} />
-
-## Title only
-
-`subtitle` and `actions` are both optional.
-
-<Canvas of={HeaderStories.TitleOnly} />
-
-## Inline content in the title
-
-`title` accepts any inline node, not just a string, so a status indicator belongs beside the title text rather than pushed down into the subtitle. It is centered on the title's own line and wraps below it when there isn't room for both. Keep the children inline-level - the title is a heading, and block content inside it will not lay out sensibly.
-
-<Canvas of={HeaderStories.WithInlineTitleContent} />
-
-## With media
-
-`media` renders any node on the leading edge, centered against the title stack. It takes a node rather than an `Avatar` config so it can equally hold a logo or an icon block - and so it can hold identity media larger than `Avatar`'s own `lg` size (48px), which `Avatar` cannot currently express.
-
-<Canvas of={HeaderStories.WithMedia} />
-
-## With metadata
-
-`meta` is a row of supporting facts below the subtitle - role, plan, joined date. Each entry is a `label`/`value` pair with an optional `icon`. The row wraps one whole item at a time rather than splitting a fact across lines, while a single long value such as an email can still break on its own.
-
-<Canvas of={HeaderStories.WithMetadata} />
+<Controls of={HeaderStories.Playground} />
 
 ## Hero variant
 
@@ -83,3 +53,33 @@ There are two steps, both measured against the header's own width:
 Set `collapseActionsBelow={0}` to switch the overflow behaviour off and always render every action inline. The collapse is measured client-side, so a server-rendered header emits the full action row and collapses on hydration.
 
 > **Note**: `Header` declares itself a CSS container (`container-type: inline-size`), which applies layout containment. Every overlay in this library is portalled to `document.body`, so tooltips and popovers on actions are unaffected - but if you absolutely-position your own content inside `media` or `title`, the header is its containing block rather than the page.
+
+## Title only
+
+`subtitle` and `actions` are both optional.
+
+<Canvas of={HeaderStories.TitleOnly} />
+
+## Inline content in the title
+
+`title` accepts any inline node, not just a string, so a status indicator belongs beside the title text rather than pushed down into the subtitle. It is centered on the title's own line and wraps below it when there isn't room for both. Keep the children inline-level - the title is a heading, and block content inside it will not lay out sensibly.
+
+<Canvas of={HeaderStories.WithInlineTitleContent} />
+
+## With media
+
+`media` renders any node on the leading edge, centered against the title stack. It takes a node rather than an `Avatar` config so it can equally hold a logo or an icon block - and so it can hold identity media larger than `Avatar`'s own `lg` size (48px), which `Avatar` cannot currently express.
+
+<Canvas of={HeaderStories.WithMedia} />
+
+## With metadata
+
+`meta` is a row of supporting facts below the subtitle - role, plan, joined date. Each entry is a `label`/`value` pair with an optional `icon`. The row wraps one whole item at a time rather than splitting a fact across lines, while a single long value such as an email can still break on its own.
+
+<Canvas of={HeaderStories.WithMetadata} />
+
+## With multiple actions
+
+Icon-only and labeled actions can be freely mixed within the same `actions` array.
+
+<Canvas of={HeaderStories.WithMultipleActions} />

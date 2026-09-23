@@ -30,13 +30,13 @@ function YourApp() {
 }
 ```
 
-## Default
+## Playground
 
 `Snackbar` has no props of its own - it is a provider plus the `useSnackbar` hook - so the controls below describe the **options object** the hook takes. Adjust them and fire a toast.
 
-<Canvas of={SnackbarStories.Default} />
+<Canvas of={SnackbarStories.Playground} />
 
-<Controls of={SnackbarStories.Default} />
+<Controls of={SnackbarStories.Playground} />
 
 ## All variants
 
@@ -44,17 +44,11 @@ Every variant, action and duration combination behind its own trigger.
 
 <Canvas of={SnackbarStories.AllVariants} />
 
-## With action button
+## Custom component
 
-An optional `action` object adds a labelled button inside the toast - useful for "Undo", "View", or "Retry" flows.
+Pass a `component` instead of `message` to render fully custom content inside the toast shell.
 
-<Canvas of={SnackbarStories.WithAction} />
-
-## Persistent notification
-
-Pass `duration: 0` to disable auto-dismiss; the user must close the toast manually.
-
-<Canvas of={SnackbarStories.PersistentNotification} />
+<Canvas of={SnackbarStories.CustomComponent} />
 
 ## Multiple notifications
 
@@ -62,8 +56,14 @@ Each hook call enqueues an independent toast - they stack automatically and dism
 
 <Canvas of={SnackbarStories.MultipleNotifications} />
 
-## Custom component
+## Persistent notification
 
-Pass a `component` instead of `message` to render fully custom content inside the toast shell.
+Pass `duration: 0` to disable auto-dismiss; the user must close the toast manually.
 
-<Canvas of={SnackbarStories.CustomComponent} />
+<Canvas of={SnackbarStories.PersistentNotification} />
+
+## With action button
+
+An optional `action` object adds a labelled button inside the toast - useful for "Undo", "View", or "Retry" flows.
+
+<Canvas of={SnackbarStories.WithAction} />

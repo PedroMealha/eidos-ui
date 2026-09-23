@@ -19,17 +19,21 @@ import { Popover, Button } from 'eidos-ui';
 </Popover>;
 ```
 
-## Default
+## Playground
 
-<Canvas of={PopoverStories.Default} />
+<Canvas of={PopoverStories.Playground} />
 
-<Controls of={PopoverStories.Default} />
+<Controls of={PopoverStories.Playground} />
 
-## With title
+## Controlled
 
-Adds a heading and an optional × close button in the panel header via `showCloseButton`.
+Pass `open` and `onOpenChange` to drive the open state externally, bypassing the built-in click-toggle behaviour entirely. (`isOpen` is accepted as a deprecated alias for `open`.)
 
-<Canvas of={PopoverStories.WithTitle} />
+<Canvas of={PopoverStories.Controlled} />
+
+## Disabled
+
+<Canvas of={PopoverStories.Disabled} />
 
 ## Placements
 
@@ -43,12 +47,8 @@ The popover flips automatically when there is not enough viewport space for the 
 
 <Canvas of={PopoverStories.RichContent} />
 
-## Controlled
+## With title
 
-Pass `open` and `onOpenChange` to drive the open state externally, bypassing the built-in click-toggle behaviour entirely. (`isOpen` is accepted as a deprecated alias for `open`.)
+Adds a heading and an optional × close button in the panel header via `showCloseButton`.
 
-<Canvas of={PopoverStories.Controlled} />
-
-## Disabled
-
-<Canvas of={PopoverStories.Disabled} />
+<Canvas of={PopoverStories.WithTitle} />

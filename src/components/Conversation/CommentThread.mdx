@@ -33,34 +33,13 @@ const comments = [
 />;
 ```
 
-## Playground
-
-<Canvas of={CommentThreadStories.Playground} />
-<Controls of={CommentThreadStories.Playground} />
-
 ## The message model
 
 Identical to `Chat`'s - see the [Chat docs](?path=/docs/data-chat--docs) for the full shape. It is deliberately free of React nodes and functions so a thread can be persisted and replayed verbatim; use `renderBody` for markdown or rich text rather than putting elements in the data.
 
-## Replies
-
-Supplying `onReply` enables a Reply control on each comment and an inline composer beneath it. The emitted draft carries `parentId`.
-
-<Canvas of={CommentThreadStories.WithReplies} />
-
-> **Nesting is one level deep, by design.** A reply to a reply is flattened onto the same level as its parent and labelled "Replying to …", rather than indenting further. Deeper indentation leaves almost no width for text on a phone, which is why GitHub and Linear do the same. Nothing is discarded - a `parentId` pointing at a message that is not loaded is treated as top-level, so a paged-out or deleted parent never makes a reply disappear.
-
-Omit `onReply` for a flat thread with no reply controls.
-
-<Canvas of={CommentThreadStories.RepliesDisabled} />
-
 ## Ordering and composer placement
 
 Top-level comments follow `order`; replies always read oldest-first, since a conversation under a single comment is chronological by nature.
-
-<Canvas of={CommentThreadStories.NewestFirst} />
-
-<Canvas of={CommentThreadStories.ComposerAtTop} />
 
 ## Permissions
 
@@ -75,13 +54,58 @@ There is no `permissions` object. Capability is expressed by the props you suppl
 
 `readOnly` **removes** the composer rather than disabling it, and `readOnlyMessage` explains the absence so it is not silent.
 
-<Canvas of={CommentThreadStories.ReadOnly} />
+> **This is a UI affordance, not authorization.** Removing a composer does not stop anyone POSTing to your API. Enforce permissions on the server; use these props to avoid showing people controls that would fail.
+
+## Responsive behaviour
+
+Layout responds to the component's own width via container queries, so a thread in a narrow sidebar collapses correctly on a wide screen. Below the `sm` breakpoint reply indentation drops to a thin rule and the composer actions stack.
+
+## Motion
+
+New comments fade and rise 4px into place; comments present on the first render never animate. The animation is `opacity` and `transform` only, is disabled under `prefers-reduced-motion: reduce`, and can be turned off with `animateNewMessages={false}`.
+
+## Playground
+
+<Canvas of={CommentThreadStories.Playground} />
+<Controls of={CommentThreadStories.Playground} />
+
+## Composer at top
+
+<Canvas of={CommentThreadStories.ComposerAtTop} />
+
+## Empty
+
+<Canvas of={CommentThreadStories.Empty} />
+
+## Loading
+
+<Canvas of={CommentThreadStories.Loading} />
+
+## Mixed permissions
 
 The realistic case is mixed permissions _within_ one thread - edit your own, report everyone else's - which is why the per-comment axis is a function of the comment rather than a boolean.
 
 <Canvas of={CommentThreadStories.MixedPermissions} />
 
-> **This is a UI affordance, not authorization.** Removing a composer does not stop anyone POSTing to your API. Enforce permissions on the server; use these props to avoid showing people controls that would fail.
+## Newest first
+
+<Canvas of={CommentThreadStories.NewestFirst} />
+
+## Own comments
+
+Own comments are marked with a coloured rule rather than a solid fill - a page of solid primary cards is unreadable, and a pale tint behind body text is not contrast-safe once `--primary-color` is themed.
+
+<Canvas of={CommentThreadStories.OwnComments} />
+
+## Read only
+
+<Canvas of={CommentThreadStories.ReadOnly} />
+
+## Replies disabled
+
+Omit `onReply` for a flat thread with no reply controls.
+
+<Canvas of={CommentThreadStories.RepliesDisabled} />
 
 ## Paging
 
@@ -99,22 +123,10 @@ Reactions are not built in - a useful implementation needs an emoji picker and a
 
 The same applies to edit and delete: `messageActions` supplies the menu items, and your app owns the confirmation and the mutation. `edited` on a message renders the marker.
 
-## Own comments
+## Replies
 
-Own comments are marked with a coloured rule rather than a solid fill - a page of solid primary cards is unreadable, and a pale tint behind body text is not contrast-safe once `--primary-color` is themed.
+Supplying `onReply` enables a Reply control on each comment and an inline composer beneath it. The emitted draft carries `parentId`.
 
-<Canvas of={CommentThreadStories.OwnComments} />
+<Canvas of={CommentThreadStories.WithReplies} />
 
-## Empty and loading
-
-<Canvas of={CommentThreadStories.Empty} />
-
-<Canvas of={CommentThreadStories.Loading} />
-
-## Responsive behaviour
-
-Layout responds to the component's own width via container queries, so a thread in a narrow sidebar collapses correctly on a wide screen. Below the `sm` breakpoint reply indentation drops to a thin rule and the composer actions stack.
-
-## Motion
-
-New comments fade and rise 4px into place; comments present on the first render never animate. The animation is `opacity` and `transform` only, is disabled under `prefers-reduced-motion: reduce`, and can be turned off with `animateNewMessages={false}`.
+> **Nesting is one level deep, by design.** A reply to a reply is flattened onto the same level as its parent and labelled "Replying to …", rather than indenting further. Deeper indentation leaves almost no width for text on a phone, which is why GitHub and Linear do the same. Nothing is discarded - a `parentId` pointing at a message that is not loaded is treated as top-level, so a paged-out or deleted parent never makes a reply disappear.

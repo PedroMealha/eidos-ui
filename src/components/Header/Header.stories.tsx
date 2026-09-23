@@ -102,7 +102,7 @@ const labelStyle: CSSProperties = {
   color: 'var(--gray-500)',
 };
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
 /**
  * `actions` accepts a restricted subset of `Button` props - `icon` for an

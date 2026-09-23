@@ -43,6 +43,100 @@ function TeamTable() {
 }
 ```
 
+## Playground
+
+A fully editable grid with all common display props wired to Storybook controls. Toggle `editable`, `loading`, `density`, `showDensity`, `showRowNumbers`, `showPagination`, `selectable`, `draggableRows`, `showFilters`, and `emptyText` from the Controls panel.
+
+<Canvas of={DataGridStories.Playground} />
+
+<Controls of={DataGridStories.Playground} />
+
+## Column alignment
+
+Set `align` to `'left'` (default), `'center'` or `'right'` on a column - the same values as `TableColumn.align` - to align its header and cell content together. Typically `'right'` for numeric columns. On a sortable column the sort icon follows the alignment instead of staying pinned to the far edge.
+
+> **Note**: alignment applies in table mode only. Card view renders each field as a label above its value, where aligning the value away from its own label reads as a misalignment rather than a choice.
+
+<Canvas of={DataGridStories.ColumnAlignment} />
+
+## Empty state
+
+When `data` is an empty array the grid displays the `emptyText` message centred in the body.
+
+<Canvas of={DataGridStories.EmptyState} />
+
+## Expandable rows
+
+Set `expandable` and `renderExpandedContent: (row, index) => ReactNode` to add a chevron that reveals extra per-row content - a dedicated column in table mode, a toolbar toggle in card mode. `renderExpandedContent` is genuinely lazy: it only runs the first time a given row is actually opened, so it's safe to kick off a data fetch from it without worrying about firing for every row up front. The open/close transition mirrors `Accordion`'s own max-height animation for a consistent feel.
+
+By default (`expandMultiple`, default `true`) any number of rows can be open at once; set it to `false` for accordion behaviour, where opening a row auto-collapses whichever other row was open. Use `isRowExpandable: (row) => boolean` to omit the chevron/toggle entirely for rows that shouldn't be expandable. Expansion state works exactly like selection - uncontrolled by default, or controlled via `expandedRows`/`onExpandedRowsChange` (with `defaultExpandedRows` for an uncontrolled initial value).
+
+<Canvas of={DataGridStories.ExpandableRows} />
+
+## Full featured
+
+Kitchen-sink example combining sortable columns, column filters, client-side pagination, row selection with a bulk-delete action, row numbers, and a density picker - mirroring a real-world admin table.
+
+<Canvas of={DataGridStories.FullFeatured} />
+
+## Loading
+
+Pass `loading={true}` while data is in flight to render a centred spinner overlay and suppress the empty-state message.
+
+<Canvas of={DataGridStories.Loading} />
+
+## Pinned columns
+
+Columns with `pin: 'left'` or `pin: 'right'` stay frozen during horizontal scroll. The grid reorders them to the correct edge regardless of where they appear in the `columns` array.
+
+<Canvas of={DataGridStories.PinnedFromMiddle} />
+
+## Read only
+
+Set `editable={false}` to produce a display-only view - click targets and hover states are suppressed across all cells.
+
+<Canvas of={DataGridStories.ReadOnly} />
+
+## Responsive card view
+
+`hasCardView` is on by default: the grid swaps the table for a grid of cards once its own measured width (via `ResizeObserver` - not the viewport, so it responds correctly inside a narrow sidebar on an otherwise wide screen) drops to/below `cardViewBreakpoint` (default `640`), or once it can no longer fit every column at a 100px minimum width - whichever threshold is hit first. That second condition means a wide, many-column grid never has to overflow horizontally waiting for a hand-tuned `cardViewBreakpoint`. Set `hasCardView={false}` to always render a table. Cards themselves lay out responsively with `cardMinWidth` (default `280`) controlling how many fit per row, and each card's fields lay out in their own auto-fit grid too, so a wide card shows fields side by side instead of one per line.
+
+Mark one column `cardHeader` and, optionally, another `cardSubheader` to use their values as the card's title/subtitle - every other column renders as a label-above-value field. The row-actions column (see above) always renders top-right of the card, and selection checkboxes top-left, regardless of where either sits in `columns`.
+
+Only the row rendering changes - pagination, filtering, sorting, selection, and inline cell editing all keep working exactly as in table mode, and `density` (including the `showDensity` picker) scales each card's padding and gaps the same way it scales cell padding in table mode. `draggableRows` is not available in card view.
+
+> **Note**: `Table` has the same card view, prop-for-prop and with the same defaults, so choosing between the two components never turns on responsive behaviour.
+
+<Canvas of={DataGridStories.ResponsiveCardView} />
+
+## Row actions menu
+
+Give a column `type: 'actions'` and an `actions` array to render a "more" (⋮) trigger instead of a data value - clicking it opens a menu built from that array (`label`, `icon`, `onClick(row, index)`, and optionally `disabled` - a boolean or a `(row) => boolean` predicate, `danger` for destructive styling, and `divider` to place a separator directly above that item). Only one column may set `type: 'actions'`; it's always rendered at the far right in table mode regardless of its position in `columns`, and top-right of the card in card view (see below). The trigger icon defaults to a vertical 3-dot icon, overridable via `actionsIcon`.
+
+> **Note**: there's no `onRowDelete` prop - deleting a row (or any other destructive action) is just an `actions` entry whose `onClick` updates your own data/state, same as any other action.
+
+<Canvas of={DataGridStories.RowActionsMenu} />
+
+## Row actions menu advanced
+
+For menu capabilities `actions` can't express - nested submenus, custom `component` content, or keyboard `shortcut` labels - set `renderActions: (row, index) => MenuItemType[]` on the same column instead of `actions` (it takes precedence when both are set). `MenuItemType` is the exact type the standalone `Menu` component takes, so anything `Menu` supports is available here too.
+
+<Canvas of={DataGridStories.RowActionsMenuAdvanced} />
+
+## Select all matching
+
+`onSelectAllMatching` is the escape hatch for "select all 1000" when the grid only ever receives 20 of them: it resolves every key matching the current query, which only your server can do. Supply it and the toolbar offers **Select all N** as an explicit action once everything the grid does hold is selected; it may be async (the action shows a loading state), and whatever it returns replaces the selection. The grid deliberately passes no arguments - in server-side mode you already own the query, and guessing at which filters to forward would be worse than leaving it to you.
+
+While more rows are selected than the select-all checkbox can reach, a **Clear selection** action appears beside the count. That's the one case a separate clear is justified: toggling the checkbox there would strip only the loaded page and leave the rest selected, which reads as a broken no-op.
+
+<Canvas of={DataGridStories.SelectAllMatching} />
+
+## Server side pagination
+
+`onSelectionChange(selectedKeys, selectedRows)` has two halves with different guarantees. `selectedKeys` is authoritative. `selectedRows` is best-effort: the grid caches the row object behind every selected key, so rows selected on a page you've since left still come back - a key seeded via `defaultSelectedRows`, for a row the grid has never seen, has no row to hand back. Without that cache a bulk action taken after paging away received an empty array while the toolbar still read "20 selected".
+
+<Canvas of={DataGridStories.ServerSidePagination} />
+
 ## Typed row data
 
 Everything that names a field of a row is checked against your row type: `columns[].key`, `filterConfig[].key`, `quickFilters[].key`, `rowKey`, and the sort keys in `currentSort`/`onSortChange`. A typo or a stale field name is a compile error rather than a control that renders and then silently does nothing.
@@ -79,25 +173,17 @@ Two column variants address no field at all, and take a free-form `key`:
 
 > **Note**: an index signature on your row type switches all of this off. `interface Person extends Record<string, unknown>` widens `keyof Person` to `string`, so every key check passes and every `value` degrades to `unknown`. Nothing here requires one, and adding it costs you the checking quietly rather than failing loudly. Plain `interface` or `type` both work.
 
-## Default
+## With density
 
-A fully editable grid with all common display props wired to Storybook controls. Toggle `editable`, `loading`, `density`, `showDensity`, `showRowNumbers`, `showPagination`, `selectable`, `draggableRows`, `showFilters`, and `emptyText` from the Controls panel.
+Show a density picker in the toolbar with `showDensity={true}`. The initial density is set via the `density` prop (`compact` | `comfortable` | `spacious`); the grid manages further changes internally.
 
-<Canvas of={DataGridStories.Default} />
+<Canvas of={DataGridStories.WithDensity} />
 
-<Controls of={DataGridStories.Default} />
+## With draggable rows
 
-## Read only
+Enable `draggableRows={true}` to add a grip handle column. Commit reorders via `onRowReorder`. Note: drag-to-reorder and column sorting are mutually exclusive UX patterns.
 
-Set `editable={false}` to produce a display-only view - click targets and hover states are suppressed across all cells.
-
-<Canvas of={DataGridStories.ReadOnly} />
-
-## With sorting
-
-Mark individual columns with `sortable: true` to enable click-to-sort on their headers. Without an `onSortChange` callback the grid sorts client-side automatically.
-
-<Canvas of={DataGridStories.WithSorting} />
+<Canvas of={DataGridStories.WithDraggableRows} />
 
 ## With filtering
 
@@ -110,6 +196,12 @@ For `filterType: 'date'` fields, `dateFilterMode` (`'single' | 'multiple' | 'ran
 The toolbar's filter button highlights and carries a badge with the number of applied filters, so it's clear at a glance that a filter is narrowing the data while the panel is closed. The count reflects _applied_ filters only - staging a filter row without clicking **Apply Filters** doesn't change it.
 
 <Canvas of={DataGridStories.WithFiltering} />
+
+## With pagination
+
+Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `pageSizeOptions` to let users switch between page sizes. For server-side pagination supply `totalRows` and `onPageChange`.
+
+<Canvas of={DataGridStories.WithPagination} />
 
 ## With quick filters
 
@@ -164,11 +256,11 @@ The toolbar wraps at every level - the row itself, both zones, the quick-filter 
 
 On top of that, once the grid's measured container width drops below 560px the controls the grid renders itself compact: the density picker and add-row button go icon-only with tooltips, and quick filters stretch to one per row (a `'segmented'` filter becomes `fullWidth`, since it sizes to its segments rather than filling its box). Anything you pass in is rendered exactly as given and only wraps. `Table`'s toolbar behaves identically.
 
-## With pagination
+## With row numbers
 
-Pass `showPagination={true}` and a `pageSize` to paginate client-side. Provide `pageSizeOptions` to let users switch between page sizes. For server-side pagination supply `totalRows` and `onPageChange`.
+`showRowNumbers={true}` prepends a read-only column with the 1-based row index. Row numbers reflect position in the current view, not the full dataset.
 
-<Canvas of={DataGridStories.WithPagination} />
+<Canvas of={DataGridStories.WithRowNumbers} />
 
 ## With selection
 
@@ -186,104 +278,14 @@ There's no "clear selection" button: the select-all control is the way out, exac
 
 `'all'` can only ever reach the rows the grid holds. With server-side pagination that's a single page - the grid cannot know the keys of rows it has never received - so "all" means "all 20 loaded", not "all 1000 matching". A dev-only warning names the numbers when that happens; use `selectAllScope="page"` to make the scope explicit, or resolve the full key set yourself and pass it as `selectedRows`.
 
-### Selection with server-side pagination
+## With sorting
 
-`onSelectionChange(selectedKeys, selectedRows)` has two halves with different guarantees. `selectedKeys` is authoritative. `selectedRows` is best-effort: the grid caches the row object behind every selected key, so rows selected on a page you've since left still come back - a key seeded via `defaultSelectedRows`, for a row the grid has never seen, has no row to hand back. Without that cache a bulk action taken after paging away received an empty array while the toolbar still read "20 selected".
+Mark individual columns with `sortable: true` to enable click-to-sort on their headers. Without an `onSortChange` callback the grid sorts client-side automatically.
 
-<Canvas of={DataGridStories.ServerSidePagination} />
-
-### Selecting all matching rows
-
-`onSelectAllMatching` is the escape hatch for "select all 1000" when the grid only ever receives 20 of them: it resolves every key matching the current query, which only your server can do. Supply it and the toolbar offers **Select all N** as an explicit action once everything the grid does hold is selected; it may be async (the action shows a loading state), and whatever it returns replaces the selection. The grid deliberately passes no arguments - in server-side mode you already own the query, and guessing at which filters to forward would be worse than leaving it to you.
-
-While more rows are selected than the select-all checkbox can reach, a **Clear selection** action appears beside the count. That's the one case a separate clear is justified: toggling the checkbox there would strip only the loaded page and leave the rest selected, which reads as a broken no-op.
-
-<Canvas of={DataGridStories.SelectAllMatching} />
-
-## With draggable rows
-
-Enable `draggableRows={true}` to add a grip handle column. Commit reorders via `onRowReorder`. Note: drag-to-reorder and column sorting are mutually exclusive UX patterns.
-
-<Canvas of={DataGridStories.WithDraggableRows} />
-
-## With density
-
-Show a density picker in the toolbar with `showDensity={true}`. The initial density is set via the `density` prop (`compact` | `comfortable` | `spacious`); the grid manages further changes internally.
-
-<Canvas of={DataGridStories.WithDensity} />
-
-## With row numbers
-
-`showRowNumbers={true}` prepends a read-only column with the 1-based row index. Row numbers reflect position in the current view, not the full dataset.
-
-<Canvas of={DataGridStories.WithRowNumbers} />
+<Canvas of={DataGridStories.WithSorting} />
 
 ## With validation
 
 Validation fires when a cell is committed. Set `required: true` for a non-empty check, or provide a `validate` function on the column that returns an error string or `true` when valid.
 
 <Canvas of={DataGridStories.WithValidation} />
-
-## Empty state
-
-When `data` is an empty array the grid displays the `emptyText` message centred in the body.
-
-<Canvas of={DataGridStories.EmptyState} />
-
-## Loading
-
-Pass `loading={true}` while data is in flight to render a centred spinner overlay and suppress the empty-state message.
-
-<Canvas of={DataGridStories.Loading} />
-
-## Column alignment
-
-Set `align` to `'left'` (default), `'center'` or `'right'` on a column - the same values as `TableColumn.align` - to align its header and cell content together. Typically `'right'` for numeric columns. On a sortable column the sort icon follows the alignment instead of staying pinned to the far edge.
-
-> **Note**: alignment applies in table mode only. Card view renders each field as a label above its value, where aligning the value away from its own label reads as a misalignment rather than a choice.
-
-<Canvas of={DataGridStories.ColumnAlignment} />
-
-## Pinned columns
-
-Columns with `pin: 'left'` or `pin: 'right'` stay frozen during horizontal scroll. The grid reorders them to the correct edge regardless of where they appear in the `columns` array.
-
-<Canvas of={DataGridStories.PinnedFromMiddle} />
-
-## Full featured
-
-Kitchen-sink example combining sortable columns, column filters, client-side pagination, row selection with a bulk-delete action, row numbers, and a density picker - mirroring a real-world admin table.
-
-<Canvas of={DataGridStories.FullFeatured} />
-
-## Row actions menu
-
-Give a column `type: 'actions'` and an `actions` array to render a "more" (⋮) trigger instead of a data value - clicking it opens a menu built from that array (`label`, `icon`, `onClick(row, index)`, and optionally `disabled` - a boolean or a `(row) => boolean` predicate, `danger` for destructive styling, and `divider` to place a separator directly above that item). Only one column may set `type: 'actions'`; it's always rendered at the far right in table mode regardless of its position in `columns`, and top-right of the card in card view (see below). The trigger icon defaults to a vertical 3-dot icon, overridable via `actionsIcon`.
-
-> **Note**: there's no `onRowDelete` prop - deleting a row (or any other destructive action) is just an `actions` entry whose `onClick` updates your own data/state, same as any other action.
-
-<Canvas of={DataGridStories.RowActionsMenu} />
-
-For menu capabilities `actions` can't express - nested submenus, custom `component` content, or keyboard `shortcut` labels - set `renderActions: (row, index) => MenuItemType[]` on the same column instead of `actions` (it takes precedence when both are set). `MenuItemType` is the exact type the standalone `Menu` component takes, so anything `Menu` supports is available here too.
-
-<Canvas of={DataGridStories.RowActionsMenuAdvanced} />
-
-## Responsive card view
-
-`hasCardView` is on by default: the grid swaps the table for a grid of cards once its own measured width (via `ResizeObserver` - not the viewport, so it responds correctly inside a narrow sidebar on an otherwise wide screen) drops to/below `cardViewBreakpoint` (default `640`), or once it can no longer fit every column at a 100px minimum width - whichever threshold is hit first. That second condition means a wide, many-column grid never has to overflow horizontally waiting for a hand-tuned `cardViewBreakpoint`. Set `hasCardView={false}` to always render a table. Cards themselves lay out responsively with `cardMinWidth` (default `280`) controlling how many fit per row, and each card's fields lay out in their own auto-fit grid too, so a wide card shows fields side by side instead of one per line.
-
-Mark one column `cardHeader` and, optionally, another `cardSubheader` to use their values as the card's title/subtitle - every other column renders as a label-above-value field. The row-actions column (see above) always renders top-right of the card, and selection checkboxes top-left, regardless of where either sits in `columns`.
-
-Only the row rendering changes - pagination, filtering, sorting, selection, and inline cell editing all keep working exactly as in table mode, and `density` (including the `showDensity` picker) scales each card's padding and gaps the same way it scales cell padding in table mode. `draggableRows` is not available in card view.
-
-> **Note**: `Table` has the same card view, prop-for-prop and with the same defaults, so choosing between the two components never turns on responsive behaviour.
-
-<Canvas of={DataGridStories.ResponsiveCardView} />
-
-## Expandable rows
-
-Set `expandable` and `renderExpandedContent: (row, index) => ReactNode` to add a chevron that reveals extra per-row content - a dedicated column in table mode, a toolbar toggle in card mode. `renderExpandedContent` is genuinely lazy: it only runs the first time a given row is actually opened, so it's safe to kick off a data fetch from it without worrying about firing for every row up front. The open/close transition mirrors `Accordion`'s own max-height animation for a consistent feel.
-
-By default (`expandMultiple`, default `true`) any number of rows can be open at once; set it to `false` for accordion behaviour, where opening a row auto-collapses whichever other row was open. Use `isRowExpandable: (row) => boolean` to omit the chevron/toggle entirely for rows that shouldn't be expandable. Expansion state works exactly like selection - uncontrolled by default, or controlled via `expandedRows`/`onExpandedRowsChange` (with `defaultExpandedRows` for an uncontrolled initial value).
-
-<Canvas of={DataGridStories.ExpandableRows} />

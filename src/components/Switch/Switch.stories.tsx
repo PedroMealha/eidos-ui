@@ -77,7 +77,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT – main interactive story; all controls apply here
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     label: 'Notifications',
   },

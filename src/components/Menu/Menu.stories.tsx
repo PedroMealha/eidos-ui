@@ -67,7 +67,7 @@ const meta = {
     triggerRef: { table: { disable: true } },
   },
   // `trigger` and `items` are required, so they live here to satisfy the type
-  // for the render-only stories below as well as seeding the Default controls.
+  // for the render-only stories below as well as seeding the Playground controls.
   args: {
     trigger: <Button variant="outlined">Open menu</Button>,
     items: [
@@ -89,7 +89,7 @@ const basicMenuItems: MenuItemType[] = [
   { type: 'item', id: '3', label: 'Logout', icon: LogOut, onClick: action('Logout') },
 ];
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
 // The `Examples` story that used to live here rendered all seven menus at
 // once. Storybook's "Show code" walks the whole rendered tree with a bundled

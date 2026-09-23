@@ -211,7 +211,7 @@ type Story = StoryObj<typeof meta>;
 // ============================================================================
 
 /** Basic tree with a couple of branches pre-expanded. */
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     defaultExpandedIds: ['src', 'components'],
   },

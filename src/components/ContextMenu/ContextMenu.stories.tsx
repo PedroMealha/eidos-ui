@@ -101,7 +101,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // `items` and `children` are required, so they live here to satisfy the type
-  // for the render-only stories below as well as seeding the Default controls.
+  // for the render-only stories below as well as seeding the Playground controls.
   args: {
     items: EDIT_ITEMS,
     disabled: false,
@@ -127,7 +127,7 @@ type Story = StoryObj<typeof meta>;
 // Args-driven, so the Controls panel the .mdx renders actually does something
 // - `disabled` in particular is worth toggling, since it hands the right-click
 // back to the browser.
-export const Default: Story = {};
+export const Playground: Story = {};
 
 // ─── 2. On a table / list ─────────────────────────────────────────────────────
 

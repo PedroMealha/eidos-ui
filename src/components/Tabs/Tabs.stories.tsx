@@ -109,7 +109,7 @@ const panelContent = (tab: string) => (
 // DEFAULT - interactive playground; all controls apply here
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     variant: 'line',
     color: 'primary',

@@ -73,7 +73,7 @@ type Story = StoryObj<typeof meta>;
 
 // ── Stories ────────────────────────────────────────────────────────────────
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     length: 6,
     type: 'numeric',

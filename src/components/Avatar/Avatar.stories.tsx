@@ -94,7 +94,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - image avatar
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     src: SAMPLE_AVATAR_IMAGE,
     alt: 'Sample avatar',

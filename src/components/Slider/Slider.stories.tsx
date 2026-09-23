@@ -115,7 +115,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - fully interactive, all controls active
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     defaultValue: 50,
     color: 'primary',

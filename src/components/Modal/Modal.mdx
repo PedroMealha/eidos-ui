@@ -29,13 +29,23 @@ function MyComponent() {
 }
 ```
 
-## Default
+## Playground
 
 Click "Open Modal" to launch the dialog. Use the Controls panel below to adjust props live.
 
-<Canvas of={ModalStories.Default} />
+<Canvas of={ModalStories.Playground} />
 
-<Controls of={ModalStories.Default} />
+<Controls of={ModalStories.Playground} />
+
+## Destructive confirmation
+
+A worked example of the pattern `actions` exists for: the destructive option is `filled danger`, the escape route is low-prominence, and the consequences are spelled out before the button row.
+
+<Canvas of={ModalStories.DestructiveConfirmation} />
+
+## Sizes
+
+<Canvas of={ModalStories.Sizes} />
 
 ## Types
 
@@ -43,24 +53,14 @@ Click "Open Modal" to launch the dialog. Use the Controls panel below to adjust 
 
 <Canvas of={ModalStories.Types} />
 
-## With a string icon
-
-`icon` takes either a Lucide component or its kebab-case name, so an icon can come from configuration without importing it.
-
-<Canvas of={ModalStories.WithStringIcon} />
-
-## Sizes
-
-<Canvas of={ModalStories.Sizes} />
-
 ## With actions
 
 `actions` renders a footer button row. Each entry takes the same `variant`/`color` vocabulary as `Button`.
 
 <Canvas of={ModalStories.WithActions} />
 
-## Destructive confirmation
+## With a string icon
 
-A worked example of the pattern `actions` exists for: the destructive option is `filled danger`, the escape route is low-prominence, and the consequences are spelled out before the button row.
+`icon` takes either a Lucide component or its kebab-case name, so an icon can come from configuration without importing it.
 
-<Canvas of={ModalStories.DestructiveConfirmation} />
+<Canvas of={ModalStories.WithStringIcon} />

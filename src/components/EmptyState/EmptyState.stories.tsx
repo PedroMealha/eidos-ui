@@ -9,7 +9,7 @@ const meta = {
   component: EmptyState,
   parameters: { layout: 'centered' },
   // `title` is required, so it lives here to satisfy the type for the
-  // render-only stories below as well as seeding the Default controls.
+  // render-only stories below as well as seeding the Playground controls.
   args: { title: 'No items yet' },
   argTypes: {
     title: {
@@ -44,7 +44,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     icon: <Inbox />,
     title: 'Your inbox is empty',

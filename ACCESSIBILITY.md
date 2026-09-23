@@ -20,7 +20,7 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **500 stories** covering **58
+Against **WCAG 2.2 Level AA**, across **502 stories** covering **58
 components**.
 
 |                     |                                                                                                                                                                                                                  |

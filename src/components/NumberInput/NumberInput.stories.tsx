@@ -106,7 +106,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - uncontrolled, interactive controls active
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     defaultValue: 0,
     min: 0,

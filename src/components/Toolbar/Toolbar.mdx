@@ -25,11 +25,21 @@ import { Toolbar } from 'eidos-ui';
 
 Every prop is optional. `user` supplies the avatar at the far right (`name` for initials, or `src` for a photo); omit it along with `userMenu` and no avatar is rendered at all. When `userMenu` has items the avatar becomes the menu trigger, otherwise it renders as a plain, non-interactive mark.
 
-## Default
+## Playground
 
-<Canvas of={ToolbarStories.Default} />
+<Canvas of={ToolbarStories.Playground} />
 
-<Controls of={ToolbarStories.Default} />
+<Controls of={ToolbarStories.Playground} />
+
+## Minimal
+
+Every prop is optional - a bare `<Toolbar />` renders an empty bar.
+
+<Canvas of={ToolbarStories.Minimal} />
+
+## With actions
+
+<Canvas of={ToolbarStories.WithActions} />
 
 ## With the command palette
 
@@ -37,18 +47,8 @@ Every prop is optional. `user` supplies the avatar at the far right (`name` for 
 
 <Canvas of={ToolbarStories.WithCommandPalette} />
 
-## With actions
-
-<Canvas of={ToolbarStories.WithActions} />
-
 ## With custom content
 
 `content` takes any node, for the parts of an app bar that aren't buttons - an environment badge, an org/tenant switcher, a global toggle. It sits at the start of the trailing region, before the command palette trigger, and is the first thing there allowed to shrink on a narrow viewport. Use `actions` instead for anything that is just a button.
 
 <Canvas of={ToolbarStories.WithContent} />
-
-## Minimal
-
-Every prop is optional - a bare `<Toolbar />` renders an empty bar.
-
-<Canvas of={ToolbarStories.Minimal} />

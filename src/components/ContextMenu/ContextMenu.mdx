@@ -27,13 +27,30 @@ const items: MenuItemType[] = [
 </ContextMenu>;
 ```
 
-## Default
+## Accepted item types
+
+ContextMenu accepts the same `MenuItemType` union as `Menu`:
+
+| Type        | Description                                                     |
+| ----------- | --------------------------------------------------------------- |
+| `item`      | Standard clickable row with optional icon and keyboard shortcut |
+| `separator` | A horizontal dividing line                                      |
+| `nested`    | A row that opens a submenu on hover                             |
+| `component` | Any custom React node rendered inside a list item               |
+
+## Playground
 
 Right-click inside the dashed region to open the menu.
 
-<Canvas of={ContextMenuStories.Default} />
+<Canvas of={ContextMenuStories.Playground} />
 
-<Controls of={ContextMenuStories.Default} />
+<Controls of={ContextMenuStories.Playground} />
+
+## Disabled
+
+When `disabled` is true, the component passes through to the browser's native context menu.
+
+<Canvas of={ContextMenuStories.Disabled} />
 
 ## On a list
 
@@ -46,20 +63,3 @@ Attach to individual rows. Each row gets its own context menu - right-click any 
 Items of type `"nested"` render a hover-triggered submenu on the right. This uses the same `Dropdown` infrastructure as the regular Menu component.
 
 <Canvas of={ContextMenuStories.WithNested} />
-
-## Disabled
-
-When `disabled` is true, the component passes through to the browser's native context menu.
-
-<Canvas of={ContextMenuStories.Disabled} />
-
-## Accepted item types
-
-ContextMenu accepts the same `MenuItemType` union as `Menu`:
-
-| Type        | Description                                                     |
-| ----------- | --------------------------------------------------------------- |
-| `item`      | Standard clickable row with optional icon and keyboard shortcut |
-| `separator` | A horizontal dividing line                                      |
-| `nested`    | A row that opens a submenu on hover                             |
-| `component` | Any custom React node rendered inside a list item               |

@@ -27,7 +27,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - four items, last one is current page
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     items: [
       { label: 'Home' },

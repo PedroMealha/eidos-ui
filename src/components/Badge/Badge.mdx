@@ -30,11 +30,17 @@ import { Badge } from 'eidos-ui';
 </Badge>
 ```
 
-## Default
+## Playground
 
-<Canvas of={BadgeStories.Default} />
+<Canvas of={BadgeStories.Playground} />
 
-<Controls of={BadgeStories.Default} />
+<Controls of={BadgeStories.Playground} />
+
+## Alignment
+
+Move the badge to any corner of the wrapped element with `placement`.
+
+<Canvas of={BadgeStories.Alignment} />
 
 ## Counts
 
@@ -53,9 +59,3 @@ Use `dot` for a minimal presence/status indicator with no count.
 Position the badge relative to the corner of the wrapped element. `circular` pulls it in slightly to sit on the edge of a round child like `Avatar`; `rectangular` (default) suits square/rectangular children like icons and buttons.
 
 <Canvas of={BadgeStories.Overlap} />
-
-## Alignment
-
-Move the badge to any corner of the wrapped element with `placement`.
-
-<Canvas of={BadgeStories.Alignment} />

@@ -115,7 +115,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // Required props live at meta level so the render-only stories below
-  // satisfy the type, and so Default's controls start from real values.
+  // satisfy the type, and so Playground's controls start from real values.
   args: { value: 'Page title' },
 } satisfies Meta<typeof InlineEdit>;
 
@@ -126,7 +126,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - primary story; all controls apply here
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     value: 'Page title',
     size: 'md',

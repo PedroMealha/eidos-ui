@@ -64,7 +64,7 @@ const meta = {
     contentClassName: { table: { disable: true } },
   },
   // Required props live at meta level so the render-only stories below
-  // satisfy the type, and so Default's controls start from real values.
+  // satisfy the type, and so Playground's controls start from real values.
   args: {
     trigger: <Button variant="outlined">Open popover</Button>,
     children: <p style={{ margin: 0 }}>Popover content.</p>,
@@ -78,7 +78,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - Basic popover with text content, bottom placement
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
       <Popover {...args} />

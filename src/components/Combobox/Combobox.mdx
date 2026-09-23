@@ -29,23 +29,15 @@ const options: ComboboxOption[] = [
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={ComboboxStories.Default} />
+<Canvas of={ComboboxStories.Playground} />
 
-<Controls of={ComboboxStories.Default} />
+<Controls of={ComboboxStories.Playground} />
 
-## With groups
+## Sizes
 
-Assign a `group` string to options to render automatic group headers inside the dropdown list.
-
-<Canvas of={ComboboxStories.WithGroups} />
-
-## Async search
-
-Provide `onSearch` to handle filtering externally (e.g. an API call). Set `loading` while results are in flight to show a spinner.
-
-<Canvas of={ComboboxStories.AsyncSearch} />
+<Canvas of={ComboboxStories.AllSizes} />
 
 ## Free-text entry
 
@@ -53,13 +45,17 @@ Set `allowFreeText` to let users commit any typed value, not only options from t
 
 <Canvas of={ComboboxStories.AllowFreeText} />
 
-## With label and hint
+## Async search
 
-<Canvas of={ComboboxStories.WithLabel} />
+Provide `onSearch` to handle filtering externally (e.g. an API call). Set `loading` while results are in flight to show a spinner.
 
-## With error
+<Canvas of={ComboboxStories.AsyncSearch} />
 
-<Canvas of={ComboboxStories.WithError} />
+## Controlled
+
+Manage the selected value in external state with `value` and `onChange`, and drive it programmatically from other parts of the UI.
+
+<Canvas of={ComboboxStories.Controlled} />
 
 ## Custom option rendering
 
@@ -67,9 +63,9 @@ Pass a `renderOption` function to replace the default option layout with a fully
 
 <Canvas of={ComboboxStories.CustomRenderOption} />
 
-## Sizes
+## Disabled
 
-<Canvas of={ComboboxStories.AllSizes} />
+<Canvas of={ComboboxStories.Disabled} />
 
 ## Full width
 
@@ -77,12 +73,16 @@ Set `fullWidth` to stretch the trigger to its container. The dropdown matches th
 
 <Canvas of={ComboboxStories.FullWidth} />
 
-## Disabled
+## With error
 
-<Canvas of={ComboboxStories.Disabled} />
+<Canvas of={ComboboxStories.WithError} />
 
-## Controlled
+## With groups
 
-Manage the selected value in external state with `value` and `onChange`, and drive it programmatically from other parts of the UI.
+Assign a `group` string to options to render automatic group headers inside the dropdown list.
 
-<Canvas of={ComboboxStories.Controlled} />
+<Canvas of={ComboboxStories.WithGroups} />
+
+## With label and hint
+
+<Canvas of={ComboboxStories.WithLabel} />

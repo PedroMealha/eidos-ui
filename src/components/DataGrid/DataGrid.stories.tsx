@@ -529,7 +529,7 @@ type Story = StoryObj<typeof meta>;
 
 // ─── 1. Default (interactive controls) ───────────────────────────────────────
 
-export const Default: Story = {
+export const Playground: Story = {
   name: 'Default (interactive controls)',
   parameters: {
     docs: {

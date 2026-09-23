@@ -53,7 +53,7 @@ const Preview: React.FC = () => (
  * makes them global: rendered inline, the Docs page would mount six providers
  * against one root and the last to apply each token would win for the whole
  * page - showing, for instance, the `Controlled` story's teal primary inside
- * the `Default` story.
+ * the `Playground` story.
  *
  * `inline: false` gives each story its own iframe, and therefore its own
  * `documentElement`, which is the only real isolation available. Applied at the
@@ -101,7 +101,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => (
     <ThemeProvider>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

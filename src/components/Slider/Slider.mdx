@@ -15,19 +15,29 @@ import { Slider } from 'eidos-ui';
 <Slider defaultValue={50} label="Volume" showValue />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={SliderStories.Default} />
+<Canvas of={SliderStories.Playground} />
 
-<Controls of={SliderStories.Default} />
+<Controls of={SliderStories.Playground} />
 
-## Sizes
+## Blocked range
 
-<Canvas of={SliderStories.Sizes} />
+`blockedRange` marks a zone on the track in danger-red and clamps the thumb to `blockedRange.min` - useful for quota or hard limit enforcement.
+
+<Canvas of={SliderStories.BlockedRange} />
 
 ## Colors
 
 <Canvas of={SliderStories.Colors} />
+
+## Disabled
+
+<Canvas of={SliderStories.Disabled} />
+
+## Sizes
+
+<Canvas of={SliderStories.Sizes} />
 
 ## With label
 
@@ -41,18 +51,8 @@ Set `showMinMax` to render the `min` and `max` values below the track ends, givi
 
 <Canvas of={SliderStories.WithMinMax} />
 
-## Disabled
-
-<Canvas of={SliderStories.Disabled} />
-
 ## With unit
 
 Pass a `unit` string (e.g. `"%"`, `"px"`, `" kg"`) to append it to the value label and min/max indicators.
 
 <Canvas of={SliderStories.WithUnit} />
-
-## Blocked range
-
-`blockedRange` marks a zone on the track in danger-red and clamps the thumb to `blockedRange.min` - useful for quota or hard limit enforcement.
-
-<Canvas of={SliderStories.BlockedRange} />

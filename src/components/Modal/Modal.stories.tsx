@@ -100,7 +100,7 @@ const ModalWrapper = (args: ComponentProps<typeof Modal>) => {
   );
 };
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => <ModalWrapper {...args} />,
   args: {
     title: 'Default Modal',
@@ -287,8 +287,8 @@ export const DestructiveConfirmation: Story = {
  * `npm run test:stories`.
  *
  * It exists because the `.mdx` documents that overlay stories start closed,
- * so attaching this `play` to `Default` would contradict the page it is
- * documented on - a reader clicking `Default` would find the modal already
+ * so attaching this `play` to `Playground` would contradict the page it is
+ * documented on - a reader clicking `Playground` would find the modal already
  * open. The behaviour itself is described in prose in `Modal.mdx`.
  *
  * What it pins is the thing axe cannot see: a dialog declaring

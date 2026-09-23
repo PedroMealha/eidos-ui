@@ -61,7 +61,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT – interactive playground with all controls
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     label: 'Accept terms and conditions',
     color: 'primary',

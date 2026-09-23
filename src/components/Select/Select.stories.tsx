@@ -185,7 +185,7 @@ const optionsWithDisabled = [
 ];
 
 // `SingleSelect` was byte-identical to this and referenced by no .mdx.
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     options: basicOptions,
     // A placeholder is not an accessible name - it vanishes on selection.

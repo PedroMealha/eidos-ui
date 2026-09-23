@@ -18,23 +18,15 @@ import { FileUpload } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={FileUploadStories.Default} />
+<Canvas of={FileUploadStories.Playground} />
 
-<Controls of={FileUploadStories.Default} />
+<Controls of={FileUploadStories.Playground} />
 
-## Multiple files
+## Disabled
 
-Set `multiple` and optionally `maxFiles` to cap how many files can be selected in one drop.
-
-<Canvas of={FileUploadStories.Multiple} />
-
-## With max size
-
-Files exceeding `maxSize` (in bytes) are rejected and passed to `onFilesRejected` with `reason: 'size'`.
-
-<Canvas of={FileUploadStories.WithMaxSize} />
+<Canvas of={FileUploadStories.Disabled} />
 
 ## Images only
 
@@ -42,12 +34,20 @@ Use the `accept` prop (forwarded directly to the underlying `<input accept>`) to
 
 <Canvas of={FileUploadStories.ImagesOnly} />
 
-## Disabled
+## Multiple files
 
-<Canvas of={FileUploadStories.Disabled} />
+Set `multiple` and optionally `maxFiles` to cap how many files can be selected in one drop.
+
+<Canvas of={FileUploadStories.Multiple} />
 
 ## With callbacks
 
 Open the browser console to see accepted and rejected file events as you drop or select files.
 
 <Canvas of={FileUploadStories.WithCallbacks} />
+
+## With max size
+
+Files exceeding `maxSize` (in bytes) are rejected and passed to `onFilesRejected` with `reason: 'size'`.
+
+<Canvas of={FileUploadStories.WithMaxSize} />

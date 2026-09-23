@@ -126,7 +126,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // `brand` and `items` are required. Declaring them here satisfies the type
-  // for the render-only stories below *and* seeds the Default controls - the
+  // for the render-only stories below *and* seeds the Playground controls - the
   // file previously dropped the `Story` annotation entirely to dodge this,
   // which left every story untyped and Default's Controls panel inert.
   args: {
@@ -146,7 +146,7 @@ type Story = StoryObj<typeof meta>;
  * it to an icon-only width - no `useState` required, `Navigation` manages
  * this itself.
  */
-export const Default: Story = {
+export const Playground: Story = {
   // Spreads `args` so the panel drives the rail; `items` still comes from the
   // local-state hook so clicking an item moves the active highlight.
   render: function DefaultStory(args) {

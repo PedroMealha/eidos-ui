@@ -90,15 +90,80 @@ A nested route group (a settings area with its own tab bar, say) needs no second
 
 > **Note**: `header` is a data prop, not a slot, so there is nothing to portal JSX into - a page's header content must travel as data (as above) rather than as rendered elements.
 
-## Scrolling
+## The page gutter
 
-The `main` content area is the layout's only scroll region. The toolbar and navigation rail stay fixed; the header, page body and footer all scroll together inside it, each sized to its own content. Nothing is pinned - if you want a header that stays visible, add `position: sticky; top: 0` to it yourself.
+The toolbar, header, body and footer share one left/right inset, so everything on the page sits on the same two vertical edges. It steps down with the viewport - 3rem, then 1.5rem below `xl`, 1rem below `lg`, 0.5rem below `md`.
 
-`PageLayout` therefore fills its container rather than growing with its content, so give it a bounded height - a parent with a real height, or `100vh`/`100dvh` at the app root. Dropping it into an unbounded page will make it collapse to its minimum height instead.
+It is expressed in `rem` rather than the `--spacing-*` tokens on purpose. Those are `em`, so they resolve against each region's own font-size: the footer renders at `--font-size-sm`, which made the same token 36.75px there against the body's 42px, and the two regions drifted apart. A page gutter has to be one distance, not a multiple of whatever text a region happens to contain.
 
-When the page content is shorter than the scroll region, the body absorbs the leftover space, so the footer sits on the bottom edge rather than floating up under the content.
+The practical consequence for custom content: **give a custom `footer.component` vertical padding only.** The region already carries the horizontal inset, so adding your own would indent the content twice and pull it out of line with the page above.
 
-<Canvas of={PageLayoutStories.Scrolling} />
+## Responsive behaviour
+
+Every piece of `PageLayout`'s chrome adapts on its own, with no coordination required between them - though they don't all measure the same thing, which matters here specifically because the navigation rail makes the content column narrower than the window:
+
+- **`Navigation`** can auto-collapse to icon-only via `navigation.collapseBelow` (or be driven manually/externally - see its own docs) - the grid column narrows smoothly along with it, since that column is sized to `Navigation`'s own rendered width rather than a fixed reservation (see the note above). This one is keyed off the **viewport**, via `window.matchMedia`.
+- **`Toolbar`** wraps its breadcrumb trail onto its own line rather than clipping it or squeezing the search/actions/user menu aside, once there isn't room for both on one line. Pure CSS wrapping, no breakpoint.
+- **`Header`** is keyed off **its own width**, not the viewport - which is what makes it correct inside this layout, where its column is the window minus a rail that is itself collapsible. At 640px of header width it stacks the actions below the title stack, stretches them to fill the line, and folds everything past the first into an overflow popover. See the `Header` docs for the full ladder.
+
+Because of that last point, a 800px window with an expanded rail gives `Header` roughly 610px to work with, and it reflows to its narrow layout even though the window is nowhere near 640px. That is deliberate, and it is the behaviour a viewport breakpoint gets wrong.
+
+## Playground
+
+<Canvas of={PageLayoutStories.Playground} />
+
+<Controls of={PageLayoutStories.Playground} />
+
+## Controlling the scroll region
+
+For anything beyond that, `contentRef` points at the region itself. A ref passed through the usual HTML attributes lands on the layout's outer element, which never scrolls:
+
+```tsx
+const contentRef = useRef<HTMLElement>(null);
+
+// On navigation, say:
+contentRef.current?.scrollTo({ top: 0 });
+
+<PageLayout contentRef={contentRef} header={{ title }}>
+  {children}
+</PageLayout>;
+```
+
+Put any control that drives the scroll position **outside** the region it scrolls - the toolbar rather than the header. The header sits inside the scroll region and travels with the content, so a "back to top" button there has scrolled out of reach by the time it is wanted.
+
+<Canvas of={PageLayoutStories.ControllingTheScrollRegion} />
+
+## Custom footer
+
+`footer` is a discriminated union - pass `copyright` for the default centered notice or `component` to replace it entirely. `PageLayout` applies its own vertical footer spacing only to the `copyright` variant, so a custom component owns its own padding.
+
+<Canvas of={PageLayoutStories.CustomFooter} />
+
+## An identity page
+
+An account or profile screen gets the same treatment `IdentityHeader` provides - but note what is being passed. `header` is a data prop, so the `IdentityHeader` **component** cannot go here; `PageLayout` always renders a `Header`. The shape travels as data instead, because `media`, `meta` and `variant` live on `Header` itself rather than only inside the preset:
+
+```tsx
+<PageLayout
+  header={{
+    variant: 'hero',
+    title: 'Ana Ferreira',
+    subtitle: 'Customer Support · Lisbon',
+    media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
+    meta: [{ label: 'Role', value: 'Admin', icon: 'shield' }],
+  }}
+>
+  ...
+</PageLayout>
+```
+
+The only thing `IdentityHeader` adds over this is its `avatar` shorthand. Reach for the component directly when a page renders its own header rather than feeding a shared layout.
+
+<Canvas of={PageLayoutStories.IdentityPageHeader} />
+
+## Narrow viewport
+
+<Canvas of={PageLayoutStories.NarrowViewport} />
 
 ## Scroll position across navigations
 
@@ -124,81 +189,18 @@ Keep the key unchanged across a transition that should not move the page - a fil
 
 <Canvas of={PageLayoutStories.ScrollRestoration} />
 
-## Controlling the scroll region
+## Scrolling
 
-For anything beyond that, `contentRef` points at the region itself. A ref passed through the usual HTML attributes lands on the layout's outer element, which never scrolls:
+The `main` content area is the layout's only scroll region. The toolbar and navigation rail stay fixed; the header, page body and footer all scroll together inside it, each sized to its own content. Nothing is pinned - if you want a header that stays visible, add `position: sticky; top: 0` to it yourself.
 
-```tsx
-const contentRef = useRef<HTMLElement>(null);
+`PageLayout` therefore fills its container rather than growing with its content, so give it a bounded height - a parent with a real height, or `100vh`/`100dvh` at the app root. Dropping it into an unbounded page will make it collapse to its minimum height instead.
 
-// On navigation, say:
-contentRef.current?.scrollTo({ top: 0 });
+When the page content is shorter than the scroll region, the body absorbs the leftover space, so the footer sits on the bottom edge rather than floating up under the content.
 
-<PageLayout contentRef={contentRef} header={{ title }}>
-  {children}
-</PageLayout>;
-```
-
-<Canvas of={PageLayoutStories.ControllingTheScrollRegion} />
-
-## The page gutter
-
-The toolbar, header, body and footer share one left/right inset, so everything on the page sits on the same two vertical edges. It steps down with the viewport - 3rem, then 1.5rem below `xl`, 1rem below `lg`, 0.5rem below `md`.
-
-It is expressed in `rem` rather than the `--spacing-*` tokens on purpose. Those are `em`, so they resolve against each region's own font-size: the footer renders at `--font-size-sm`, which made the same token 36.75px there against the body's 42px, and the two regions drifted apart. A page gutter has to be one distance, not a multiple of whatever text a region happens to contain.
-
-The practical consequence for custom content: **give a custom `footer.component` vertical padding only.** The region already carries the horizontal inset, so adding your own would indent the content twice and pull it out of line with the page above.
-
-## Responsive behaviour
-
-Every piece of `PageLayout`'s chrome adapts on its own, with no coordination required between them - though they don't all measure the same thing, which matters here specifically because the navigation rail makes the content column narrower than the window:
-
-- **`Navigation`** can auto-collapse to icon-only via `navigation.collapseBelow` (or be driven manually/externally - see its own docs) - the grid column narrows smoothly along with it, since that column is sized to `Navigation`'s own rendered width rather than a fixed reservation (see the note above). This one is keyed off the **viewport**, via `window.matchMedia`.
-- **`Toolbar`** wraps its breadcrumb trail onto its own line rather than clipping it or squeezing the search/actions/user menu aside, once there isn't room for both on one line. Pure CSS wrapping, no breakpoint.
-- **`Header`** is keyed off **its own width**, not the viewport - which is what makes it correct inside this layout, where its column is the window minus a rail that is itself collapsible. At 640px of header width it stacks the actions below the title stack, stretches them to fill the line, and folds everything past the first into an overflow popover. See the `Header` docs for the full ladder.
-
-Because of that last point, a 800px window with an expanded rail gives `Header` roughly 610px to work with, and it reflows to its narrow layout even though the window is nowhere near 640px. That is deliberate, and it is the behaviour a viewport breakpoint gets wrong.
-
-## Default
-
-<Canvas of={PageLayoutStories.Default} />
-
-<Controls of={PageLayoutStories.Default} />
-
-## Narrow viewport
-
-<Canvas of={PageLayoutStories.NarrowViewport} />
-
-## An identity page
-
-An account or profile screen gets the same treatment `IdentityHeader` provides - but note what is being passed. `header` is a data prop, so the `IdentityHeader` **component** cannot go here; `PageLayout` always renders a `Header`. The shape travels as data instead, because `media`, `meta` and `variant` live on `Header` itself rather than only inside the preset:
-
-```tsx
-<PageLayout
-  header={{
-    variant: 'hero',
-    title: 'Ana Ferreira',
-    subtitle: 'Customer Support · Lisbon',
-    media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
-    meta: [{ label: 'Role', value: 'Admin', icon: 'shield' }],
-  }}
->
-  ...
-</PageLayout>
-```
-
-The only thing `IdentityHeader` adds over this is its `avatar` shorthand. Reach for the component directly when a page renders its own header rather than feeding a shared layout.
-
-<Canvas of={PageLayoutStories.IdentityPageHeader} />
+<Canvas of={PageLayoutStories.Scrolling} />
 
 ## Without a navigation rail
 
 `navigation` is optional, and omitting it collapses the rail's column to nothing rather than leaving an empty gutter - the column is sized to `Navigation`'s own rendered width, so with no content there is no width. The toolbar then spans the full layout.
 
 <Canvas of={PageLayoutStories.WithoutNavigation} />
-
-## Custom footer
-
-`footer` is a discriminated union - pass `copyright` for the default centered notice or `component` to replace it entirely. `PageLayout` applies its own vertical footer spacing only to the `copyright` variant, so a custom component owns its own padding.
-
-<Canvas of={PageLayoutStories.CustomFooter} />

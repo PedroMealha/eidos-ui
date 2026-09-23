@@ -52,13 +52,19 @@ const columns: TableColumn<User>[] = [
 <Table data={users} columns={columns} />;
 ```
 
-## Default
+## Responsive toolbar
+
+The toolbar wraps at every level - the row itself, both zones, and the bulk-action row - so a full toolbar (density picker, column visibility, export, filter button, and a selection count with bulk actions) can never overlap or overflow no matter how narrow its container gets. Wrapping, not shrinking, is the guarantee: `bulkActions` labels are yours, and no threshold can promise they fit.
+
+On top of that, once the table's measured container width drops below 560px the buttons the table renders itself (Density, Columns) go icon-only with tooltips; export and the filter trigger already are. Anything you pass in is rendered exactly as given and only wraps. `DataGrid`'s toolbar behaves identically, and also stacks its `quickFilters` one per row.
+
+## Playground
 
 Use the Controls panel to toggle `loading`, `showPagination`, `showFilters`, `showFooter`, and `pageSize` in isolation.
 
-<Canvas of={TableStories.Default} />
+<Canvas of={TableStories.Playground} />
 
-<Controls of={TableStories.Default} />
+<Controls of={TableStories.Playground} />
 
 ## Basic table
 
@@ -66,65 +72,17 @@ Minimal setup - `data` and `columns` are the only required props.
 
 <Canvas of={TableStories.Basic} />
 
-## With custom rendering
+## Empty state
 
-Supply a `render` function on a column definition to replace the raw cell value with any React node.
+When `data` is an empty array the table renders the `emptyMessage` string (default: `"No data available"`).
 
-<Canvas of={TableStories.WithCustomRendering} />
+<Canvas of={TableStories.EmptyState} />
 
-## With sorting
+## Loading state
 
-Mark columns `sortable: true`, then pass `currentSort` and `onSortChange` to wire up server-side or client-side sorting.
+Set `loading={true}` to overlay a spinner while data is being fetched.
 
-<Canvas of={TableStories.WithSorting} />
-
-## With pagination
-
-Enable `showPagination` and configure `pageSize` and `pageSizeOptions` to add a pagination bar below the table.
-
-> **Note**: Table's pagination is always client-side - it slices `data` internally and has no `onPageChange`/controlled-page equivalent. If you need server-side pagination (fetching one page at a time, `totalRows` driven by the backend), use `DataGrid` instead: it supports the same client-side mode plus a server-side mode via `onPageChange` and `totalRows`.
-
-<Canvas of={TableStories.WithPagination} />
-
-## With filters
-
-Set `filterable: true` and `filterType` (`'text'`, `'select'`, or `'date'`) on a column. Pass `filters` and `onFiltersChange` to control the active filter state externally.
-
-The toolbar's filter button highlights and carries a badge with the number of applied filters, so a closed panel still makes it obvious the data is being narrowed. The count reflects _applied_ filters only - staging a filter row without clicking **Apply Filters** doesn't change it.
-
-> **Note**: filtering in Table is always behind the toolbar's filter dropdown. There's no equivalent of `DataGrid`'s `quickFilters` - always-visible Select/Combobox/SegmentedControl filter controls in the toolbar itself. If you need a filter permanently on screen rather than one click away, use `DataGrid`.
-
-<Canvas of={TableStories.WithFilters} />
-
-## With actions menu
-
-Use a column with `type: 'icon'` and a custom `render` to mount a `Menu` component inside each row.
-
-<Canvas of={TableStories.WithActionsMenu} />
-
-## With clickable rows
-
-Pass `onRowClick` to make every row interactive - the callback receives the full row data object.
-
-<Canvas of={TableStories.WithClickableRows} />
-
-## Row selection
-
-Enable `selectable` to add row checkboxes, and pass `bulkActions` to expose actions over the selection. There's no "clear selection" button: the select-all control is the way out, exactly as it is in MUI or AG Grid - clicking it while it's checked deselects. In table mode that's the header checkbox; in card view (no header row) it's a **Select all** checkbox in the toolbar, which is why the toolbar is present there even before anything is selected.
-
-`selectAllScope` decides what that control acts on: `'all'` (the default) is every row in `data`, across pages; `'page'` is only the rows currently rendered. Either way it only adds or removes the keys in its own scope, so a selection made on another page survives toggling it.
-
-`onSelectionChange(selectedKeys, selectedRows)` gives `selectedKeys` as authoritative and `selectedRows` as best-effort - the row behind each selected key is cached, so a row still resolves after `data` has moved on. If `data` is one page of a larger set (with `totalItems` describing the whole), `selectAllScope="all"` can only reach the rows actually present, and says so with a dev-only warning.
-
-`onSelectAllMatching` covers that case: it resolves the keys of every matching row, including ones not in `data`, and adds a **Select all N** action to the toolbar once everything the table holds is selected. It earns its keep mainly on `DataGrid`, which has a real server-side pagination mode - see [its docs](?path=/docs/data-datagrid--docs) for the full contract and a live example.
-
-<Canvas of={TableStories.WithSelection} />
-
-## Responsive toolbar
-
-The toolbar wraps at every level - the row itself, both zones, and the bulk-action row - so a full toolbar (density picker, column visibility, export, filter button, and a selection count with bulk actions) can never overlap or overflow no matter how narrow its container gets. Wrapping, not shrinking, is the guarantee: `bulkActions` labels are yours, and no threshold can promise they fit.
-
-On top of that, once the table's measured container width drops below 560px the buttons the table renders itself (Density, Columns) go icon-only with tooltips; export and the filter trigger already are. Anything you pass in is rendered exactly as given and only wraps. `DataGrid`'s toolbar behaves identically, and also stacks its `quickFilters` one per row.
+<Canvas of={TableStories.LoadingState} />
 
 ## Responsive card view
 
@@ -138,14 +96,56 @@ Only the row rendering changes - pagination, filtering, sorting, selection and `
 
 <Canvas of={TableStories.ResponsiveCardView} />
 
-## Loading state
+## With actions menu
 
-Set `loading={true}` to overlay a spinner while data is being fetched.
+Use a column with `type: 'icon'` and a custom `render` to mount a `Menu` component inside each row.
 
-<Canvas of={TableStories.LoadingState} />
+<Canvas of={TableStories.WithActionsMenu} />
 
-## Empty state
+## With clickable rows
 
-When `data` is an empty array the table renders the `emptyMessage` string (default: `"No data available"`).
+Pass `onRowClick` to make every row interactive - the callback receives the full row data object.
 
-<Canvas of={TableStories.EmptyState} />
+<Canvas of={TableStories.WithClickableRows} />
+
+## With custom rendering
+
+Supply a `render` function on a column definition to replace the raw cell value with any React node.
+
+<Canvas of={TableStories.WithCustomRendering} />
+
+## With filters
+
+Set `filterable: true` and `filterType` (`'text'`, `'select'`, or `'date'`) on a column. Pass `filters` and `onFiltersChange` to control the active filter state externally.
+
+The toolbar's filter button highlights and carries a badge with the number of applied filters, so a closed panel still makes it obvious the data is being narrowed. The count reflects _applied_ filters only - staging a filter row without clicking **Apply Filters** doesn't change it.
+
+> **Note**: filtering in Table is always behind the toolbar's filter dropdown. There's no equivalent of `DataGrid`'s `quickFilters` - always-visible Select/Combobox/SegmentedControl filter controls in the toolbar itself. If you need a filter permanently on screen rather than one click away, use `DataGrid`.
+
+<Canvas of={TableStories.WithFilters} />
+
+## With pagination
+
+Enable `showPagination` and configure `pageSize` and `pageSizeOptions` to add a pagination bar below the table.
+
+> **Note**: Table's pagination is always client-side - it slices `data` internally and has no `onPageChange`/controlled-page equivalent. If you need server-side pagination (fetching one page at a time, `totalRows` driven by the backend), use `DataGrid` instead: it supports the same client-side mode plus a server-side mode via `onPageChange` and `totalRows`.
+
+<Canvas of={TableStories.WithPagination} />
+
+## Row selection
+
+Enable `selectable` to add row checkboxes, and pass `bulkActions` to expose actions over the selection. There's no "clear selection" button: the select-all control is the way out, exactly as it is in MUI or AG Grid - clicking it while it's checked deselects. In table mode that's the header checkbox; in card view (no header row) it's a **Select all** checkbox in the toolbar, which is why the toolbar is present there even before anything is selected.
+
+`selectAllScope` decides what that control acts on: `'all'` (the default) is every row in `data`, across pages; `'page'` is only the rows currently rendered. Either way it only adds or removes the keys in its own scope, so a selection made on another page survives toggling it.
+
+`onSelectionChange(selectedKeys, selectedRows)` gives `selectedKeys` as authoritative and `selectedRows` as best-effort - the row behind each selected key is cached, so a row still resolves after `data` has moved on. If `data` is one page of a larger set (with `totalItems` describing the whole), `selectAllScope="all"` can only reach the rows actually present, and says so with a dev-only warning.
+
+`onSelectAllMatching` covers that case: it resolves the keys of every matching row, including ones not in `data`, and adds a **Select all N** action to the toolbar once everything the table holds is selected. It earns its keep mainly on `DataGrid`, which has a real server-side pagination mode - see [its docs](?path=/docs/data-datagrid--docs) for the full contract and a live example.
+
+<Canvas of={TableStories.WithSelection} />
+
+## With sorting
+
+Mark columns `sortable: true`, then pass `currentSort` and `onSortChange` to wire up server-side or client-side sorting.
+
+<Canvas of={TableStories.WithSorting} />

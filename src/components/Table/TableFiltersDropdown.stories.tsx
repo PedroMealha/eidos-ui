@@ -140,7 +140,7 @@ const AppliedBadge = ({ filters }: { filters: TableFilters }) => {
 // ── Story 1: Default ──────────────────────────────────────────────────────────
 // Minimal example with text + select column types.
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     columns: textAndSelectColumns,
     defaultFilters: {},

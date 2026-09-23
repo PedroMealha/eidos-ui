@@ -87,6 +87,20 @@ const [collapsed, setCollapsed] = useState(false);
 
 Pass `collapsible={false}` to hide the built-in toggle button entirely - useful if collapsing should only ever be driven externally.
 
+## Playground
+
+Without `brand.logo`, the brand mark falls back to an initials `Avatar` built from `brand.name`. Click the toggle button at the bottom of the rail to collapse it - `Navigation` manages this itself.
+
+<Canvas of={NavigationStories.Playground} />
+
+<Controls of={NavigationStories.Playground} />
+
+## Collapse below a breakpoint
+
+Resize your actual browser window (not just this canvas frame) past `1024px` to see it react.
+
+<Canvas of={NavigationStories.CollapseBelowBreakpoint} />
+
 ## Responsive breakpoint
 
 `collapseBelow` is on by default (`768`px): `Navigation` automatically collapses (and re-expands) whenever the viewport crosses that width, in pixels - no extra state or resize listener of your own required. Pass a different value to change the breakpoint, or `collapseBelow={0}` to opt out entirely (no viewport is ever narrower than `0px`):
@@ -118,43 +132,11 @@ const [collapsed, setCollapsed] = useState(false);
 
 `matchMedia`'s `change` event only fires exactly at the crossing point, not on every resize tick, so a manual toggle in between crossings (e.g. expanding back while the viewport is still narrower than the breakpoint) is left alone until it crosses again.
 
-## Default
+## Controlled collapse
 
-Without `brand.logo`, the brand mark falls back to an initials `Avatar` built from `brand.name`. Click the toggle button at the bottom of the rail to collapse it - `Navigation` manages this itself.
+`collapsed` + `onCollapsedChange` hand control to the consumer - here an external button drives the same state passed into `Navigation`.
 
-<Canvas of={NavigationStories.Default} />
-
-<Controls of={NavigationStories.Default} />
-
-## With a square logo
-
-<Canvas of={NavigationStories.WithSquareLogo} />
-
-## With a horizontal logo
-
-A wide wordmark-style logo renders at the same fixed height as a square one, scaling its width to match its own aspect ratio.
-
-<Canvas of={NavigationStories.WithHorizontalLogo} />
-
-## With a vertical logo
-
-A tall, narrow logo is capped by the same fixed height as the other orientations.
-
-<Canvas of={NavigationStories.WithVerticalLogo} />
-
-## With many items
-
-<Canvas of={NavigationStories.WithManyItems} />
-
-## With a disabled item
-
-<Canvas of={NavigationStories.WithDisabledItem} />
-
-## Collapse below a breakpoint
-
-Resize your actual browser window (not just this canvas frame) past `1024px` to see it react.
-
-<Canvas of={NavigationStories.CollapseBelowBreakpoint} />
+<Canvas of={NavigationStories.Controlled} />
 
 ## Starting collapsed
 
@@ -162,8 +144,26 @@ Resize your actual browser window (not just this canvas frame) past `1024px` to 
 
 <Canvas of={NavigationStories.DefaultCollapsed} />
 
-## Controlled collapse
+## With a disabled item
 
-`collapsed` + `onCollapsedChange` hand control to the consumer - here an external button drives the same state passed into `Navigation`.
+<Canvas of={NavigationStories.WithDisabledItem} />
 
-<Canvas of={NavigationStories.Controlled} />
+## With a horizontal logo
+
+A wide wordmark-style logo renders at the same fixed height as a square one, scaling its width to match its own aspect ratio.
+
+<Canvas of={NavigationStories.WithHorizontalLogo} />
+
+## With many items
+
+<Canvas of={NavigationStories.WithManyItems} />
+
+## With a square logo
+
+<Canvas of={NavigationStories.WithSquareLogo} />
+
+## With a vertical logo
+
+A tall, narrow logo is capped by the same fixed height as the other orientations.
+
+<Canvas of={NavigationStories.WithVerticalLogo} />

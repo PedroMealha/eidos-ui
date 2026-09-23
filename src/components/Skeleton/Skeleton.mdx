@@ -19,11 +19,21 @@ import { Skeleton } from 'eidos-ui';
 <Skeleton variant="circular" width={40} height={40} />
 ```
 
-## Default
+## Playground
 
-<Canvas of={SkeletonStories.Default} />
+<Canvas of={SkeletonStories.Playground} />
 
-<Controls of={SkeletonStories.Default} />
+<Controls of={SkeletonStories.Playground} />
+
+## Card placeholder
+
+Compose multiple `Skeleton` elements to mirror the exact layout of a loading card.
+
+<Canvas of={SkeletonStories.CardPlaceholder} />
+
+## Circular
+
+<Canvas of={SkeletonStories.Circular} />
 
 ## Multi-line
 
@@ -31,9 +41,11 @@ Set `lines` to render a stacked block of text placeholders; the last line is aut
 
 <Canvas of={SkeletonStories.MultiLine} />
 
-## Circular
+## Pulse animation
 
-<Canvas of={SkeletonStories.Circular} />
+Set `animation="pulse"` for a fade in/out effect instead of the default left-to-right wave sweep.
+
+<Canvas of={SkeletonStories.Pulse} />
 
 ## Rectangular
 
@@ -42,18 +54,6 @@ Set `lines` to render a stacked block of text placeholders; the last line is aut
 ## Rounded
 
 <Canvas of={SkeletonStories.Rounded} />
-
-## Pulse animation
-
-Set `animation="pulse"` for a fade in/out effect instead of the default left-to-right wave sweep.
-
-<Canvas of={SkeletonStories.Pulse} />
-
-## Card placeholder
-
-Compose multiple `Skeleton` elements to mirror the exact layout of a loading card.
-
-<Canvas of={SkeletonStories.CardPlaceholder} />
 
 ## Table placeholder
 

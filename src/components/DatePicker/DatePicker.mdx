@@ -45,19 +45,19 @@ function BookingForm() {
 }
 ```
 
-## Default
+## Playground
 
 Use the Controls panel to switch `mode` between `single`, `multiple`, and `range`, and to toggle `disabled`, `required`, `fullWidth`, and `autoWidth`.
 
-<Canvas of={DatePickerStories.Default} />
+<Canvas of={DatePickerStories.Playground} />
 
-<Controls of={DatePickerStories.Default} />
+<Controls of={DatePickerStories.Playground} />
 
-## Single date
+## Date constraints
 
-The most common mode - the user picks one date and receives an ISO string value.
+Restrict the selectable range with `minDate` and `maxDate` (ISO strings). Days outside the range are visually disabled in the calendar and cannot be selected.
 
-<Canvas of={DatePickerStories.SingleDate} />
+<Canvas of={DatePickerStories.DateConstraints} />
 
 ## Date range
 
@@ -65,29 +65,11 @@ The most common mode - the user picks one date and receives an ISO string value.
 
 <Canvas of={DatePickerStories.DateRange} />
 
-## Multiple selection
-
-`mode="multiple"` lets the user pick any number of individual dates. The value is `{ date: string[] }`.
-
-<Canvas of={DatePickerStories.MultipleSelection} />
-
-## With time
-
-Pass `time={{ enabled: true }}` to show an hour/minute picker below the calendar. Add `includeSeconds: true` to expose a seconds field as well.
-
-<Canvas of={DatePickerStories.WithTime} />
-
 ## Date range with time
 
 Time selection works with `mode="range"` too - the value gains `time: { start: TimeValue, end: TimeValue }`.
 
 <Canvas of={DatePickerStories.DateRangeWithTime} />
-
-## Date constraints
-
-Restrict the selectable range with `minDate` and `maxDate` (ISO strings). Days outside the range are visually disabled in the calendar and cannot be selected.
-
-<Canvas of={DatePickerStories.DateConstraints} />
 
 ## Independent calendars
 
@@ -96,3 +78,21 @@ By default a single month/year control drives every visible calendar, and the ot
 Set `calendar={{ independent: true }}` to give each calendar its own control. They stay clamped so one can never reach or cross its neighbour's month, which would otherwise let you select a range whose end precedes its start.
 
 <Canvas of={DatePickerStories.IndependentCalendars} />
+
+## Multiple selection
+
+`mode="multiple"` lets the user pick any number of individual dates. The value is `{ date: string[] }`.
+
+<Canvas of={DatePickerStories.MultipleSelection} />
+
+## Single date
+
+The most common mode - the user picks one date and receives an ISO string value.
+
+<Canvas of={DatePickerStories.SingleDate} />
+
+## With time
+
+Pass `time={{ enabled: true }}` to show an hour/minute picker below the calendar. Add `includeSeconds: true` to expose a seconds field as well.
+
+<Canvas of={DatePickerStories.WithTime} />

@@ -162,7 +162,7 @@ virtualizer so the component stays lean.
       },
     },
   },
-  // Real defaults, not placeholders: `Default` spreads these through the
+  // Real defaults, not placeholders: `Playground` spreads these through the
   // Controls panel, and the render-only stories below inherit them to satisfy
   // TypeScript's required-prop constraint.
   args: {
@@ -222,7 +222,7 @@ type Story = StoryObj<VirtualListProps<Item>>;
 // Story: Fixed Height (stress test - 10 000 rows)
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   name: 'Fixed row height',
   // Spreads `args`, so `rowHeight`, `height`, `overscan`, `loading` and the
   // rest actually drive the list. This used to be `render: () =>`, which

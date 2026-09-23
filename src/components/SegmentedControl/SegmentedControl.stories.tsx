@@ -30,7 +30,7 @@ const meta = {
   component: SegmentedControl,
   parameters: { layout: 'centered' },
   // `options` is required, so it lives here to satisfy the type for the
-  // render-only stories below as well as seeding the Default controls.
+  // render-only stories below as well as seeding the Playground controls.
   args: {
     options: RANGE_OPTIONS,
   },
@@ -89,11 +89,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Playground ──────────────────────────────────────────────────────────────────
 
 // Uncontrolled (`defaultValue`) rather than the `useState` wrapper this used
 // to have, so every prop in the panel actually drives the rendered control.
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     defaultValue: 'week',
     size: 'md',

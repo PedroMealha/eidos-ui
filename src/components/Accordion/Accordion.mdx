@@ -22,21 +22,39 @@ import { Accordion, AccordionItem } from 'eidos-ui';
 </Accordion>;
 ```
 
-## Default
+## Playground
 
-<Canvas of={AccordionStories.Default} />
+<Canvas of={AccordionStories.Playground} />
 
-<Controls of={AccordionStories.Default} />
+<Controls of={AccordionStories.Playground} />
+
+## Bordered
+
+<Canvas of={AccordionStories.Bordered} />
+
+## Colors
+
+The `color` prop applies to the open trigger label and its chevron icon.
+
+<Canvas of={AccordionStories.Colors} />
+
+## Controlled
+
+Drive open state externally via `value` and `onChange` - useful when parent logic needs to react to which item is active.
+
+<Canvas of={AccordionStories.Controlled} />
+
+## Disabled items
+
+Individual items can be disabled so they cannot be toggled by the user.
+
+<Canvas of={AccordionStories.Disabled} />
 
 ## Multiple open items
 
 Set `multiple` to allow several items to be expanded at the same time.
 
 <Canvas of={AccordionStories.Multiple} />
-
-## Bordered
-
-<Canvas of={AccordionStories.Bordered} />
 
 ## Separated
 
@@ -48,26 +66,8 @@ Each item renders as an independent card, providing stronger visual separation b
 
 <Canvas of={AccordionStories.Sizes} />
 
-## Colors
-
-The `color` prop applies to the open trigger label and its chevron icon.
-
-<Canvas of={AccordionStories.Colors} />
-
 ## With icons
 
 `AccordionItem` accepts an optional `icon` node displayed to the left of the label.
 
 <Canvas of={AccordionStories.WithIcons} />
-
-## Disabled items
-
-Individual items can be disabled so they cannot be toggled by the user.
-
-<Canvas of={AccordionStories.Disabled} />
-
-## Controlled
-
-Drive open state externally via `value` and `onChange` - useful when parent logic needs to react to which item is active.
-
-<Canvas of={AccordionStories.Controlled} />

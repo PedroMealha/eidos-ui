@@ -54,7 +54,7 @@ type Story = StoryObj<typeof meta>;
 // Spreads `args`, so every control in the panel drives the drop zone. This
 // used to be `render: () =>`, which ignored args entirely - the Controls panel
 // was rendered by the .mdx but could not change anything.
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     multiple: false,
     disabled: false,

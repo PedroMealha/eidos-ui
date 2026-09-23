@@ -69,9 +69,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ── Default - trigger / popover mode ────────────────────────────────────────
+// ── Playground - trigger / popover mode ────────────────────────────────────────
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     defaultValue: '#6366f1',
     label: 'Brand colour',

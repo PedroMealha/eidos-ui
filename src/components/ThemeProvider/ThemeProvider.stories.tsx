@@ -74,7 +74,7 @@ const meta = {
     },
   },
   // `children` is required, so it lives here to satisfy the type for the
-  // render-only stories below as well as seeding the Default controls.
+  // render-only stories below as well as seeding the Playground controls.
   args: {
     children: <Swatches />,
   },
@@ -89,7 +89,7 @@ type Story = StoryObj<typeof meta>;
  * Args-driven, so editing `defaultTheme` in the Controls panel re-themes the
  * swatches live - which is the point of the component.
  */
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => <ThemeProvider {...args} />,
 };
 

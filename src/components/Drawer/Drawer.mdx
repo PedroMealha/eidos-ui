@@ -28,23 +28,19 @@ function Example() {
 }
 ```
 
-## Default
+## Playground
 
 Use the controls below to configure placement, size, title, and dismiss behaviour interactively.
 
-<Canvas of={DrawerStories.Default} />
+<Canvas of={DrawerStories.Playground} />
 
-<Controls of={DrawerStories.Default} />
+<Controls of={DrawerStories.Playground} />
 
-## With title
+## Bottom sheet
 
-<Canvas of={DrawerStories.WithTitle} />
+`placement="bottom"` turns the drawer into a mobile-friendly sheet that slides up from the bottom of the screen.
 
-## With actions
-
-Pass an `actions` array to render a sticky footer with one or more buttons.
-
-<Canvas of={DrawerStories.WithActions} />
+<Canvas of={DrawerStories.BottomSheet} />
 
 ## Placements
 
@@ -58,8 +54,12 @@ The drawer slides in from `left`, `right`, `top`, or `bottom` - set via the `pla
 
 <Canvas of={DrawerStories.Sizes} />
 
-## Bottom sheet
+## With actions
 
-`placement="bottom"` turns the drawer into a mobile-friendly sheet that slides up from the bottom of the screen.
+Pass an `actions` array to render a sticky footer with one or more buttons.
 
-<Canvas of={DrawerStories.BottomSheet} />
+<Canvas of={DrawerStories.WithActions} />
+
+## With title
+
+<Canvas of={DrawerStories.WithTitle} />

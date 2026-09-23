@@ -18,39 +18,15 @@ import { Tag } from 'lucide-react';
 </Chip>;
 ```
 
-## Default
+## Playground
 
-<Canvas of={ChipStories.Default} />
+<Canvas of={ChipStories.Playground} />
 
-<Controls of={ChipStories.Default} />
-
-## Variants
-
-`text` paints no resting background - a tint appears on hover only, as an affordance. If you want a permanently tinted chip, that is `filled`.
-
-<Canvas of={ChipStories.Variants} />
+<Controls of={ChipStories.Playground} />
 
 ## Colors
 
 <Canvas of={ChipStories.Colors} />
-
-## Sizes
-
-<Canvas of={ChipStories.Sizes} />
-
-## With icons
-
-<Canvas of={ChipStories.WithIcons} />
-
-## Interactive
-
-`onClick` makes the whole chip activatable; `onRemove` adds a separate close button. They compose - a chip can be both, and the remove button stops the click from propagating to the chip itself.
-
-<Canvas of={ChipStories.Interactive} />
-
-## States
-
-<Canvas of={ChipStories.States} />
 
 ## Inline in text
 
@@ -59,3 +35,27 @@ import { Tag } from 'lucide-react';
 > **Note**: `Chip` renders a `<div>`, so it cannot be placed inside a `<p>` - a `div` descendant of `p` is invalid HTML and React reports it as a hydration error. Use a `div` or `span` container for text that includes chips.
 
 <Canvas of={ChipStories.InlineInText} />
+
+## Interactive
+
+`onClick` makes the whole chip activatable; `onRemove` adds a separate close button. They compose - a chip can be both, and the remove button stops the click from propagating to the chip itself.
+
+<Canvas of={ChipStories.Interactive} />
+
+## Sizes
+
+<Canvas of={ChipStories.Sizes} />
+
+## States
+
+<Canvas of={ChipStories.States} />
+
+## Variants
+
+`text` paints no resting background - a tint appears on hover only, as an affordance. If you want a permanently tinted chip, that is `filled`.
+
+<Canvas of={ChipStories.Variants} />
+
+## With icons
+
+<Canvas of={ChipStories.WithIcons} />

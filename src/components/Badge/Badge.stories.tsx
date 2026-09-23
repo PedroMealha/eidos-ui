@@ -81,7 +81,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // `children` is required, so it lives here to satisfy the type for the
-  // render-only stories below as well as seeding the Default controls.
+  // render-only stories below as well as seeding the Playground controls.
   args: {
     children: (
       <IconButton icon={Bell} variant="text" color="secondary" aria-label="Notifications" />
@@ -96,7 +96,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     content: 4,
     color: 'danger',

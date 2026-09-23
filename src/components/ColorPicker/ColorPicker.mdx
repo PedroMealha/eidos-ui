@@ -17,37 +17,13 @@ const [color, setColor] = useState('#6366f1');
 <ColorPicker value={color} onChange={setColor} label="Brand color" />;
 ```
 
-## Default
+## Playground
 
 The default mode renders a color swatch that opens a popover picker on click.
 
-<Canvas of={ColorPickerStories.Default} />
+<Canvas of={ColorPickerStories.Playground} />
 
-<Controls of={ColorPickerStories.Default} />
-
-## Inline
-
-Set `inline` to render the picker panel directly on the page without a popover trigger.
-
-<Canvas of={ColorPickerStories.Inline} />
-
-## With alpha slider
-
-Enable `showAlpha` to reveal an opacity slider below the hue rail. The hex value gains an alpha channel (e.g. `#6366f1cc`).
-
-<Canvas of={ColorPickerStories.WithAlpha} />
-
-## HSL format
-
-Set `format="hsl"` to display HSL values in the text input. The user can also switch formats manually inside the picker.
-
-<Canvas of={ColorPickerStories.HslFormat} />
-
-## Custom swatches
-
-Pass a `swatches` array of hex strings to replace the default palette with a project-specific one.
-
-<Canvas of={ColorPickerStories.CustomSwatches} />
+<Controls of={ColorPickerStories.Playground} />
 
 ## Controlled
 
@@ -55,10 +31,34 @@ Wire `value` and `onChange` together to keep the selected color in external stat
 
 <Canvas of={ColorPickerStories.Controlled} />
 
-## Sizes
+## Custom swatches
 
-<Canvas of={ColorPickerStories.Sizes} />
+Pass a `swatches` array of hex strings to replace the default palette with a project-specific one.
+
+<Canvas of={ColorPickerStories.CustomSwatches} />
 
 ## Disabled
 
 <Canvas of={ColorPickerStories.Disabled} />
+
+## HSL format
+
+Set `format="hsl"` to display HSL values in the text input. The user can also switch formats manually inside the picker.
+
+<Canvas of={ColorPickerStories.HslFormat} />
+
+## Inline
+
+Set `inline` to render the picker panel directly on the page without a popover trigger.
+
+<Canvas of={ColorPickerStories.Inline} />
+
+## Sizes
+
+<Canvas of={ColorPickerStories.Sizes} />
+
+## With alpha slider
+
+Enable `showAlpha` to reveal an opacity slider below the hue rail. The hex value gains an alpha channel (e.g. `#6366f1cc`).
+
+<Canvas of={ColorPickerStories.WithAlpha} />

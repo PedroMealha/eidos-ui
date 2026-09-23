@@ -62,12 +62,12 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Playground ──────────────────────────────────────────────────────────────────
 
 // Spreads `args` so the Controls panel actually drives the group. `children`
 // stays fixed: it is the one prop a control cannot meaningfully supply, and
 // the group-level props are the whole point of the component.
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     variant: 'outlined',
     color: 'primary',

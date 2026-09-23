@@ -26,12 +26,6 @@ import { User, Settings, LogOut } from 'lucide-react';
 />;
 ```
 
-## Default
-
-<Canvas of={MenuStories.Default} />
-
-<Controls of={MenuStories.Default} />
-
 ## Keyboard
 
 The menu is a **single tab stop**; arrow keys move between items inside it. Focus enters the menu when it opens and returns to the trigger when it closes.
@@ -46,21 +40,17 @@ The menu is a **single tab stop**; arrow keys move between items inside it. Focu
 
 Disabled items are skipped rather than being dead stops, and separators are never focused. `component` items are not part of the arrow sequence - whatever you render inside one keeps its own focus behaviour and its own keys, so a text field in a menu still works normally.
 
-## With keyboard shortcuts
+## Playground
 
-A `shortcut` string on an item is rendered as a [Kbd](?path=/docs/elements-kbd--docs) on the trailing edge. It is a label only - binding the actual key is the app's job.
+<Canvas of={MenuStories.Playground} />
 
-<Canvas of={MenuStories.WithShortcuts} />
+<Controls of={MenuStories.Playground} />
 
-## With a nested submenu
+## Sizing
 
-A `type: 'nested'` item opens a child menu. Submenus sit one z-index step above the parent (`calc(var(--z-index-dropdown) + 1)`).
+`minWidth` stops a short menu collapsing to its trigger's width; `maxHeight` makes a long one scroll.
 
-<Canvas of={MenuStories.WithNestedSubmenu} />
-
-## With disabled items
-
-<Canvas of={MenuStories.WithDisabledItems} />
+<Canvas of={MenuStories.Sizing} />
 
 ## With a custom component item
 
@@ -68,11 +58,21 @@ A `type: 'component'` item renders arbitrary React content inside the menu surfa
 
 <Canvas of={MenuStories.WithCustomComponentItem} />
 
-## Sizing
+## With disabled items
 
-`minWidth` stops a short menu collapsing to its trigger's width; `maxHeight` makes a long one scroll.
+<Canvas of={MenuStories.WithDisabledItems} />
 
-<Canvas of={MenuStories.Sizing} />
+## With a nested submenu
+
+A `type: 'nested'` item opens a child menu. Submenus sit one z-index step above the parent (`calc(var(--z-index-dropdown) + 1)`).
+
+<Canvas of={MenuStories.WithNestedSubmenu} />
+
+## With keyboard shortcuts
+
+A `shortcut` string on an item is rendered as a [Kbd](?path=/docs/elements-kbd--docs) on the trailing edge. It is a label only - binding the actual key is the app's job.
+
+<Canvas of={MenuStories.WithShortcuts} />
 
 ## With a trigger tooltip
 

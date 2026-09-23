@@ -20,35 +20,33 @@ import { Tabs, Tab, TabPanel } from 'eidos-ui';
 </Tabs>;
 ```
 
-## Default
+## Playground
 
-<Canvas of={TabsStories.Default} />
+<Canvas of={TabsStories.Playground} />
 
-<Controls of={TabsStories.Default} />
-
-## Enclosed variant
-
-<Canvas of={TabsStories.Enclosed} />
-
-## Pills variant
-
-<Canvas of={TabsStories.Pills} />
-
-## With icons
-
-<Canvas of={TabsStories.WithIcons} />
+<Controls of={TabsStories.Playground} />
 
 ## Colors
 
 <Canvas of={TabsStories.Colors} />
 
-## Sizes
+## Controlled
 
-<Canvas of={TabsStories.Sizes} />
+Pass `value` and `onChange` together to drive the active tab from external state.
+
+<Canvas of={TabsStories.Controlled} />
+
+## Enclosed variant
+
+<Canvas of={TabsStories.Enclosed} />
 
 ## Full width
 
 <Canvas of={TabsStories.FullWidth} />
+
+## Pills variant
+
+<Canvas of={TabsStories.Pills} />
 
 ## Scroll buttons
 
@@ -60,12 +58,14 @@ activating a tab outside the visible part scrolls it into view.
 
 <Canvas of={TabsStories.ScrollButtons} />
 
+## Sizes
+
+<Canvas of={TabsStories.Sizes} />
+
 ## With disabled tab
 
 <Canvas of={TabsStories.WithDisabledTab} />
 
-## Controlled
+## With icons
 
-Pass `value` and `onChange` together to drive the active tab from external state.
-
-<Canvas of={TabsStories.Controlled} />
+<Canvas of={TabsStories.WithIcons} />

@@ -78,7 +78,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - single text line
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     variant: 'text',
     animation: 'wave',

@@ -30,23 +30,24 @@ const [view, setView] = useState('list');
 />;
 ```
 
-## Default
+## Keyboard
 
-<Canvas of={SegmentedControlStories.Default} />
+The control follows the [WAI-ARIA radiogroup pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), so it is a **single tab stop** rather than one per option - Tab enters the group at the selected segment and the next Tab leaves it.
 
-<Controls of={SegmentedControlStories.Default} />
+| Key            | Behaviour                               |
+| -------------- | --------------------------------------- |
+| `Tab`          | Enter the group at the selected segment |
+| `←` / `↑`      | Select the previous segment, wrapping   |
+| `→` / `↓`      | Select the next segment, wrapping       |
+| `Home` / `End` | Select the first / last segment         |
 
-## Icon-only with tooltips
+Selection follows focus, which is what the radio pattern specifies - so arrow keys fire `onChange` as they move, unlike [Tabs](?path=/docs/navigation-tabs--docs), where arrows only move focus and the tab is activated separately. Disabled segments are skipped rather than selected and ignored, and moving to a segment that is off screen scrolls it into view.
 
-<Canvas of={SegmentedControlStories.Icons} />
+## Playground
 
-## Icons + labels
+<Canvas of={SegmentedControlStories.Playground} />
 
-<Canvas of={SegmentedControlStories.IconsAndLabels} />
-
-## Sizes
-
-<Canvas of={SegmentedControlStories.Sizes} />
+<Controls of={SegmentedControlStories.Playground} />
 
 ## Colors
 
@@ -64,6 +65,14 @@ Stretch to fill the parent container with `fullWidth`. Each segment takes an equ
 
 <Canvas of={SegmentedControlStories.FullWidth} />
 
+## Icon-only with tooltips
+
+<Canvas of={SegmentedControlStories.Icons} />
+
+## Icons + labels
+
+<Canvas of={SegmentedControlStories.IconsAndLabels} />
+
 ## Overflow
 
 Segments never wrap, so a track wider than its container scrolls rather than pushing the page sideways - with chevron buttons at either end, the same treatment [Tabs](?path=/docs/navigation-tabs--docs) uses for its tab strip.
@@ -80,15 +89,6 @@ Pass `scrollButtons="none"` to render no buttons and keep the native scrollbar i
 
 > **Note**: the buttons are a pointer affordance only - they are hidden from assistive technology and never take focus, because the keyboard already reaches every segment (see below) and the browser scrolls a focused one into view. For the same reason the segments' focus ring is drawn _inside_ their edge: a scroll container clips an outward ring (and `outline` is clipped identically), so an outward ring would be invisible on exactly the overflowing controls that need it most.
 
-## Keyboard
+## Sizes
 
-The control follows the [WAI-ARIA radiogroup pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/), so it is a **single tab stop** rather than one per option - Tab enters the group at the selected segment and the next Tab leaves it.
-
-| Key            | Behaviour                               |
-| -------------- | --------------------------------------- |
-| `Tab`          | Enter the group at the selected segment |
-| `←` / `↑`      | Select the previous segment, wrapping   |
-| `→` / `↓`      | Select the next segment, wrapping       |
-| `Home` / `End` | Select the first / last segment         |
-
-Selection follows focus, which is what the radio pattern specifies - so arrow keys fire `onChange` as they move, unlike [Tabs](?path=/docs/navigation-tabs--docs), where arrows only move focus and the tab is activated separately. Disabled segments are skipped rather than selected and ignored, and moving to a segment that is off screen scrolls it into view.
+<Canvas of={SegmentedControlStories.Sizes} />

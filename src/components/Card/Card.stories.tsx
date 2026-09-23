@@ -50,7 +50,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
 // `Elevated` and `Flat` were separate one-arg stories that no .mdx referenced,
 // and `Variants` already shows all three side by side, which is how you

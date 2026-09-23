@@ -15,15 +15,11 @@ import { Spinner } from 'eidos-ui';
 <Spinner size="md" color="primary" />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={SpinnerStories.Default} />
+<Canvas of={SpinnerStories.Playground} />
 
-<Controls of={SpinnerStories.Default} />
-
-## Sizes
-
-<Canvas of={SpinnerStories.Sizes} />
+<Controls of={SpinnerStories.Playground} />
 
 ## Colors
 
@@ -36,3 +32,7 @@ The spinner centres itself against the nearest positioned ancestor, so a contain
 <Canvas of={SpinnerStories.Contained} />
 
 > **Note**: the spinner keeps animating under `prefers-reduced-motion`. WCAG 2.3.3 targets non-essential motion, and here the motion _is_ the message - freezing it would leave an indistinguishable static arc.
+
+## Sizes
+
+<Canvas of={SpinnerStories.Sizes} />

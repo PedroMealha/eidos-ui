@@ -615,6 +615,58 @@ cost a real consumer a rebuild. Don't leave a capability gap to be discovered
 by trial and error - call it out where the consumer is deciding between the
 two.
 
+### `PageLayout` owns a scrollport, and that has three consequences
+
+`&__content` is the layout's only scroll region - the document does not
+scroll. Everything below follows from that, and each one was a real defect:
+
+- **`window.scrollTo` is a no-op inside the layout**, and a navigation does
+  not reset the offset: `<main>` is the same element for the whole session
+  and only its contents change, so a long list's scroll position carries
+  into the next screen. `scrollRestorationKey` (offset remembered per key,
+  applied when the key changes) and `contentRef` exist for this. The key is
+  supplied by the consumer because deciding what counts as a navigation is
+  routing - the same reason the library ships no page-chrome hook, below.
+- **The offset must be recorded as the user scrolls, not when the key
+  changes.** By the time a navigation commits, the next page's content is in
+  the DOM and the browser has clamped `scrollTop` to its height. This fails
+  _invisibly_ on a fresh navigation and only shows when returning to a page.
+- **A control that drives the scroll position must sit outside the region it
+  scrolls.** The header is inside it and scrolls away, so a "back to top"
+  button there is unreachable exactly when it is wanted. It also makes any
+  test of it meaningless: clicking scrolls the button into view, so the
+  assertion passes whether or not the ref arrived - measured, by breaking
+  the ref forwarding and watching the test still pass.
+
+A scrollable region containing nothing focusable also cannot be scrolled by
+keyboard at all (SC 2.1.1), so `<main>` carries `tabIndex={0}` and an inset
+focus ring, matching `VirtualList` and `Chat`. This went unnoticed because
+every `PageLayout` story happened to have a button in its header; axe only
+caught it once a story rendered a header with no actions, which is also what
+an ordinary read-only page looks like.
+
+### The library ships no page-chrome registration hook, deliberately
+
+With one `PageLayout` for a whole area, each page's `header` has to reach it
+from outside, and the obvious design - a context the page registers into via
+an effect - was considered and rejected. It would give `header` two sources
+with precedence rules inside an otherwise pure declarative component, and it
+is one commit late by construction, so the props path is still needed for
+first paint.
+
+The finding worth keeping, because it is not obvious and it kills the most
+attractive version of the idea: **a registration API cannot merge
+contributions from a page and a sub-layout, because effects fire
+child-before-parent.** Registration order is therefore inner-first, which is
+the wrong order for "innermost wins", and there is no public API for tree
+depth - a hook has no DOM node, so `compareDocumentPosition` is not available
+either. Any such API is limited to one winner.
+
+`PageLayout.mdx` documents the two-source pattern (route table for the static
+half, page-registered context for the dynamic half) as **application** code,
+with relative imports, so it cannot be misread as a library export - it was,
+previously. `dev/layouts/page-chrome.tsx` is the worked implementation.
+
 ---
 
 ## Storybook documentation rules
@@ -642,15 +694,62 @@ import { ComponentName } from 'eidos-ui';
 // minimal runnable example
 ````
 
-## PrimarySection
+## Any concept section
 
-<Canvas of={XxxStories.PrimaryStory} />
-<Controls of={XxxStories.PrimaryStory} />
+Prose only. Any number of these, and they all sit _before_ the stories.
 
-## OtherSection
+## Playground
 
-<Canvas of={XxxStories.OtherStory} />
+<Canvas of={XxxStories.Playground} />
+<Controls of={XxxStories.Playground} />
+
+## First story alphabetically
+
+<Canvas of={XxxStories.Aaa} />
+
+### An edge case of that story
+
+Nested, so it stays bound to the story above it.
+
+## Second story alphabetically
+
+<Canvas of={XxxStories.Bbb} />
 ```
+
+**`scripts/check-story-docs.js` enforces this shape** (a `docs:stories` step in
+`npm run verify`), and `storySort` in `.storybook/preview.ts` applies the same
+order to the sidebar. The two exist to agree with each other - run
+`npm run check:story-docs` to check without the full verify.
+
+Five rules, and the reasoning matters more than the list:
+
+- **`Playground` is the primary story on every page**, and the only one with
+  `<Controls>`. It was called `Default` until the sidebar/page mismatch below
+  was fixed; `Playground` says what it is - the args-driven surface you drive.
+- **One story per `##` section.** Otherwise "the order of the stories" is not
+  even well defined and a reader cannot tell which prose belongs to which
+  canvas. Five pages had sections holding two or three
+  (`Chat`'s `## Permissions`, `DataGrid`'s `## With selection`, …).
+- **Everything after `Playground` is alphabetical**, by the label the sidebar
+  shows. This is deliberately meaningless ordering: "well-paced" is not
+  checkable, so it rots - 60 of 62 pages had drifted into their own narrative
+  order, none matching the sidebar. Anything that genuinely must be read in
+  sequence is prose, and prose goes first.
+- **Prose sections all sit ahead of the stories**, so the story sequence is
+  uninterrupted and is exactly what the sidebar lists.
+- **Containment is by heading level**: a story owns everything up to the next
+  `##`, and its edge cases are `###` beneath it. Deliberately **not** a JSX
+  wrapper - MDX re-parses a multi-line JSX element's children as markdown,
+  which has broken these pages three times, and `prettier --write` silently
+  reintroduced one of them. MDX comment banners are out for the same reason:
+  an editor extension in the wild rewrites `{/* … */}` into `{/_ … _/}`.
+  Heading levels cannot fail either way.
+
+**Section heading text is not enforced, on purpose.** Forcing it to equal the
+story name was measured and rejected: 342 of 442 headings already matched, and
+forcing the other 100 produced `HSL format` → `Hsl format`, `On a list` →
+`On A list`, and `Optimistic sending` → `Failed message retry`. The _order_
+matches the sidebar; the wording stays human.
 
 ### MDX rules
 
@@ -668,7 +767,7 @@ story file follows the same shape, for the same reason the `.mdx` template is
 fixed - a reader moving between two components should not have to relearn the
 layout.
 
-1. **`Default` is the control surface.** It is args-driven - either no
+1. **`Playground` is the control surface.** It is args-driven - either no
    `render` at all, or `render: (args) => <X {...args} />`. It carries the
    full `argTypes` map, and it is the **only** story the `.mdx` attaches
    `<Controls>` to.
@@ -739,7 +838,7 @@ layout.
 
    Make them **real defaults, not placeholders**. `VirtualList` had
    `data: [], renderRow: () => null` with a comment saying every story
-   overrides them - which meant `Default` could not be args-driven at all.
+   overrides them - which meant `Playground` could not be args-driven at all.
 
 9. **No `alert()` or `console.log` in a story.** Use `action('Label')` from
    `storybook/actions` (core, no addon to install - `Select` was already
@@ -1398,7 +1497,7 @@ Four things that were not obvious, each of which cost a debugging cycle:
 
 Test it with `expectFocusTrap` from `src/story-a11y.docs.ts`, on a story
 tagged `['!dev', '!autodocs']` - hidden from the sidebar, still run by
-`npm run test:stories`. Don't attach it to `Default`: the `.mdx` documents
+`npm run test:stories`. Don't attach it to `Playground`: the `.mdx` documents
 that overlay stories start closed, and a `play` that opens one contradicts
 the page it is documented on.
 
@@ -1687,7 +1786,7 @@ needs the exception.
 A Docs page renders every story in the file into **one document**. For stories
 that only draw markup that is fine; for stories that write to
 `document.documentElement` it is not. Six `ThemeProvider` stories on the
-`ThemeEditor` docs page produced a page where the `Default` story showed the
+`ThemeEditor` docs page produced a page where the `Playground` story showed the
 `Controlled` story's teal primary and the `ContrastDiagnostics` story's
 periwinkle success - last writer wins, globally.
 

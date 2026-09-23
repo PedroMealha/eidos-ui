@@ -39,7 +39,7 @@ type Story = StoryObj<typeof meta>;
 /**
  * The default form - a `copyright` string, centered in the footer.
  */
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     copyright: `© ${new Date().getFullYear()} Eidos UI`,
   },

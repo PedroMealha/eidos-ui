@@ -60,13 +60,19 @@ function App() {
 }
 ```
 
-## Default
+## Playground
 
 Click the built-in trigger to open the palette. Use the Controls panel to customise `placeholder`, `emptyText`, `maxHeight`, and `triggerLabel`.
 
-<Canvas of={CommandPaletteStories.Default} />
+<Canvas of={CommandPaletteStories.Playground} />
 
-<Controls of={CommandPaletteStories.Default} />
+<Controls of={CommandPaletteStories.Playground} />
+
+## Empty state
+
+When no items match the current query - or `items` is an empty array - the `emptyText` message is displayed. Customise it to fit your context.
+
+<Canvas of={CommandPaletteStories.EmptyState} />
 
 ## Uncontrolled
 
@@ -80,6 +86,18 @@ Omit `open`/`onClose` entirely and the palette manages its own state, including 
 
 <Canvas of={CommandPaletteStories.WithCustomTrigger} />
 
+## With disabled items
+
+Items with `disabled: true` are rendered at reduced opacity and are skipped during keyboard navigation with `↑` / `↓`.
+
+<Canvas of={CommandPaletteStories.WithDisabledItems} />
+
+## With footer
+
+The `footer` prop accepts any `ReactNode` and is rendered on the right side of the footer bar, next to the built-in keyboard-hint strip.
+
+<Canvas of={CommandPaletteStories.WithFooter} />
+
 ## With groups
 
 Items that share a `group` string are visually clustered under a labelled section heading. Groups appear in the order their first member does in the `items` array.
@@ -91,21 +109,3 @@ Items that share a `group` string are visually clustered under a labelled sectio
 Keyboard shortcuts are supplied as a `shortcut: string[]` array and rendered as `<kbd>` badges alongside each item.
 
 <Canvas of={CommandPaletteStories.WithShortcuts} />
-
-## Empty state
-
-When no items match the current query - or `items` is an empty array - the `emptyText` message is displayed. Customise it to fit your context.
-
-<Canvas of={CommandPaletteStories.EmptyState} />
-
-## With footer
-
-The `footer` prop accepts any `ReactNode` and is rendered on the right side of the footer bar, next to the built-in keyboard-hint strip.
-
-<Canvas of={CommandPaletteStories.WithFooter} />
-
-## With disabled items
-
-Items with `disabled: true` are rendered at reduced opacity and are skipped during keyboard navigation with `↑` / `↓`.
-
-<Canvas of={CommandPaletteStories.WithDisabledItems} />

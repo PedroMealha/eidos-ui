@@ -23,11 +23,15 @@ import { IdentityHeader } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Everything else is Header
 
-<Canvas of={IdentityHeaderStories.Default} />
+`IdentityHeaderProps` extends `HeaderProps`, so `meta`, `actions`, `collapseActionsBelow` and the rest behave exactly as documented on `Header` - including the responsive reflow, which is keyed off the header's own width rather than the viewport. See [Header](?path=/docs/layout-components-header--docs) for those.
 
-<Controls of={IdentityHeaderStories.Default} />
+## Playground
+
+<Canvas of={IdentityHeaderStories.Playground} />
+
+<Controls of={IdentityHeaderStories.Playground} />
 
 ## Account header
 
@@ -35,11 +39,11 @@ An account page leads with the organisation. A `square` avatar reads better for 
 
 <Canvas of={IdentityHeaderStories.AccountHeader} />
 
-## Profile header
+## At default prominence
 
-A profile page leads with the person. `title` takes inline nodes, so an account-state indicator sits beside the name rather than being pushed into the subtitle.
+`variant="default"` keeps the avatar and metadata layout but drops back to the standard title size - for an identity header that shouldn't dominate the page it sits on.
 
-<Canvas of={IdentityHeaderStories.ProfileHeader} />
+<Canvas of={IdentityHeaderStories.AtDefaultProminence} />
 
 ## Custom media
 
@@ -47,12 +51,8 @@ A profile page leads with the person. `title` takes inline nodes, so an account-
 
 <Canvas of={IdentityHeaderStories.CustomMedia} />
 
-## At default prominence
+## Profile header
 
-`variant="default"` keeps the avatar and metadata layout but drops back to the standard title size - for an identity header that shouldn't dominate the page it sits on.
+A profile page leads with the person. `title` takes inline nodes, so an account-state indicator sits beside the name rather than being pushed into the subtitle.
 
-<Canvas of={IdentityHeaderStories.AtDefaultProminence} />
-
-## Everything else is Header
-
-`IdentityHeaderProps` extends `HeaderProps`, so `meta`, `actions`, `collapseActionsBelow` and the rest behave exactly as documented on `Header` - including the responsive reflow, which is keyed off the header's own width rather than the viewport. See [Header](?path=/docs/layout-components-header--docs) for those.
+<Canvas of={IdentityHeaderStories.ProfileHeader} />

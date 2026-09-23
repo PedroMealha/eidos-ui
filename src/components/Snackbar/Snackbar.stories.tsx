@@ -181,9 +181,9 @@ const meta: Meta<SnackbarPlaygroundArgs> = {
 export default meta;
 type Story = StoryObj<SnackbarPlaygroundArgs>;
 
-// ─── Default - the args-driven playground ─────────────────────────────────────
+// ─── Playground - the args-driven surface ────────────────────────────────────
 
-const Playground = ({ message, variant, duration, withAction }: SnackbarPlaygroundArgs) => {
+const PlaygroundDemo = ({ message, variant, duration, withAction }: SnackbarPlaygroundArgs) => {
   const { showSnackbar } = useSnackbar();
   return (
     <div style={{ padding: 'var(--spacing-lg)' }}>
@@ -203,8 +203,8 @@ const Playground = ({ message, variant, duration, withAction }: SnackbarPlaygrou
   );
 };
 
-export const Default: Story = {
-  render: (args) => <Playground {...args} />,
+export const Playground: Story = {
+  render: (args) => <PlaygroundDemo {...args} />,
 };
 
 // ─── All variants ─────────────────────────────────────────────────────────────

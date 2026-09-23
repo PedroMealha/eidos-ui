@@ -25,6 +25,12 @@ import { MessageComposer } from 'eidos-ui';
 <Canvas of={MessageComposerStories.Playground} />
 <Controls of={MessageComposerStories.Playground} />
 
+## Disabled
+
+<Canvas of={MessageComposerStories.Disabled} />
+
+To express _"this user may not post at all"_, don't render a disabled composer - remove it. `Chat` and `CommentThread` do this via `readOnly`. A permanently disabled field is worse than no field, because it invites an attempt that can never succeed.
+
 ## Submitting
 
 `onSubmit` receives a `MessageDraft`:
@@ -43,6 +49,14 @@ Errors are not surfaced by the composer; it deliberately swallows the rejection 
 
 <Canvas of={MessageComposerStories.FailingSubmit} />
 
+## Replies
+
+`parentId` is attached to the emitted draft, and `replyingTo` shows a dismissible hint naming the author being answered. With `onCancel` supplied the hint carries a dismiss control.
+
+<Canvas of={MessageComposerStories.ReplyingTo} />
+
+`autoFocus` is available for this case specifically: the field appears in direct response to someone pressing Reply, so moving focus there is expected. It is off by default.
+
 ## Keyboard submission
 
 `sendOnEnter` is off by default, because a comment is usually multi-line and submitted deliberately. Turn it on for a chat-style field: Enter submits, Shift+Enter inserts a newline, and IME composition is left alone so committing a character never sends the message.
@@ -54,17 +68,3 @@ Errors are not surfaced by the composer; it deliberately swallows the rejection 
 `allowAttachments` adds the attach control. Selected files arrive on the draft as `File` objects - uploading them is your app's job, the composer never makes a request. Pair it with `requireBody={false}` to allow an attachment-only message.
 
 <Canvas of={MessageComposerStories.WithAttachments} />
-
-## Replies
-
-`parentId` is attached to the emitted draft, and `replyingTo` shows a dismissible hint naming the author being answered. With `onCancel` supplied the hint carries a dismiss control.
-
-<Canvas of={MessageComposerStories.ReplyingTo} />
-
-`autoFocus` is available for this case specifically: the field appears in direct response to someone pressing Reply, so moving focus there is expected. It is off by default.
-
-## Disabled
-
-<Canvas of={MessageComposerStories.Disabled} />
-
-To express _"this user may not post at all"_, don't render a disabled composer - remove it. `Chat` and `CommentThread` do this via `readOnly`. A permanently disabled field is worse than no field, because it invites an attempt that can never succeed.

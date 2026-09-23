@@ -21,12 +21,6 @@ const options = [
 <Select options={options} placeholder="Select a fruit..." />;
 ```
 
-## Default
-
-<Canvas of={SelectStories.Default} />
-
-<Controls of={SelectStories.Default} />
-
 ## Labelling
 
 `label` renders a real `<label>` bound to the field, the same as [Input](?path=/docs/forms-input--docs), `Checkbox`, `Radio` and `Textarea`:
@@ -58,41 +52,11 @@ Focus stays on the field the whole time: the active option is advertised with `a
 
 The one deliberate difference from `Combobox` is that focusing a `Select` does **not** open it. `Combobox` opens on focus because its list filters as you type, so seeing it immediately is useful. A `Select` opening on focus would pop a listbox over whatever follows it every time a keyboard user tabbed through a form.
 
-## With icons
+## Playground
 
-Each option accepts an `icon` property (a Lucide or compatible icon component) rendered before the label in both the trigger and the dropdown.
+<Canvas of={SelectStories.Playground} />
 
-<Canvas of={SelectStories.WithComponentIcons} />
-
-## Multiple select
-
-Set `multiple` to allow picking more than one option. The trigger shows selected labels comma-joined; once more than 2 options are selected it switches to a compact `"N selected"` label so the field stays readable. This is a plain-text label, not removable chips - to deselect, reopen the dropdown and toggle an option off (or use the clear button to reset).
-
-<Canvas of={SelectStories.MultipleSelect} />
-
-<Canvas of={SelectStories.MultipleSelectCompactLabel} />
-
-## With disabled options
-
-Individual options can be disabled by setting `disabled: true` on the option object - they remain visible but are not interactive.
-
-<Canvas of={SelectStories.WithDisabledOptions} />
-
-## Disabled
-
-<Canvas of={SelectStories.Disabled} />
-
-## Not clearable
-
-Set `clearable={false}` to hide the × clear button once a value is selected.
-
-<Canvas of={SelectStories.NotClearable} />
-
-## Full width
-
-Set `fullWidth` to make the trigger stretch to fill its container.
-
-<Canvas of={SelectStories.FullWidth} />
+<Controls of={SelectStories.Playground} />
 
 ## Controlled usage
 
@@ -100,12 +64,52 @@ Manage `value` and `onChange` yourself for full control over the selection state
 
 <Canvas of={SelectStories.ControlledExample} />
 
-## Multiple controlled
-
-<Canvas of={SelectStories.MultipleControlled} />
-
 ## Custom input styling
 
 `inputProps` is forwarded to the underlying [Input](?path=/docs/forms-input--docs), so the trigger can take any variant or colour the field supports.
 
 <Canvas of={SelectStories.CustomInputStyling} />
+
+## Disabled
+
+<Canvas of={SelectStories.Disabled} />
+
+## Full width
+
+Set `fullWidth` to make the trigger stretch to fill its container.
+
+<Canvas of={SelectStories.FullWidth} />
+
+## Multiple controlled
+
+<Canvas of={SelectStories.MultipleControlled} />
+
+## Multiple select
+
+Set `multiple` to allow picking more than one option. The trigger shows selected labels comma-joined; once more than 2 options are selected it switches to a compact `"N selected"` label so the field stays readable. This is a plain-text label, not removable chips - to deselect, reopen the dropdown and toggle an option off (or use the clear button to reset).
+
+<Canvas of={SelectStories.MultipleSelect} />
+
+## Multiple select compact label
+
+Past two selected options the trigger switches to `"N selected"`, so a long list of labels cannot push the field out of shape.
+
+<Canvas of={SelectStories.MultipleSelectCompactLabel} />
+
+## Not clearable
+
+Set `clearable={false}` to hide the × clear button once a value is selected.
+
+<Canvas of={SelectStories.NotClearable} />
+
+## With icons
+
+Each option accepts an `icon` property (a Lucide or compatible icon component) rendered before the label in both the trigger and the dropdown.
+
+<Canvas of={SelectStories.WithComponentIcons} />
+
+## With disabled options
+
+Individual options can be disabled by setting `disabled: true` on the option object - they remain visible but are not interactive.
+
+<Canvas of={SelectStories.WithDisabledOptions} />

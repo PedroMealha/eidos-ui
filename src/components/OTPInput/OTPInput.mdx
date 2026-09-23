@@ -20,33 +20,11 @@ import { OTPInput } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={OTPInputStories.Default} />
+<Canvas of={OTPInputStories.Playground} />
 
-<Controls of={OTPInputStories.Default} />
-
-## Short code
-
-A 4-slot variant for PIN-style or shorter confirmation codes.
-
-<Canvas of={OTPInputStories.ShortCode} />
-
-## With label
-
-<Canvas of={OTPInputStories.WithLabel} />
-
-## With error
-
-Pass a non-empty string to `error` to highlight all slots in red and display the message below the input.
-
-<Canvas of={OTPInputStories.WithError} />
-
-## Masked
-
-Setting `mask={true}` renders filled slots as password dots - suitable for PIN entry or any sensitive code that should not be visible on screen.
-
-<Canvas of={OTPInputStories.Masked} />
+<Controls of={OTPInputStories.Playground} />
 
 ## Alphanumeric
 
@@ -54,22 +32,44 @@ Setting `type="alphanumeric"` lifts the numeric-only restriction and accepts any
 
 <Canvas of={OTPInputStories.Alphanumeric} />
 
-## Sizes
-
-<Canvas of={OTPInputStories.Sizes} />
-
 ## Auto focus
 
 Setting `autoFocus={true}` focuses the first empty slot on mount - useful in verification flows where the input is the primary action.
 
 <Canvas of={OTPInputStories.AutoFocus} />
 
-## Disabled
-
-<Canvas of={OTPInputStories.Disabled} />
-
 ## Controlled
 
 Uses `value`, `onChange`, and `onComplete` to drive the input externally. `onComplete` fires only once all slots are filled.
 
 <Canvas of={OTPInputStories.Controlled} />
+
+## Disabled
+
+<Canvas of={OTPInputStories.Disabled} />
+
+## Masked
+
+Setting `mask={true}` renders filled slots as password dots - suitable for PIN entry or any sensitive code that should not be visible on screen.
+
+<Canvas of={OTPInputStories.Masked} />
+
+## Short code
+
+A 4-slot variant for PIN-style or shorter confirmation codes.
+
+<Canvas of={OTPInputStories.ShortCode} />
+
+## Sizes
+
+<Canvas of={OTPInputStories.Sizes} />
+
+## With error
+
+Pass a non-empty string to `error` to highlight all slots in red and display the message below the input.
+
+<Canvas of={OTPInputStories.WithError} />
+
+## With label
+
+<Canvas of={OTPInputStories.WithLabel} />

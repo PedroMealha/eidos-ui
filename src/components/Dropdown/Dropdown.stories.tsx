@@ -143,7 +143,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     trigger: <Button variant="outlined">Open Dropdown</Button>,
     content: (

@@ -17,39 +17,17 @@ import { Button } from 'eidos-ui';
 </Button>;
 ```
 
-## Default
+## Playground
 
 The default text button. Use the controls below to explore the available props.
 
-<Canvas of={ButtonStories.Default} />
+<Canvas of={ButtonStories.Playground} />
 
-<Controls of={ButtonStories.Default} />
-
-## Icon button
-
-For actions represented by a single icon. Pass `icon` instead of `children` - the two are mutually exclusive in the type, so a button is either a text button or an icon button, never both.
-
-<Canvas of={ButtonStories.IconOnly} />
-
-## Variants
-
-`filled` is the solid call-to-action, `outlined` the secondary choice, and `text` the lowest-prominence option. `text` paints no resting background - a tint appears on hover only.
-
-<Canvas of={ButtonStories.Variants} />
+<Controls of={ButtonStories.Playground} />
 
 ## Colors
 
 <Canvas of={ButtonStories.Colors} />
-
-## Sizes
-
-<Canvas of={ButtonStories.Sizes} />
-
-## With icons
-
-`preIcon` and `posIcon` accept either a Lucide component (`Download`) or its string name (`"download"`).
-
-<Canvas of={ButtonStories.WithIcons} />
 
 ## Icon buttons
 
@@ -57,8 +35,30 @@ For actions represented by a single icon. Pass `icon` instead of `children` - th
 
 <Canvas of={ButtonStories.IconButtons} />
 
+## Icon button
+
+For actions represented by a single icon. Pass `icon` instead of `children` - the two are mutually exclusive in the type, so a button is either a text button or an icon button, never both.
+
+<Canvas of={ButtonStories.IconOnly} />
+
+## Sizes
+
+<Canvas of={ButtonStories.Sizes} />
+
 ## States
 
 `loading` swaps the label for a spinner; pass `loadingText` to keep a label alongside it. The spinner keeps animating under `prefers-reduced-motion`, since it communicates state rather than decoration.
 
 <Canvas of={ButtonStories.States} />
+
+## Variants
+
+`filled` is the solid call-to-action, `outlined` the secondary choice, and `text` the lowest-prominence option. `text` paints no resting background - a tint appears on hover only.
+
+<Canvas of={ButtonStories.Variants} />
+
+## With icons
+
+`preIcon` and `posIcon` accept either a Lucide component (`Download`) or its string name (`"download"`).
+
+<Canvas of={ButtonStories.WithIcons} />

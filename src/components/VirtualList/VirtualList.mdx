@@ -23,25 +23,13 @@ import { VirtualList } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Playground
 
 All rows share the same pixel height - the simplest and most performant configuration.
 
-<Canvas of={VirtualListStories.Default} />
+<Canvas of={VirtualListStories.Playground} />
 
-<Controls of={VirtualListStories.Default} />
-
-## Variable row height
-
-Pass a function to `rowHeight` to return a different height per row index.
-
-<Canvas of={VirtualListStories.VariableHeight} />
-
-## Loading state
-
-When `loading` is true, real rows are replaced by animated skeleton placeholders.
-
-<Canvas of={VirtualListStories.WithLoading} />
+<Controls of={VirtualListStories.Playground} />
 
 ## Empty state
 
@@ -54,3 +42,15 @@ When `data` is empty (and not loading), the `emptyContent` slot is rendered cent
 Use `onEndReached` and `endReachedThreshold` to append data as the user approaches the bottom of the list.
 
 <Canvas of={VirtualListStories.InfiniteScroll} />
+
+## Variable row height
+
+Pass a function to `rowHeight` to return a different height per row index.
+
+<Canvas of={VirtualListStories.VariableHeight} />
+
+## Loading state
+
+When `loading` is true, real rows are replaced by animated skeleton placeholders.
+
+<Canvas of={VirtualListStories.WithLoading} />

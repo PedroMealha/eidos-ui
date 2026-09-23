@@ -1,10 +1,12 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState, type ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
+import { expect, waitFor } from 'storybook/test';
 import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 import { Avatar } from '../Avatar';
+import { Button } from '../Button';
 import { Divider } from '../Divider';
 import { Pill } from '../Pill';
 
@@ -14,6 +16,16 @@ const PAGES = [
   { id: 'team', label: 'Team', icon: Users },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
+
+/**
+ * Scrolls and resolves once the browser has dispatched the `scroll` event, so
+ * a test never races the listener that records the offset.
+ */
+const scrollTo = (element: HTMLElement, top: number): Promise<number> =>
+  new Promise((resolve) => {
+    element.addEventListener('scroll', () => resolve(element.scrollTop), { once: true });
+    element.scrollTop = top;
+  });
 
 /** Enough body content to make the content region actually scroll. */
 const longContent = (label = 'Section') => (
@@ -196,7 +208,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};
 
 /**
  * `main` is the layout's only scroll region: the header, body and footer all
@@ -217,33 +229,41 @@ export const Scrolling: Story = {
  * imperatively. Scrolling back to the top on navigation is the usual reason
  * to want it.
  *
- * Scroll the canvas below, then press **Back to top**.
+ * Scroll the canvas below, then press **Back to top** in the toolbar.
+ *
+ * The control belongs in the toolbar rather than the header: the header is
+ * inside the scroll region and travels with the content, so a button there is
+ * gone by the time you would want it.
  */
 export const ControllingTheScrollRegion: Story = {
-  render: (args) => {
-    const contentRef = useRef<HTMLElement>(null);
+  render: (args) => <BackToTopDemo {...args} />,
+};
 
-    return (
-      <PageLayout
-        {...args}
-        contentRef={contentRef}
-        header={{
-          title: 'Page Title',
-          subtitle: 'Page Subtitle',
-          actions: [
-            {
-              children: 'Back to top',
-              preIcon: 'arrow-up',
-              variant: 'outlined',
-              onClick: () => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' }),
-            },
-          ],
-        }}
-      >
-        {longContent()}
-      </PageLayout>
-    );
-  },
+const BackToTopDemo: React.FC<Partial<ComponentProps<typeof PageLayout>>> = (args) => {
+  const contentRef = useRef<HTMLElement>(null);
+
+  return (
+    <PageLayout
+      {...args}
+      contentRef={contentRef}
+      toolbar={{
+        ...args.toolbar,
+        content: (
+          <Button
+            variant="outlined"
+            size="sm"
+            preIcon="arrow-up"
+            onClick={() => contentRef.current?.scrollTo({ top: 0 })}
+          >
+            Back to top
+          </Button>
+        ),
+      }}
+      header={{ title: 'Page Title', subtitle: 'Page Subtitle' }}
+    >
+      {longContent()}
+    </PageLayout>
+  );
 };
 
 /**
@@ -257,27 +277,93 @@ export const ControllingTheScrollRegion: Story = {
  * it is the same element throughout - only its contents change.
  */
 export const ScrollRestoration: Story = {
-  render: (args) => {
-    const [page, setPage] = useState(PAGES[0]);
+  render: (args) => <ScrollRestorationDemo {...args} />,
+};
 
-    return (
-      <PageLayout
-        {...args}
-        scrollRestorationKey={page.id}
-        navigation={{
-          brand: { name: 'Eidos' },
-          items: PAGES.map((item) => ({
-            id: item.id,
-            label: item.label,
-            icon: item.icon,
-            active: item.id === page.id,
-            onClick: () => setPage(item),
-          })),
-        }}
-        header={{ title: page.label, subtitle: `Simulated route: /${page.id}` }}
-      >
-        {longContent(`${page.label} section`)}
-      </PageLayout>
+const ScrollRestorationDemo: React.FC<Partial<ComponentProps<typeof PageLayout>>> = (args) => {
+  const [page, setPage] = useState(PAGES[0]);
+
+  return (
+    <PageLayout
+      {...args}
+      scrollRestorationKey={page.id}
+      navigation={{
+        brand: { name: 'Eidos' },
+        items: PAGES.map((item) => ({
+          id: item.id,
+          label: item.label,
+          icon: item.icon,
+          active: item.id === page.id,
+          onClick: () => setPage(item),
+        })),
+      }}
+      header={{ title: page.label, subtitle: `Simulated route: /${page.id}` }}
+    >
+      {longContent(`${page.label} section`)}
+    </PageLayout>
+  );
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * The offset has to be recorded as the user scrolls, not read when the key
+ * changes: by then the next page's content is already in the DOM and the
+ * browser has clamped `scrollTop` to its height, so the outgoing offset is
+ * gone. Drop the scroll listener and this still looks correct on a fresh
+ * navigation - only returning to a page shows the loss.
+ */
+export const RestoresScrollPerKey: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: (args) => <ScrollRestorationDemo {...args} />,
+  play: async ({ canvas, userEvent, step }) => {
+    const content = canvas.getByRole('main');
+    const go = (name: string) => userEvent.click(canvas.getByRole('button', { name }));
+
+    const ticketsOffset = await scrollTo(content, 200);
+    expect(ticketsOffset, 'the story content is not tall enough to scroll').toBeGreaterThan(0);
+
+    await step('a page not seen before starts at the top', async () => {
+      await go('Team');
+      await waitFor(() => expect(content.scrollTop, "kept the previous page's offset").toBe(0));
+    });
+
+    const teamOffset = await scrollTo(content, 80);
+
+    await step('returning to a page restores its own offset', async () => {
+      await go('Tickets');
+      await waitFor(() => expect(content.scrollTop).toBe(ticketsOffset));
+
+      await go('Team');
+      await waitFor(() => expect(content.scrollTop).toBe(teamOffset));
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `contentRef` has to reach the `main` region. Forwarded to the root element
+ * instead - where a ref passed through `HTMLAttributes` lands - `scrollTo`
+ * would be a silent no-op, since that element never scrolls.
+ *
+ * The trigger has to sit outside the scroll region for this to prove
+ * anything. With it in the header, clicking scrolls it into view and the
+ * assertion passes whether or not the ref arrived - verified by breaking the
+ * forwarding deliberately and watching the test still pass.
+ */
+export const ContentRefTargetsTheScrollport: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: (args) => <BackToTopDemo {...args} />,
+  play: async ({ canvas, userEvent }) => {
+    const content = canvas.getByRole('main');
+
+    const offset = await scrollTo(content, 200);
+    expect(offset, 'the story content is not tall enough to scroll').toBeGreaterThan(0);
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Back to top' }));
+    await waitFor(() =>
+      expect(content.scrollTop, 'the ref did not reach the scroll container').toBe(0),
     );
   },
 };

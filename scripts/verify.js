@@ -93,6 +93,10 @@ step('prettier', 'npm run prettier:check');
 // README/GETTING_STARTED duplicate the component list and the token names, and
 // nothing else in the toolchain reads prose. Cheap, so it runs before the build.
 step('docs', 'node scripts/check-docs.js');
+// Every component docs page has one shape: prose, then `Playground`, then the
+// rest alphabetically - matching the sidebar. Ordering that carries no meaning
+// is the point: it needs no judgement and therefore cannot rot.
+step('docs:stories', 'node scripts/check-story-docs.js');
 // Unit tests plus every story rendered in a real browser. Runs before the
 // build: a broken component should fail here, not 90 seconds later in tsup.
 step('test', 'npm test');

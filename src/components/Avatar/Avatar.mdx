@@ -28,41 +28,11 @@ import { Avatar, AvatarGroup } from 'eidos-ui';
 </AvatarGroup>
 ```
 
-## Default
+## Playground
 
-<Canvas of={AvatarStories.Default} />
+<Canvas of={AvatarStories.Playground} />
 
-<Controls of={AvatarStories.Default} />
-
-## With initials
-
-When `name` is provided and `src` is absent, the component renders initials with an auto-derived background color.
-
-<Canvas of={AvatarStories.WithInitials} />
-
-## With custom color
-
-Override the auto-derived background color using the `color` prop.
-
-<Canvas of={AvatarStories.WithCustomColor} />
-
-## Fallback
-
-When neither `src` nor `name` is provided, a generic person icon is rendered.
-
-<Canvas of={AvatarStories.Fallback} />
-
-## Shapes
-
-<Canvas of={AvatarStories.Shapes} />
-
-## Sizes
-
-<Canvas of={AvatarStories.Sizes} />
-
-## Colors
-
-<Canvas of={AvatarStories.Colors} />
+<Controls of={AvatarStories.Playground} />
 
 ## Clickable
 
@@ -70,11 +40,15 @@ Passing `onClick` gives the avatar button semantics and a visible focus ring for
 
 <Canvas of={AvatarStories.Clickable} />
 
-## Image error
+## Colors
 
-If `src` fails to load, the component falls back to initials (when `name` is set) or the generic icon.
+<Canvas of={AvatarStories.Colors} />
 
-<Canvas of={AvatarStories.WithError} />
+## Fallback
+
+When neither `src` nor `name` is provided, a generic person icon is rendered.
+
+<Canvas of={AvatarStories.Fallback} />
 
 ## Group
 
@@ -85,3 +59,29 @@ If `src` fails to load, the component falls back to initials (when `name` is set
 ## Group sizes
 
 <Canvas of={AvatarStories.GroupSizes} />
+
+## Shapes
+
+<Canvas of={AvatarStories.Shapes} />
+
+## Sizes
+
+<Canvas of={AvatarStories.Sizes} />
+
+## With custom color
+
+Override the auto-derived background color using the `color` prop.
+
+<Canvas of={AvatarStories.WithCustomColor} />
+
+## Image error
+
+If `src` fails to load, the component falls back to initials (when `name` is set) or the generic icon.
+
+<Canvas of={AvatarStories.WithError} />
+
+## With initials
+
+When `name` is provided and `src` is absent, the component renders initials with an auto-derived background color.
+
+<Canvas of={AvatarStories.WithInitials} />

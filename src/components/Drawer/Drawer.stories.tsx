@@ -12,7 +12,7 @@ const meta = {
   component: Drawer,
   parameters: { layout: 'padded' },
   // Required props live at meta level so the render-only stories below
-  // satisfy the type, and so Default's controls start from real values.
+  // satisfy the type, and so Playground's controls start from real values.
   args: {
     children: null,
     isOpen: false,
@@ -112,7 +112,7 @@ const drawerBody = (
 // DEFAULT - interactive playground; all controls apply here
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
@@ -314,7 +314,7 @@ export const BottomSheet: Story = {
 
 /**
  * Hidden from the sidebar and docs, but run by `npm run test:stories`. See
- * the equivalent story on `Modal` for why this is not attached to `Default`.
+ * the equivalent story on `Modal` for why this is not attached to `Playground`.
  *
  * `Drawer` failed this worse than `Modal` did: focus escaped on the second
  * Tab, and closing it dropped focus onto `<body>`, returning a keyboard user

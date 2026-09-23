@@ -150,7 +150,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT – main interactive story with controls
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     placeholder: 'Start typing…',
   },

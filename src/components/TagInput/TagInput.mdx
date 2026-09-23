@@ -19,19 +19,27 @@ import { TagInput } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={TagInputStories.Default} />
+<Canvas of={TagInputStories.Playground} />
 
-<Controls of={TagInputStories.Default} />
+<Controls of={TagInputStories.Playground} />
 
-## With pre-filled values
+## Disabled
 
-<Canvas of={TagInputStories.WithValues} />
+<Canvas of={TagInputStories.Disabled} />
+
+## With error
+
+<Canvas of={TagInputStories.WithError} />
 
 ## With label
 
 <Canvas of={TagInputStories.WithLabel} />
+
+## With max tags
+
+<Canvas of={TagInputStories.WithMaxTags} />
 
 ## With suggestions
 
@@ -39,20 +47,12 @@ Pass a `suggestions` array to show an autocomplete dropdown as the user types - 
 
 <Canvas of={TagInputStories.WithSuggestions} />
 
-## With error
-
-<Canvas of={TagInputStories.WithError} />
-
 ## With validation
 
 The `validate` prop receives the raw string and must return `true` to accept the tag or a string message to reject it.
 
 <Canvas of={TagInputStories.WithValidation} />
 
-## With max tags
+## With pre-filled values
 
-<Canvas of={TagInputStories.WithMaxTags} />
-
-## Disabled
-
-<Canvas of={TagInputStories.Disabled} />
+<Canvas of={TagInputStories.WithValues} />

@@ -18,11 +18,15 @@ import { Mail } from 'lucide-react';
 <Input label="Email" type="email" placeholder="Enter your email" preIcon={Mail} required />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={InputStories.Default} />
+<Canvas of={InputStories.Playground} />
 
-<Controls of={InputStories.Default} />
+<Controls of={InputStories.Playground} />
+
+## Colors
+
+<Canvas of={InputStories.Colors} />
 
 ## Common fields
 
@@ -30,15 +34,19 @@ import { Mail } from 'lucide-react';
 
 <Canvas of={InputStories.CommonFields} />
 
-## Variants
+## Custom width
 
-`bare` also exists, for embedding a field inside another control (a table cell editor, say) where the surrounding chrome already supplies the border.
+<Canvas of={InputStories.CustomWidth} />
 
-<Canvas of={InputStories.Variants} />
+## Full width
 
-## Colors
+<Canvas of={InputStories.FullWidth} />
 
-<Canvas of={InputStories.Colors} />
+## Select style
+
+`isSelect` renders the chevron affordance without any dropdown behaviour - for when you are wiring your own. Prefer the [Select](?path=/docs/forms-select--docs) component unless you need that.
+
+<Canvas of={InputStories.SelectStyle} />
 
 ## Sizes
 
@@ -50,11 +58,11 @@ The focus ring is painted on the `:focus-within` wrapper rather than the `<input
 
 <Canvas of={InputStories.States} />
 
-## With icons
+## Variants
 
-Set `posIconButton` to make the trailing icon an actual button, and handle `onPosIconClick`.
+`bare` also exists, for embedding a field inside another control (a table cell editor, say) where the surrounding chrome already supplies the border.
 
-<Canvas of={InputStories.WithIcons} />
+<Canvas of={InputStories.Variants} />
 
 ## With a disclaimer tooltip
 
@@ -62,16 +70,8 @@ Set `posIconButton` to make the trailing icon an actual button, and handle `onPo
 
 <Canvas of={InputStories.WithDisclaimer} />
 
-## Select style
+## With icons
 
-`isSelect` renders the chevron affordance without any dropdown behaviour - for when you are wiring your own. Prefer the [Select](?path=/docs/forms-select--docs) component unless you need that.
+Set `posIconButton` to make the trailing icon an actual button, and handle `onPosIconClick`.
 
-<Canvas of={InputStories.SelectStyle} />
-
-## Custom width
-
-<Canvas of={InputStories.CustomWidth} />
-
-## Full width
-
-<Canvas of={InputStories.FullWidth} />
+<Canvas of={InputStories.WithIcons} />

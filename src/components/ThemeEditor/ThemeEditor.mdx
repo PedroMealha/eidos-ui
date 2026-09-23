@@ -20,21 +20,21 @@ import { ThemeProvider, ThemeEditor } from 'eidos-ui';
 </ThemeProvider>;
 ```
 
-## Default
+## Copy as CSS
 
-<Canvas of={ThemeEditorStories.Default} />
+"Copy as CSS" writes the resolved theme to the clipboard as a `:root { … }` block. Paste it into your own stylesheet to bake the theme in at build time - that removes the provider, the JavaScript, and the brief flash of the preset that any runtime theme has when its value arrives after first paint.
 
-<Controls of={ThemeEditorStories.Default} />
+## Playground
+
+<Canvas of={ThemeEditorStories.Playground} />
+
+<Controls of={ThemeEditorStories.Playground} />
 
 ## Restricting what is editable
 
 Pass `colors` to show a subset, in the order given, and `hideTypography` to drop the typography section - useful when only the brand colour should be user-controlled.
 
 <Canvas of={ThemeEditorStories.ColoursOnly} />
-
-## Starting from a theme
-
-<Canvas of={ThemeEditorStories.WithStartingTheme} />
 
 ## Contrast diagnostics
 
@@ -50,6 +50,14 @@ These are **diagnostics only**: a failing colour is still applied exactly as pic
 The badges themselves are styled from the gray ramp and signal severity with an icon rather than a hue. The theme being edited also styles this editor, so a themed badge would become unreadable at exactly the moment it is reporting that a colour is unreadable.
 
 Note that the preset `hyperlink` reports AA-large only - `#007b84` as link text on white is 5.04:1 for normal text but the token is also used at small sizes. The preset `primary` reports AA.
+
+## Controlled mode
+
+The editor writes only the `base` of each colour. A `contrast` pinned in the theme is preserved rather than overwritten, so a forced foreground survives edits made through the UI.
+
+<Canvas of={ThemeEditorStories.Controlled} />
+
+See `ThemeProvider` for the recommended server-authoritative persistence pattern.
 
 ## Fonts
 
@@ -102,14 +110,6 @@ The full loop is: user uploads → `onFontUpload` persists the file → your fon
 
 The font row uses `Select`, not `Combobox`. `Combobox` filters its options against the text in the field, and that field holds a full stack (`'Plus Jakarta Sans', -apple-system, …`) which matches no option label - so the list read "No results found" until the text was manually cleared. Picking a font is a choice from a known set, not a search.
 
-## Copy as CSS
+## Starting from a theme
 
-"Copy as CSS" writes the resolved theme to the clipboard as a `:root { … }` block. Paste it into your own stylesheet to bake the theme in at build time - that removes the provider, the JavaScript, and the brief flash of the preset that any runtime theme has when its value arrives after first paint.
-
-## Controlled mode
-
-The editor writes only the `base` of each colour. A `contrast` pinned in the theme is preserved rather than overwritten, so a forced foreground survives edits made through the UI.
-
-<Canvas of={ThemeEditorStories.Controlled} />
-
-See `ThemeProvider` for the recommended server-authoritative persistence pattern.
+<Canvas of={ThemeEditorStories.WithStartingTheme} />

@@ -67,7 +67,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     children: 'New',
     color: 'primary',

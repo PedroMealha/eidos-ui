@@ -67,7 +67,7 @@ const meta = {
     className: { table: { disable: true } },
   },
   // Required props live at meta level so the render-only stories below
-  // satisfy the type, and so Default's controls start from real values.
+  // satisfy the type, and so Playground's controls start from real values.
   args: { page: 1, totalPages: 10, onChange: () => {} },
 } satisfies Meta<typeof Pagination>;
 
@@ -78,7 +78,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT - controlled with useState
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => {
     const [page, setPage] = React.useState(1);
     return <Pagination {...args} page={page} onChange={setPage} />;

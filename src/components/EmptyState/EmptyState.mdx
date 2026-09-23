@@ -23,17 +23,15 @@ import { Inbox } from 'lucide-react';
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={EmptyStateStories.Default} />
+<Canvas of={EmptyStateStories.Playground} />
 
-<Controls of={EmptyStateStories.Default} />
+<Controls of={EmptyStateStories.Playground} />
 
-## No data
+## Error state
 
-Use when a search or filter returns zero results - pair with a clear-filters action.
-
-<Canvas of={EmptyStateStories.NoData} />
+<Canvas of={EmptyStateStories.Error} />
 
 ## No content
 
@@ -41,16 +39,18 @@ Use for first-time or onboarding states where the user hasn't created any items 
 
 <Canvas of={EmptyStateStories.NoContent} />
 
-## Error state
+## No data
 
-<Canvas of={EmptyStateStories.Error} />
+Use when a search or filter returns zero results - pair with a clear-filters action.
 
-## Without icon
-
-<Canvas of={EmptyStateStories.WithoutIcon} />
+<Canvas of={EmptyStateStories.NoData} />
 
 ## Sizes
 
 `size` controls padding, icon size, and text size across `sm`, `md` (default), and `lg`.
 
 <Canvas of={EmptyStateStories.Sizes} />
+
+## Without icon
+
+<Canvas of={EmptyStateStories.WithoutIcon} />

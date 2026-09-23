@@ -23,16 +23,10 @@ import { Kbd } from 'eidos-ui';
 </span>
 ```
 
-## Default
+## Playground
 
-<Canvas of={KbdStories.Default} />
-<Controls of={KbdStories.Default} />
-
-## Sizes
-
-Three sizes to match context: `sm` works well inside menus or tooltips where space is tight.
-
-<Canvas of={KbdStories.Sizes} />
+<Canvas of={KbdStories.Playground} />
+<Controls of={KbdStories.Playground} />
 
 ## Common keys
 
@@ -44,14 +38,20 @@ For multi-key combos, compose individual `<Kbd>` elements. Adding a `+` separato
 
 <Canvas of={KbdStories.CompoundShortcuts} />
 
+## In a Menu
+
+When a `MenuItem` has a `shortcut` prop, it is automatically rendered as a `<Kbd>` - no extra work needed.
+
+<Canvas of={KbdStories.InMenu} />
+
 ## Inline in prose
 
 `<Kbd>` is an inline element - it flows naturally inside paragraphs, labels, or helper text.
 
 <Canvas of={KbdStories.InlineProse} />
 
-## In a Menu
+## Sizes
 
-When a `MenuItem` has a `shortcut` prop, it is automatically rendered as a `<Kbd>` - no extra work needed.
+Three sizes to match context: `sm` works well inside menus or tooltips where space is tight.
 
-<Canvas of={KbdStories.InMenu} />
+<Canvas of={KbdStories.Sizes} />

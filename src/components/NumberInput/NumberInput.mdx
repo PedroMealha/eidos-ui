@@ -22,23 +22,33 @@ function MyComponent() {
 }
 ```
 
-## Default
+## Playground
 
-<Canvas of={NumberInputStories.Default} />
+<Canvas of={NumberInputStories.Playground} />
 
-<Controls of={NumberInputStories.Default} />
+<Controls of={NumberInputStories.Playground} />
 
-## With min/max
+## Disabled
 
-Controlled example demonstrating value clamping at defined boundaries - the stepper buttons and direct typing both respect `min` and `max`.
+<Canvas of={NumberInputStories.Disabled} />
 
-<Canvas of={NumberInputStories.WithMinMax} />
+## No typing
+
+Setting `allowTyping={false}` restricts entry to the increment/decrement buttons only - useful for bounded integer inputs like ratings or quantities where free-text entry would bypass `min`/`max`.
+
+<Canvas of={NumberInputStories.NoTyping} />
 
 ## Precision
 
 Use `step` and `precision` together for decimal values: `step` controls the increment amount, `precision` controls how many decimal places are displayed.
 
 <Canvas of={NumberInputStories.Precision} />
+
+## Read-only
+
+The control displays its value and remains focusable, but neither typing nor the stepper buttons can change it.
+
+<Canvas of={NumberInputStories.ReadOnly} />
 
 ## Sizes
 
@@ -50,18 +60,8 @@ Shows a label above the control, helper text below, and the error state driven b
 
 <Canvas of={NumberInputStories.WithLabel} />
 
-## Read-only
+## With min/max
 
-The control displays its value and remains focusable, but neither typing nor the stepper buttons can change it.
+Controlled example demonstrating value clamping at defined boundaries - the stepper buttons and direct typing both respect `min` and `max`.
 
-<Canvas of={NumberInputStories.ReadOnly} />
-
-## No typing
-
-Setting `allowTyping={false}` restricts entry to the increment/decrement buttons only - useful for bounded integer inputs like ratings or quantities where free-text entry would bypass `min`/`max`.
-
-<Canvas of={NumberInputStories.NoTyping} />
-
-## Disabled
-
-<Canvas of={NumberInputStories.Disabled} />
+<Canvas of={NumberInputStories.WithMinMax} />

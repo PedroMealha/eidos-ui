@@ -23,21 +23,15 @@ import { Checkbox } from 'eidos-ui';
 />
 ```
 
-## Default
+## Playground
 
-<Canvas of={CheckboxStories.Default} />
+<Canvas of={CheckboxStories.Playground} />
 
-<Controls of={CheckboxStories.Default} />
+<Controls of={CheckboxStories.Playground} />
 
-## With label
+## Colors
 
-<Canvas of={CheckboxStories.WithLabel} />
-
-## Indeterminate
-
-Use the indeterminate state when a parent checkbox represents a group where some - but not all - children are selected.
-
-<Canvas of={CheckboxStories.Indeterminate} />
+<Canvas of={CheckboxStories.Colors} />
 
 ## Disabled
 
@@ -45,16 +39,26 @@ A disabled checkbox is exempt from WCAG's contrast minimum - it is meant to read
 
 <Canvas of={CheckboxStories.Disabled} />
 
+## Disabled checked
+
+The same exemption applies once checked: the control keeps its checked mark and drops to the disabled palette.
+
 <Canvas of={CheckboxStories.DisabledChecked} />
 
-## With error
+## Indeterminate
 
-<Canvas of={CheckboxStories.WithError} />
+Use the indeterminate state when a parent checkbox represents a group where some - but not all - children are selected.
+
+<Canvas of={CheckboxStories.Indeterminate} />
 
 ## Sizes
 
 <Canvas of={CheckboxStories.Sizes} />
 
-## Colors
+## With error
 
-<Canvas of={CheckboxStories.Colors} />
+<Canvas of={CheckboxStories.WithError} />
+
+## With label
+
+<Canvas of={CheckboxStories.WithLabel} />

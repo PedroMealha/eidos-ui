@@ -25,23 +25,11 @@ const data: TreeNode[] = [
 <TreeView data={data} defaultExpandedIds={['src']} />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={TreeViewStories.Default} />
+<Canvas of={TreeViewStories.Playground} />
 
-<Controls of={TreeViewStories.Default} />
-
-## With lines
-
-Vertical indent guide lines make deep hierarchies easier to scan.
-
-<Canvas of={TreeViewStories.WithLines} />
-
-## Expand all
-
-All branch nodes are expanded on mount via `defaultExpandAll` - no need to enumerate ids.
-
-<Canvas of={TreeViewStories.DefaultExpandAll} />
+<Controls of={TreeViewStories.Playground} />
 
 ## Controlled selection
 
@@ -49,11 +37,29 @@ Pass `selectedId` and `onSelect` together to drive the selected node from extern
 
 <Canvas of={TreeViewStories.ControlledSelection} />
 
+## Custom label rendering
+
+Use `renderLabel` to replace the default label text with any React node - useful for badges, icons, or status indicators.
+
+<Canvas of={TreeViewStories.CustomRenderLabel} />
+
+## Expand all
+
+All branch nodes are expanded on mount via `defaultExpandAll` - no need to enumerate ids.
+
+<Canvas of={TreeViewStories.DefaultExpandAll} />
+
 ## Disabled nodes
 
 Individual nodes can be marked `disabled` on the `TreeNode` object to prevent selection and interaction.
 
 <Canvas of={TreeViewStories.Disabled} />
+
+## Inline rename
+
+Combine `renderLabel` with `InlineEdit` to add in-place node renaming. Hover a node to reveal the rename button, click it to activate the editor, then press Enter or click away to confirm (Esc to cancel).
+
+<Canvas of={TreeViewStories.InlineRename} />
 
 ## Multi-select
 
@@ -61,14 +67,8 @@ Set `multiSelect` and wire up `selectedIds` + `onSelectMulti` to allow building 
 
 <Canvas of={TreeViewStories.MultiSelect} />
 
-## Custom label rendering
+## With lines
 
-Use `renderLabel` to replace the default label text with any React node - useful for badges, icons, or status indicators.
+Vertical indent guide lines make deep hierarchies easier to scan.
 
-<Canvas of={TreeViewStories.CustomRenderLabel} />
-
-## Inline rename
-
-Combine `renderLabel` with `InlineEdit` to add in-place node renaming. Hover a node to reveal the rename button, click it to activate the editor, then press Enter or click away to confirm (Esc to cancel).
-
-<Canvas of={TreeViewStories.InlineRename} />
+<Canvas of={TreeViewStories.WithLines} />

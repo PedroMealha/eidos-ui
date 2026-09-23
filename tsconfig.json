@@ -37,6 +37,22 @@
        any issue in our own code. Remove when tsup fixes this internally. */
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "dev", "*.config.ts", "scripts"],
+  // The Storybook entry is globbed rather than named as a bare directory:
+  // TypeScript does not expand an `include` entry into a directory whose name
+  // begins with a dot, so the bare form silently matched nothing and
+  // `preview.ts` stayed outside the program - verified with `tsc --listFiles`.
+  // Only `stats-plugin.ts` was ever checked, and only because `main.ts`
+  // imports it.
+  //
+  // It needs to be in the program because nothing else typechecked it:
+  // `preview.ts` held a comparator whose parameters were implicitly `any`,
+  // which only an editor ever reported. Storybook-only files never reach
+  // `dist/`, but an untypechecked TypeScript file is the one place a type
+  // error can sit indefinitely.
+  //
+  // Note: this comment cannot use block form - the glob below contains `*` and
+  // `/` in a sequence that would close a block comment early, which broke this
+  // file once already.
+  "include": ["src", "dev", ".storybook/**/*.ts", "*.config.ts", "scripts"],
   "exclude": ["node_modules", "dist", "storybook-static"]
 }

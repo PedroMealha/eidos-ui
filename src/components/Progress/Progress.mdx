@@ -19,11 +19,15 @@ import { Progress } from 'eidos-ui';
 <Progress />
 ```
 
-## Default
+## Playground
 
-<Canvas of={ProgressStories.Default} />
+<Canvas of={ProgressStories.Playground} />
 
-<Controls of={ProgressStories.Default} />
+<Controls of={ProgressStories.Playground} />
+
+## Colors
+
+<Canvas of={ProgressStories.Colors} />
 
 ## Indeterminate
 
@@ -31,26 +35,22 @@ Omitting `value` switches the bar to a looping animation, useful when the total 
 
 <Canvas of={ProgressStories.Indeterminate} />
 
-## Colors
-
-<Canvas of={ProgressStories.Colors} />
-
 ## Sizes
 
 Track height scales across `sm` (4 px), `md` (8 px), and `lg` (12 px).
 
 <Canvas of={ProgressStories.Sizes} />
 
-## With label
+## States
 
-Set `showLabel` to render the computed percentage to the right of the track; supply a `label` string to override the auto-generated value.
-
-<Canvas of={ProgressStories.WithLabel} />
+<Canvas of={ProgressStories.States} />
 
 ## Striped
 
 <Canvas of={ProgressStories.Striped} />
 
-## States
+## With label
 
-<Canvas of={ProgressStories.States} />
+Set `showLabel` to render the computed percentage to the right of the track; supply a `label` string to override the auto-generated value.
+
+<Canvas of={ProgressStories.WithLabel} />

@@ -22,12 +22,32 @@ function PageHeader() {
 }
 ```
 
-## Default
+## Playground
 
 > **Note - Uncontrolled vs controlled editing mode.** By default, `InlineEdit` manages its own open/close toggle internally (uncontrolled). To take external ownership of when editing is active, pass the `editing` boolean prop and respond to changes via `onEditingChange`. This is useful when a parent button, cell-click handler, or keyboard shortcut should drive the edit state independently of the component's built-in trigger. See the [Controlled](#controlled) story below for a working example.
 
-<Canvas of={InlineEditStories.Default} />
-<Controls of={InlineEditStories.Default} />
+<Canvas of={InlineEditStories.Playground} />
+<Controls of={InlineEditStories.Playground} />
+
+## Controlled
+
+Pass `editing` and `onEditingChange` to take ownership of the open/close lifecycle. The "Edit" button below demonstrates toggling the editing state programmatically from outside the component.
+
+> **Note - `confirmOnBlur={false}`.** Set this to `false` when the parent already owns the commit/cancel lifecycle. The canonical example is a DataGrid: the grid intercepts Tab and click-outside at the container level to commit or discard the active cell editor. With `confirmOnBlur={true}` (the default), blurring the input when the user tabs to the next cell would fire a double-commit - once from the blur handler and once from the grid's Tab interceptor. Setting `confirmOnBlur={false}` hands all commit decisions back to the parent and prevents this.
+
+<Canvas of={InlineEditStories.Controlled} />
+
+## Custom display
+
+Use `renderDisplay` to replace the default text rendering with any React node. Custom typography, coloured badges, and icon decorations are all possible while the standard keyboard and commit/cancel flow remains intact.
+
+<Canvas of={InlineEditStories.CustomDisplay} />
+
+## Disabled
+
+A disabled `InlineEdit` is not interactive: the pencil icon is hidden and the element is removed from the tab order.
+
+<Canvas of={InlineEditStories.Disabled} />
 
 ## Sizes
 
@@ -39,34 +59,14 @@ function PageHeader() {
 
 <Canvas of={InlineEditStories.Trigger} />
 
-## With placeholder
-
-When `value` is an empty string, the component renders the `placeholder` in a dimmed style. The same text is forwarded to the underlying `<Input>` while in edit mode so the user always has context.
-
-<Canvas of={InlineEditStories.WithPlaceholder} />
-
-## Disabled
-
-A disabled `InlineEdit` is not interactive: the pencil icon is hidden and the element is removed from the tab order.
-
-<Canvas of={InlineEditStories.Disabled} />
-
-## Custom display
-
-Use `renderDisplay` to replace the default text rendering with any React node. Custom typography, coloured badges, and icon decorations are all possible while the standard keyboard and commit/cancel flow remains intact.
-
-<Canvas of={InlineEditStories.CustomDisplay} />
-
-## Controlled
-
-Pass `editing` and `onEditingChange` to take ownership of the open/close lifecycle. The "Edit" button below demonstrates toggling the editing state programmatically from outside the component.
-
-> **Note - `confirmOnBlur={false}`.** Set this to `false` when the parent already owns the commit/cancel lifecycle. The canonical example is a DataGrid: the grid intercepts Tab and click-outside at the container level to commit or discard the active cell editor. With `confirmOnBlur={true}` (the default), blurring the input when the user tabs to the next cell would fire a double-commit - once from the blur handler and once from the grid's Tab interceptor. Setting `confirmOnBlur={false}` hands all commit decisions back to the parent and prevents this.
-
-<Canvas of={InlineEditStories.Controlled} />
-
 ## With callbacks
 
 `onConfirm` fires with the committed value when the user presses Enter or blurs the input (subject to `confirmOnBlur`). `onCancel` fires when the user presses Esc and the value reverts to what it was when editing began.
 
 <Canvas of={InlineEditStories.WithCallback} />
+
+## With placeholder
+
+When `value` is an empty string, the component renders the `placeholder` in a dimmed style. The same text is forwarded to the underlying `<Input>` while in edit mode so the user always has context.
+
+<Canvas of={InlineEditStories.WithPlaceholder} />

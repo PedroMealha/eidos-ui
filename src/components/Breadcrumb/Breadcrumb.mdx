@@ -23,11 +23,25 @@ import { Breadcrumb } from 'eidos-ui';
 />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={BreadcrumbStories.Default} />
+<Canvas of={BreadcrumbStories.Playground} />
 
-<Controls of={BreadcrumbStories.Default} />
+<Controls of={BreadcrumbStories.Playground} />
+
+## Custom separator
+
+Pass any `ReactNode` as `separator` to replace the default `/` character.
+
+<Canvas of={BreadcrumbStories.CustomSeparator} />
+
+## Long
+
+<Canvas of={BreadcrumbStories.Long} />
+
+## Short
+
+<Canvas of={BreadcrumbStories.Short} />
 
 ## With hrefs
 
@@ -40,17 +54,3 @@ Each item except the last receives an `href`, rendering it as an anchor link.
 Items accept an optional `icon` node displayed to the left of the label.
 
 <Canvas of={BreadcrumbStories.WithIcons} />
-
-## Custom separator
-
-Pass any `ReactNode` as `separator` to replace the default `/` character.
-
-<Canvas of={BreadcrumbStories.CustomSeparator} />
-
-## Short
-
-<Canvas of={BreadcrumbStories.Short} />
-
-## Long
-
-<Canvas of={BreadcrumbStories.Long} />

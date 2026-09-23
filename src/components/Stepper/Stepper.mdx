@@ -22,15 +22,15 @@ const steps = [
 <Stepper steps={steps} activeStep={1} />;
 ```
 
-## Default
+## Playground
 
-<Canvas of={StepperStories.Default} />
+<Canvas of={StepperStories.Playground} />
 
-<Controls of={StepperStories.Default} />
+<Controls of={StepperStories.Playground} />
 
-## Vertical
+## Colors
 
-<Canvas of={StepperStories.Vertical} />
+<Canvas of={StepperStories.Colors} />
 
 ## Completed
 
@@ -38,15 +38,11 @@ Set `activeStep` to `steps.length` to mark every step as completed.
 
 <Canvas of={StepperStories.Completed} />
 
-## With error
+## Interactive
 
-Set `status: 'error'` on a `StepItem` to flag a failed step independently of `activeStep`.
+Demonstrates wiring `activeStep` to local state with previous/next controls.
 
-<Canvas of={StepperStories.WithError} />
-
-## Colors
-
-<Canvas of={StepperStories.Colors} />
+<Canvas of={StepperStories.Interactive} />
 
 ## No numbers
 
@@ -54,8 +50,12 @@ Set `showNumbers={false}` and provide an `icon` on each step to replace the nume
 
 <Canvas of={StepperStories.NoNumbers} />
 
-## Interactive
+## Vertical
 
-Demonstrates wiring `activeStep` to local state with previous/next controls.
+<Canvas of={StepperStories.Vertical} />
 
-<Canvas of={StepperStories.Interactive} />
+## With error
+
+Set `status: 'error'` on a `StepItem` to flag a failed step independently of `activeStep`.
+
+<Canvas of={StepperStories.WithError} />

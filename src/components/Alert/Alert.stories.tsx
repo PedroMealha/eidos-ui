@@ -61,7 +61,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     variant: 'info',
     children: 'Your session will expire in 10 minutes. Save your work to avoid losing progress.',
@@ -69,7 +69,7 @@ export const Default: Story = {
 };
 
 // Per-variant `Success`/`Warning`/`Danger` stories used to sit here. Each was
-// a one-arg copy of Default that no .mdx referenced, and `AllVariants` below
+// a one-arg copy of Playground that no .mdx referenced, and `AllVariants` below
 // shows all four together - which is how you actually compare them.
 
 // ============================================================================

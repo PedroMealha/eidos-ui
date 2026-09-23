@@ -26,7 +26,7 @@ type Story = StoryObj<typeof meta>;
 // out as a flex row. A fixed-width box with no height (what this used to be)
 // renders a `vertical` divider as nothing at all - so flipping the `direction`
 // control, the one control this component has, appeared to break it.
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     direction: 'horizontal',
   },

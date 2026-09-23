@@ -21,7 +21,7 @@ const HOME_PATH = '/app/dashboard';
  * of chrome.
  */
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { params, match, navigate } = useRouter();
+  const { path, params, match, navigate } = useRouter();
   const { session, signOut } = useAuth();
   const { showInfo, showWarning } = useSnackbar();
   const { header, breadcrumb } = useResolvedChrome();
@@ -184,6 +184,10 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         ),
       }}
       header={header}
+      // Keyed on the path, so each screen remembers its own scroll offset
+      // rather than inheriting the previous one - the content region is a
+      // single element for the whole session, and only its contents change.
+      scrollRestorationKey={path}
       footer={{ copyright: 'Meridian - the local example app for eidos-ui.' }}
     >
       {children}

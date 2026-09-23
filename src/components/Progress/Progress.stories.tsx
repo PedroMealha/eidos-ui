@@ -76,7 +76,7 @@ type Story = StoryObj<typeof meta>;
 // DEFAULT
 // ============================================================================
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     value: 65,
     size: 'md',

@@ -88,9 +88,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ─── Default ──────────────────────────────────────────────────────────────────
+// ─── Playground ──────────────────────────────────────────────────────────────────
 
-export const Default: Story = {
+export const Playground: Story = {
   args: {
     options: FLAT_OPTIONS,
     placeholder: 'Search or select…',
