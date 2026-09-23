@@ -2373,11 +2373,38 @@ grep -nE '=[[:space:]]*$' ~/.gitconfig   # must print nothing
 Do **not** diagnose this with `git config --get gpg.format`. That returns the
 last-wins value, so it happily reports `ssh` while a broken empty entry earlier
 in the file is what git is actually choking on - which is exactly how this got
-misdiagnosed once already. `git config --show-origin --get-regexp 'gpg'` lists
-every occurrence, and the `grep` above is faster. Fix with
-`git config --global --unset gpg.format` (plus `user.signingKey`,
-`gpg.ssh.program`, `gpg.ssh.allowedSignersFile` if those are blank too); the
-real values live in the `includeIf`-ed `~/.gitconfig-personal`. It deliberately no longer
+misdiagnosed once already. `git config --show-origin --get-all <key>` lists
+every occurrence with the file it came from, and the `grep` above is faster.
+
+**The override does not save you, and this is worth being precise about because
+it reads as though it should.** `~/.gitconfig-personal` is pulled in by an
+`includeIf` that sits _below_ the empty entries, so `gpg.format` and
+`user.signingKey` resolve to real values - and git still aborts the commit,
+naming the losing entry: `bad config variable 'gpg.format' in file
+'~/.gitconfig' at line 8`. Reading the value succeeds; signing with it does not.
+Do not "prove" it harmless with `git config --get`, and do not prove it with a
+throwaway commit outside `~/Documents/Repositories/Personal/` either - the
+`includeIf` will not match there, `commit.gpgsign` never turns on, and nothing
+is signed at all. Both mistakes were made, in that order, and between them they
+cost a stranded 3.6.2.
+
+**`preflight-release.js` checks this with `--get-all`, and had to be changed to.**
+It used `--get`, which is why 3.6.2 stranded _with the guard passing_: it cleared
+`gpg.format` and `user.signingKey` on the strength of the overrides and reported
+only the two keys that had none. The script's own header documents how to
+re-verify that check against a config reproducing the shape.
+
+Fix with `git config --file <origin> --unset <key>`, using the file the
+`--show-origin` output names - `--global` misses anything an `includeIf` pulled
+in. The real values live in `~/.gitconfig-personal`, so removing the empties from
+`~/.gitconfig` loses nothing.
+
+`chmod 444 ~/.gitconfig` is not a fix. A GUI client replaces the file rather
+than appending to it, so it re-adds the empties regardless; all the read-only bit
+does is make `git config --unset` fail with a lock error when you try to repair
+it. That turned one failed release into two.
+
+It deliberately no longer
 checks npm auth or package ownership: there is no local npm credential to
 validate now that publishing is OIDC-based in CI, so those checks would fail on
 a perfectly releasable tree.

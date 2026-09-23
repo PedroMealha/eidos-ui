@@ -62,15 +62,34 @@ if (status) {
 // that fails at that point strands the release: bumped and promoted but
 // untagged, needing manual recovery.
 //
-// One cause has already done this twice: a GUI client (GitKraken) rewrites
-// ~/.gitconfig and re-adds empty-valued signing keys. Git then hard-fails
-// every commit with `invalid value for 'gpg.format'` - nothing to do with this
-// repo, and invisible until the release is already half-done.
+// One cause has already done this three times: a GUI client (GitKraken)
+// rewrites ~/.gitconfig and re-adds empty-valued signing keys. Git then
+// hard-fails every commit with `invalid value for 'gpg.format'` - nothing to do
+// with this repo, and invisible until the release is already half-done.
 //
 // Checked by reading the keys rather than by attempting a signature: git has no
 // dry-run that exercises signing, and a real test commit here would be worse
 // than the problem. This catches the observed failure; a key that is configured
 // but missing from disk would still only surface at commit time.
+//
+// **`--get-all`, never `--get`.** `--get` returns only the winning value, so an
+// empty entry that a later `includeIf` file overrides is invisible to it - and
+// git rejects the empty entry anyway when it signs, naming the file and line:
+//
+//   fatal: bad config variable 'gpg.format' in file '~/.gitconfig' at line 8
+//
+// That is exactly how a release stranded on 3.6.2: this check ran, passed on
+// `gpg.format` and `user.signingKey` because ~/.gitconfig-personal sets both
+// after the include, and `npm version` then failed at the commit with the
+// version already bumped and the changelog already promoted.
+//
+// Re-verify a change here against a config that reproduces that shape - an
+// empty value followed by an include that sets a real one:
+//
+//   printf '[gpg]\n\tformat = \n[include]\n\tpath = %s/b\n' "$PWD" > a
+//   printf '[gpg]\n\tformat = ssh\n' > b
+//   GIT_CONFIG_GLOBAL=a git config --get gpg.format          # ssh  <- misses it
+//   GIT_CONFIG_GLOBAL=a git config --get-all gpg.format      # '' then ssh
 const EMPTY_BREAKS_COMMIT = [
   'gpg.format',
   'user.signingKey',
@@ -78,30 +97,49 @@ const EMPTY_BREAKS_COMMIT = [
   'gpg.ssh.allowedSignersFile',
 ];
 
-const emptyKeys = EMPTY_BREAKS_COMMIT.filter((key) => {
-  try {
-    // Exit 0 with no output means the key is SET but empty - the state that
-    // breaks git. An unset key exits non-zero and is perfectly fine.
-    return run(`git config --get ${key}`) === '';
-  } catch {
-    return false;
-  }
-});
+// Deliberately not `run`, which trims: an empty value is a trailing tab on its
+// line, and the whole point is to see it.
+const runUntrimmed = (command) =>
+  execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 
-if (emptyKeys.length > 0) {
+/** Every occurrence of `key` whose value is empty, with the file it came from. */
+const emptyOccurrences = (key) => {
+  let output;
+  try {
+    output = runUntrimmed(`git config --show-origin --get-all ${key}`);
+  } catch {
+    // Non-zero exit means the key is not set anywhere, which is fine.
+    return [];
+  }
+
+  return output
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => {
+      // `file:/path/to/config\tvalue`
+      const [origin, ...value] = line.split('\t');
+      return { key, origin: origin.replace(/^file:/, ''), value: value.join('\t') };
+    })
+    .filter(({ value }) => value.trim() === '');
+};
+
+const empties = EMPTY_BREAKS_COMMIT.flatMap(emptyOccurrences);
+
+if (empties.length > 0) {
   fail(
-    `${emptyKeys.length} git config key(s) are set but empty.`,
-    'Git refuses to commit at all in this state, so `npm version` would bump',
+    `${empties.length} git config entr(y/ies) are set but empty.`,
+    'Git refuses to sign a commit in this state, so `npm version` would bump',
     'the version, promote the changelog, and only then fail - leaving the',
     'release half-done.',
     '',
-    ...emptyKeys.map((key) => `  ${key}`),
+    ...empties.map(({ key, origin }) => `  ${key}  in ${origin}`),
     '',
     'Remove them, then re-run. A GUI client (GitKraken) re-adds these when it',
     'rewrites ~/.gitconfig, so check its commit-signing preferences if this',
-    'keeps coming back:',
+    'keeps coming back. These target the exact file, which `--global` would',
+    'miss for anything pulled in by an `includeIf`:',
     '',
-    ...emptyKeys.map((key) => `  git config --global --unset ${key}`),
+    ...empties.map(({ key, origin }) => `  git config --file ${origin} --unset ${key}`),
   );
 }
 
