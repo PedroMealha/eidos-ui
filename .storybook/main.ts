@@ -25,6 +25,11 @@ const config: StorybookConfig = {
     options: {},
   },
 
+  // Assets served only by Storybook (manager branding, favicon). Kept under
+  // `.storybook/` rather than a root `public/`, which Vite's library build
+  // would copy into `dist` and ship with the npm package.
+  staticDirs: ['./public'],
+
   // Supplies `virtual:eidos-stats` to the Welcome page, so every number it
   // shows is derived from the source tree instead of typed out and left to rot.
   viteFinal: (config) => {
