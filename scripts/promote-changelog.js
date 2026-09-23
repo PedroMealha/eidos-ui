@@ -229,4 +229,5 @@ if (formatted) {
     `then ${token('npm run prettier:fix')} (auto-format failed) and ${token('npm run verify')}.`,
   );
 }
+console.log(`\n Ready to release? Run ${token('npm run release -- approve')}.`);
 // console.log(snippet);
