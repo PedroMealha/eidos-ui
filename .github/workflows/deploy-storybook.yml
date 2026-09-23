@@ -3,7 +3,7 @@ name: Deploy Storybook to Hostinger
 on:
   push:
     branches:
-      - main   # ← change to master if that's your default branch
+      - main # ← change to master if that's your default branch
 
 jobs:
   deploy:
