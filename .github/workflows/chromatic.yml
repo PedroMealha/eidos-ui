@@ -1,10 +1,40 @@
 name: Chromatic
 
+# A build costs 504 stories x 2 modes = 1008 snapshots, against 5000 a month on
+# the free plan - about five builds. So a push that cannot change a pixel must
+# not spend one.
+#
+# The list is deliberately narrow. Two tempting entries are wrong, because
+# `.storybook/stats-plugin.ts` reads files from disk at Vite config time and
+# renders them into guide pages:
+#
+#   `**/*.md`     ACCESSIBILITY.md is rendered into Foundations/Accessibility
+#   `scripts/**`  scripts/a11y-baseline.json feeds that same page
+#
+# Everything below is genuinely outside Storybook: `dev/**` is the example app
+# (the stories glob is `../src/**`), and the three markdown files named here are
+# the ones the plugin does *not* read.
+# The two lists below are duplicated rather than shared with a YAML anchor:
+# GitHub Actions does not support anchors or aliases in workflow files.
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.devin/**'
+      - 'dev/**'
+      - '.github/**'
+      - 'README.md'
+      - 'GETTING_STARTED.md'
+      - 'CHANGELOG.md'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '.devin/**'
+      - 'dev/**'
+      - '.github/**'
+      - 'README.md'
+      - 'GETTING_STARTED.md'
+      - 'CHANGELOG.md'
 
 # Only `contents: read` is needed, for checkout - Chromatic authenticates with
 # its own project token rather than GITHUB_TOKEN. Without this block the token
@@ -62,3 +92,23 @@ jobs:
         uses: chromaui/action@2a0b63f30233c48591844a46d451b9cf68128186 # v18.7.2
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          # TurboSnap: snapshot only the stories reachable from the files that
+          # changed since the baseline build, rather than all 504. This is what
+          # `fetch-depth: 0` above is for - it was claimed by that comment long
+          # before the flag existed.
+          #
+          # Vite needs no plugin from Storybook 8 onwards, and because the
+          # action builds the Storybook itself (rather than being handed a
+          # prebuilt one) `preview-stats.json` is generated automatically - no
+          # `--stats-json` required.
+          #
+          # `externals` is deliberately NOT set, though the stats plugin does
+          # read ACCESSIBILITY.md, scripts/a11y-baseline.json and package.json
+          # outside the module graph. Listing them would force a *full* 1008
+          # snapshot run whenever any of them changes - and package.json changes
+          # on every release. The cost of not listing them is that a derived
+          # figure on a guide page (the component count, the a11y table, the
+          # version chip) can go un-snapshotted until something else in its
+          # graph changes. That is a missed diff on a docs page, not a wrong
+          # page: the published Storybook is always built fresh.
+          onlyChanged: true
