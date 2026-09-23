@@ -318,8 +318,35 @@
   border-radius: var(--border-radius-md);
   background: var(--white);
 
+  // Matches the 0.2s ease `Input` and `Textarea` use on their wrappers, so the
+  // ring below fades in rather than snapping. Those two write `transition: all`;
+  // the two properties are named here instead because they are the only ones
+  // this element changes on focus, and `all` would also animate the padding and
+  // gap shifts that come with an attachment list appearing.
+  //
+  // No `reduced-motion` guard, consistent with `Input`/`Textarea`: WCAG 2.3.3
+  // is about motion, and a colour and shadow fade moves nothing.
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  // One focus treatment for the whole composer, on the element that draws the
+  // border - the same shape `Input` and `Textarea` use, where the wrapper owns
+  // both the border colour and the ring and the field inside owns neither.
+  //
+  // The ring used to be painted on the `<textarea>` as well as this border
+  // being recoloured, which rendered two concentric primary outlines: an inset
+  // ring hugging the text and this border around the whole block, hint text
+  // and Send button included. Nothing was wrong with either rule alone, which
+  // is why it survived - it only reads as a defect next to `Textarea`.
+  //
+  // Outward rather than inset, again matching `Textarea`: the white gap is
+  // load-bearing for contrast, and there is nothing to clip it. The composer is
+  // a *sibling* of `.eidos-chat-scroll`, not a descendant, and `CommentThread`
+  // has no scroll container at all.
   &:focus-within {
     border-color: var(--primary-color);
+    box-shadow: focus-ring-shadow(primary);
   }
 }
 
@@ -354,18 +381,10 @@
   width: 100%;
   resize: none;
 
-  // `input-reset` clears the outline unconditionally, and nothing replaced
-  // it here - so the global `:focus-visible` fallback was suppressed and the
-  // composer had no focus indicator at all (SC 2.4.7).
-  //
-  // The ring sits on the textarea rather than a wrapper because
-  // `MessageComposer` is mounted in two different shells (`Chat` and
-  // `CommentThread`), which own different containers around it. Inset, so a
-  // composer pinned to the bottom of a scroll container is not clipped.
-  &:focus-visible {
-    box-shadow: focus-ring-shadow-inset(primary);
-    border-radius: var(--border-radius-sm);
-  }
+  // No focus paint here on purpose. `input-reset` clears the outline, and the
+  // indicator is the composer's own `:focus-within` ring above - the field is
+  // the full width and height of that box, so a second ring around the text
+  // only ever doubled it.
   @include font-size(sm);
   color: var(--dark-color);
   line-height: 1.55;

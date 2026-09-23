@@ -36,5 +36,5 @@ export interface PageLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
    *
    * Omit it to leave the scroll position alone entirely.
    */
-  scrollRestorationKey?: string;
+  scrollRestorationKey?: string | number;
 }

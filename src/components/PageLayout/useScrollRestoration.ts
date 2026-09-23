@@ -15,11 +15,11 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
  * node to the caller's own `contentRef`.
  */
 export const useScrollRestoration = (
-  key: string | undefined,
+  key: string | number | undefined,
   forwardTo: React.Ref<HTMLElement> | undefined,
 ): ((node: HTMLElement | null) => void) => {
   const node = useRef<HTMLElement | null>(null);
-  const offsets = useRef(new Map<string, number>());
+  const offsets = useRef(new Map<string | number, number>());
   const appliedKey = useRef(key);
 
   // Held in a ref so the ref callback below can keep a stable identity. A

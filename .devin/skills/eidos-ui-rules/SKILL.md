@@ -469,8 +469,8 @@ almost certainly systemic.
 ### Palette bases carry two contrast requirements, not one
 
 `--x-color` is both a fill (white text on it) and a text colour on light
-surfaces - 292 declarations use `color: var(--x-color)` for `outlined`/`text`
-variants. A base therefore has to clear 4.5:1 against white _as text_, which is
+surfaces - close to 300 declarations use `color: var(--x-color)` for
+`outlined`/`text` variants. A base therefore has to clear 4.5:1 against white _as text_, which is
 why every base sits at ~5:1 rather than merely being "dark enough for a button".
 
 `--x-dark` has its own pair of constraints: it must be **darker than its own
@@ -2090,8 +2090,10 @@ And when adding a component, the docs that need touching are:
 ### Build system
 
 - Bundler: **tsup** with esbuild under the hood
-- `npm run build` = `tsup && node scripts/build-styles.js`
-  - tsup produces ESM + CJS + DTS for all 49 component entry points
+- `npm run build` = `node scripts/build.js`, which runs tsup and then
+  `scripts/build-styles.js` (it exists to raise the heap limit - see below)
+  - tsup produces ESM + CJS + DTS for one entry point per directory in
+    `src/components` (58 at the time of writing; `ls -d src/components/*/ | wc -l`)
   - `build-styles.js` compiles `src/styles/index.scss` → `dist/index.css` and generates `dist/index.css.d.ts`
 
 ### The declaration step has a heap ceiling that grows with the component count
@@ -2100,7 +2102,9 @@ And when adding a component, the docs that need touching are:
 Node's heap limit (`HEAP_MB`, currently 8192) for tsup's `dts` step. That step
 bundles the type graph for every entry point in one worker thread, so its memory
 use scales with the number of components. At 49 entries it finished in ~22s; at
-51 it died with `ERR_WORKER_OUT_OF_MEMORY`.
+51 it died with `ERR_WORKER_OUT_OF_MEMORY`. Those two numbers are the original
+incident, not a current ceiling - with `HEAP_MB` raised it builds 58 entries
+fine. Expect to raise it again rather than to stay under some entry count.
 
 The failure is deliberately misleading and worth recognising: it happens **after
 the ESM and CJS bundles report success**, so it reads as a type error in
@@ -2352,7 +2356,28 @@ settings on npmjs.com. Consequences worth knowing:
 runs BEFORE the bump and checks a clean tree, barrel exports and the changelog.
 It exists because `npm version` commits and tags immediately and is never rolled
 back - a failed publish otherwise strands a version that is tagged in git but
-absent from the registry (this happened to 3.1.0). It deliberately no longer
+absent from the registry (this happened to 3.1.0).
+
+**If the release dies on the `npm version` commit itself, check for empty-valued
+signing keys in `~/.gitconfig` before anything else.** Commits are SSH-signed
+here, and git validates `gpg.format` on _every_ config entry it parses - so a
+single `gpg.format = ` (empty) aborts every commit with
+`invalid value for 'gpg.format': ''`, including the one `npm version` makes
+mid-release, leaving the version bumped but uncommitted and untagged. A GUI
+client re-adds those empties periodically; it has happened at least three times.
+
+```bash
+grep -nE '=[[:space:]]*$' ~/.gitconfig   # must print nothing
+```
+
+Do **not** diagnose this with `git config --get gpg.format`. That returns the
+last-wins value, so it happily reports `ssh` while a broken empty entry earlier
+in the file is what git is actually choking on - which is exactly how this got
+misdiagnosed once already. `git config --show-origin --get-regexp 'gpg'` lists
+every occurrence, and the `grep` above is faster. Fix with
+`git config --global --unset gpg.format` (plus `user.signingKey`,
+`gpg.ssh.program`, `gpg.ssh.allowedSignersFile` if those are blank too); the
+real values live in the `includeIf`-ed `~/.gitconfig-personal`. It deliberately no longer
 checks npm auth or package ownership: there is no local npm credential to
 validate now that publishing is OIDC-based in CI, so those checks would fail on
 a perfectly releasable tree.
