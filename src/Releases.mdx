@@ -15,6 +15,39 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="3.6.3"
+  date="2026-09-23"
+  bump="patch"
+  sections={[
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>Chat</Code> shows every message's time at the foot of its bubble, instead of in the
+          header for the first message of a group and in the bubble for the rest.
+        </>,
+        <>
+          <Code>CommentThread</Code> aligns a comment's time to the right of its header.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          Message attachment chips are legible against the bubble behind them; the border was
+          effectively invisible at 1.10:1.
+        </>,
+        <>
+          An attachment without a <Code>url</Code> no longer shows hover feedback, having never been
+          clickable.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="3.6.2"
   date="2026-09-23"
   bump="patch"
