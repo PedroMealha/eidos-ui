@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [4.1.0] - 2026-09-24
+
 ### Added
 
 - Light, dark and system colour schemes, set with `<html data-color-scheme>` - every text, fill, hover and focus-ring pairing clears WCAG AA in both.
