@@ -637,6 +637,10 @@ scroll. Everything below follows from that, and each one was a real defect:
   changes.** By the time a navigation commits, the next page's content is in
   the DOM and the browser has clamped `scrollTop` to its height. This fails
   _invisibly_ on a fresh navigation and only shows when returning to a page.
+- **Attach a DOM listener that must not miss events in the ref callback, not
+  in `useEffect`.** A passive effect runs some time after the commit; a scroll
+  in between was never recorded. See "`test:stories` runs the dev server;
+  Chromatic runs the production build" for why only Chromatic saw it.
 - **A control that drives the scroll position must sit outside the region it
   scrolls.** The header is inside it and scrolls away, so a "back to top"
   button there is unreachable exactly when it is wanted. It also makes any
@@ -1093,6 +1097,25 @@ It is a plain node script rather than a Vitest project on purpose: both test
 projects run in a real chromium, and an SSR check needs the _absence_ of a DOM,
 which chromium cannot provide. A node-environment project would be a third set
 of rendering semantics.
+
+### `test:stories` runs the dev server; Chromatic runs the production build
+
+The two execute the same play functions against different React scheduling,
+so **a play that passes locally can fail on Chromatic every time** - not
+flakily. `PageLayout`'s `RestoresScrollPerKey` did exactly that: the
+production build starts the play function before React has flushed the
+initial mount's passive effects, the dev server does not, and the scroll
+listener lived in one of those effects. Under the dev server it never failed
+in any run, at any viewport, or with the CPU throttled 6x; against
+`storybook-static` it failed 5/5, with Chromatic's exact message.
+
+So when a play fails only on Chromatic, **reproduce against a production
+build before theorising**: `npm run build-storybook`, serve `storybook-static`,
+and run the story there (Playwright, waiting on the preview channel's
+`storyFinished` event). Every other environment difference - viewport, device
+pixel ratio, CPU speed - was tried first and reproduced nothing. And treat it
+as a real bug until shown otherwise: a scroll that lands before passive
+effects run is equally possible in a consumer's app.
 
 ### Do not add `.storybook/vitest.setup.ts`
 

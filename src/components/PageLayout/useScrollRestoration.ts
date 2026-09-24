@@ -31,22 +31,16 @@ export const useScrollRestoration = (
     forwarded.current = forwardTo;
   }, [forwardTo]);
 
-  const setNode = useCallback((element: HTMLElement | null) => {
-    node.current = element;
-    const ref = forwarded.current;
-    if (typeof ref === 'function') ref(element);
-    else if (ref) (ref as React.RefObject<HTMLElement | null>).current = element;
-  }, []);
-
   // Recorded as it happens rather than when the key changes: by the time a
   // navigation commits, the new page's content is already in the DOM and the
   // browser has clamped `scrollTop` to the new, possibly shorter, height. The
   // outgoing offset is no longer readable at that point.
   //
-  // **The key is read from a ref, and the listener is registered once.** Both
-  // halves matter. A listener re-subscribed per key closes over the key it was
-  // created with, and restoring the incoming page's offset sets `scrollTop`,
-  // which makes the browser dispatch a `scroll` event - so the two race:
+  // **The key is read from a ref, and the listener is registered once per
+  // node.** Both halves matter. A listener re-subscribed per key closes over
+  // the key it was created with, and restoring the incoming page's offset sets
+  // `scrollTop`, which makes the browser dispatch a `scroll` event - so the
+  // two race:
   //
   //   1. the layout effect below sets `scrollTop` for the incoming key
   //   2. passive effects swap the listener from the outgoing key to it
@@ -62,20 +56,34 @@ export const useScrollRestoration = (
   // Reading `appliedKey` instead means whichever order those steps take, the
   // offset is filed under the key that is actually on screen: the layout effect
   // updates the ref before it touches `scrollTop`.
-  useEffect(() => {
-    const element = node.current;
-    if (!element) return;
-
-    const record = () => {
-      const current = appliedKey.current;
-      if (current !== undefined) offsets.current.set(current, element.scrollTop);
-    };
-
-    element.addEventListener('scroll', record, { passive: true });
-    return () => element.removeEventListener('scroll', record);
-    // Registered once, for the same reason: re-subscribing is what created the
-    // window where a stale key could be recorded.
+  //
+  // **Attached in the ref callback, not in an effect.** It used to be a
+  // passive `useEffect`, which React runs some time *after* the commit - so a
+  // scroll landing in between was never recorded, and returning to that page
+  // restored 0. Storybook's production build starts a play function inside
+  // that window (the dev server happens not to), which is how
+  // `RestoresScrollPerKey` passed locally and failed on Chromatic, every time.
+  // A ref callback runs during the commit itself, so the listener exists from
+  // the moment the element does - and a swapped element is detached from and
+  // re-attached to rather than silently left unobserved.
+  const record = useCallback((event: Event) => {
+    const current = appliedKey.current;
+    const element = event.currentTarget as HTMLElement;
+    if (current !== undefined) offsets.current.set(current, element.scrollTop);
   }, []);
+
+  const setNode = useCallback(
+    (element: HTMLElement | null) => {
+      node.current?.removeEventListener('scroll', record);
+      node.current = element;
+      element?.addEventListener('scroll', record, { passive: true });
+
+      const ref = forwarded.current;
+      if (typeof ref === 'function') ref(element);
+      else if (ref) (ref as React.RefObject<HTMLElement | null>).current = element;
+    },
+    [record],
+  );
 
   // Layout effect so the offset is applied before paint - in a passive effect
   // the new page is visible at the previous page's offset for a frame first.
