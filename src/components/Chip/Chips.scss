@@ -346,13 +346,22 @@
   // hardcoded white this used to be was white-on-white and gave those two
   // variants no hover feedback at all. Only `filled` has a colour behind the
   // button, and it gets the white tint below.
+  //
+  // `--text-default-rgb`, not `--dark-rgb`: a dark veil is invisible on the
+  // dark scheme's surface, and the text colour's own direction is the one
+  // that always contrasts with the surface under it.
   &:hover:not(:disabled) {
-    background-color: rgba(var(--dark-rgb), 0.12);
+    background-color: rgba(var(--text-default-rgb), 0.12);
   }
 
+  // On a filled chip the veil is the chip's own foreground (`currentColor`,
+  // i.e. `--x-contrast`): white on the light scheme's dark fills, dark on the
+  // dark scheme's light ones. The `rgba` line is the fallback for a browser
+  // without `color-mix`, and is right for the light scheme.
   .eidos-chip--filled & {
     &:hover:not(:disabled) {
       background-color: rgba(var(--white-rgb), 0.25);
+      background-color: color-mix(in srgb, currentColor 25%, transparent);
     }
   }
 

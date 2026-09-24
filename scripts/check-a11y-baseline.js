@@ -87,6 +87,18 @@ const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
  */
 const EXCLUDED_TAG = 'a11y-contrast-demo';
 
+/**
+ * Every story is audited once per colour scheme, through Storybook's
+ * `colorScheme` global (the toolbar toggle in `.storybook/preview.ts`).
+ *
+ * The dark scheme re-points every palette and surface token, so a contrast
+ * pairing that holds in light proves nothing about dark - and dark is where
+ * the easy mistakes live (a hardcoded white, a black veil over a light fill).
+ * Counts are kept per scheme, so a regression reports which scheme broke
+ * rather than being averaged into a total that could hide it.
+ */
+const SCHEMES = ['light', 'dark'];
+
 const args = new Set(process.argv.slice(2));
 const UPDATE = args.has('--update');
 const REPORT = args.has('--report');
@@ -295,9 +307,11 @@ const storyMounted = () => {
 /* eslint-enable no-undef */
 
 const browser = await chromium.launch();
-const byRule = new Map();
+/** scheme -> rule id -> { nodes, stories, impact } */
+const byRule = new Map(SCHEMES.map((scheme) => [scheme, new Map()]));
 const loadErrors = [];
-const queue = stories.slice();
+const queue = stories.flatMap((story) => SCHEMES.map((scheme) => ({ story, scheme })));
+/** Story renders measured - one per story per scheme. */
 let audited = 0;
 let fellBack = 0;
 let signalSeen = false;
@@ -316,11 +330,15 @@ const auditWorker = async () => {
   const page = await context.newPage();
 
   for (;;) {
-    const story = queue.shift();
-    if (!story) break;
+    const item = queue.shift();
+    if (!item) break;
+    const { story, scheme } = item;
 
     try {
-      await page.goto(`http://localhost:${port}/iframe.html?id=${story.id}&viewMode=story`, {
+      const url =
+        `http://localhost:${port}/iframe.html?id=${story.id}&viewMode=story` +
+        `&globals=colorScheme:${scheme}`;
+      await page.goto(url, {
         waitUntil: 'load',
         timeout: 30000,
       });
@@ -352,9 +370,10 @@ const auditWorker = async () => {
       const violations = await page.evaluate(runAxe, ALL_RULES ? null : TAGS);
 
       audited++;
+      const rules = byRule.get(scheme);
       for (const v of violations) {
-        if (!byRule.has(v.id)) byRule.set(v.id, { nodes: 0, stories: new Set(), impact: v.impact });
-        const rule = byRule.get(v.id);
+        if (!rules.has(v.id)) rules.set(v.id, { nodes: 0, stories: new Set(), impact: v.impact });
+        const rule = rules.get(v.id);
         rule.nodes += v.n;
         rule.stories.add(story.title);
       }
@@ -362,7 +381,7 @@ const auditWorker = async () => {
       // Report *why*, not just how many. An incomplete audit silently recorded
       // as a baseline would be worse than no baseline at all.
       loadErrors.push({
-        id: story.id,
+        id: `${story.id} (${scheme})`,
         message: String(error.message).split('\n')[0].slice(0, 120),
       });
     }
@@ -375,7 +394,7 @@ const auditWorker = async () => {
 
 process.stdout.write(
   c.dim(
-    `  auditing ${stories.length} stories across ${WORKERS} worker${WORKERS === 1 ? '' : 's'}` +
+    `  auditing ${stories.length} stories in ${SCHEMES.join(' + ')} across ${WORKERS} worker${WORKERS === 1 ? '' : 's'}` +
       (ALL_RULES ? ', all rules' : ''),
   ),
 );
@@ -388,7 +407,7 @@ server.close();
 if (loadErrors.length) {
   const shown = loadErrors.slice(0, 8);
   die(
-    `${loadErrors.length} of ${stories.length} stories failed to load - the audit is incomplete.\n\n` +
+    `${loadErrors.length} of ${stories.length * SCHEMES.length} story renders failed to load - the audit is incomplete.\n\n` +
       shown.map((e) => `    ${c.dim(e.id)}\n      ${e.message}`).join('\n') +
       (loadErrors.length > shown.length
         ? `\n    ${c.dim(`… and ${loadErrors.length - shown.length} more`)}`
@@ -406,10 +425,21 @@ if (fellBack) {
   );
 }
 
+/** scheme -> { rule id -> nodes }, largest first. */
 const current = Object.fromEntries(
-  [...byRule.entries()].sort((a, b) => b[1].nodes - a[1].nodes).map(([id, r]) => [id, r.nodes]),
+  SCHEMES.map((scheme) => [
+    scheme,
+    Object.fromEntries(
+      [...byRule.get(scheme).entries()]
+        .sort((a, b) => b[1].nodes - a[1].nodes)
+        .map(([id, r]) => [id, r.nodes]),
+    ),
+  ]),
 );
-const totalNodes = Object.values(current).reduce((a, b) => a + b, 0);
+const sum = (rules) => Object.values(rules).reduce((a, b) => a + b, 0);
+const totalNodes = SCHEMES.reduce((total, scheme) => total + sum(current[scheme]), 0);
+/** Stories, not renders - the figure ACCESSIBILITY.md publishes. */
+const storiesAudited = audited / SCHEMES.length;
 
 if (ALL_RULES) {
   // Deliberately no comparison and no exit code: this measures the harness,
@@ -418,12 +448,18 @@ if (ALL_RULES) {
   console.log(
     `\n${c.bold('axe — every rule')}  ${c.dim('diagnostic, not compared to baseline')}\n`,
   );
-  for (const [id, r] of [...byRule.entries()].sort((a, b) => b[1].nodes - a[1].nodes)) {
-    console.log(`${String(r.nodes).padStart(5)}  ${(r.impact || '?').padEnd(9)} ${id}`);
+  for (const scheme of SCHEMES) {
+    for (const [id, r] of [...byRule.get(scheme).entries()].sort(
+      (a, b) => b[1].nodes - a[1].nodes,
+    )) {
+      console.log(
+        `${String(r.nodes).padStart(5)}  ${(r.impact || '?').padEnd(9)} ${scheme.padEnd(6)} ${id}`,
+      );
+    }
   }
   console.log(
-    `\n  ${c.bold(totalNodes)} nodes across ${Object.keys(current).length} rules, ` +
-      `${audited} stories, ${WORKERS} worker${WORKERS === 1 ? '' : 's'}\n`,
+    `\n  ${c.bold(totalNodes)} nodes, ${storiesAudited} stories x ${SCHEMES.length} schemes, ` +
+      `${WORKERS} worker${WORKERS === 1 ? '' : 's'}\n`,
   );
   process.exit(0);
 }
@@ -435,9 +471,9 @@ if (UPDATE) {
       'See the header of that script for why this is a ratchet rather than a hard gate.',
     tags: TAGS,
     recordedAt: new Date().toISOString().slice(0, 10),
-    storiesAudited: audited,
+    storiesAudited,
     totalNodes,
-    rules: current,
+    schemes: current,
   });
 
   // Formatted with the repo's own prettier config rather than
@@ -459,7 +495,7 @@ if (UPDATE) {
   const updatedDoc = await (async () => {
     const before = readFileSync(A11Y_DOC, 'utf8');
     const after = before
-      .replace(/across \*\*\d+ stories\*\*/, `across **${audited} stories**`)
+      .replace(/across \*\*\d+ stories\*\*/, `across **${storiesAudited} stories**`)
       .replace(/(\|\s*axe-core violations\s*\|\s*)\*\*\d+\*\*/, `$1**${totalNodes}**`);
     if (after === before) return null;
 
@@ -471,8 +507,9 @@ if (UPDATE) {
   })();
 
   console.log(
-    `\n${c.green('✓')} baseline recorded: ${c.bold(totalNodes)} nodes across ` +
-      `${Object.keys(current).length} rules, ${audited} stories` +
+    `\n${c.green('✓')} baseline recorded: ${c.bold(totalNodes)} nodes ` +
+      `(${SCHEMES.map((scheme) => `${scheme} ${sum(current[scheme])}`).join(', ')}), ` +
+      `${storiesAudited} stories` +
       (skipped ? c.dim(` (${skipped} excluded)`) : '') +
       `\n  ${c.dim(BASELINE.replace(ROOT + '/', ''))}` +
       (updatedDoc
@@ -490,26 +527,38 @@ if (!existsSync(BASELINE)) {
 }
 
 const baseline = JSON.parse(readFileSync(BASELINE, 'utf8'));
-const expected = baseline.rules || {};
+// A baseline recorded before the dark scheme existed has a flat `rules` map,
+// which was the light scheme; dark then compares against nothing, so every
+// dark violation surfaces as new - which is the honest reading of it.
+const expectedBy = baseline.schemes ?? { light: baseline.rules ?? {} };
 const regressions = [];
 const improvements = [];
 
-for (const [id, nodes] of Object.entries(current)) {
-  const was = expected[id] ?? 0;
-  if (nodes > was) regressions.push({ id, was, now: nodes });
-  else if (nodes < was) improvements.push({ id, was, now: nodes });
-}
-for (const [id, was] of Object.entries(expected)) {
-  if (!(id in current) && was > 0) improvements.push({ id, was, now: 0 });
+for (const scheme of SCHEMES) {
+  const expected = expectedBy[scheme] ?? {};
+  for (const [rule, nodes] of Object.entries(current[scheme])) {
+    const was = expected[rule] ?? 0;
+    const id = `${scheme}: ${rule}`;
+    if (nodes > was) regressions.push({ id, was, now: nodes });
+    else if (nodes < was) improvements.push({ id, was, now: nodes });
+  }
+  for (const [rule, was] of Object.entries(expected)) {
+    if (!(rule in current[scheme]) && was > 0)
+      improvements.push({ id: `${scheme}: ${rule}`, was, now: 0 });
+  }
 }
 
 if (REPORT) {
   console.log(`\n${c.bold('axe — WCAG 2.2 AA')}  ${c.dim(TAGS.join(' '))}\n`);
-  for (const [id, r] of [...byRule.entries()].sort((a, b) => b[1].nodes - a[1].nodes)) {
-    console.log(
-      `${String(r.nodes).padStart(5)}  ${(r.impact || '?').padEnd(9)} ${id.padEnd(30)} ` +
-        c.dim([...r.stories].sort().join(' · ')),
-    );
+  for (const scheme of SCHEMES) {
+    for (const [id, r] of [...byRule.get(scheme).entries()].sort(
+      (a, b) => b[1].nodes - a[1].nodes,
+    )) {
+      console.log(
+        `${String(r.nodes).padStart(5)}  ${(r.impact || '?').padEnd(9)} ${scheme.padEnd(6)} ${id.padEnd(24)} ` +
+          c.dim([...r.stories].sort().join(' · ')),
+      );
+    }
   }
   console.log('');
 }
@@ -538,10 +587,10 @@ if (regressions.length) {
 // violation has appeared, the record simply needs bringing up to date. It is
 // also a cheap signal that the audit surface moved, which is the moment to ask
 // whether newly added stories are covering states nothing looked at before.
-if (audited !== baseline.storiesAudited) {
+if (storiesAudited !== baseline.storiesAudited) {
   console.error(
     `\n${c.red('✖')} ${c.bold('The audited story count no longer matches the baseline')}\n\n` +
-      `    recorded ${baseline.storiesAudited}, audited ${c.bold(audited)}\n` +
+      `    recorded ${baseline.storiesAudited}, audited ${c.bold(storiesAudited)}\n` +
       `\n  No new violations - but this figure is published in ACCESSIBILITY.md,\n` +
       `  so re-record it. That updates the prose for you:\n` +
       `    node scripts/check-a11y-baseline.js --update\n`,
@@ -562,8 +611,9 @@ if (improvements.length) {
 }
 
 console.log(
-  `\n${c.green('✓')} axe: ${totalNodes} nodes across ${Object.keys(current).length} rules — ` +
-    `unchanged from baseline (${audited} stories` +
+  `\n${c.green('✓')} axe: ${totalNodes} nodes ` +
+    `(${SCHEMES.map((scheme) => `${scheme} ${sum(current[scheme])}`).join(', ')}) — ` +
+    `unchanged from baseline (${storiesAudited} stories x ${SCHEMES.length} schemes` +
     (skipped ? `, ${skipped} excluded` : '') +
     `)\n`,
 );

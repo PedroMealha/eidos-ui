@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: var(--white);
+  background: var(--surface);
 
   // Fills whatever the consumer sizes it against - there is no `height` prop,
   // so a Chat drops into a Drawer, a Card or a full page with no magic number.
@@ -122,19 +122,32 @@
     color: var(--primary-contrast);
   }
 
+  // `--primary-dark` behind the quote for the reason given for the attachment
+  // chip below: it is the fill's own step *away* from the text on it, in both
+  // schemes. The white veil this replaced lifted the surface towards the
+  // white text - the failure the note below measured on the chip, repeated
+  // here unmeasured.
   .eidos-message-quote {
-    background: rgba(var(--white-rgb), 0.15);
+    background: var(--primary-dark);
     border-left-color: rgba(var(--white-rgb), 0.5);
+    border-left-color: color-mix(in srgb, currentColor 50%, transparent);
   }
 
-  // Darkened, not lightened.
+  // Moved *away* from the text - which is not always "darkened".
   //
   // A white veil over the bubble lifts it *towards* the white text on it:
   // `rgba(white, 0.15)` measured 3.83:1 on the preset and 3.79-4.15:1 across
   // the whole palette - failing everywhere. Tinting with black instead moves
   // the surface away from the text and lands at 6.79-6.87:1 across the same
-  // set. It is also the theme-safe direction: darkening always helps light
-  // text, whatever hue the consumer picks.
+  // set.
+  //
+  // Black stopped being the safe direction with the dark scheme, where the
+  // bubble is a *light* tone with *dark* text on it: a black veil there moves
+  // the surface towards the text. What is safe in both is `--primary-dark`,
+  // the hover step, which by construction sits further from `--x-contrast`
+  // than the base does - darker in light, lighter in dark - and which the
+  // scheme tests hold at >= 4.5:1 against it (6.17:1 light). The hover goes
+  // one ramp step further in the same direction: `--primary-800`.
   //
   // That fixed the chip's *text* and stopped there. The chip as an object was
   // still 1.36:1 against the bubble, with a `rgba(white, 0.35)` border at
@@ -144,13 +157,13 @@
   // theme (5.02:1 for the preset). Do not swap it back to a white alpha: on a
   // pale custom primary, white is the bubble's own direction and vanishes.
   .eidos-message-attachment-link {
-    background: rgba(var(--black-rgb), 0.18);
+    background: var(--primary-dark);
     border-color: var(--primary-contrast);
     color: inherit;
   }
 
   a.eidos-message-attachment-link:hover {
-    background: rgba(var(--black-rgb), 0.3);
+    background: var(--primary-800);
     border-color: var(--primary-contrast);
   }
 
@@ -246,7 +259,7 @@
 .eidos-chat-composer {
   padding: var(--spacing-md);
   border-top: 1px solid var(--gray-200);
-  background: var(--white);
+  background: var(--surface);
 }
 
 // ----------------------------------------------------------------------------

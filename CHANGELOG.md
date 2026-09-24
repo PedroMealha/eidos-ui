@@ -13,6 +13,27 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- Light, dark and system colour schemes, set with `<html data-color-scheme>` - every text, fill, hover and focus-ring pairing clears WCAG AA in both.
+- `ThemeProvider` `colorScheme`, `defaultColorScheme` and `onColorSchemeChange`; `useTheme()` returns `colorScheme`, `resolvedColorScheme` and `setColorScheme`.
+- Custom theme colours get an accessible dark tone automatically; `ThemeConfig.dark.colors` sets exact dark colours instead.
+- `--surface`, `--surface-raised`, `--text-default`, `--text-default-rgb` and `--code-text` tokens, which follow the colour scheme.
+- `ThemeEditor` has a light/dark/system switch and optional separate dark colours, and grades contrast against the scheme being previewed.
+- `SegmentedControl` `ariaLabel` and `aria-labelledby`, to name the radio group.
+
+### Changed
+
+- `toCss()` and ThemeEditor's "Copy as CSS" also emit the dark-scheme blocks.
+- Components paint surfaces and body text with the scheme-aware tokens instead of `--white` and `--dark-color` - identical in the light scheme.
+- `Chat`'s quote and attachment chip backgrounds use `--primary-dark`, so they stay legible when the bubble is light.
+
+### Fixed
+
+- `ThemeEditor`'s "Copy as CSS" button showed no icon since 4.0.0.
+- `Menu`'s danger item hover used a fixed pink from undefined tokens; it is now a danger tint with AA text.
+- `Card`'s border used hardcoded colours instead of the gray tokens.
+
 ## [4.0.0] - 2026-09-24
 
 ### Removed

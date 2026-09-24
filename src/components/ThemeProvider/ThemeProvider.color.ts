@@ -367,3 +367,119 @@ export const isRampViable = (base: string): boolean => {
   const { l } = hexToOklch(base);
   return l < 0.95 && l > 0.12;
 };
+
+// ============================================================================
+// Dark scheme
+// ============================================================================
+//
+// One token cannot be both a fill for white text and readable text on a dark
+// page. White text needs a fill at relative luminance <= 0.18 (4.5:1); coloured
+// text on the dark page needs >= 0.23. The ranges do not overlap, so the dark
+// scheme *tone-shifts* every family instead: `--x-color` becomes a lighter tone
+// that reads as text on the dark surfaces, and `--x-contrast` flips to dark
+// text on it. Every "fill + `--x-contrast`" pairing in the library stays valid
+// by construction, and so does every `color: var(--x-color)`.
+//
+// The preset dark palette in `_color-schemes.scss` is produced by exactly these
+// functions from the light preset, and a unit test holds the two in step - so
+// a consumer's own colour is derived by the same rule the preset was.
+
+/** The dark scheme's page surface (`--surface`). Equal to `CONTRAST_DARK`. */
+export const DARK_SURFACE = '#0f172a';
+
+/** The dark scheme's raised surface (`--surface-raised`): menus, dialogs. */
+export const DARK_SURFACE_RAISED = '#1e293b';
+
+/**
+ * Minimum contrast a dark-scheme base must reach against **both** dark
+ * surfaces. 5:1 rather than 4.5:1 for the same reason the light bases sit at
+ * ~5:1: a hundredth of headroom is a threshold the next tweak falls through.
+ * Against the page this lands at ~6.1:1.
+ */
+export const DARK_BASE_MIN_CONTRAST = 5;
+
+/**
+ * The dark-scheme tone of `base`: the same hue and chroma, lightened just far
+ * enough to clear `DARK_BASE_MIN_CONTRAST` against both dark surfaces.
+ *
+ * A base that already clears it is returned unchanged - a consumer who picks a
+ * light brand colour gets exactly that colour in dark mode too.
+ */
+export const deriveDarkBase = (base: string): string => {
+  const reaches = (hex: string) =>
+    contrastRatio(hex, DARK_SURFACE) >= DARK_BASE_MIN_CONTRAST &&
+    contrastRatio(hex, DARK_SURFACE_RAISED) >= DARK_BASE_MIN_CONTRAST;
+  if (reaches(base)) return base;
+
+  const start = hexToOklch(base);
+  // 0.005 steps: fine enough that the result lands within a few hundredths of
+  // the threshold, coarse enough to be a few dozen iterations at most.
+  for (let l = start.l; l <= 1; l += 0.005) {
+    const candidate = oklchToHex({ ...start, l });
+    if (reaches(candidate)) return candidate;
+  }
+  return '#ffffff';
+};
+
+/** How far the dark hover sits above its base, in OKLab lightness. */
+const DARK_HOVER_DELTA = 0.07;
+/** How far the dark `--x-light` companion sits below its base. */
+const DARK_LIGHT_DELTA = 0.35;
+
+/**
+ * The dark-scheme hover (`--x-dark`). *Lighter* than the base, because on a
+ * dark surface lightening is what reads as emphasis - and lightening also
+ * moves the fill further from the dark `--x-contrast` text on it, so the hover
+ * state can only gain contrast, never lose it (~8:1 for the preset).
+ */
+export const deriveDarkHover = (darkBase: string): string => {
+  const { l, c, h } = hexToOklch(darkBase);
+  return oklchToHex({ l: Math.min(LIGHT_CEILING, l + DARK_HOVER_DELTA), c, h });
+};
+
+/**
+ * The dark-scheme `--x-light`: the low-emphasis companion, which on a dark
+ * surface means *darker* than the base. Public token; nothing in the library
+ * consumes it, matching the light scheme.
+ */
+export const deriveDarkLight = (darkBase: string): string => {
+  const { l, c, h } = hexToOklch(darkBase);
+  return oklchToHex({ l: Math.max(0.2, l - DARK_LIGHT_DELTA), c, h });
+};
+
+/**
+ * Lightness and chroma share per step of the dark `--primary-50…900` ramp.
+ *
+ * The ramp is **inverted** relative to the light one: step 50 is the faintest
+ * tint *on the dark page* - a near-page colour - and 900 is the lightest. That
+ * keeps every consumer's intent intact. "`-50` behind, `-700` as text" is a
+ * quiet tinted surface with strong text in both schemes (9.9:1 in dark).
+ */
+const DARK_RAMP_CURVE: Record<Exclude<RampStep, 500>, { l: number; chroma: number }> = {
+  50: { l: 0.235, chroma: 0.35 },
+  100: { l: 0.27, chroma: 0.45 },
+  200: { l: 0.33, chroma: 0.6 },
+  300: { l: 0.42, chroma: 0.8 },
+  400: { l: 0.55, chroma: 0.95 },
+  600: { l: 0.76, chroma: 0.8 },
+  700: { l: 0.83, chroma: 0.6 },
+  800: { l: 0.89, chroma: 0.4 },
+  900: { l: 0.945, chroma: 0.2 },
+};
+
+/** The dark `--x-50…900` ramp around a dark-scheme base, placed at 500. */
+export const buildDarkRamp = (darkBase: string): Record<RampStep, string> => {
+  const { c, h } = hexToOklch(darkBase);
+  const out = {} as Record<RampStep, string>;
+  for (const step of RAMP_STEPS) {
+    out[step] =
+      step === BASE_STEP
+        ? darkBase
+        : oklchToHex({
+            l: DARK_RAMP_CURVE[step as Exclude<RampStep, 500>].l,
+            c: c * DARK_RAMP_CURVE[step as Exclude<RampStep, 500>].chroma,
+            h,
+          });
+  }
+  return out;
+};

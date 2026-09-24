@@ -25,7 +25,7 @@
 .eidos-theme-editor-section__title {
   @include font-size(lg);
   @include font-weight(semibold);
-  color: var(--dark-color);
+  color: var(--text-default);
 }
 
 .eidos-theme-editor-section__hint {
@@ -66,7 +66,7 @@
   &__label {
     @include font-size(sm);
     @include font-weight(medium);
-    color: var(--dark-color);
+    color: var(--text-default);
     flex: 0 0 auto;
     min-width: 6.5em;
   }

@@ -278,8 +278,8 @@ export const Controlled: Story = {
       borderRadius: '9999px',
       fontSize: '0.7rem',
       fontWeight: 600,
-      background: editing ? '#dbeafe' : '#f1f5f9',
-      color: editing ? 'var(--primary-color)' : 'var(--text-muted)',
+      background: editing ? 'var(--primary-100)' : 'var(--gray-100)',
+      color: editing ? 'var(--primary-700)' : 'var(--text-muted)',
     };
 
     return (

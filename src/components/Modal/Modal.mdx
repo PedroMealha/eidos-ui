@@ -61,6 +61,6 @@ A worked example of the pattern `actions` exists for: the destructive option is 
 
 ## With a string icon
 
-`icon` takes either a Lucide component or its kebab-case name, so an icon can come from configuration without importing it.
+`icon` takes a component, or the name of an icon registered with `registerIcons` - so an icon can come from configuration once the app has registered the set it uses. An unregistered name is treated as icon-font classes.
 
 <Canvas of={ModalStories.WithStringIcon} />

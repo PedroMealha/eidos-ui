@@ -53,7 +53,7 @@
       @include border-radius(sm);
 
       &--active {
-        background: var(--white);
+        background: var(--surface);
         @include elevation(1);
       }
     }
@@ -120,7 +120,7 @@
   z-index: 1; // above the tabs it overlaps; local, so no token needed
   padding: var(--spacing-sm);
   // Opaque, because it sits on top of whatever tab is scrolled under it.
-  background: rgb(var(--white-rgb), 0.9);
+  background: var(--surface);
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-sm);
   @include elevation(1);

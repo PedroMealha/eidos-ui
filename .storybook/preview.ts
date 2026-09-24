@@ -1,4 +1,6 @@
+import { createElement } from 'react';
 import type { Preview } from '@storybook/react-vite';
+import { DocsContainer } from '@storybook/addon-docs/blocks';
 // Mirrors what a consumer importing both `eidos-ui/styles` and the optional
 // `eidos-ui/fonts` gets. Without the second import the docs render in the
 // system fallback rather than the theme's own Plus Jakarta Sans.
@@ -26,6 +28,47 @@ type StorySortEntry = { title: string; name: string };
 const preview: Preview & {
   parameters: { options: { storySort: (a: StorySortEntry, b: StorySortEntry) => number } };
 } = {
+  // Light/dark toggle in the toolbar. `?globals=colorScheme:dark` in a URL does
+  // the same, which is how `check-a11y-baseline.js` audits every story in the
+  // dark scheme without a second Storybook build.
+  globalTypes: {
+    colorScheme: {
+      description: 'Colour scheme',
+      toolbar: {
+        title: 'Scheme',
+        icon: 'mirror',
+        items: [
+          { value: 'light', title: 'Light', icon: 'sun' },
+          { value: 'dark', title: 'Dark', icon: 'moon' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: { colorScheme: 'light' },
+  decorators: [
+    // Set during render rather than in an effect, deliberately: an effect runs
+    // after the first paint, so the story would render light and then flip -
+    // and the a11y audit, which measures as soon as the story finishes, could
+    // catch the light frame. Setting the attribute is idempotent, so doing it
+    // on every render costs nothing.
+    //
+    // Stories that drive the scheme themselves (`ThemeProvider`'s) override
+    // this from inside the story, which runs after it.
+    //
+    // **Docs pages stay light.** They render in this same iframe, around
+    // Storybook's own prose, which is always light - so the dark scheme there
+    // would put dark-token components (and the Releases page, and the
+    // deprecation banner) on a light page. The scheme is previewed in the
+    // Canvas view, which is also what the a11y audit measures.
+    (Story, context) => {
+      document.documentElement.setAttribute(
+        'data-color-scheme',
+        context.viewMode === 'docs' ? 'light' : String(context.globals.colorScheme ?? 'light'),
+      );
+      return Story();
+    },
+  ],
   parameters: {
     // axe runs against every story, in the "Accessibility" panel and as part
     // of `npm run test:stories`.
@@ -68,6 +111,13 @@ const preview: Preview & {
       },
     },
     docs: {
+      // A guide page has no stories, so the decorator above never runs on it -
+      // and the preview iframe keeps `data-color-scheme` across navigations. A
+      // guide page opened after a dark story would inherit the dark tokens.
+      container: (props: Parameters<typeof DocsContainer>[0]) => {
+        document.documentElement.setAttribute('data-color-scheme', 'light');
+        return createElement(DocsContainer, props);
+      },
       // Force the "Show code" panel to always serialize the actual rendered
       // React tree to JSX, instead of falling back to the raw literal source
       // of the story object for any story using a custom `render` function

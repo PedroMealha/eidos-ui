@@ -17,7 +17,7 @@
 .eidos-color-picker-label {
   @include font-size(sm);
   @include font-weight(medium);
-  color: var(--dark-color);
+  color: var(--text-default);
 }
 
 // ============================================================================
@@ -31,7 +31,7 @@
   padding: 6px var(--spacing-sm);
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-md);
-  background: var(--white);
+  background: var(--surface);
   cursor: pointer;
   transition:
     border-color 0.15s ease,
@@ -84,7 +84,7 @@
 // ============================================================================
 
 .eidos-color-picker-panel {
-  background: var(--white);
+  background: var(--surface-raised);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-md);
   display: flex;
@@ -395,7 +395,7 @@
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-sm);
   background: var(--gray-50);
-  color: var(--dark-color);
+  color: var(--text-default);
   outline: none;
   transition:
     border-color 0.12s ease,

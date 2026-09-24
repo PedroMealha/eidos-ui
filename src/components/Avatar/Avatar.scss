@@ -172,7 +172,7 @@
   // the stylesheet - so without the guard it silently won, and a *clickable*
   // avatar inside a group had no focus indicator at all.
   .eidos-avatar:not(:focus-visible) {
-    box-shadow: 0 0 0 2px var(--white);
+    box-shadow: 0 0 0 2px var(--surface);
   }
 }
 
@@ -182,6 +182,6 @@
   // Only the separator is conditional - keeping `margin-left` out of the
   // `:not()` so focusing the overflow bubble cannot shift the group's layout.
   &:not(:focus-visible) {
-    box-shadow: 0 0 0 2px var(--white);
+    box-shadow: 0 0 0 2px var(--surface);
   }
 }

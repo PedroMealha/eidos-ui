@@ -159,7 +159,7 @@ export const OnAList: Story = {
                 cursor: 'default',
                 fontSize: 14,
                 color: 'var(--gray-700)',
-                background: 'var(--white)',
+                background: 'var(--surface)',
               }}
             >
               {name}

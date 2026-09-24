@@ -34,7 +34,7 @@ Ten knobs, not sixty tokens. Each colour is a single base; everything else is co
 
 Only `primary` has a `50…900` ramp because it is the only family that has one in the stylesheet. `hyperlink` has no `-contrast` because it is link text on a surface, never a fill.
 
-Deliberately **not** themeable: the gray ramp and `--dark-color` / `--light-color` (420 usages across surfaces, borders and body text - a free hue there wrecks text contrast), `--z-index-*` (the ordering invariant that keeps anchored popups above modals is load-bearing), and `--breakpoint-*` (compiled into media queries, so it cannot change at runtime). Override any of them in your own CSS if you need to.
+Deliberately **not** themeable: the gray ramp and the surface and text roles (`--surface`, `--text-default` - about 420 usages across surfaces, borders and body text; they follow the colour scheme, and a free hue there wrecks text contrast), `--z-index-*` (the ordering invariant that keeps anchored popups above modals is load-bearing), and `--breakpoint-*` (compiled into media queries, so it cannot change at runtime). Override any of them in your own CSS if you need to.
 
 Note that `--spacing-*` is declared in `em`, so `fontScale` moves most padding and gaps along with the text rather than only the glyphs.
 
@@ -60,9 +60,36 @@ isFontAvailable('Brand Sans'); // true
 
 **Font data cannot live in a `ThemeConfig`.** It is JSON, so only the family name is stored; registration has to happen on every load, before or alongside applying the theme.
 
+## Light and dark
+
+`colorScheme` chooses the scheme - `light`, `dark`, or `system` to follow the operating system - and writes it to `<html data-color-scheme>`, which is what `dist/index.css` keys the dark tokens on. `defaultColorScheme` is the uncontrolled version; `useTheme()` returns `colorScheme`, `resolvedColorScheme` (with `system` resolved) and `setColorScheme`.
+
+```tsx
+<ThemeProvider defaultColorScheme="system">
+  <App />
+</ThemeProvider>
+```
+
+**Your colours apply to both schemes.** In dark each one is lightened, hue kept, until it clears 5:1 against the dark page and dark surfaces, and its foreground flips to dark text - so a themed app gets an accessible dark mode without designing a second palette. For a brand that has one, `dark.colors` sets exact dark values per family:
+
+```tsx
+<ThemeProvider
+  defaultTheme={{
+    colors: { primary: '#0ea5e9' },
+    dark: { colors: { primary: '#7dd3fc' } },
+  }}
+>
+```
+
+A dark colour below 4.5:1 against the dark surfaces is used as given, with a development warning - text in it fails AA there.
+
+**Leave both `colorScheme` props unset to own the attribute yourself.** The provider then never writes it and follows whatever the page declares. That is how to avoid a flash of the wrong scheme on a server-rendered page: render `<html data-color-scheme="dark">` from your stored preference on the server. `system` needs nothing at all - it is a media query, resolved before first paint.
+
+Without a provider, set the attribute directly; the stylesheet does the rest.
+
 ## Accessible foregrounds
 
-`--x-contrast` is the colour to place on each fill. It resolves to white unless white would drop below 3:1, in which case the better of white and near-black wins. Every preset base clears 4.5:1 against white, so the preset resolves to white throughout.
+`--x-contrast` is the colour to place on each fill. It resolves to white unless white would drop below 3:1, in which case the better of white and near-black wins. Every preset base clears 4.5:1 against white, so the preset resolves to white throughout in light; in dark every base is a light tone, so it resolves to near-black.
 
 This uses WCAG 2.1 contrast rather than APCA: APCA models perception better but is still a draft targeted at WCAG 3, while WCAG 2 is what audits measure against. Its known weakness is mis-ranking some mid-tone blues and greens.
 
@@ -113,13 +140,22 @@ function AppThemeProvider({ children }) {
 
 The server sends the preset from `dist/index.css` and the theme is applied on hydration, so a non-preset theme causes one repaint on load. Nothing here breaks under SSR - `useLayoutEffect` is guarded and never runs on the server.
 
-To avoid the repaint entirely, bake the theme into CSS at build time with `useTheme().toCss()` (or the editor's "Copy as CSS" button) and skip the provider:
+To avoid the repaint entirely, bake the theme into CSS at build time with `useTheme().toCss()` (or the editor's "Copy as CSS" button) and skip the provider. The output covers both schemes, under the same selectors as `dist/index.css`:
 
 ```css
 :root {
   --primary-color: #0ea5e9;
-  --primary-rgb: 14, 165, 233;
   /* … */
+}
+
+:root[data-color-scheme='dark'] {
+  /* each colour's dark-scheme tone, ramp, hover and foreground */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-color-scheme='system'] {
+    /* the dark values again */
+  }
 }
 ```
 
@@ -131,6 +167,10 @@ With no theme supplied the provider writes **nothing at all** - `isDefault` is `
 
 <Controls of={ThemeProviderStories.Playground} />
 
+## Colour schemes
+
+<Canvas of={ThemeProviderStories.ColorSchemes} />
+
 ## Custom primary
 
 <Canvas of={ThemeProviderStories.CustomPrimary} />
@@ -138,6 +178,10 @@ With no theme supplied the provider writes **nothing at all** - `isDefault` is `
 The ramp is generated in OKLab by interpolating toward white and near-black, with the curve rescaled to whatever lightness headroom your colour leaves and a minimum separation enforced between steps. That matters for light colours: a naive implementation clips `50`–`300` to pure white.
 
 A colour too close to white or black to generate a usable scale logs a development warning, because several steps genuinely cannot be told apart. The base itself is always emitted verbatim at `--x-color` and `--primary-500`, so what you pick is what renders.
+
+## Dark overrides
+
+<Canvas of={ThemeProviderStories.DarkOverrides} />
 
 ## Pinned contrast
 
@@ -153,9 +197,9 @@ This exists because the provider writes tokens _inline_ on `documentElement`, an
 
 ## Reading the theme
 
-`useTheme()` returns `{ theme, resolvedTheme, setTheme, updateTheme, resetTheme, isDefault, toCss }` and throws outside a provider. `theme` is what was supplied, with gaps; `resolvedTheme` has every field filled in from the preset.
+`useTheme()` returns `{ theme, resolvedTheme, setTheme, updateTheme, resetTheme, isDefault, toCss, colorScheme, resolvedColorScheme, setColorScheme }` and throws outside a provider. `theme` is what was supplied, with gaps; `resolvedTheme` has every field filled in from the preset.
 
-`updateTheme` merges one level into `colors`/`typography`. To _remove_ an override and fall back to the preset, use `setTheme` with the key absent - a merge would keep the old value.
+`updateTheme` merges one level into `colors`/`typography`/`dark.colors`. To _remove_ an override and fall back to the preset, use `setTheme` with the key absent - a merge would keep the old value.
 
 <Canvas of={ThemeProviderStories.ReadingThePreset} />
 

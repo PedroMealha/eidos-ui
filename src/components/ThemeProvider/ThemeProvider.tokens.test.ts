@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   FONT_SCALE_MAX,
   FONT_SCALE_MIN,
@@ -9,7 +9,12 @@ import {
   resolveTheme,
   themeToCss,
 } from './ThemeProvider.tokens';
-import { isValidHex } from './ThemeProvider.color';
+import {
+  DARK_SURFACE,
+  DARK_SURFACE_RAISED,
+  contrastRatio,
+  isValidHex,
+} from './ThemeProvider.color';
 
 /**
  * Theme resolution and token emission.
@@ -157,8 +162,84 @@ describe('themeToCss', () => {
   });
 
   it('never emits an empty or malformed declaration', () => {
-    for (const line of css.split('\n').slice(1, -1)) {
-      expect(line, `malformed declaration: ${line}`).toMatch(/^ {2}--[\w-]+: .+;$/);
+    // Several blocks now (light, dark, and dark inside a media query), so
+    // selector, brace and blank lines are skipped and every other line - at
+    // either indent - must be one well-formed declaration.
+    const structural = /^(\s*$|\s*}$|\s*:root.* {$|@media .* {$)/;
+    const declarations = css.split('\n').filter((line) => !structural.test(line));
+    expect(declarations.length).toBeGreaterThan(0);
+    for (const line of declarations) {
+      expect(line, `malformed declaration: ${line}`).toMatch(/^ {2,4}--[\w-]+: .+;$/);
     }
+  });
+});
+
+// ─── The dark scheme ─────────────────────────────────────────────────────────
+
+describe('dark scheme tokens', () => {
+  it('an unthemed provider writes nothing in dark either', () => {
+    // The stylesheet's dark block is authoritative; an inline token would
+    // override it (and the `system` block) for no reason.
+    const tokens = buildTokens(resolveTheme({}), 'dark');
+    expect(diffFromDefault(tokens, 'dark')).toEqual({});
+  });
+
+  // A spread of real brand colours, including the two failure shapes: a dark
+  // navy with no light headroom and a saturated magenta that clears 4.5:1 on
+  // white but reads poorly on a dark page.
+  const BRANDS = ['#b5179e', '#0f766e', '#1a1a2e', '#fde047', '#e11d48', '#2563eb', '#16a34a'];
+
+  it.each(BRANDS)('derives an accessible dark tone from %s', (brand) => {
+    const tokens = buildTokens(resolveTheme({ colors: { primary: brand } }), 'dark');
+    const base = tokens['--primary-color'];
+    for (const surface of [DARK_SURFACE, DARK_SURFACE_RAISED]) {
+      expect(contrastRatio(base, surface)).toBeGreaterThanOrEqual(5);
+    }
+    expect(contrastRatio(tokens['--primary-contrast'], base)).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrastRatio(tokens['--primary-contrast'], tokens['--primary-dark']),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(tokens['--primary-700'], tokens['--primary-50'])).toBeGreaterThanOrEqual(
+      4.5,
+    );
+  });
+
+  it('writes only the customised family in dark, like in light', () => {
+    const resolved = resolveTheme({ colors: { success: '#16a34a' } });
+    const diff = diffFromDefault(buildTokens(resolved, 'dark'), 'dark');
+    expect(Object.keys(diff).every((name) => name.startsWith('--success-'))).toBe(true);
+  });
+
+  it('uses an explicit dark colour verbatim', () => {
+    const resolved = resolveTheme({
+      colors: { primary: '#0ea5e9' },
+      dark: { colors: { primary: '#7dd3fc' } },
+    });
+    expect(buildTokens(resolved, 'dark')['--primary-color']).toBe('#7dd3fc');
+    // The light scheme is untouched by a dark override.
+    expect(buildTokens(resolved, 'light')['--primary-color']).toBe('#0ea5e9');
+  });
+
+  it('warns when an explicit dark colour fails text contrast, and still uses it', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const resolved = resolveTheme({ dark: { colors: { danger: '#7f1d1d' } } });
+    expect(resolved.dark.colors.danger.base).toBe('#7f1d1d');
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('dark.colors.danger'));
+    warn.mockRestore();
+  });
+});
+
+describe('themeToCss with schemes', () => {
+  const css = themeToCss(resolveTheme({ colors: { primary: '#0ea5e9' } }));
+
+  it('emits the light block and both dark selectors', () => {
+    expect(css).toContain(':root {');
+    expect(css).toContain(":root[data-color-scheme='dark'] {");
+    expect(css).toContain('@media (prefers-color-scheme: dark)');
+    expect(css).toContain(":root[data-color-scheme='system'] {");
+  });
+
+  it('writes typography once, in the light block only', () => {
+    expect(css.match(/--font-family-primary/g)).toHaveLength(1);
   });
 });

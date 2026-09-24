@@ -116,6 +116,10 @@ import { ThemeProvider } from 'eidos-ui';
 </ThemeProvider>;
 ```
 
+The provider also manages the colour scheme - `defaultColorScheme="system"` (or
+`"dark"`, `"light"`) writes `data-color-scheme` to `<html>`. Without a provider,
+set that attribute yourself; the stylesheet does the rest.
+
 Use **one** provider, at the root. Tokens are written to
 `document.documentElement` so that portaled overlays are themed too, which means
 providers don't compose - two of them fight over the same element. A second one
@@ -153,7 +157,13 @@ All design tokens are CSS custom properties defined on `:root`. Override them af
 For a theme chosen at runtime rather than fixed at build time, use
 `ThemeProvider` (above) and optionally the `ThemeEditor` panel. It derives every
 shade, tint, ramp step and accessible foreground from one base colour per
-family; see the Theming pages in Storybook.
+family - for the dark scheme too; see the Theming pages in Storybook.
+
+A static override on `:root` applies to the light scheme. To change a dark value,
+override it under `:root[data-color-scheme='dark']` as well (and inside
+`@media (prefers-color-scheme: dark)` for `system`) - or use `toCss()`, which
+writes all three blocks. Paint your own surfaces with `--surface` and
+`--text-default` so they follow the scheme.
 
 ```css
 :root {

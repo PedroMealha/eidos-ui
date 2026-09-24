@@ -150,7 +150,7 @@
   @include font-weight(medium);
   flex-shrink: 0;
   border: 2px solid var(--gray-300);
-  background: var(--white);
+  background: var(--surface);
   color: var(--text-muted);
   transition:
     background 0.25s ease,
@@ -306,7 +306,7 @@
 .eidos-stepper-label {
   @include font-size(sm);
   @include font-weight(medium);
-  color: var(--dark-color);
+  color: var(--text-default);
 
   .eidos-stepper-step--pending & {
     color: var(--text-muted);

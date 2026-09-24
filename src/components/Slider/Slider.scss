@@ -23,7 +23,7 @@
 .eidos-slider-label {
   @include font-size(sm);
   @include font-weight(medium);
-  color: var(--dark-color);
+  color: var(--text-default);
 }
 
 .eidos-slider-value {
@@ -72,7 +72,7 @@
     appearance: none;
     border-radius: 50%;
     background: var(--primary-color);
-    border: 2px solid var(--white);
+    border: 2px solid var(--surface);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     cursor: grab;
     transition:
@@ -108,7 +108,7 @@
   &::-moz-range-thumb {
     border-radius: 50%;
     background: var(--primary-color);
-    border: 2px solid var(--white);
+    border: 2px solid var(--surface);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     cursor: grab;
     transition:

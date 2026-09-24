@@ -1,13 +1,13 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-card {
-  background: var(--white);
+  background: var(--surface);
   border-radius: var(--border-radius-lg);
   box-sizing: border-box;
 
   // ── Variants ───────────────────────────────────────────────────────
   &--outlined {
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--gray-200);
   }
 
   &--elevated {
@@ -47,7 +47,7 @@
 
     &:hover {
       box-shadow: var(--box-shadow-md);
-      border-color: #cbd5e1;
+      border-color: var(--gray-300);
     }
 
     &:active {

@@ -26,7 +26,7 @@
   margin: 0;
   @include font-size(base);
   @include font-weight(semibold);
-  color: var(--dark-color);
+  color: var(--text-default);
 }
 
 .eidos-comment-thread-count {

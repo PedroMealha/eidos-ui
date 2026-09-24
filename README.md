@@ -19,14 +19,14 @@
 
 ## Features
 
-|                     |                                                                                                                                                        |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Themeable**       | Every design token is a CSS custom property. Override them statically, or let users change the palette and typography at runtime with `ThemeProvider`. |
-| **Type-safe**       | Written in TypeScript with full prop typings exported for every component.                                                                             |
-| **Tree-shakeable**  | Per-component entry points (`eidos-ui/button`, `eidos-ui/table`, ...) keep bundles lean.                                                               |
-| **Icon-agnostic**   | Works with any icon library - Lucide, MUI Icons, Font Awesome, Remix Icons, or your own.                                                               |
-| **Accessible**      | Built with keyboard navigation and ARIA semantics in mind.                                                                                             |
-| **Optimized build** | Bundled with tsup, shipping both ESM and CJS with source maps and `.d.ts` files.                                                                       |
+|                     |                                                                                                                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Themeable**       | Every design token is a CSS custom property. Override them statically, or let users change the palette and typography at runtime with `ThemeProvider`. Light, dark and system colour schemes, AA in both. |
+| **Type-safe**       | Written in TypeScript with full prop typings exported for every component.                                                                                                                                |
+| **Tree-shakeable**  | Per-component entry points (`eidos-ui/button`, `eidos-ui/table`, ...) keep bundles lean.                                                                                                                  |
+| **Icon-agnostic**   | Works with any icon library - Lucide, MUI Icons, Font Awesome, Remix Icons, or your own.                                                                                                                  |
+| **Accessible**      | Built with keyboard navigation and ARIA semantics in mind.                                                                                                                                                |
+| **Optimized build** | Bundled with tsup, shipping both ESM and CJS with source maps and `.d.ts` files.                                                                                                                          |
 
 ## Installation
 
@@ -244,6 +244,16 @@ Individual components can also be targeted directly, following each component's 
 }
 ```
 
+### Light and dark
+
+Set `data-color-scheme` on `<html>` - `light` (the default), `dark`, or `system` to follow the operating system:
+
+```html
+<html data-color-scheme="system"></html>
+```
+
+Or let `ThemeProvider` manage it with `colorScheme` / `defaultColorScheme`. `system` is a media query, so it needs no JavaScript and cannot flash the wrong scheme on load. Custom colours apply to both schemes: in dark each one is lightened until it reads on the dark page, so a themed app's dark mode stays AA without a second palette. For your own CSS, use `--surface`, `--surface-raised` and `--text-default` - the literals (`--white`, `--dark-color`) keep their values in both schemes.
+
 ### Runtime theming
 
 `ThemeProvider` applies a theme at runtime - for a settings screen, a per-tenant palette, or a colour a user picks. Supply one base colour per family and the shades, tints, ramp steps and accessible foregrounds are derived from it:
@@ -267,7 +277,7 @@ import { ThemeProvider, ThemeEditor } from 'eidos-ui';
 
 Ten things are editable - seven colour bases, two font stacks, and a font scale. Tokens are written through the CSSOM to `document.documentElement`, which needs **no Content Security Policy allowance** and covers portaled overlays too. A theme equal to the preset writes nothing at all.
 
-Use `useTheme()` to read or change it from your own UI, and `toCss()` to export the resolved tokens as a `:root` block you can paste into a stylesheet - useful for baking a theme in at build time.
+Use `useTheme()` to read or change it from your own UI (including `setColorScheme`), and `toCss()` to export the resolved tokens - light and dark - as CSS you can paste into a stylesheet, useful for baking a theme in at build time.
 
 ### Fonts
 

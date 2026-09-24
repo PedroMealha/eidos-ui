@@ -47,14 +47,38 @@ export interface ThemeTypography {
  * exported by MUI, styled-components and others in a consumer's namespace.
  */
 export interface ThemeConfig {
+  /**
+   * The palette, applied to **both** colour schemes. In the dark scheme each
+   * colour is tone-shifted automatically - lightened until it clears 5:1
+   * against the dark surfaces, with a dark foreground on it - so one brand
+   * palette stays accessible in light and dark.
+   */
   colors?: ThemeColors;
   typography?: ThemeTypography;
+  /**
+   * Exact dark-scheme colours, for a brand that has its own dark palette.
+   * Each one replaces the colour derived from `colors` for that family only.
+   * A value that falls below 4.5:1 against the dark surfaces is still used,
+   * with a development warning - text in that colour will fail AA there.
+   */
+  dark?: { colors?: ThemeColors };
 }
+
+/**
+ * Which colour scheme to use. `system` follows the operating system's
+ * `prefers-color-scheme`, and keeps following it as it changes.
+ */
+export type ColorScheme = 'light' | 'dark' | 'system';
+
+/** The scheme actually in effect once `system` is resolved. */
+export type ResolvedColorScheme = 'light' | 'dark';
 
 /** A theme with every field populated - what the provider actually applies. */
 export interface ResolvedTheme {
   colors: Record<ThemeColorKey, { base: string; contrast?: string }>;
   typography: Required<ThemeTypography>;
+  /** The dark-scheme colours: an explicit `dark.colors` entry, or derived from `colors`. */
+  dark: { colors: Record<ThemeColorKey, { base: string; contrast?: string }> };
 }
 
 export interface ThemeContextValue {
@@ -70,8 +94,17 @@ export interface ThemeContextValue {
   resetTheme: () => void;
   /** True when nothing differs from the preset, so no tokens are being written. */
   isDefault: boolean;
-  /** The resolved theme as a `:root { … }` CSS block. */
+  /**
+   * The resolved theme as CSS: a `:root { … }` block for the light scheme and
+   * the matching blocks for the dark and `system` schemes.
+   */
   toCss: () => string;
+  /** The scheme requested - `light` unless one has been set. */
+  colorScheme: ColorScheme;
+  /** The scheme in effect, with `system` resolved against the OS setting. */
+  resolvedColorScheme: ResolvedColorScheme;
+  /** Switches the scheme. In controlled mode this only calls `onColorSchemeChange`. */
+  setColorScheme: (scheme: ColorScheme) => void;
 }
 
 export interface ThemeProviderProps {
@@ -86,4 +119,17 @@ export interface ThemeProviderProps {
   defaultTheme?: ThemeConfig;
   /** Fires whenever the theme changes, in both controlled and uncontrolled mode. */
   onThemeChange?: (theme: ThemeConfig) => void;
+  /**
+   * Controlled colour scheme, written to `<html data-color-scheme>`. Pair with
+   * `onColorSchemeChange` and persist it yourself.
+   *
+   * Leave both this and `defaultColorScheme` unset to have the provider leave
+   * the attribute alone - for an app that server-renders it to avoid a flash
+   * of the wrong scheme. The provider then reads the scheme from the page.
+   */
+  colorScheme?: ColorScheme;
+  /** Initial scheme for uncontrolled usage. Ignored when `colorScheme` is supplied. */
+  defaultColorScheme?: ColorScheme;
+  /** Fires whenever the scheme is changed through `setColorScheme`. */
+  onColorSchemeChange?: (scheme: ColorScheme) => void;
 }

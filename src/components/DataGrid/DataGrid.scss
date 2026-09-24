@@ -9,7 +9,7 @@
 }
 
 .eidos-data-grid-container {
-  background: var(--white);
+  background: var(--surface);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--gray-200);
   box-shadow: var(--box-shadow);
@@ -311,7 +311,7 @@
   &--editing {
     position: relative;
     padding: 0;
-    background: var(--white);
+    background: var(--surface);
     box-shadow: focus-ring-shadow-inset(primary);
 
     // Fill the cell with the editor, stretching horizontally & vertically.
@@ -754,7 +754,7 @@
 
 .eidos-datagrid-cell--pinned-left,
 .eidos-datagrid-cell--pinned-right {
-  background: var(--white);
+  background: var(--surface);
 }
 
 .eidos-data-grid-row:hover .eidos-datagrid-cell--pinned-left,
@@ -831,7 +831,7 @@
   padding: var(--spacing-md);
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-md);
-  background: var(--white);
+  background: var(--surface);
   transition: background-color 0.1s ease;
 
   &--selected {
@@ -887,7 +887,7 @@
 .eidos-datagrid-card-heading-title {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  color: var(--dark-color);
+  color: var(--text-default);
   border-radius: var(--border-radius-sm);
 }
 

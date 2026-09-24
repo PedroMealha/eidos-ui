@@ -201,8 +201,12 @@
 // 75 hand-written rings precisely *because* the ring had been copied 75 times,
 // and every one of them was failing WCAG identically. Anything that needs the
 // ring takes it from here.
+// The gap is `--surface`, not `--white`: it exists to separate the ring from
+// the control, so it has to be the page's own colour. In the dark scheme a
+// white gap would be a bright halo; the page colour gives the same ≥5:1
+// separation the white gap gives in light (the dark bases are tuned to it).
 @function focus-ring-shadow($color: primary, $size: 2px, $gap: 2px) {
-  @return 0 0 0 $gap var(--white), 0 0 0 ($gap + $size) var(--#{$color}-color);
+  @return 0 0 0 $gap var(--surface), 0 0 0 ($gap + $size) var(--#{$color}-color);
 }
 
 // Inset counterpart, for a control inside an `overflow` ancestor.

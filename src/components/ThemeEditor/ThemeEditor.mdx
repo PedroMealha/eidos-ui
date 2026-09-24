@@ -20,9 +20,15 @@ import { ThemeProvider, ThemeEditor } from 'eidos-ui';
 </ThemeProvider>;
 ```
 
+## Light and dark
+
+The **Colour scheme** section switches the provider between light, dark and system. Each colour applies to both schemes - in dark it is lightened until it reads on the dark page - and every contrast badge is measured against the page of the scheme being previewed, so switching to dark shows how the palette actually fares there.
+
+Turn on **Separate dark colours** to pick exact dark values: each row gains a second picker, and its reset restores the derived tone. Turning the switch off discards those overrides rather than hiding them.
+
 ## Copy as CSS
 
-"Copy as CSS" writes the resolved theme to the clipboard as a `:root { … }` block. Paste it into your own stylesheet to bake the theme in at build time - that removes the provider, the JavaScript, and the brief flash of the preset that any runtime theme has when its value arrives after first paint.
+"Copy as CSS" writes the resolved theme to the clipboard as CSS - a `:root { … }` block plus the dark-scheme blocks. Paste it into your own stylesheet to bake the theme in at build time - that removes the provider, the JavaScript, and the brief flash of the preset that any runtime theme has when its value arrives after first paint.
 
 ## Playground
 

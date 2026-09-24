@@ -59,7 +59,7 @@
 // Entry animation: scale(0.97) + translateY(-8px) → scale(1) + translateY(0).
 
 .eidos-cmd-dialog {
-  background: var(--white);
+  background: var(--surface-raised);
   border-radius: var(--border-radius-lg);
   @include elevation(4);
   width: 560px;
@@ -120,7 +120,7 @@
   @include input-reset;
   flex: 1;
   font-size: var(--font-size-base);
-  color: var(--dark-color);
+  color: var(--text-default);
   line-height: 1.5;
 
   &::placeholder {
@@ -239,7 +239,7 @@
 .eidos-cmd-item-label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  color: var(--dark-color);
+  color: var(--text-default);
   line-height: 1.4;
 }
 

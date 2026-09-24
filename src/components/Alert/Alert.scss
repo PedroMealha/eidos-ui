@@ -159,6 +159,6 @@
 
   &:hover {
     color: var(--gray-600);
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(var(--text-default-rgb), 0.05);
   }
 }

@@ -82,6 +82,17 @@ const meta = {
       table: { type: { summary: '"auto" | "none"' }, defaultValue: { summary: 'auto' } },
     },
     onChange: { table: { disable: true } },
+    ariaLabel: {
+      control: 'text',
+      description:
+        'Accessible name for the group - what the choice is about. Prefer `aria-labelledby` when a visible label exists.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    'aria-labelledby': {
+      control: 'text',
+      description: 'Id of a visible element naming the group.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     className: { table: { disable: true } },
   },
 } satisfies Meta<typeof SegmentedControl>;

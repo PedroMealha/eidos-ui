@@ -489,6 +489,11 @@ A yellow-ish `warning` cannot clear 4.5:1 against white at all - that is
 colour-space geometry, not tuning - so `--warning-color` is necessarily a dark
 gold. Don't "fix" it back to amber.
 
+In the **dark scheme** the same two requirements cannot be met by one value
+(white text needs luminance <= 0.18, text on the dark page >= 0.23), so the
+dark scheme tone-shifts: bases go light, `--x-contrast` goes dark, and
+`--x-dark` - still "the hover" - goes _lighter_. See "Colour schemes" below.
+
 ### A `--x-50` tint behind `--x-color` text is not contrast-safe
 
 It reads beautifully for the preset, which is exactly why it spreads. It is
@@ -558,15 +563,27 @@ Two corollaries:
 - **De-emphasise with size and position, not contrast.** `Chat`'s timestamp
   is already `xs` and tucked to one side; it did not also need to be faded.
 
-### A white veil raises the surface towards white text - tint with black
+### A veil must move the surface _away_ from the text on it
 
 `rgba(white, 0.15)` over a filled bubble looks like a neutral "inset" tint
 and is the wrong direction: it moves the surface _towards_ the white text
 sitting on it. Measured across the palette it gave **3.79-4.15:1** - failing
 for every single colour. The same overlay in black gave **6.79-6.87:1**.
 
-Darkening is also the theme-safe direction: it always helps light text,
-whatever hue a consumer picks. `--black-rgb` exists for exactly this.
+**Black stopped being safe with the dark scheme**, where fills are light and
+the text on them is dark - a black veil there moves towards the text. What is
+safe in both schemes:
+
+- **On a fill:** `--x-dark` (or a further ramp step, `--primary-800`). It is
+  the hover step, which by construction sits further from `--x-contrast` than
+  the base - darker in light, lighter in dark - and the scheme tests hold it
+  at >= 4.5:1 against the contrast token. `Chat`'s quote and attachment chip.
+- **A hover veil on a fill:** `color-mix(in srgb, currentColor 25%,
+transparent)`, with the `rgba` line above it as the fallback - `currentColor`
+  is the fill's own foreground. `Chip`'s filled remove button.
+- **A neutral veil on a surface:** `rgba(var(--text-default-rgb), a)` - the
+  text colour's direction always contrasts with the surface under it.
+  `--dark-rgb` / `--black-rgb` vanish on the dark page.
 
 ### Generated colour cannot promise contrast
 
@@ -575,14 +592,69 @@ initials - varied, tidy-looking, and ranging from 4.42:1 down to **1.64:1**,
 because a fixed HSL lightness says nothing about luminance: yellow-green at
 55% lightness is far brighter than blue at the same value.
 
-If a demo needs several colours, cycle the palette bases. They are tuned to
-clear 4.5:1 on white, so the example stays legible _and_ demonstrates the
-tokens instead of inventing colours a reader might copy.
+If a demo needs several colours, cycle the palette bases **with their own
+`--x-contrast`** as the foreground - never white, which is 2.9:1 on the dark
+scheme's bases. That keeps the example legible in both schemes _and_
+demonstrates the tokens instead of inventing colours a reader might copy.
+Tints for demo chips: `rgba(var(--x-rgb), 0.14)`, not a fixed pastel (1.2:1
+behind dark-scheme text).
+
+### Colour schemes (light / dark / system)
+
+`<html data-color-scheme="dark" | "system" | "light">`; no attribute is light.
+The light tokens are `:root` in `variables.scss`; the dark overrides are the
+`dark-tokens` mixin in `_color-schemes.scss`, emitted for `dark` and, inside a
+`prefers-color-scheme` query, for `system`. The rules:
+
+- **Paint with the roles, never the literals.** Surfaces: `--surface` (page,
+  cards, inputs) or `--surface-raised` (anything that floats - menus,
+  dialogs, popovers, tooltips, snackbars; a shadow cannot separate an overlay
+  on a near-black page). Body text: `--text-default`. `--white` and
+  `--dark-color` keep their literal values in both schemes on purpose, so a
+  consumer's own `var(--white)` never turns dark - which means a component
+  using them does not follow the scheme. Grep for them after any SCSS change.
+  Legit literal whites remain: `Switch`'s thumb, `ColorPicker`'s handles and
+  range thumbs (controls drawn on arbitrary colour).
+- **A ring or border that separates something from what is under it uses
+  `--surface`**, not white: the focus-ring gap, `Badge`'s ring, `Slider`'s
+  thumb border, `Avatar` group rings.
+- **The grey ramp flips in dark.** Low steps stay surfaces/borders, high steps
+  stay text, so role-correct uses need no change - but a grey used as a
+  _literal_ colour (text inside a `<pre>`, which is dark in both schemes)
+  needs its own token (`--code-text`).
+- **The dark palette is generated - never hand-edit a value.** It is
+  `deriveDarkBase` / `deriveDarkHover` / `deriveDarkLight` / `buildDarkRamp`
+  (in `ThemeProvider.color.ts`) applied to the light preset, and
+  `ThemeProvider.scheme.test.ts` fails if the stylesheet drifts from them.
+  Change the function, regenerate, paste. That parity is what guarantees a
+  consumer's custom colour is darkened by the same rule as the preset.
+- **`ThemeProvider` writes tokens for the scheme in effect.** Inline styles on
+  `<html>` outrank the stylesheet's dark block, so a custom colour written for
+  light would pin its light value in dark. Tokens are built per resolved
+  scheme and diffed against the same scheme's preset; `system` is resolved
+  with `matchMedia` (`useSyncExternalStore`). An unmanaged provider (neither
+  `colorScheme` prop set) never touches the attribute - apps that SSR it rely
+  on that.
+- **A consumer's static `:root` override is light-only.** The dark block's
+  selector outranks `:root`, so their `--primary-color` is replaced by the
+  preset dark primary in dark. Documented in GETTING_STARTED; `toCss()`
+  writes all three blocks for exactly this reason.
+- **Enforcement.** `check-a11y-baseline.js` renders every story in both
+  schemes (`&globals=colorScheme:dark`) with per-scheme counts, and
+  `ThemeProvider.scheme.test.ts` asserts every text/fill/hover/focus pairing
+  on every surface in both. When the dark audit fails, the story layer is
+  the usual culprit (hardcoded `#fff`, pastels, `var(--white)` in inline
+  styles), then veils.
+- **Storybook docs pages are always light.** They render in the preview
+  iframe around Storybook's own light prose, so the decorator forces `light`
+  when `viewMode === 'docs'` and the docs container resets the attribute for
+  story-less guide pages. The scheme is previewed in the Canvas view - which
+  is also what the audit measures.
 
 ### Disabled text is exempt - but verify it is actually disabled
 
 SC 1.4.3 exempts "text that is part of an inactive user interface
-component". Seven nodes in the audit are left standing on that basis:
+component". Eight nodes per scheme are left standing on that basis:
 `Chip`, `ColorPicker`'s label, `InlineEdit`, `OTPInput`'s label and hint, and
 `TagInput`'s chips.
 

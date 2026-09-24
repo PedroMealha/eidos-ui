@@ -35,7 +35,7 @@
   border-radius: 50%;
   flex-shrink: 0;
   border: 2px solid var(--gray-300);
-  background: var(--white);
+  background: var(--surface);
   will-change: transform;
   position: relative;
 
@@ -140,7 +140,7 @@
 .eidos-timeline-title {
   @include font-size(sm);
   @include font-weight(medium);
-  color: var(--dark-color);
+  color: var(--text-default);
 }
 
 .eidos-timeline-description {

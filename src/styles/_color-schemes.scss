@@ -1,0 +1,130 @@
+// ============================================================================
+// COLOUR SCHEMES
+// ============================================================================
+//
+// The light scheme is `:root` in `variables.scss`, and is what every app gets
+// unless it opts in:
+//
+//   <html data-color-scheme="dark">    always dark
+//   <html data-color-scheme="system">  follows prefers-color-scheme
+//   <html> (no attribute), "light"     always light - the 3.x behaviour
+//
+// `system` needs no JavaScript and cannot flash: the media query is resolved by
+// the browser before first paint, including on a server-rendered page.
+// `ThemeProvider`'s `colorScheme` prop sets the attribute; an app without the
+// provider sets it itself.
+//
+// ── How the dark palette works ──────────────────────────────────────────────
+//
+// Tone-shift, not a second set of tokens. See the "Dark scheme" section of
+// `ThemeProvider.color.ts` for why one token cannot serve as both a fill and
+// text on a dark page. In short: every `--x-color` becomes a lighter tone that
+// clears 5:1 against both dark surfaces (~6.1:1 on the page), `--x-contrast`
+// flips to dark text on it (~6.1:1), and `--x-dark` - the hover - becomes
+// *lighter* still (~8:1). Every "fill + `--x-contrast`" pairing, every
+// `color: var(--x-color)` and every focus ring holds by construction.
+//
+// **These values are generated, not hand-picked.** They are the output of
+// `deriveDarkBase` / `deriveDarkHover` / `deriveDarkLight` / `buildDarkRamp`
+// applied to the light preset, and `ThemeProvider.scheme.test.ts` fails if they
+// drift - so a consumer's own brand colour is darkened by exactly the rule the
+// preset was. Change the functions, then regenerate these; never edit a value
+// here by hand.
+//
+// The neutral ramp is the exception: it is chosen, not derived, and the same
+// test asserts the contrast of every role on every dark surface instead.
+
+@mixin dark-tokens {
+  // Surfaces and text
+  --surface: #0f172a;
+  --surface-raised: #1e293b;
+  --text-default: #e2e8f0;
+  --text-default-rgb: 226, 232, 240;
+
+  // Gray ramp, flipped. Components already use the low steps for surfaces and
+  // borders and the high steps for text, so flipping the ramp keeps every one
+  // of those roles instead of every call site having to change.
+  //
+  //                page   raised  gray-50 gray-100 gray-200
+  //   gray-600     8.12   6.65    7.66    6.65     4.71     (--text-muted)
+  //   gray-400     3.75   3.07    3.54    3.07     2.18     (--text-disabled)
+  //
+  // `--text-muted` clears 4.5:1 on every surface the library paints, the rule
+  // the light ramp was tuned to. `--text-disabled` stays below it on purpose,
+  // as in light - SC 1.4.3 exempts inactive controls.
+  --gray-50: #141d2f;
+  --gray-100: #1e293b;
+  --gray-200: #334155;
+  --gray-300: #475569;
+  --gray-400: #64748b;
+  --gray-500: #8391a7;
+  --gray-600: #a3b0c2;
+  --gray-700: #cbd5e1;
+  --gray-800: #e2e8f0;
+  --gray-900: #f8fafc;
+  --gray-rgb: 131, 145, 167;
+
+  // Palette - generated, see above.
+  --primary-color: #838dff;
+  --primary-rgb: 131, 141, 255;
+  --primary-dark: #9da8ff;
+  --primary-light: #2a1f8a;
+  --secondary-color: #8a9ab2;
+  --secondary-rgb: 138, 154, 178;
+  --secondary-dark: #9fb0c8;
+  --secondary-light: #29364a;
+  --success-color: #43a97e;
+  --success-rgb: 67, 169, 126;
+  --success-dark: #5bbf93;
+  --success-light: #003c27;
+  --danger-color: #ff6560;
+  --danger-rgb: 255, 101, 96;
+  --danger-dark: #ff9189;
+  --danger-light: #74000d;
+  --warning-color: #c78c3d;
+  --warning-rgb: 199, 140, 61;
+  --warning-dark: #dea254;
+  --warning-light: #4d2f00;
+  --info-color: #43a3ba;
+  --info-rgb: 67, 163, 186;
+  --info-dark: #5bb9d1;
+  --info-light: #003945;
+  --hyperlink-color: #45a6af;
+  --hyperlink-rgb: 69, 166, 175;
+  --hyperlink-dark: #5dbcc5;
+  --hyperlink-light: #003b40;
+
+  // Every dark base is a light tone, so dark text goes on it.
+  --primary-contrast: #0f172a;
+  --secondary-contrast: #0f172a;
+  --success-contrast: #0f172a;
+  --danger-contrast: #0f172a;
+  --warning-contrast: #0f172a;
+  --info-contrast: #0f172a;
+
+  // Primary ramp, inverted: 50 is the faintest tint *on the dark page*, 900 the
+  // lightest. "`-50` behind, `-700` as text" stays a quiet tint with strong
+  // text - 9.88:1 here.
+  --primary-50: #181a39;
+  --primary-100: #1e214a;
+  --primary-200: #2a2d67;
+  --primary-300: #3e4193;
+  --primary-400: #5d64cb;
+  --primary-500: #838dff;
+  --primary-600: #9ea9ff;
+  --primary-700: #b9c3ff;
+  --primary-800: #d1d8ff;
+  --primary-900: #e8ecff;
+
+  color-scheme: dark;
+}
+
+:root[data-color-scheme='dark'] {
+  @include dark-tokens;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-color-scheme='system'] {
+    @include dark-tokens;
+  }
+}

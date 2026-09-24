@@ -78,7 +78,7 @@ const labelStyle: React.CSSProperties = {
 
 const itemContent = (topic: string) => (
   <p style={{ margin: 0 }}>
-    <strong style={{ color: 'var(--dark-color)' }}>{topic}</strong> - This panel contains detailed
+    <strong style={{ color: 'var(--text-default)' }}>{topic}</strong> - This panel contains detailed
     information about the selected topic. Toggle the trigger above to collapse it.
   </p>
 );
@@ -410,7 +410,8 @@ export const Controlled: Story = {
         </Accordion>
 
         <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', margin: 0 }}>
-          Open item: <strong style={{ color: 'var(--dark-color)' }}>{openItem || '(none)'}</strong>
+          Open item:{' '}
+          <strong style={{ color: 'var(--text-default)' }}>{openItem || '(none)'}</strong>
         </p>
 
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -423,7 +424,7 @@ export const Controlled: Story = {
                 borderRadius: 6,
                 border: '1px solid var(--gray-300)',
                 background: openItem === v ? 'var(--primary-color)' : 'transparent',
-                color: openItem === v ? '#fff' : 'var(--dark-color)',
+                color: openItem === v ? 'var(--primary-contrast)' : 'var(--text-default)',
                 cursor: 'pointer',
                 fontSize: '0.8125rem',
                 fontWeight: 500,

@@ -11,7 +11,7 @@
 // each side) so a narrow screen shortens the rows instead of pushing the
 // panel off-screen.
 .eidos-table-filters-dropdown {
-  background: var(--white);
+  background: var(--surface-raised);
   border-radius: var(--border-radius-md);
   padding: var(--spacing-lg);
   width: min(480px, calc(100vw - 32px));

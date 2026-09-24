@@ -64,6 +64,37 @@ export default [
     },
   },
 
+  // The library and the example app pass icons as components, never names.
+  //
+  // Since 4.0 a string icon name only resolves if the *consumer* registered
+  // it, so a name inside a library component renders an empty `<i>` in every
+  // app that did not - and it warns in each of them. The 4.0 conversion was a
+  // regex over direct literals and missed a ternary
+  // (`preIcon={copied ? 'Check' : 'Clipboard'}` in ThemeEditor), which shipped
+  // broken. The selectors match a single-word string *anywhere* inside an icon
+  // prop, so a conditional cannot slip through again. Multi-word strings are
+  // icon-font classes and stay allowed.
+  {
+    files: ['src/components/**/*.component.tsx', 'dev/**/*.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name=/^(icon|preIcon|posIcon|disclaimerIcon)$/] Literal[value=/^[A-Za-z][A-Za-z0-9-]*$/]',
+          message:
+            'Pass the icon component (import it from lucide-react), not its name - a name only renders if the consuming app registered it.',
+        },
+        {
+          selector:
+            'Property[key.name=/^(icon|preIcon|posIcon)$/] > Literal[value=/^[A-Za-z][A-Za-z0-9-]*$/]',
+          message:
+            'Pass the icon component (import it from lucide-react), not its name - a name only renders if the consuming app registered it.',
+        },
+      ],
+    },
+  },
+
   // Storybook files
   ...storybook.configs['flat/recommended'],
 

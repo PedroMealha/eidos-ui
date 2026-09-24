@@ -1,7 +1,31 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Divider, PageLayout, Pill, Switch, Tooltip, useSnackbar } from 'eidos-ui';
-import { ChevronRight, LifeBuoy, LogOut, Settings, User } from 'lucide-react';
-import type { BreadcrumbItem, CommandItem, MenuItemType, NavigationItem } from 'eidos-ui';
+import {
+  Divider,
+  PageLayout,
+  Pill,
+  SegmentedControl,
+  Switch,
+  Tooltip,
+  useSnackbar,
+  useTheme,
+} from 'eidos-ui';
+import {
+  ChevronRight,
+  LifeBuoy,
+  LogOut,
+  Monitor,
+  Moon,
+  Settings,
+  SunMedium,
+  User,
+} from 'lucide-react';
+import type {
+  BreadcrumbItem,
+  ColorScheme,
+  CommandItem,
+  MenuItemType,
+  NavigationItem,
+} from 'eidos-ui';
 import { getForceFailures, setForceFailures } from '../api/client';
 import { useAuth } from '../auth/auth-context';
 import { useRouter } from '../routes/router';
@@ -27,6 +51,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   const { header, breadcrumb } = useResolvedChrome();
 
   const [failuresOn, setFailuresOn] = useState(getForceFailures);
+  const { colorScheme, resolvedColorScheme, setColorScheme } = useTheme();
 
   const isAdmin = session?.role === 'admin';
 
@@ -100,6 +125,13 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         action: () => toggleFailures(!failuresOn),
       },
       {
+        id: 'toggle-scheme',
+        label: resolvedColorScheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+        group: 'Preferences',
+        icon: resolvedColorScheme === 'dark' ? SunMedium : Moon,
+        action: () => setColorScheme(resolvedColorScheme === 'dark' ? 'light' : 'dark'),
+      },
+      {
         id: 'sign-out',
         label: 'Sign out',
         group: 'Account',
@@ -107,7 +139,15 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         action: () => void signOut(),
       },
     ],
-    [visibleNav, failuresOn, navigate, toggleFailures, signOut],
+    [
+      visibleNav,
+      failuresOn,
+      navigate,
+      toggleFailures,
+      signOut,
+      resolvedColorScheme,
+      setColorScheme,
+    ],
   );
 
   const userMenu = useMemo<MenuItemType[]>(
@@ -172,15 +212,29 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         user: { name: session?.name, color: 'primary' },
         userMenu,
         content: (
-          <Tooltip message="Simulate an outage to exercise error states">
-            <Switch
-              label="Force API errors"
-              color="danger"
+          <>
+            {/* Icon-only segments; each tooltip doubles as its accessible name. */}
+            <SegmentedControl
+              ariaLabel="Colour scheme"
               size="sm"
-              checked={failuresOn}
-              onChange={(event) => toggleFailures(event.target.checked)}
+              value={colorScheme}
+              onChange={(value) => setColorScheme(value as ColorScheme)}
+              options={[
+                { value: 'light', icon: SunMedium, tooltip: 'Light theme' },
+                { value: 'dark', icon: Moon, tooltip: 'Dark theme' },
+                { value: 'system', icon: Monitor, tooltip: 'Match the system' },
+              ]}
             />
-          </Tooltip>
+            <Tooltip message="Simulate an outage to exercise error states">
+              <Switch
+                label="Force API errors"
+                color="danger"
+                size="sm"
+                checked={failuresOn}
+                onChange={(event) => toggleFailures(event.target.checked)}
+              />
+            </Tooltip>
+          </>
         ),
       }}
       header={header}

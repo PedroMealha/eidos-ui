@@ -135,7 +135,7 @@
 .eidos-message-author {
   @include font-size(sm);
   @include font-weight(semibold);
-  color: var(--dark-color);
+  color: var(--text-default);
   @include text-truncate;
 }
 
@@ -282,7 +282,7 @@
   // suggestion of an edge.
   border: 1px solid var(--gray-500);
   border-radius: var(--border-radius-sm);
-  background: var(--white);
+  background: var(--surface);
   @include font-size(xs);
   color: var(--gray-600);
   text-decoration: none;
@@ -337,7 +337,7 @@ a.eidos-message-attachment-link {
   padding: var(--spacing-sm);
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-md);
-  background: var(--white);
+  background: var(--surface);
 
   // Matches the 0.2s ease `Input` and `Textarea` use on their wrappers, so the
   // ring below fades in rather than snapping. Those two write `transition: all`;
@@ -407,7 +407,7 @@ a.eidos-message-attachment-link {
   // the full width and height of that box, so a second ring around the text
   // only ever doubled it.
   @include font-size(sm);
-  color: var(--dark-color);
+  color: var(--text-default);
   line-height: 1.55;
   // Height is set imperatively by useAutoGrow; this is the floor before the
   // first measurement so the field never renders collapsed.

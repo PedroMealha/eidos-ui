@@ -1,8 +1,15 @@
 import { devWarn } from '../../utils';
 import {
+  DARK_SURFACE,
+  DARK_SURFACE_RAISED,
   RAMP_STEPS,
+  buildDarkRamp,
   buildRamp,
+  contrastRatio,
   deriveDark,
+  deriveDarkBase,
+  deriveDarkHover,
+  deriveDarkLight,
   deriveLight,
   hexToRgbTriple,
   isValidHex,
@@ -10,6 +17,7 @@ import {
   pickContrast,
 } from './ThemeProvider.color';
 import type {
+  ResolvedColorScheme,
   ResolvedTheme,
   ThemeColorKey,
   ThemeColorValue,
@@ -82,6 +90,9 @@ export const defaultTheme: Required<ThemeConfig> = {
       "'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace",
     fontScale: 1,
   },
+  // Empty on purpose: the preset's dark colours are *derived* from `colors`
+  // (see `_color-schemes.scss`), exactly as a consumer's are.
+  dark: {},
 };
 
 /** The preset `--primary-*` ramp, needed so an unthemed primary emits nothing. */
@@ -104,35 +115,64 @@ export const FONT_SCALE_MAX = 1.25;
 const normalizeColor = (value: ThemeColorValue): { base: string; contrast?: string } =>
   typeof value === 'string' ? { base: value } : value;
 
+type ResolvedColor = { base: string; contrast?: string };
+
+/**
+ * Validates one supplied colour. `undefined` means "use the fallback" - either
+ * nothing was supplied or the base was invalid (which warns).
+ */
+const resolveColor = (
+  supplied: ThemeColorValue | undefined,
+  path: string,
+): ResolvedColor | undefined => {
+  if (supplied === undefined) return undefined;
+  const { base, contrast } = normalizeColor(supplied);
+  if (!isValidHex(base)) {
+    devWarn(
+      `theme-color-${path}`,
+      `ThemeProvider: ${path} is not a valid hex colour (received ${JSON.stringify(base)}). Falling back to the preset.`,
+    );
+    return undefined;
+  }
+  if (contrast !== undefined && !isValidHex(contrast)) {
+    devWarn(
+      `theme-contrast-${path}`,
+      `ThemeProvider: ${path}.contrast is not a valid hex colour (received ${JSON.stringify(contrast)}). It will be computed instead.`,
+    );
+    return { base };
+  }
+  return contrast === undefined ? { base } : { base, contrast };
+};
+
 /** Fills every absent field from the preset. */
 export const resolveTheme = (theme: ThemeConfig): ResolvedTheme => {
   const colors = {} as ResolvedTheme['colors'];
+  const darkColors = {} as ResolvedTheme['colors'];
 
   for (const key of THEME_COLOR_KEYS) {
-    const supplied = theme.colors?.[key];
-    const fallback = normalizeColor(defaultTheme.colors[key]!);
-    if (supplied === undefined) {
-      colors[key] = fallback;
-      continue;
-    }
-    const { base, contrast } = normalizeColor(supplied);
-    if (!isValidHex(base)) {
-      devWarn(
-        `theme-color-${key}`,
-        `ThemeProvider: colors.${key} is not a valid hex colour (received ${JSON.stringify(base)}). Falling back to the preset.`,
+    colors[key] =
+      resolveColor(theme.colors?.[key], `colors.${key}`) ??
+      normalizeColor(defaultTheme.colors[key]!);
+
+    // The dark colour: an explicit `dark.colors` entry wins; otherwise the
+    // light colour is tone-shifted, exactly as the preset's was. A pinned
+    // light `contrast` does not carry over - it was chosen for the light fill.
+    const explicitDark = resolveColor(theme.dark?.colors?.[key], `dark.colors.${key}`);
+    if (explicitDark) {
+      const worst = Math.min(
+        contrastRatio(explicitDark.base, DARK_SURFACE),
+        contrastRatio(explicitDark.base, DARK_SURFACE_RAISED),
       );
-      colors[key] = fallback;
-      continue;
+      if (worst < 4.5) {
+        devWarn(
+          `theme-dark-contrast-${key}`,
+          `ThemeProvider: dark.colors.${key} (${explicitDark.base}) is ${worst.toFixed(2)}:1 against the dark surfaces, below the 4.5:1 text needs. It is used as given, but text in it will fail WCAG AA in the dark scheme - omit it to have a compliant tone derived from colors.${key}.`,
+        );
+      }
+      darkColors[key] = explicitDark;
+    } else {
+      darkColors[key] = { base: deriveDarkBase(colors[key].base) };
     }
-    if (contrast !== undefined && !isValidHex(contrast)) {
-      devWarn(
-        `theme-contrast-${key}`,
-        `ThemeProvider: colors.${key}.contrast is not a valid hex colour (received ${JSON.stringify(contrast)}). It will be computed instead.`,
-      );
-      colors[key] = { base };
-      continue;
-    }
-    colors[key] = contrast === undefined ? { base } : { base, contrast };
   }
 
   const scale = theme.typography?.fontScale;
@@ -155,6 +195,7 @@ export const resolveTheme = (theme: ThemeConfig): ResolvedTheme => {
       monoFamily: theme.typography?.monoFamily || defaultTheme.typography.monoFamily!,
       fontScale,
     },
+    dark: { colors: darkColors },
   };
 };
 
@@ -165,7 +206,11 @@ export const resolveTheme = (theme: ThemeConfig): ResolvedTheme => {
  * the six fill families also get `--x-contrast`, and `primary` additionally
  * gets the full `--primary-50…900` ramp.
  */
-export const buildTokens = (resolved: ResolvedTheme): Record<string, string> => {
+export const buildTokens = (
+  resolved: ResolvedTheme,
+  scheme: ResolvedColorScheme = 'light',
+): Record<string, string> => {
+  if (scheme === 'dark') return buildDarkTokens(resolved);
   const tokens: Record<string, string> = {};
 
   for (const key of THEME_COLOR_KEYS) {
@@ -196,6 +241,12 @@ export const buildTokens = (resolved: ResolvedTheme): Record<string, string> => 
     }
   }
 
+  Object.assign(tokens, typographyTokens(resolved));
+  return tokens;
+};
+
+const typographyTokens = (resolved: ResolvedTheme): Record<string, string> => {
+  const tokens: Record<string, string> = {};
   const { fontFamily, monoFamily, fontScale } = resolved.typography;
   tokens['--font-family-primary'] = fontFamily;
   tokens['--font-family-mono'] = monoFamily;
@@ -203,39 +254,85 @@ export const buildTokens = (resolved: ResolvedTheme): Record<string, string> => 
     // Trailing zeros trimmed so 1 * 0.75 reads as `0.75rem`, not `0.750rem`.
     tokens[`--font-size-${name}`] = `${parseFloat((rem * fontScale).toFixed(4))}rem`;
   }
-
   return tokens;
 };
 
-/** Tokens for the preset, used to tell which of them are actually overrides. */
-const DEFAULT_TOKENS = buildTokens(resolveTheme(defaultTheme));
+/**
+ * The dark scheme's colour tokens, from `resolved.dark` - by the same
+ * functions that generated the preset dark palette in `_color-schemes.scss`,
+ * so an unthemed dark provider reproduces it exactly and writes nothing.
+ */
+const buildDarkTokens = (resolved: ResolvedTheme): Record<string, string> => {
+  const tokens: Record<string, string> = {};
+  for (const key of THEME_COLOR_KEYS) {
+    const { base, contrast } = resolved.dark.colors[key];
+    tokens[`--${key}-color`] = base;
+    tokens[`--${key}-rgb`] = hexToRgbTriple(base);
+    tokens[`--${key}-dark`] = deriveDarkHover(base);
+    tokens[`--${key}-light`] = deriveDarkLight(base);
+    if (FILL_COLOR_KEYS.includes(key)) {
+      tokens[`--${key}-contrast`] = contrast ?? pickContrast(base);
+    }
+    if (key === RAMP_COLOR_KEY) {
+      const ramp = buildDarkRamp(base);
+      for (const step of RAMP_STEPS) tokens[`--${key}-${step}`] = ramp[step];
+    }
+  }
+  Object.assign(tokens, typographyTokens(resolved));
+  return tokens;
+};
+
+/** Tokens for the preset in each scheme, used to tell which are overrides. */
+const DEFAULT_TOKENS: Record<ResolvedColorScheme, Record<string, string>> = {
+  light: buildTokens(resolveTheme(defaultTheme), 'light'),
+  dark: buildTokens(resolveTheme(defaultTheme), 'dark'),
+};
 
 /**
- * Only the tokens that differ from the preset.
+ * Only the tokens that differ from the preset *in the same scheme*.
  *
- * This is what makes an unthemed `ThemeProvider` a no-op: it writes nothing, so
- * `dist/index.css` stays authoritative and there is no inline-style churn on
- * `documentElement` for values that already match.
+ * This is what makes an unthemed `ThemeProvider` a no-op in both schemes: it
+ * writes nothing, so `dist/index.css` stays authoritative - including its dark
+ * and `system` blocks, which inline styles would otherwise override.
  */
-export const diffFromDefault = (tokens: Record<string, string>): Record<string, string> => {
+export const diffFromDefault = (
+  tokens: Record<string, string>,
+  scheme: ResolvedColorScheme = 'light',
+): Record<string, string> => {
   const diff: Record<string, string> = {};
   for (const [name, value] of Object.entries(tokens)) {
-    if (DEFAULT_TOKENS[name] !== value) diff[name] = value;
+    if (DEFAULT_TOKENS[scheme][name] !== value) diff[name] = value;
   }
   return diff;
 };
 
+const block = (selector: string, tokens: Record<string, string>, indent = '') =>
+  `${indent}${selector} {\n` +
+  Object.entries(tokens)
+    .map(([name, value]) => `${indent}  ${name}: ${value};`)
+    .join('\n') +
+  `\n${indent}}`;
+
 /**
- * The resolved theme as a `:root { … }` block.
+ * The resolved theme as CSS: `:root` for the light scheme, plus the dark
+ * scheme's colours under `[data-color-scheme='dark']` and, inside a
+ * `prefers-color-scheme` query, `[data-color-scheme='system']` - the same
+ * selectors `dist/index.css` uses, so the pasted theme follows the scheme
+ * exactly as the preset does.
  *
- * Paste the output into your own stylesheet to bake a theme in at build time -
- * that avoids the brief flash of the preset that any runtime theme has when the
+ * Paste it into your own stylesheet to bake a theme in at build time - that
+ * avoids the brief flash of the preset that any runtime theme has when the
  * value arrives after first paint, and needs no JavaScript at all.
  */
 export const themeToCss = (resolved: ResolvedTheme): string => {
-  const tokens = buildTokens(resolved);
-  const body = Object.entries(tokens)
-    .map(([name, value]) => `  ${name}: ${value};`)
-    .join('\n');
-  return `:root {\n${body}\n}`;
+  const light = buildTokens(resolved, 'light');
+  // Typography is scheme-independent, so it is only written once.
+  const dark = Object.fromEntries(
+    Object.entries(buildTokens(resolved, 'dark')).filter(([name]) => !name.startsWith('--font-')),
+  );
+  return [
+    block(':root', light),
+    block(":root[data-color-scheme='dark']", dark),
+    `@media (prefers-color-scheme: dark) {\n${block(":root[data-color-scheme='system']", dark, '  ')}\n}`,
+  ].join('\n\n');
 };

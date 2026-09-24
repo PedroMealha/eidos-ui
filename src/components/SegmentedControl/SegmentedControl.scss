@@ -111,7 +111,7 @@ $chip-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transform: translateY(-50%);
   z-index: 1; // above the segments it overlaps; local, so no token needed
   // Opaque, because it sits on top of whatever segment scrolls under it.
-  background: rgba(var(--white-rgb), 0.95);
+  background: var(--surface);
   border: 1px solid var(--gray-200);
   border-radius: 50%;
   @include elevation(1);
@@ -251,7 +251,7 @@ $chip-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   // ── Active (selected) chip ─────────────────────────────────────────────────
 
   &--active {
-    background: var(--white);
+    background: var(--surface);
     box-shadow: $chip-shadow;
 
     // Color variants: active segment text matches the chosen color token.

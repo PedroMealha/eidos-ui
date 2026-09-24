@@ -87,7 +87,7 @@ const SnackbarDemo = () => {
               showSnackbar({
                 component: () => (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <UserCircle size={40} style={{ color: '#667eea' }} />
+                    <UserCircle size={40} style={{ color: 'var(--primary-color)' }} />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '14px' }}>New Message</div>
                       <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
@@ -288,7 +288,7 @@ export const CustomComponent: Story = {
             showSnackbar({
               component: () => (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <UserCircle size={40} style={{ color: '#667eea' }} />
+                  <UserCircle size={40} style={{ color: 'var(--primary-color)' }} />
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>
                       New Message

@@ -88,7 +88,7 @@ const meta = {
     },
     preIcon: {
       control: 'text',
-      description: 'Icon to display before input. Pass Lucide component (Mail) or string ("mail")',
+      description: 'Icon before the input: a component (`Mail`), or a registered name.',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',
@@ -97,8 +97,7 @@ const meta = {
     },
     posIcon: {
       control: 'text',
-      description:
-        'Icon to display after input. Pass Lucide component (Search) or string ("search")',
+      description: 'Icon after the input: a component (`Search`), or a registered name.',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',
@@ -107,8 +106,7 @@ const meta = {
     },
     disclaimerIcon: {
       control: 'text',
-      description:
-        'Icon to display next to label. Pass Lucide component (HelpCircle) or string ("help-circle")',
+      description: 'Icon next to the label: a component (`HelpCircle`), or a registered name.',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',

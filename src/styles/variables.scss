@@ -1,4 +1,8 @@
 @use './breakpoints' as bp;
+// The dark scheme's overrides. A separate partial so this file stays the one
+// place the light preset is read from; the dark selectors outrank `:root` on
+// specificity, so the order the two are emitted in does not matter.
+@use './color-schemes';
 
 :root {
   // Colour palette and WCAG AA
@@ -124,6 +128,10 @@
 
   // Text roles
   //
+  // `--text-default` is body text - `--dark-color` in light, re-pointed by the
+  // dark scheme. Components never use `--dark-color` for text directly.
+  --text-default: var(--dark-color);
+
   // Use these for *text*, never a raw --gray-N. The grays are a surface ramp:
   // picking one for a label is how the library ended up with 99 declarations
   // of `color: var(--gray-400)` on placeholders, hints, timestamps, counts and
@@ -142,7 +150,7 @@
   // The gray-500 row is not hypothetical - `#64748b` on `#f1f5f9` accounted
   // for 54 of those violations. --gray-600 is the lightest step that is safe
   // on every surface the library paints, and at 7.58:1 it still reads as
-  // clearly secondary next to body text (--dark-color, 14.63:1).
+  // clearly secondary next to body text (--text-default, 14.63:1).
   --text-muted: var(--gray-600);
 
   // Disabled controls only. WCAG 1.4.3 exempts "inactive user interface
@@ -150,6 +158,34 @@
   // is *supposed* to look unavailable. Do not use it for read-only content:
   // a read-only cell or transcript is still content someone has to read.
   --text-disabled: var(--gray-400);
+
+  // Surfaces
+  //
+  // The scheme-aware names for what components paint on, and - with
+  // `--text-default` above - the body text on it. Components use these, never
+  // `--white` or `--dark-color` directly. In the light scheme they resolve to
+  // exactly those literals, so nothing looks different; the dark scheme
+  // (`_color-schemes.scss`) re-points them. The literals keep their meaning in
+  // both schemes - `--white` is white - so a consumer's own
+  // `color: var(--white)` never silently turns dark.
+  //
+  // Two surfaces, because the dark scheme cannot separate an overlay from the
+  // page with a shadow alone - a shadow on a near-black page is invisible. A
+  // menu, dialog or popover sits on `--surface-raised`, which is one step
+  // lighter there. In light both are white and elevation does the separating.
+  --surface: var(--white);
+  --surface-raised: var(--white);
+  // Companion for the opacity mixins - a neutral hover veil over any surface
+  // is `rgba(var(--text-default-rgb), 0.08)`, which darkens in light and
+  // lightens in dark. `--dark-rgb` there would vanish on a dark surface.
+  --text-default-rgb: var(--dark-rgb);
+  // Text inside a `<pre>`, which is a dark panel in both schemes. A literal
+  // (the light `--gray-300`), because the gray ramp flips in dark.
+  --code-text: #cbd5e1;
+
+  // Tells the browser which scheme its own UI should match - native form
+  // controls, scrollbars, the default canvas. Re-pointed with the rest.
+  color-scheme: light;
 
   // Typography
   --font-family-primary:

@@ -169,7 +169,7 @@
   flex-shrink: 0;
   border: 2px solid var(--gray-400);
   border-radius: 50%;
-  background: var(--white);
+  background: var(--surface);
   will-change: transform;
   transition: all 0.2s ease;
 
@@ -207,7 +207,7 @@
 // ============================================================================
 
 .eidos-radio-label {
-  color: var(--dark-color);
+  color: var(--text-default);
   line-height: 1;
   user-select: none;
 

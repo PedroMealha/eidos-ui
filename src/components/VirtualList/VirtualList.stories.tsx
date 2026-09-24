@@ -47,30 +47,25 @@ const rowStyle: React.CSSProperties = {
  * ranged from 4.42:1 down to **1.64:1** - yellow-greens were effectively
  * unreadable. Generated colour cannot promise contrast.
  *
- * The palette bases can: every one is tuned to clear 4.5:1 against white
- * (see the contrast table in `variables.scss`), so cycling them keeps the
+ * The palette bases can: every one is tuned to clear 4.5:1 against its own
+ * `--x-contrast`, in both schemes, so cycling them keeps the
  * example both varied and legible - and demonstrates the tokens rather than
  * inventing colours a consumer should not copy.
  */
-const AVATAR_FILLS = [
-  'var(--primary-color)',
-  'var(--success-color)',
-  'var(--danger-color)',
-  'var(--warning-color)',
-  'var(--info-color)',
-  'var(--secondary-color)',
-] as const;
+const AVATAR_FAMILIES = ['primary', 'success', 'danger', 'warning', 'info', 'secondary'] as const;
 
 const avatarStyle = (index: number): React.CSSProperties => ({
   flexShrink: 0,
   width: 32,
   height: 32,
   borderRadius: '50%',
-  background: AVATAR_FILLS[index % AVATAR_FILLS.length],
+  background: `var(--${AVATAR_FAMILIES[index % AVATAR_FAMILIES.length]}-color)`,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: 'var(--white)',
+  // Each fill's own contrast token, not white: the dark scheme's bases are
+  // light tones, and white on them measures 2.9:1.
+  color: `var(--${AVATAR_FAMILIES[index % AVATAR_FAMILIES.length]}-contrast)`,
   fontWeight: 600,
   fontSize: '0.75rem',
 });
@@ -92,13 +87,15 @@ const metaStyle: React.CSSProperties = {
 };
 
 const chipStyle = (department: string): React.CSSProperties => {
+  // Tints of the palette rather than fixed pastels, so they follow the scheme:
+  // a light pastel behind the dark scheme's light text measured 1.2-1.3:1.
   const palette: Record<string, string> = {
-    Engineering: '#e0e7ff',
-    Design: '#fce7f3',
-    Product: '#d1fae5',
-    Marketing: '#fef3c7',
-    Sales: '#fee2e2',
-    HR: '#e0f2fe',
+    Engineering: 'rgba(var(--primary-rgb), 0.14)',
+    Design: 'rgba(var(--danger-rgb), 0.14)',
+    Product: 'rgba(var(--success-rgb), 0.14)',
+    Marketing: 'rgba(var(--warning-rgb), 0.14)',
+    Sales: 'rgba(var(--secondary-rgb), 0.14)',
+    HR: 'rgba(var(--info-rgb), 0.14)',
   };
   return {
     marginLeft: 'auto',
@@ -107,7 +104,7 @@ const chipStyle = (department: string): React.CSSProperties => {
     borderRadius: 4,
     fontSize: '0.7rem',
     fontWeight: 600,
-    background: palette[department] ?? '#f1f5f9',
+    background: palette[department] ?? 'var(--gray-100)',
     color: 'var(--gray-700)',
   };
 };

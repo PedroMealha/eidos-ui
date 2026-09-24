@@ -248,6 +248,8 @@ export type {
   ResolvedTheme,
   ThemeContextValue,
   ThemeProviderProps,
+  ColorScheme,
+  ResolvedColorScheme,
   RegisteredFont,
 } from './components/ThemeProvider';
 export type { ThemeEditorProps } from './components/ThemeEditor';

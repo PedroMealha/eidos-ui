@@ -24,7 +24,7 @@ $avatar-size: 32px;
   height: 100%;
   box-sizing: border-box;
   padding: var(--spacing-md) var(--spacing-md);
-  background-color: var(--white);
+  background-color: var(--surface);
   // Establishes the positioning context for `&__toggle` below, which floats
   // half in/half out of the rail rather than occupying its own row in the
   // flex column - see that rule's own comment for why.
@@ -115,7 +115,7 @@ $avatar-size: 32px;
     min-width: 0;
     font-weight: var(--font-weight-semibold);
     letter-spacing: -0.01em;
-    color: var(--dark-color);
+    color: var(--text-default);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -238,7 +238,7 @@ $avatar-size: 32px;
     // only ~0.09 lightness below its base and drops to 1.6:1 on a pale one.
     &:hover:not(:disabled) {
       background: var(--primary-50);
-      color: var(--dark-color);
+      color: var(--text-default);
     }
 
     &:disabled {
@@ -378,7 +378,7 @@ $avatar-size: 32px;
     right: 0;
     transform: translateX(50%);
     z-index: 1;
-    background: var(--white);
+    background: var(--surface);
     border-radius: 50%;
     border: 1px solid var(--gray-200);
   }

@@ -175,7 +175,7 @@ export const Controlled: Story = {
                 padding: '4px 10px',
                 borderRadius: '6px',
                 border: '1px solid var(--gray-200)',
-                background: 'var(--white)',
+                background: 'var(--surface)',
                 color: 'var(--text-muted)',
                 cursor: 'pointer',
                 fontSize: '0.75rem',

@@ -190,7 +190,7 @@
   flex-shrink: 0;
   border: 2px solid var(--gray-400);
   @include border-radius(xs);
-  background: var(--white);
+  background: var(--surface);
   will-change: transform;
   transition: all 0.2s ease;
   overflow: hidden;
@@ -225,7 +225,7 @@
 // ============================================================================
 
 .eidos-checkbox-label {
-  color: var(--dark-color);
+  color: var(--text-default);
   line-height: 1;
   user-select: none;
 

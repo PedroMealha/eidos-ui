@@ -5,6 +5,7 @@ import { CircleAlert, CircleCheck, CircleX, Info, Trash2 } from 'lucide-react';
 import { Modal } from './Modal.component';
 import { Button } from '../Button';
 import { StoryRow } from '../../story-layout.docs';
+import { registerIcons } from '../../utils';
 import { expectFocusTrap } from '../../story-a11y.docs';
 import { expect, screen, waitFor } from 'storybook/test';
 
@@ -38,8 +39,7 @@ const meta = {
     },
     icon: {
       control: 'text',
-      description:
-        'Icon to display in header. Pass Lucide component (CircleAlert) or string ("circle-alert")',
+      description: 'Icon in the header: a component (`CircleAlert`), or a registered name.',
       table: {
         type: { summary: 'React.ComponentType | string' },
         category: 'Icons',
@@ -162,16 +162,21 @@ export const Types: Story = {
   ),
 };
 
+// Registered once at module scope, the way an app registers at its root. A
+// string name only resolves once registered - see the Button docs.
+registerIcons({ Trash2 });
+
 export const WithStringIcon: Story = {
   render: () => (
     <ModalDemo
       triggerLabel="Open with string icon"
       title="Delete confirmation"
-      icon={Trash2}
+      icon="trash-2"
       type="danger"
     >
       <p>
-        The <code>icon</code> prop accepts a Lucide component or its kebab-case name.
+        The <code>icon</code> prop accepts a component, or the name of an icon registered with{' '}
+        <code>registerIcons</code>.
       </p>
     </ModalDemo>
   ),

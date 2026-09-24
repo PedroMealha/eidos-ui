@@ -230,9 +230,9 @@ export const ColourGroups = () => (
  * - the point being that `--text-disabled` visibly fails and is *supposed* to.
  */
 export const TextRoles = () => {
-  const roles = group('Text roles')?.tokens ?? [];
-  const body = { name: '--dark-color', value: resolve('var(--dark-color)') };
-  const all = [body, ...roles];
+  // `--text-default` is part of the group now, so body text needs no special
+  // case. Values are the light scheme's - the page is rendered light.
+  const all = group('Text roles')?.tokens ?? [];
 
   return (
     <Section title="Text roles on white">

@@ -8,7 +8,7 @@
 .eidos-popover-content {
   position: fixed;
   z-index: var(--z-index-dropdown);
-  background: var(--white);
+  background: var(--surface-raised);
   border: 1px solid var(--gray-200);
   @include border-radius(md);
   @include elevation(2);
@@ -50,7 +50,7 @@
 .eidos-popover-title {
   @include font-weight(medium);
   @include font-size(sm);
-  color: var(--dark-color);
+  color: var(--text-default);
   flex: 1;
   // Centres any inline node passed alongside the title text (see the same
   // treatment on Header/Modal/Alert/Drawer/EmptyState titles).
@@ -75,7 +75,7 @@
   flex-shrink: 0;
 
   &:hover {
-    color: var(--dark-color);
+    color: var(--text-default);
     background: var(--gray-100);
   }
 

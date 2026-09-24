@@ -10,7 +10,7 @@
     'navigation content';
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
-  background-color: var(--white);
+  background-color: var(--surface);
 
   &__toolbar {
     grid-area: toolbar;

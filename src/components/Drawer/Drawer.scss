@@ -39,7 +39,7 @@
 
 .eidos-drawer-panel {
   position: absolute;
-  background: var(--white);
+  background: var(--surface-raised);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -158,7 +158,7 @@
   margin: 0;
   @include font-weight(medium);
   font-size: var(--font-size-base);
-  color: var(--dark-color);
+  color: var(--text-default);
   flex: 1;
   // Centres any inline node passed alongside the title text (see the same
   // treatment on Header/Modal/Alert/Popover/EmptyState titles).
@@ -183,7 +183,7 @@
     background-color 0.15s ease;
 
   &:hover {
-    color: var(--dark-color);
+    color: var(--text-default);
     background-color: var(--gray-100);
   }
 

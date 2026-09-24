@@ -76,7 +76,7 @@
   cursor: pointer;
   background: transparent;
   @include font-weight(medium);
-  color: var(--dark-color);
+  color: var(--text-default);
   text-align: left;
   transition:
     background 0.15s ease,

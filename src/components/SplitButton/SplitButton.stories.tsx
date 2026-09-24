@@ -75,8 +75,7 @@ const meta = {
     },
     preIcon: {
       control: 'text',
-      description:
-        'Icon before the primary label. Pass a Lucide component (Save) or string name ("save").',
+      description: 'Icon before the primary label: a component (`Save`), or a registered name.',
       table: { type: { summary: 'React.ComponentType | string' }, category: 'Icons' },
     },
     options: {

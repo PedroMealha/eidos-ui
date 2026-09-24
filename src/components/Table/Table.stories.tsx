@@ -559,7 +559,7 @@ export const WithClickableRows: Story = {
             style={{
               marginTop: '16px',
               padding: '12px',
-              background: '#f5f5f5',
+              background: 'var(--gray-100)',
               borderRadius: '8px',
             }}
           >

@@ -6,7 +6,7 @@
   padding: var(--spacing-md) var(--spacing-lg);
   @include border-radius(md);
   @include elevation(3);
-  background-color: var(--white);
+  background-color: var(--surface-raised);
   border: 1px solid var(--gray-200);
   min-width: 300px;
   max-width: 500px;
@@ -58,7 +58,7 @@
   // Variant styles
   &--success {
     border-color: var(--success-color);
-    background-color: var(--white);
+    background-color: var(--surface-raised);
 
     &::before {
       content: '';
@@ -77,7 +77,7 @@
 
   &--danger {
     border-color: var(--danger-color);
-    background-color: var(--white);
+    background-color: var(--surface-raised);
 
     &::before {
       content: '';
@@ -96,7 +96,7 @@
 
   &--warning {
     border-color: var(--warning-color);
-    background-color: var(--white);
+    background-color: var(--surface-raised);
 
     &::before {
       content: '';
@@ -115,7 +115,7 @@
 
   &--info {
     border-color: var(--info-color);
-    background-color: var(--white);
+    background-color: var(--surface-raised);
 
     &::before {
       content: '';
@@ -142,7 +142,7 @@
     @include font-size(sm);
     font-weight: var(--font-weight-medium);
     line-height: 1.4;
-    color: var(--dark-color);
+    color: var(--text-default);
   }
 
   .eidos-snackbar-actions {

@@ -21,4 +21,6 @@ export type {
   ResolvedTheme,
   ThemeContextValue,
   ThemeProviderProps,
+  ColorScheme,
+  ResolvedColorScheme,
 } from './ThemeProvider.types';

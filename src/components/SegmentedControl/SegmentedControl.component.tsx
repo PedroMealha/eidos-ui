@@ -46,6 +46,8 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   disabled = false,
   fullWidth = false,
   scrollButtons = 'auto',
+  ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   className = '',
 }) => {
   const isControlled = value !== undefined;
@@ -221,7 +223,13 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     ].join(' ');
 
   const track = (
-    <div ref={trackRef} className={containerClasses} role="radiogroup">
+    <div
+      ref={trackRef}
+      className={containerClasses}
+      role="radiogroup"
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    >
       {options.map((opt) => {
         const isActive = activeValue === opt.value;
         const isDisabled = disabled || !!opt.disabled;

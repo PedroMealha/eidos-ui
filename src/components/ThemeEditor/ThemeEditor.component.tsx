@@ -1,14 +1,29 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { CircleCheck, CircleX, RotateCcw, TriangleAlert, Upload } from 'lucide-react';
+import {
+  Check,
+  CircleCheck,
+  CircleX,
+  Clipboard,
+  RotateCcw,
+  TriangleAlert,
+  Upload,
+} from 'lucide-react';
 import { Alert } from '../Alert';
 import { Button, IconButton } from '../Button';
 import { Card } from '../Card';
 import { ColorPicker } from '../ColorPicker';
+import { SegmentedControl } from '../SegmentedControl';
 import { Select } from '../Select';
 import { Slider } from '../Slider';
+import { Switch } from '../Switch';
 import { Tooltip } from '../Tooltip';
 import { useTheme } from '../ThemeProvider';
-import type { ThemeColorKey, ThemeFontOption } from '../ThemeProvider';
+import type {
+  ColorScheme,
+  ResolvedColorScheme,
+  ThemeColorKey,
+  ThemeFontOption,
+} from '../ThemeProvider';
 import {
   THEME_COLOR_KEYS,
   FONT_SCALE_MAX,
@@ -18,6 +33,7 @@ import {
 import {
   CONTRAST_DARK,
   CONTRAST_LIGHT,
+  DARK_SURFACE,
   contrastRatio,
   pickContrast,
 } from '../ThemeProvider/ThemeProvider.color';
@@ -30,8 +46,20 @@ import {
 } from '../ThemeProvider/ThemeProvider.fonts';
 import type { ThemeEditorProps } from './ThemeEditor.types';
 
-/** The page surface every diagnostic is measured against - `--white`. */
-const PAGE_SURFACE = CONTRAST_LIGHT;
+/**
+ * The page surface each scheme's diagnostics are measured against - the
+ * `--surface` token's value in that scheme.
+ */
+const PAGE_SURFACE: Record<ResolvedColorScheme, string> = {
+  light: CONTRAST_LIGHT,
+  dark: DARK_SURFACE,
+};
+
+const SCHEME_OPTIONS: { value: ColorScheme; label: string }[] = [
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'system', label: 'System' },
+];
 
 /** Below this, a fill is effectively invisible against the page behind it. */
 const EDGE_MIN_RATIO = 1.5;
@@ -131,22 +159,28 @@ interface Diagnostic {
   edgeWarning?: string;
 }
 
-const diagnose = (key: ThemeColorKey, base: string, explicitContrast?: string): Diagnostic => {
+const diagnose = (
+  key: ThemeColorKey,
+  base: string,
+  explicitContrast: string | undefined,
+  scheme: ResolvedColorScheme,
+): Diagnostic => {
+  const page = PAGE_SURFACE[scheme];
   if (!isFill(key)) {
     // Link text sits on the page, so the page is what it must contrast with.
-    const ratio = contrastRatio(base, PAGE_SURFACE);
+    const ratio = contrastRatio(base, page);
     const grade = gradeFor(ratio);
     return {
       grade,
       ratio,
-      detail: `Link text on the page background: ${ratio.toFixed(2)}:1 against white.${GRADE_CAVEAT[grade] ?? ''}`,
+      detail: `Link text on the page background: ${ratio.toFixed(2)}:1 against the ${scheme} page.${GRADE_CAVEAT[grade] ?? ''}`,
     };
   }
 
   const foreground = explicitContrast ?? pickContrast(base);
   const ratio = contrastRatio(base, foreground);
   const name = foreground.toLowerCase() === CONTRAST_DARK ? 'dark' : 'white';
-  const edge = contrastRatio(base, PAGE_SURFACE);
+  const edge = contrastRatio(base, page);
 
   const grade = gradeFor(ratio);
 
@@ -347,8 +381,25 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
   hideCssExport = false,
   className,
 }) => {
-  const { theme, resolvedTheme, setTheme, updateTheme, resetTheme, isDefault, toCss } = useTheme();
+  const {
+    theme,
+    resolvedTheme,
+    setTheme,
+    updateTheme,
+    resetTheme,
+    isDefault,
+    toCss,
+    colorScheme,
+    resolvedColorScheme,
+    setColorScheme,
+  } = useTheme();
   const [copied, setCopied] = useState(false);
+
+  // Separate dark colours are opt-in: most palettes want the derived dark
+  // tones, which are accessible by construction. Starts on when the theme
+  // already carries dark overrides, so none are hidden from view.
+  const hasDarkOverrides = Object.keys(theme.dark?.colors ?? {}).length > 0;
+  const [separateDark, setSeparateDark] = useState(hasDarkOverrides);
 
   // Fonts registered through the upload control this session. Kept local
   // because font *data* cannot live in a ThemeConfig - see the .mdx.
@@ -378,13 +429,57 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     [theme, setTheme],
   );
 
+  const setDarkColor = useCallback(
+    (key: ThemeColorKey, hex: string) => updateTheme({ dark: { colors: { [key]: hex } } }),
+    [updateTheme],
+  );
+
+  const resetDarkColor = useCallback(
+    (key: ThemeColorKey) => {
+      // As `resetColor`: removing the override is what restores the derived tone.
+      const nextDark = { ...theme.dark?.colors };
+      delete nextDark[key];
+      setTheme({ ...theme, dark: { colors: nextDark } });
+    },
+    [theme, setTheme],
+  );
+
+  const toggleSeparateDark = useCallback(
+    (on: boolean) => {
+      setSeparateDark(on);
+      // Turning it off discards the overrides rather than hiding them: a
+      // hidden override would keep changing the dark scheme with no control
+      // left on screen to explain or undo it.
+      if (!on && hasDarkOverrides) setTheme({ ...theme, dark: { colors: {} } });
+    },
+    [hasDarkOverrides, setTheme, theme],
+  );
+
+  // Diagnostics follow the scheme being previewed: a colour is graded against
+  // the page it is actually on right now, with the foreground it actually has.
   const diagnostics = useMemo(
     () =>
       colors.map((key) => {
-        const { base, contrast } = resolvedTheme.colors[key];
-        return { key, base, ...diagnose(key, base, contrast) };
+        const palette =
+          resolvedColorScheme === 'dark' ? resolvedTheme.dark.colors : resolvedTheme.colors;
+        const { base, contrast } = palette[key];
+        const diagnostic = diagnose(key, base, contrast, resolvedColorScheme);
+        const lightBase = resolvedTheme.colors[key].base;
+        return {
+          key,
+          base: lightBase,
+          darkBase: resolvedTheme.dark.colors[key].base,
+          ...diagnostic,
+          // In dark the picker still shows the colour as picked, but what is
+          // graded - and rendered - is its dark tone. Name it, or the badge
+          // appears to describe a colour that is not on screen.
+          detail:
+            resolvedColorScheme === 'dark' && base !== lightBase
+              ? `In dark this renders as ${base}. ${diagnostic.detail}`
+              : diagnostic.detail,
+        };
       }),
-    [colors, resolvedTheme],
+    [colors, resolvedTheme, resolvedColorScheme],
   );
 
   const failing = diagnostics.filter((d) => d.grade === 'fail');
@@ -424,16 +519,55 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
       <Card variant="outlined" padding="lg" className="eidos-theme-editor-section">
         <div className="eidos-theme-editor-section__header">
+          <span className="eidos-theme-editor-section__title" id="eidos-theme-editor-scheme">
+            Colour scheme
+          </span>
+          <span className="eidos-theme-editor-section__hint">
+            Your colours apply to both schemes. In dark each one is lightened until it reads on the
+            dark page, with dark text on it - turn on separate dark colours to pick them yourself.
+          </span>
+        </div>
+        <div className="eidos-theme-editor-rows">
+          <div className="eidos-theme-editor-row eidos-theme-editor-row--wide">
+            <span className="eidos-theme-editor-row__label">Scheme</span>
+            <div className="eidos-theme-editor-row__control">
+              <SegmentedControl
+                options={SCHEME_OPTIONS}
+                value={colorScheme}
+                onChange={(value) => setColorScheme(value as ColorScheme)}
+                aria-labelledby="eidos-theme-editor-scheme"
+                size="sm"
+              />
+            </div>
+          </div>
+          <div className="eidos-theme-editor-row eidos-theme-editor-row--wide">
+            <span className="eidos-theme-editor-row__label" />
+            <div className="eidos-theme-editor-row__control">
+              <Switch
+                label="Separate dark colours"
+                checked={separateDark}
+                onChange={(event) => toggleSeparateDark(event.target.checked)}
+                size="sm"
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <Card variant="outlined" padding="lg" className="eidos-theme-editor-section">
+        <div className="eidos-theme-editor-section__header">
           <span className="eidos-theme-editor-section__title">Colours</span>
           <span className="eidos-theme-editor-section__hint">
-            Shades, tints and foregrounds are derived from each base colour.
+            Shades, tints and foregrounds are derived from each base colour. Contrast is measured
+            against the {resolvedColorScheme} page.
           </span>
         </div>
 
         <div className="eidos-theme-editor-rows">
-          {diagnostics.map(({ key, base, grade, ratio, detail, edgeWarning }) => {
+          {diagnostics.map(({ key, base, darkBase, grade, ratio, detail, edgeWarning }) => {
             const badge = GRADE_BADGE[grade];
             const overridden = theme.colors?.[key] !== undefined;
+            const darkOverridden = theme.dark?.colors?.[key] !== undefined;
             return (
               <div className="eidos-theme-editor-row" key={key}>
                 <span className="eidos-theme-editor-row__label">{COLOR_LABELS[key]}</span>
@@ -451,6 +585,15 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                   // they were indistinguishable.
                   ariaLabel={COLOR_LABELS[key]}
                 />
+
+                {separateDark && (
+                  <ColorPicker
+                    value={darkBase}
+                    onChange={(hex) => setDarkColor(key, hex)}
+                    size="md"
+                    ariaLabel={`${COLOR_LABELS[key]} (dark)`}
+                  />
+                )}
 
                 <div className="eidos-theme-editor-row__diagnostics">
                   <Tooltip message={detail}>
@@ -480,6 +623,22 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     tooltip={overridden ? `Reset ${COLOR_LABELS[key]} to the preset` : 'Unchanged'}
                     aria-label={`Reset ${COLOR_LABELS[key]}`}
                   />
+                  {separateDark && (
+                    <IconButton
+                      icon={RotateCcw}
+                      variant="text"
+                      color="secondary"
+                      size="sm"
+                      disabled={!darkOverridden}
+                      onClick={() => resetDarkColor(key)}
+                      tooltip={
+                        darkOverridden
+                          ? `Use the derived dark ${COLOR_LABELS[key]} again`
+                          : 'Derived from the light colour'
+                      }
+                      aria-label={`Reset dark ${COLOR_LABELS[key]}`}
+                    />
+                  )}
                 </div>
               </div>
             );
@@ -554,9 +713,9 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
           {!hideCssExport && (
             <Button
               variant="outlined"
-              preIcon={copied ? 'Check' : 'Clipboard'}
+              preIcon={copied ? Check : Clipboard}
               onClick={copyCss}
-              tooltip="Copy the resolved tokens as a :root block you can paste into your own stylesheet"
+              tooltip="Copy the resolved tokens - light and dark - as CSS you can paste into your own stylesheet"
             >
               {copied ? 'Copied' : 'Copy as CSS'}
             </Button>

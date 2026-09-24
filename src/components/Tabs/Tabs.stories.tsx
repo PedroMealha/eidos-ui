@@ -100,7 +100,7 @@ const panelContent = (tab: string) => (
       lineHeight: 1.6,
     }}
   >
-    <strong style={{ color: 'var(--dark-color)' }}>{tab}</strong> - content for this tab panel.
+    <strong style={{ color: 'var(--text-default)' }}>{tab}</strong> - content for this tab panel.
     Change the active tab above to navigate between panels.
   </div>
 );
@@ -422,7 +422,7 @@ export const Controlled: Story = {
           <TabPanel value="notifications">{panelContent('Notifications')}</TabPanel>
         </Tabs>
         <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', margin: 0 }}>
-          Active tab: <strong style={{ color: 'var(--dark-color)' }}>{activeTab}</strong>
+          Active tab: <strong style={{ color: 'var(--text-default)' }}>{activeTab}</strong>
         </p>
       </div>
     );

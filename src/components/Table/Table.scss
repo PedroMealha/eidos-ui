@@ -1,7 +1,7 @@
 @use '../../styles/mixins.scss' as *;
 
 .eidos-table-container {
-  background: var(--white);
+  background: var(--surface);
   border-radius: var(--border-radius-md);
   border: 1px solid var(--gray-200);
   box-shadow: var(--box-shadow);
@@ -393,7 +393,7 @@
     right: -4px;
     bottom: 0;
     width: 4px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.06), transparent);
+    background: linear-gradient(to right, rgba(var(--text-default-rgb), 0.06), transparent);
     pointer-events: none;
     z-index: 1;
   }
@@ -411,7 +411,7 @@
     left: -4px;
     bottom: 0;
     width: 4px;
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.06), transparent);
+    background: linear-gradient(to left, rgba(var(--text-default-rgb), 0.06), transparent);
     pointer-events: none;
     z-index: 1;
   }
@@ -420,7 +420,7 @@
 // Body cell backgrounds - need concrete values so scrolled content doesn't bleed through
 .eidos-table-cell--pinned-left,
 .eidos-table-cell--pinned-right {
-  background: var(--white);
+  background: var(--surface);
 }
 
 .eidos-table-row:hover .eidos-table-cell--pinned-left,
@@ -531,7 +531,7 @@
   padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   font-size: var(--font-size-sm);
-  color: var(--dark-color);
+  color: var(--text-default);
   transition:
     background-color 0.15s ease,
     color 0.15s ease;
@@ -626,7 +626,7 @@
   padding: var(--spacing-md);
   border: 1px solid var(--gray-200);
   border-radius: var(--border-radius-md);
-  background: var(--white);
+  background: var(--surface);
   transition: background-color 0.1s ease;
 
   &--clickable {
@@ -688,7 +688,7 @@
 .eidos-table-card-heading-title {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  color: var(--dark-color);
+  color: var(--text-default);
 }
 
 .eidos-table-card-heading-subtitle {

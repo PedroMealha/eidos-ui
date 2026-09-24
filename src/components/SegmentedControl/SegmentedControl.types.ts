@@ -47,5 +47,14 @@ export interface SegmentedControlProps {
    * Scroll affordance for a track too wide for its container. @default 'auto'
    */
   scrollButtons?: SegmentedControlScrollButtonsProps;
+  /**
+   * Accessible name for the group - what the choice is *about* ("Colour
+   * scheme"). The segments name the options; without this a screen reader
+   * announces an unnamed radio group. Prefer `aria-labelledby` when a
+   * visible label already exists.
+   */
+  ariaLabel?: string;
+  /** Id of a visible element naming the group. */
+  'aria-labelledby'?: string;
   className?: string;
 }

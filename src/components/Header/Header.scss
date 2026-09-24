@@ -170,7 +170,7 @@
     font-weight: var(--font-weight-extrabold);
     line-height: 1.2;
     letter-spacing: -0.025em;
-    color: var(--dark-color);
+    color: var(--text-default);
     // `title` takes arbitrary inline nodes, so a status `Pill`/`Chip` beside
     // the text needs to sit on the title's centre line rather than on the
     // text baseline. `flex-wrap` keeps a long title + indicator from forcing
