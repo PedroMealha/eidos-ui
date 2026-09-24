@@ -15,6 +15,105 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="3.8.0"
+  date="2026-09-24"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>Button</Code>, <Code>Chip</Code>, <Code>Header</Code> actions and{' '}
+          <Code>Toolbar</Code> actions render as links when given <Code>href</Code>.
+        </>,
+        <>
+          <Code>LinkProvider</Code> component - renders every library link through your router's
+          link component.
+        </>,
+        <>
+          <Code>Header</Code> <Code>titleAs</Code> prop sets the title's heading level (
+          <Code>h1</Code>-<Code>h6</Code>) without changing its look.
+        </>,
+        <>
+          <Code>Avatar</Code> <Code>xl</Code> (64px) and <Code>2xl</Code> (96px) sizes, for profile
+          and account headers.
+        </>,
+        <>
+          <Code>IdentityHeader</Code>'s <Code>avatar</Code> shorthand accepts <Code>size</Code>.
+        </>,
+        <>
+          <Code>Timeline</Code> <Code>warning</Code> and <Code>info</Code> colours.
+        </>,
+        <>
+          <Code>Timeline</Code> <Code>ariaLabel</Code> and <Code>aria-labelledby</Code> props.
+        </>,
+        <>
+          <Code>registerIcons()</Code> makes chosen icons available to every icon prop by string
+          name.
+        </>,
+        <>
+          <Code>eidos-ui/lucide-icons</Code> entry point registers every Lucide icon by name.
+        </>,
+      ],
+    },
+    {
+      category: 'deprecated',
+      items: [
+        <>
+          Resolving an unregistered Lucide icon by string name, removed in 4.0 - pass the component
+          or register it.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>Breadcrumb</Code> crumbs with <Code>href</Code> render through{' '}
+          <Code>LinkProvider</Code>'s component when one is set.
+        </>,
+        <>
+          <Code>Chat</Code> wraps its scroll region's contents in{' '}
+          <Code>.eidos-chat-scroll-content</Code>, so custom CSS targeting{' '}
+          <Code>.eidos-chat-scroll {'>'} *</Code> should target that element's children instead.
+        </>,
+        <>
+          <Code>Timeline</Code> no longer names every list "Timeline" - pass <Code>ariaLabel</Code>{' '}
+          or <Code>aria-labelledby</Code> if yours needs an accessible name.
+        </>,
+        <>
+          <Code>Popover</Code> logs a development warning when given its deprecated{' '}
+          <Code>isOpen</Code> prop.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Chat</Code> stays pinned to the newest text while a message grows in place, such as
+          a streamed reply.
+        </>,
+        <>
+          <Code>Timeline</Code> titles and descriptions accept block content (lists, chips) as valid
+          HTML.
+        </>,
+        <>
+          <Code>Timeline</Code>'s fallback dot stays visible on a pale themed colour.
+        </>,
+        <>
+          <Code>Chip</Code> labels no longer clip the descenders of g, j, p, q and y.
+        </>,
+        <>
+          <Code>Drawer</Code> side panels no longer run off-screen on viewports narrower than their
+          size.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="3.7.0"
   date="2026-09-24"
   bump="minor"
