@@ -15,6 +15,52 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="4.0.0"
+  date="2026-09-24"
+  bump="major"
+  sections={[
+    {
+      category: 'removed',
+      items: [
+        <>
+          <strong>Breaking</strong>: string icon names no longer resolve against the whole Lucide
+          set - pass the component,{' '}
+          <Code>
+            registerIcons({'{'} ... {'}'})
+          </Code>
+          , or <Code>import 'eidos-ui/lucide-icons'</Code>.
+        </>,
+        <>
+          <strong>Breaking</strong>: <Code>Popover</Code>'s <Code>isOpen</Code> prop - use{' '}
+          <Code>open</Code>.
+        </>,
+        <>
+          <strong>Breaking</strong>: the camelCase modifier classes <Code>--fullWidth</Code> and{' '}
+          <Code>--hideScrollbar</Code> - target <Code>--full-width</Code> and{' '}
+          <Code>--hide-scrollbar</Code>.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>
+            import {'{'} Button {'}'} from 'eidos-ui'
+          </Code>{' '}
+          bundles to 10 KB minified instead of 604 KB, since Lucide's full icon set is no longer
+          referenced.
+        </>,
+        <>
+          An unregistered single-word icon name logs a development warning, as it is usually a
+          Lucide icon that was never registered.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="3.8.1"
   date="2026-09-24"
   bump="patch"
