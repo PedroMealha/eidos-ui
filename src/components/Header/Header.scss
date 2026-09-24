@@ -162,6 +162,15 @@
     font-size: var(--font-size-2xl);
     margin-bottom: var(--spacing-xs);
     overflow-wrap: break-word;
+    // Every typographic property is set here, not just the size, because the
+    // element is `titleAs` - h1 by default, but h2-h6 too. Anything left
+    // unset would come from global.scss's per-level heading rules instead,
+    // and the same title would change weight and tracking with its level.
+    // These are the values `h1` used to supply, so the default is unchanged.
+    font-weight: var(--font-weight-extrabold);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--dark-color);
     // `title` takes arbitrary inline nodes, so a status `Pill`/`Chip` beside
     // the text needs to sit on the title's centre line rather than on the
     // text baseline. `flex-wrap` keeps a long title + indicator from forcing

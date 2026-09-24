@@ -3,6 +3,8 @@ export type {
   ButtonProps,
   IconButtonProps,
   TextButtonProps,
+  IconLinkButtonProps,
+  TextLinkButtonProps,
   ButtonVariantProps,
   ButtonColorProps,
 } from './Button.types';

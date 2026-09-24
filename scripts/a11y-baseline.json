@@ -2,7 +2,7 @@
   "$comment": "Recorded by `node scripts/check-a11y-baseline.js --update`. Counts may only go down. See the header of that script for why this is a ratchet rather than a hard gate.",
   "tags": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"],
   "recordedAt": "2026-09-24",
-  "storiesAudited": 509,
+  "storiesAudited": 518,
   "totalNodes": 8,
   "rules": { "color-contrast": 8 }
 }

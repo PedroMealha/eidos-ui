@@ -11,7 +11,7 @@ import {
   Select,
   useSnackbar,
 } from 'eidos-ui';
-import { Trash2, UserSearch } from 'lucide-react';
+import { Trash2, UserPlus, UserSearch } from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { teamApi } from '../api/team';
 import type { Role, TeamMember } from '../api/types';
@@ -180,7 +180,7 @@ export const TeamPage: React.FC = () => {
           },
           {
             children: 'Invite',
-            preIcon: 'user-plus',
+            preIcon: UserPlus,
             onClick: () => setInviteOpen(true),
           },
         ],

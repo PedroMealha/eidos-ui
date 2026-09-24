@@ -1,0 +1,50 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as LinkProviderStories from './LinkProvider.stories';
+
+<Meta of={LinkProviderStories} />
+
+# LinkProvider
+
+Sets the component every library link renders with. Wrap your app in it once and every `Button`, `Chip`, `Header` action, `Toolbar` action and `Breadcrumb` crumb given an `href` navigates through your router, instead of reloading the page.
+
+Without a provider, links render as a plain `<a>` - the right default for a site without client-side routing.
+
+## Usage
+
+```tsx
+import { LinkProvider } from 'eidos-ui';
+
+<LinkProvider component={RouterLink}>
+  <App />
+</LinkProvider>;
+```
+
+## Adapting a router's link
+
+The component receives standard anchor props with a required `href`. Next.js's `Link` takes `href` already, so it can be passed directly. React Router's `Link` takes `to`, so it needs a one-line adapter in your app:
+
+```tsx
+import { Link } from 'react-router';
+import type { LinkComponentProps } from 'eidos-ui';
+
+const RouterLink = ({ href, ...props }: LinkComponentProps) => <Link to={href} {...props} />;
+```
+
+## Disabled links
+
+A disabled or loading link never reaches your component. It renders as an `<a>` with **no `href`**, `aria-disabled="true"` and no tab stop - removing the destination is the only way to make an anchor inert, and a router link cannot render without one.
+
+## Opening in a new tab
+
+`target="_blank"` defaults `rel` to `noopener noreferrer`, so the opened page cannot reach back through `window.opener`. Pass `rel` explicitly to override it.
+
+## Nesting
+
+`LinkProvider` writes nothing global, so providers nest: the nearest one wins. That makes it safe to wrap a subtree - an embedded widget, a docs page - in a different link component from the rest of the app.
+
+## Playground
+
+Clicks on the links below are routed through a stand-in router, so the location updates without leaving the page.
+
+<Canvas of={LinkProviderStories.Playground} />
+<Controls of={LinkProviderStories.Playground} />

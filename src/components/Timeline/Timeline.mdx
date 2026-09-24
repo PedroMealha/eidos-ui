@@ -20,6 +20,14 @@ import { Timeline } from 'eidos-ui';
 />;
 ```
 
+## Colors
+
+`color` takes the library's six colour names - `primary`, `secondary`, `success`, `danger`, `warning`, `info` - plus `default`, a neutral gray dot for entries that carry no status.
+
+## Naming the list
+
+The timeline renders an ordered list with no accessible name of its own. When a visible heading introduces it, point `aria-labelledby` at that heading. Otherwise pass `ariaLabel` - "Order history", "Experience" - when the context does not already make the list's purpose clear.
+
 ## Playground
 
 <Canvas of={TimelineStories.Playground} />
@@ -33,6 +41,12 @@ import { Timeline } from 'eidos-ui';
 ## Long content
 
 <Canvas of={TimelineStories.LongContent} />
+
+## Rich content
+
+`title` and `description` render in `div`s, so block content is valid in both - a bullet list of achievements, a row of chips, several paragraphs. Lists inside a description get an indent so their markers stay inside the content column.
+
+<Canvas of={TimelineStories.RichContent} />
 
 ## Simple
 

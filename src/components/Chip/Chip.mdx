@@ -24,6 +24,14 @@ import { Tag } from 'lucide-react';
 
 <Controls of={ChipStories.Playground} />
 
+## As link
+
+`href` makes the chip a link - a tag that leads to its listing page, a filter that is really a URL. It gets the same pointer cursor and hover feedback as a clickable chip. With `onRemove` as well, the link moves to the chip's label and the close button stays a separate control beside it.
+
+Links render with [`LinkProvider`](?path=/docs/navigation-linkprovider--docs)'s component when one is set, and as `<a>` otherwise.
+
+<Canvas of={ChipStories.AsLink} />
+
 ## Colors
 
 <Canvas of={ChipStories.Colors} />

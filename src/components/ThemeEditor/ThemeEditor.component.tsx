@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { CircleCheck, CircleX, TriangleAlert } from 'lucide-react';
+import { CircleCheck, CircleX, RotateCcw, TriangleAlert, Upload } from 'lucide-react';
 import { Alert } from '../Alert';
 import { Button, IconButton } from '../Button';
 import { Card } from '../Card';
@@ -298,7 +298,7 @@ const FontRow: React.FC<FontRowProps> = ({
             variant="text"
             color="secondary"
             size="sm"
-            preIcon="Upload"
+            preIcon={Upload}
             onClick={() => inputRef.current?.click()}
             tooltip="Load a font file to use it right away. Not saved - see onFontUpload to persist it."
           >
@@ -471,7 +471,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
                 <div className="eidos-theme-editor-row__actions">
                   <IconButton
-                    icon="RotateCcw"
+                    icon={RotateCcw}
                     variant="text"
                     color="secondary"
                     size="sm"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Button, Card, FileUpload, Input, Textarea, useSnackbar } from 'eidos-ui';
 import { useAuth } from '../../auth/auth-context';
+import { Info } from 'lucide-react';
 
 export const ProfilePage: React.FC = () => {
   const { session } = useAuth();
@@ -56,7 +57,7 @@ export const ProfilePage: React.FC = () => {
             type="email"
             label="Email"
             value={session?.email ?? ''}
-            disclaimerIcon="info"
+            disclaimerIcon={Info}
             disclaimerContent="Your email is tied to the sign-in code and cannot be changed here."
             disabled
             clearable={false}

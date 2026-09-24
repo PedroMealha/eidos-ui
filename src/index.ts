@@ -41,6 +41,7 @@ export { Dropdown, DropdownProvider } from './components/Dropdown';
 export { InlineEdit } from './components/InlineEdit';
 export { Input } from './components/Input';
 export { Kbd } from './components/Kbd';
+export { LinkProvider, useLinkComponent } from './components/LinkProvider';
 export { Menu, MenuPanel } from './components/Menu';
 export { Modal } from './components/Modal';
 export { Select } from './components/Select';
@@ -81,6 +82,7 @@ export type {
   HeaderProps,
   HeaderActionProps,
   HeaderMetaItem,
+  HeaderTitleLevel,
   HeaderVariant,
   IdentityHeaderProps,
 } from './components/Header';
@@ -125,9 +127,16 @@ export type {
   ButtonProps,
   IconButtonProps,
   TextButtonProps,
+  IconLinkButtonProps,
+  TextLinkButtonProps,
   ButtonVariantProps,
   ButtonColorProps,
 } from './components/Button';
+export type {
+  LinkComponent,
+  LinkComponentProps,
+  LinkProviderProps,
+} from './components/LinkProvider';
 export type { TooltipProps } from './components/Tooltip';
 export type { ChipProps, TextChipProps, ChipColorProps, ChipVariantProps } from './components/Chip';
 export type { SplitChipProps, SplitChipSegment } from './components/SplitChip';
@@ -244,7 +253,7 @@ export type {
 export type { ThemeEditorProps } from './components/ThemeEditor';
 
 // Shared types (used across many components)
-export type { IconType, ComponentSizeProps } from './utils';
+export type { IconType, IconComponent, ComponentSizeProps } from './utils';
 export type { ButtonGroupProps } from './components/ButtonGroup';
 export type {
   SegmentedControlProps,
@@ -257,7 +266,7 @@ export type { ContextMenuProps } from './components/ContextMenu';
 export type { MenuPanelProps } from './components/Menu';
 
 // Utilities
-export { renderIcon } from './utils';
+export { renderIcon, registerIcons } from './utils';
 
 // Styles - users can import this separately
 // import 'eidos-ui/styles';

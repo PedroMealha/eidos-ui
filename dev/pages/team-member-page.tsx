@@ -5,6 +5,7 @@ import type { TeamMember } from '../api/types';
 import { usePageChrome } from '../layouts/page-chrome';
 import { useAsync } from '../lib/use-async';
 import { useRouter } from '../routes/router';
+import { ArrowLeft } from 'lucide-react';
 
 /**
  * Child route of `/app/team`, reached at `/app/team/:memberId`.
@@ -40,7 +41,7 @@ export const TeamMemberPage: React.FC = () => {
         actions: [
           {
             children: 'Back to team',
-            preIcon: 'arrow-left',
+            preIcon: ArrowLeft,
             variant: 'outlined',
             onClick: () => navigate('/app/team'),
           },

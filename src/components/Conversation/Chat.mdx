@@ -134,6 +134,12 @@ Layout responds to the **component's own width**, not the viewport's, using cont
 
 <Canvas of={ChatStories.ReadOnly} />
 
+## Streaming replies
+
+A message whose `body` grows in place - a streamed reply, updated token by token - keeps the thread pinned to the newest text, exactly as a new message would. It only follows while the reader is at the bottom: scrolling up releases it, and scrolling back down re-attaches.
+
+<Canvas of={ChatStories.StreamingReply} />
+
 ## Typing indicator
 
 <Canvas of={ChatStories.TypingIndicator} />

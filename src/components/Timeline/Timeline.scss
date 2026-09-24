@@ -64,28 +64,32 @@
     background: var(--danger-color);
     color: var(--danger-contrast);
   }
+  .eidos-timeline-item--warning & {
+    border-color: var(--warning-color);
+    background: var(--warning-color);
+    color: var(--warning-contrast);
+  }
+  .eidos-timeline-item--info & {
+    border-color: var(--info-color);
+    background: var(--info-color);
+    color: var(--info-contrast);
+  }
 
-  // Filled circle fallback (when no icon)
+  // Filled circle fallback (when no icon).
+  //
+  // `currentColor`, which on a coloured dot is that colour's `--x-contrast`.
+  // It was a hardcoded `--white`, which vanishes on a pale colour supplied
+  // through ThemeProvider - the same decorative-fill trap as Radio's dot and
+  // Switch's thumb.
   &::after {
     content: '';
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    background: currentColor;
 
     .eidos-timeline-item--default & {
       background: var(--gray-400);
-    }
-    .eidos-timeline-item--primary & {
-      background: var(--white);
-    }
-    .eidos-timeline-item--secondary & {
-      background: var(--white);
-    }
-    .eidos-timeline-item--success & {
-      background: var(--white);
-    }
-    .eidos-timeline-item--danger & {
-      background: var(--white);
     }
   }
 
@@ -140,8 +144,15 @@
 }
 
 .eidos-timeline-description {
-  margin: 0;
   @include font-size(sm);
   color: var(--text-muted);
   line-height: 1.6;
+
+  // Block content is supported here, and global.scss zeroes every element's
+  // padding - which leaves a list's markers hanging outside the content
+  // column, over the gap to the track.
+  ul,
+  ol {
+    padding-left: var(--spacing-lg);
+  }
 }

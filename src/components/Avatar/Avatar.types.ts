@@ -1,6 +1,11 @@
 import React from 'react';
 
-export type AvatarSize = 'sm' | 'md' | 'lg';
+/**
+ * `sm`-`lg` (32/40/48px) share the `--component-size-*` scale with every other
+ * sized control. `xl` (64px) and `2xl` (96px) are Avatar-only, for identity
+ * media - a profile or account header - where 48px reads as a list thumbnail.
+ */
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export type AvatarColor =
   'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'gray';
 

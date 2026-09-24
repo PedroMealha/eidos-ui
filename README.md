@@ -71,10 +71,19 @@ import { Plus, Download } from 'lucide-react';
 <Button icon={Plus} />
 <Button preIcon={Download}>Download</Button>
 
+// Registered names - register once at your app root
+import { registerIcons } from 'eidos-ui';
+registerIcons({ Plus, Download });
+<Button icon="plus" />
+
 // String-based icons (icon font classes)
 <Button icon="fa fa-plus" />   // Font Awesome
 <Button icon="ri-add-line" />  // Remix Icons
 ```
+
+`import 'eidos-ui/lucide-icons'` registers every Lucide icon by name, at the cost of
+the whole icon set in your bundle. Resolving an _unregistered_ Lucide name is
+deprecated and is removed in 4.0.
 
 ## Components
 
@@ -140,6 +149,7 @@ These are the same groups used in Storybook, so the README and the docs sidebar 
 - Accordion
 - Pagination
 - TreeView
+- LinkProvider
 
 </td><td valign="top">
 

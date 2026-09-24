@@ -4,6 +4,7 @@ import { Toolbar } from './Toolbar.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 import { Pill } from '../Pill';
 import { Switch } from '../Switch';
+import { Bell, LogOut, Settings, User } from 'lucide-react';
 
 const meta = {
   title: 'Layout/Components/Toolbar',
@@ -28,19 +29,19 @@ const meta = {
     actions: [
       {
         tooltip: 'Notifications',
-        icon: 'Bell',
+        icon: Bell,
         color: 'secondary',
         onClick: action('Notifications clicked'),
       },
       {
         tooltip: 'Settings',
-        icon: 'Settings',
+        icon: Settings,
         color: 'secondary',
         onClick: action('Settings clicked'),
       },
       {
         tooltip: 'User',
-        icon: 'User',
+        icon: User,
         onClick: action('Settings clicked'),
       },
     ],
@@ -66,14 +67,14 @@ const meta = {
         type: 'item',
         id: 'settings',
         label: 'Settings',
-        icon: 'settings',
+        icon: Settings,
         onClick: action('Settings clicked'),
       },
       {
         type: 'item',
         id: 'logout',
         label: 'Logout',
-        icon: 'log-out',
+        icon: LogOut,
         color: 'danger',
         onClick: action('Logout clicked'),
       },

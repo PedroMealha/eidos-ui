@@ -30,7 +30,8 @@
     "dist/index.css",
     "dist/index.css.d.ts",
     "dist/fonts.css",
-    "dist/fonts.css.d.ts"
+    "dist/fonts.css.d.ts",
+    "dist/lucide-icons/*"
   ],
   "files": [
     "dist"

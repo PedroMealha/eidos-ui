@@ -58,10 +58,14 @@
   }
 
   // ── Left / Right ──────────────────────────────────────────────────────────
+  // The fixed widths are caps, not guarantees: `md` alone is 400px, wider
+  // than most phones, and would push the close button off-screen. On a
+  // narrow viewport every size becomes a full-width sheet.
   &--left,
   &--right {
     top: 0;
     bottom: 0;
+    max-width: 100%;
 
     &.eidos-drawer-panel--sm {
       width: 280px;

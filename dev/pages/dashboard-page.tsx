@@ -1,6 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 import { Alert, Button, Card, Pill, Progress, Skeleton, Timeline } from 'eidos-ui';
-import { ArrowUpRight, CircleCheck, CirclePlus, TriangleAlert, UserCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  CircleCheck,
+  CirclePlus,
+  RefreshCw,
+  TriangleAlert,
+  UserCheck,
+} from 'lucide-react';
 import { ticketsApi } from '../api/tickets';
 import type { ActivityEntry, DashboardStats } from '../api/types';
 import { usePageChrome } from '../layouts/page-chrome';
@@ -71,7 +79,7 @@ export const DashboardPage: React.FC = () => {
         actions: [
           {
             children: 'Refresh',
-            preIcon: 'refresh-cw',
+            preIcon: RefreshCw,
             variant: 'outlined',
             loading: stats.loading,
             onClick: stats.reload,
@@ -150,7 +158,7 @@ export const DashboardPage: React.FC = () => {
                 {stats.data?.slaAttained ?? 0} of {stats.data?.slaTarget ?? 0} tickets answered
                 within the target window.
               </p>
-              <Button variant="text" posIcon="arrow-right" onClick={() => navigate('/app/tickets')}>
+              <Button variant="text" posIcon={ArrowRight} onClick={() => navigate('/app/tickets')}>
                 Review the queue
               </Button>
             </>

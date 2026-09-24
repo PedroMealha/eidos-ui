@@ -1,4 +1,6 @@
 export { renderIcon } from './renderIcon';
+export { registerIcons } from './iconRegistry';
+export type { IconComponent } from './iconRegistry';
 // Internal only - deliberately not re-exported from `src/index.ts`.
 export { devWarn } from './devWarn';
 export { dualModifier, fullWidthModifier } from './dualModifier';

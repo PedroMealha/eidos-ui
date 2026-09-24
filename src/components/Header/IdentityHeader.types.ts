@@ -10,11 +10,11 @@ import type { HeaderProps } from './Header.types';
  */
 export interface IdentityHeaderProps extends HeaderProps {
   /**
-   * Avatar shorthand for the leading media, rendered at `lg`.
+   * Avatar shorthand for the leading media, rendered at `lg` unless `size`
+   * says otherwise - `xl` and `2xl` suit a profile page.
    *
-   * Pass `media` instead for anything else - including an avatar larger than
-   * `Avatar`'s own `lg` size (48px), which `Avatar` cannot currently express.
-   * If both are given, `media` wins.
+   * Pass `media` instead for anything that isn't an avatar. If both are
+   * given, `media` wins.
    */
-  avatar?: Pick<AvatarProps, 'name' | 'src' | 'alt' | 'color' | 'shape'>;
+  avatar?: Pick<AvatarProps, 'name' | 'src' | 'alt' | 'color' | 'shape' | 'size'>;
 }

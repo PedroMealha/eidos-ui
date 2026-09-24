@@ -1,6 +1,6 @@
 import { BreadcrumbProps } from '../Breadcrumb';
 import { AvatarProps } from '../Avatar';
-import { IconButtonProps } from '../Button';
+import type { IconButtonProps, IconLinkButtonProps } from '../Button';
 import { MenuItemType } from '../Menu';
 import { CommandItem } from '../CommandPalette';
 
@@ -31,11 +31,7 @@ export interface ToolbarProps {
   className?: string;
 }
 
-/**
- * Restricted, discriminated subset of ButtonProps for Toolbar actions.
- */
-export type ToolbarActionProps = Pick<
-  IconButtonProps,
+type ToolbarActionKeys =
   | 'color'
   | 'loading'
   | 'disabled'
@@ -44,5 +40,12 @@ export type ToolbarActionProps = Pick<
   | 'icon'
   | 'children'
   | 'onClick'
-  | 'tooltip'
->;
+  | 'tooltip';
+
+/**
+ * Restricted, discriminated subset of ButtonProps for Toolbar actions. Pass
+ * `href` to render the action as a link.
+ */
+export type ToolbarActionProps =
+  | Pick<IconButtonProps, ToolbarActionKeys>
+  | Pick<IconLinkButtonProps, ToolbarActionKeys | 'href' | 'target' | 'rel'>;

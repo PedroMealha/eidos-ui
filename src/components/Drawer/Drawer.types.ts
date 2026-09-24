@@ -27,8 +27,9 @@ export interface DrawerProps {
   actions?: DrawerAction[];
   /**
    * Width (left/right) or height (top/bottom) of the panel.
-   * small = 280px / 40%, medium = 400px / 50%, large = 560px / 65%, full = 100%.
-   * Default: 'md'.
+   * sm = 280px / 40%, md = 400px / 50%, lg = 560px / 65%, full = 100%.
+   * Widths never exceed the viewport: on a narrower screen the panel is
+   * full-width. Default: 'md'.
    */
   size?: DrawerSize;
   closeOnBackdropClick?: boolean;

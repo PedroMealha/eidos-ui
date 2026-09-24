@@ -282,6 +282,15 @@
   justify-content: center;
   line-height: 1;
   @include text-truncate;
+  // Clip the inline axis only. `line-height: 1` makes the box shorter than
+  // the glyphs, so `text-truncate`'s `overflow: hidden` - which clips both
+  // axes - cut the descenders off g, j, p, q and y. `clip` rather than
+  // `hidden` because it is the one value that leaves the other axis
+  // `visible` (any other pairing computes `visible` to `auto`), and
+  // `text-overflow: ellipsis` still applies to it. Loosening the line-height
+  // instead would grow every chip and still depend on the font's metrics.
+  overflow-x: clip;
+  overflow-y: visible;
   flex: 1;
   min-width: 0;
 }
@@ -305,6 +314,14 @@
   cursor: pointer;
   min-width: 0;
   flex: 1 1 auto;
+  text-decoration: none;
+
+  // As a link (`href` plus `onRemove`), the global `a:hover` colour (0,1,1)
+  // would outrank the `color: inherit` above (0,1,0) and recolour the label
+  // on hover.
+  &:hover {
+    color: inherit;
+  }
 
   // Inset, because the chip clips to its own border radius and an outward
   // ring on a nested control would be cropped by it.

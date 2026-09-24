@@ -1,9 +1,23 @@
 import type { CSSProperties } from 'react';
 import { action } from 'storybook/actions';
+import { expect } from 'storybook/test';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Header } from './Header.component';
 import { Pill } from '../Pill';
 import { Avatar } from '../Avatar';
+import {
+  ArrowRight,
+  Bell,
+  Calendar,
+  Check,
+  Download,
+  Mail,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Settings,
+  Shield,
+} from 'lucide-react';
 
 const meta = {
   title: 'Layout/Components/Header',
@@ -15,7 +29,7 @@ const meta = {
     actions: [
       {
         children: 'Refresh',
-        preIcon: 'refresh-cw',
+        preIcon: RefreshCw,
         variant: 'outlined',
         onClick: action('Settings clicked'),
       },
@@ -64,6 +78,16 @@ const meta = {
         defaultValue: { summary: 'undefined' },
       },
     },
+    titleAs: {
+      control: 'select',
+      options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+      description:
+        'Heading level of the title. Changes the document outline only - the title looks the same at every level.',
+      table: {
+        type: { summary: "'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'" },
+        defaultValue: { summary: "'h1'" },
+      },
+    },
     variant: {
       control: 'inline-radio',
       options: ['default', 'hero'],
@@ -105,6 +129,47 @@ const labelStyle: CSSProperties = {
 export const Playground: Story = {};
 
 /**
+ * An action with `href` renders as a link - for actions that go somewhere,
+ * like opening billing, rather than ones that do something in place. Link and
+ * button actions mix freely, and both fold into the overflow popover alike.
+ */
+export const LinkActions: Story = {
+  args: {
+    title: 'Billing',
+    subtitle: 'Business annual · renews 1 January 2027',
+    actions: [
+      { children: 'Invoices', href: '#invoices', variant: 'outlined' },
+      { children: 'Manage plan', href: '#plan', posIcon: ArrowRight },
+    ],
+  },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole('link', { name: 'Manage plan' })).toHaveAttribute(
+      'href',
+      '#plan',
+    );
+  },
+};
+
+/**
+ * `titleAs` sets the title's heading level without changing how it looks, so
+ * a `Header` can introduce a section further down a page under the page's
+ * own `h1`.
+ */
+export const TitleLevel: Story = {
+  args: {
+    title: 'Recent activity',
+    subtitle: 'The last 30 days across your workspace',
+    titleAs: 'h2',
+    actions: undefined,
+  },
+  play: async ({ canvas }) => {
+    await expect(
+      canvas.getByRole('heading', { level: 2, name: 'Recent activity' }),
+    ).toBeInTheDocument();
+  },
+};
+
+/**
  * `actions` accepts a restricted subset of `Button` props - `icon` for an
  * icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one -
  * and any number of them can be mixed together.
@@ -112,17 +177,17 @@ export const Playground: Story = {};
 export const WithMultipleActions: Story = {
   args: {
     actions: [
-      { icon: 'Bell', color: 'secondary', variant: 'text', tooltip: 'Notifications' },
-      { icon: 'Settings', color: 'secondary', variant: 'text', tooltip: 'Settings' },
+      { icon: Bell, color: 'secondary', variant: 'text', tooltip: 'Notifications' },
+      { icon: Settings, color: 'secondary', variant: 'text', tooltip: 'Settings' },
       {
         children: 'Export',
-        preIcon: 'download',
+        preIcon: Download,
         variant: 'outlined',
         onClick: action('Export clicked'),
       },
       {
         children: 'New item',
-        preIcon: 'plus',
+        preIcon: Plus,
         onClick: action('New item clicked'),
       },
     ],
@@ -163,7 +228,7 @@ export const WithInlineTitleContent: Story = {
 /**
  * `media` renders any node on the leading edge, centered against the title
  * stack. It takes a node rather than an `Avatar` config so it can also hold a
- * logo, an icon block, or an avatar larger than `Avatar`'s own `lg` size.
+ * logo or an icon block.
  *
  * The extra wrapper element this needs is only rendered when `media` is
  * actually passed, so a header without it emits exactly the markup it always
@@ -189,9 +254,9 @@ export const WithMetadata: Story = {
     subtitle: 'Customer Support',
     media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
     meta: [
-      { label: 'Role', value: 'Admin', icon: 'shield' },
-      { label: 'Email', value: 'ana.ferreira@meridian.app', icon: 'mail' },
-      { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+      { label: 'Role', value: 'Admin', icon: Shield },
+      { label: 'Email', value: 'ana.ferreira@meridian.app', icon: Mail },
+      { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
     ],
   },
 };
@@ -215,12 +280,12 @@ export const Hero: Story = {
     subtitle: 'ana.ferreira@meridian.app',
     media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
     meta: [
-      { label: 'Role', value: 'Admin', icon: 'shield' },
-      { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+      { label: 'Role', value: 'Admin', icon: Shield },
+      { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
     ],
     actions: [
-      { children: 'Edit profile', preIcon: 'pencil', variant: 'outlined' },
-      { children: 'Save', preIcon: 'check' },
+      { children: 'Edit profile', preIcon: Pencil, variant: 'outlined' },
+      { children: 'Save', preIcon: Check },
     ],
   },
 };
@@ -248,13 +313,13 @@ export const ResponsiveCollapse: Story = {
   subtitle="ana.ferreira@meridian.app"
   media={<Avatar name="Ana Ferreira" size="lg" color="primary" />}
   meta={[
-    { label: 'Role', value: 'Admin', icon: 'shield' },
-    { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+    { label: 'Role', value: 'Admin', icon: Shield },
+    { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
   ]}
   actions={[
-    { icon: 'bell', variant: 'text', color: 'secondary', tooltip: 'Notifications' },
-    { children: 'Export', preIcon: 'download', variant: 'outlined' },
-    { children: 'Save', preIcon: 'check' },
+    { icon: Bell, variant: 'text', color: 'secondary', tooltip: 'Notifications' },
+    { children: 'Export', preIcon: Download, variant: 'outlined' },
+    { children: 'Save', preIcon: Check },
   ]}
 />`,
       },
@@ -281,13 +346,13 @@ export const ResponsiveCollapse: Story = {
     subtitle: 'ana.ferreira@meridian.app',
     media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
     meta: [
-      { label: 'Role', value: 'Admin', icon: 'shield' },
-      { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+      { label: 'Role', value: 'Admin', icon: Shield },
+      { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
     ],
     actions: [
-      { icon: 'bell', variant: 'text', color: 'secondary', tooltip: 'Notifications' },
-      { children: 'Export', preIcon: 'download', variant: 'outlined' },
-      { children: 'Save', preIcon: 'check' },
+      { icon: Bell, variant: 'text', color: 'secondary', tooltip: 'Notifications' },
+      { children: 'Export', preIcon: Download, variant: 'outlined' },
+      { children: 'Save', preIcon: Check },
     ],
   },
 };

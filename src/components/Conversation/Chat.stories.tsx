@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, waitFor } from 'storybook/test';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '../Button';
 import { Drawer } from '../Drawer';
@@ -336,6 +337,59 @@ export const FailedMessageRetry: Story = {
         />
       </Frame>
     );
+  },
+};
+
+const STREAMED_REPLY =
+  'Checked the logs for MRD-482. The retries line up with the certificate rotation at 09:40, ' +
+  'so the webhook endpoint was rejecting the new chain for about twelve minutes. Every failed ' +
+  'delivery is queued, and the replay finished a few minutes ago - nothing was dropped. I have ' +
+  'also added an alert on handshake failures so this surfaces within a minute next time, and ' +
+  'written the timeline into the incident doc if you want the details.';
+
+/**
+ * A reply streamed into an existing message, token by token. The message
+ * count never changes, yet the thread follows the text as it grows - as long
+ * as the reader was at the bottom when it started. Scroll up mid-stream and
+ * it stops following.
+ */
+export const StreamingReply: Story = {
+  render: (args) => {
+    const [body, setBody] = useState('');
+
+    useEffect(() => {
+      const words = STREAMED_REPLY.split(' ');
+      let index = 0;
+      const timer = setInterval(() => {
+        index += 1;
+        setBody(words.slice(0, index).join(' '));
+        if (index >= words.length) clearInterval(timer);
+      }, 40);
+      return () => clearInterval(timer);
+    }, []);
+
+    const messages: ConversationMessage[] = [
+      ...CHAT_MESSAGES,
+      { id: 'm-streaming', author: BRUNO, body: body || '…', sentAt: new Date().toISOString() },
+    ];
+
+    return (
+      <Frame height={360}>
+        <Chat {...args} messages={messages} onSend={() => {}} />
+      </Frame>
+    );
+  },
+  play: async ({ canvas }) => {
+    const region = canvas.getByRole('log');
+    const distanceFromBottom = () => region.scrollHeight - region.scrollTop - region.clientHeight;
+
+    // Wait for the whole reply, then check the viewport followed it. Before
+    // this was fixed the region stayed where the first token had left it,
+    // hundreds of pixels above the end of the text.
+    await waitFor(() => expect(canvas.getByText(/written the timeline/)).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    await waitFor(() => expect(distanceFromBottom()).toBeLessThanOrEqual(48));
   },
 };
 

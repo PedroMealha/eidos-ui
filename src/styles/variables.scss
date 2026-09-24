@@ -209,6 +209,9 @@
   --component-size-sm: 32px;
   --component-size-md: 40px;
   --component-size-lg: 48px;
+  // Avatar's identity-media sizes, above the shared component scale.
+  --avatar-size-xl: 64px;
+  --avatar-size-2xl: 96px;
 
   // Layout
   --toolbar-height: 60px;

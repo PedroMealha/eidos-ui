@@ -40,6 +40,12 @@ export const useNewMessageIds = (
 
 interface StickToBottom {
   scrollRef: React.RefObject<HTMLDivElement | null>;
+  /**
+   * The single element wrapping everything inside the scroll region. Its
+   * height *is* the content height, so observing it catches every way the
+   * content can grow.
+   */
+  contentRef: React.RefObject<HTMLDivElement | null>;
   /** The viewport is at (or near) the newest message. */
   atBottom: boolean;
   scrollToBottom: (behavior?: ScrollBehavior) => void;
@@ -60,11 +66,13 @@ const BOTTOM_THRESHOLD_PX = 48;
  */
 export const useStickToBottom = (messages: ConversationMessage[]): StickToBottom => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [atBottom, setAtBottom] = useState(true);
   // Read during a layout effect, so it must not be state - it has to be
   // correct for the commit that is happening right now, not the next render.
   const atBottomRef = useRef(true);
   const lastCount = useRef(messages.length);
+  const lastScrollTop = useRef(0);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
     const node = scrollRef.current;
@@ -72,11 +80,28 @@ export const useStickToBottom = (messages: ConversationMessage[]): StickToBottom
     node.scrollTo({ top: node.scrollHeight, behavior });
   }, []);
 
+  // Stickiness is released only by the *reader* moving up, never by distance
+  // alone.
+  //
+  // Measuring distance alone is wrong the moment content can grow while a
+  // smooth scroll is in flight: the scroll events fired mid-animation report
+  // the gap to a bottom that has since moved further away, so the reader - who
+  // never touched anything - is declared "not at the bottom" and the thread
+  // stops following a streamed reply partway through. A programmatic scroll
+  // to the bottom only ever *increases* `scrollTop`, and content growth does
+  // not change it at all, so a decrease is a reliable signal of intent: wheel,
+  // keyboard, scrollbar drag and touch all produce one.
   const handleScroll = useCallback(() => {
     const node = scrollRef.current;
     if (!node) return;
     const distance = node.scrollHeight - node.scrollTop - node.clientHeight;
-    const next = distance <= BOTTOM_THRESHOLD_PX;
+    const movedUp = node.scrollTop < lastScrollTop.current;
+    lastScrollTop.current = node.scrollTop;
+
+    let next = atBottomRef.current;
+    if (distance <= BOTTOM_THRESHOLD_PX) next = true;
+    else if (movedUp) next = false;
+
     atBottomRef.current = next;
     setAtBottom((current) => (current === next ? current : next));
   }, []);
@@ -95,7 +120,43 @@ export const useStickToBottom = (messages: ConversationMessage[]): StickToBottom
     lastCount.current = messages.length;
   }, [messages.length, scrollToBottom]);
 
-  return { scrollRef, atBottom, scrollToBottom, handleScroll };
+  // The effect above only reacts to the *number* of messages. A reply that is
+  // streamed into an existing message - or a typing indicator appearing, or
+  // an image loading - grows the content without changing that number, and
+  // used to push the newest text below the fold while the reader was sitting
+  // at the bottom waiting for it.
+  //
+  // Observing the content wrapper covers every one of those, because its
+  // height is the content height. The scroll container itself cannot be
+  // observed for this: its own box never changes size, only its
+  // `scrollHeight` does.
+  //
+  // `'auto'`, not `'smooth'`: a stream grows the content once per token, and
+  // a smooth scroll restarted that often never catches up with the text.
+  // `atBottomRef` still holds the reader's position from *before* the growth,
+  // which is exactly the question - "were they following along?".
+  //
+  // Growth that coincides with a new message is left to the smooth scroll the
+  // layout effect above already started; jumping here as well would cancel
+  // that animation on every single arrival.
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content || typeof ResizeObserver === 'undefined') return;
+
+    let lastHeight = content.getBoundingClientRect().height;
+    let observedCount = lastCount.current;
+    const observer = new ResizeObserver(() => {
+      const height = content.getBoundingClientRect().height;
+      const countChanged = observedCount !== lastCount.current;
+      observedCount = lastCount.current;
+      if (height > lastHeight && !countChanged && atBottomRef.current) scrollToBottom('auto');
+      lastHeight = height;
+    });
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [scrollToBottom]);
+
+  return { scrollRef, contentRef, atBottom, scrollToBottom, handleScroll };
 };
 
 /**

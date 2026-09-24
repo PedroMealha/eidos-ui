@@ -1,8 +1,9 @@
 import React from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { Tooltip } from '../Tooltip';
-import { ButtonProps, IconButtonProps } from './Button.types';
+import { ButtonProps, IconButtonProps, IconLinkButtonProps } from './Button.types';
 import { renderIcon, devWarn } from '../../utils';
+import { EidosLink } from '../LinkProvider/Link.component';
 
 export const Button: React.FC<ButtonProps> = ({
   variant = 'filled',
@@ -70,14 +71,8 @@ export const Button: React.FC<ButtonProps> = ({
     .filter(Boolean)
     .join(' ');
 
-  const buttonContent = (
-    <button
-      type="button"
-      {...buttonProps}
-      aria-label={iconOnlyLabel ?? buttonProps['aria-label']}
-      className={buttonClasses}
-      disabled={disabled || loading}
-    >
+  const content = (
+    <>
       {loading ? (
         <>
           {!isIconOnly && (
@@ -107,8 +102,36 @@ export const Button: React.FC<ButtonProps> = ({
           {posIcon && renderIcon(posIcon, 'eidos-button--pos-icon')}
         </>
       )}
-    </button>
+    </>
   );
+
+  // Discriminated on `href` alone. The props arrive as one of four union
+  // members, but destructuring the style/content props above collapses the
+  // rest into a shape TypeScript can no longer narrow, hence the casts - each
+  // is exactly the half of the union the `href` check just proved.
+  const buttonContent =
+    typeof buttonProps.href === 'string' ? (
+      <EidosLink
+        {...(buttonProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        href={buttonProps.href}
+        aria-label={iconOnlyLabel ?? buttonProps['aria-label']}
+        aria-busy={loading || undefined}
+        className={buttonClasses}
+        disabled={disabled || loading}
+      >
+        {content}
+      </EidosLink>
+    ) : (
+      <button
+        type="button"
+        {...(buttonProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+        aria-label={iconOnlyLabel ?? buttonProps['aria-label']}
+        className={buttonClasses}
+        disabled={disabled || loading}
+      >
+        {content}
+      </button>
+    );
 
   return tooltip ? <Tooltip message={tooltip}>{buttonContent}</Tooltip> : buttonContent;
 };
@@ -124,6 +147,6 @@ export const Button: React.FC<ButtonProps> = ({
  * <IconButton icon={Plus} tooltip="Add item" />
  * ```
  */
-export const IconButton: React.FC<IconButtonProps> = (props) => {
+export const IconButton: React.FC<IconButtonProps | IconLinkButtonProps> = (props) => {
   return <Button {...props} />;
 };

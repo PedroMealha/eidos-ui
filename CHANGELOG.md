@@ -10,8 +10,40 @@ anyone browsing the component docs - keep both in sync when cutting a release.
 ## [Unreleased]
 
 Entries land here as work happens, not written retroactively at release time
+
 - see the "Changelog discipline" section in
-`.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
+  `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
+
+### Added
+
+- `Button`, `Chip`, `Header` actions and `Toolbar` actions render as links when given `href`.
+- `LinkProvider` component - renders every library link through your router's link component.
+- `Header` `titleAs` prop sets the title's heading level (`h1`-`h6`) without changing its look.
+- `Avatar` `xl` (64px) and `2xl` (96px) sizes, for profile and account headers.
+- `IdentityHeader`'s `avatar` shorthand accepts `size`.
+- `Timeline` `warning` and `info` colours.
+- `Timeline` `ariaLabel` and `aria-labelledby` props.
+- `registerIcons()` makes chosen icons available to every icon prop by string name.
+- `eidos-ui/lucide-icons` entry point registers every Lucide icon by name.
+
+### Deprecated
+
+- Resolving an unregistered Lucide icon by string name, removed in 4.0 - pass the component or register it.
+
+### Changed
+
+- `Breadcrumb` crumbs with `href` render through `LinkProvider`'s component when one is set.
+- `Chat` wraps its scroll region's contents in `.eidos-chat-scroll-content`, so custom CSS targeting `.eidos-chat-scroll > *` should target that element's children instead.
+- `Timeline` no longer names every list "Timeline" - pass `ariaLabel` or `aria-labelledby` if yours needs an accessible name.
+- `Popover` logs a development warning when given its deprecated `isOpen` prop.
+
+### Fixed
+
+- `Chat` stays pinned to the newest text while a message grows in place, such as a streamed reply.
+- `Timeline` titles and descriptions accept block content (lists, chips) as valid HTML.
+- `Timeline`'s fallback dot stays visible on a pale themed colour.
+- `Chip` labels no longer clip the descenders of g, j, p, q and y.
+- `Drawer` side panels no longer run off-screen on viewports narrower than their size.
 
 ## [3.7.0] - 2026-09-24
 
@@ -258,7 +290,7 @@ Entries land here as work happens, not written retroactively at release time
   4.44-4.52:1 - two variants failing AA and three passing by a hundredth.
   Now 6.10-6.22:1 across the set.
 - **`tooltip` now names an icon-only `Button`.** `<IconButton icon={Plus}
-  tooltip="Add item" />` - the pattern in `IconButton`'s own documentation -
+tooltip="Add item" />` - the pattern in `IconButton`'s own documentation -
   produced a button announced as just "button", because `Tooltip` adds no
   naming attributes to its child. An explicit `aria-label` still wins.
   `SegmentedControl` had the identical problem for icon-only segments.
@@ -341,7 +373,7 @@ Entries land here as work happens, not written retroactively at release time
   was an alpha tint of its colour, measuring **1.47-1.62:1** against a white
   page across all seven families - all failing. Raising the alpha cannot fix
   it (0.6 still only reaches 2.3-2.76:1), so rings are now a solid base colour
-  with a white gap: ≥4.76:1 against the page *and* against a filled control.
+  with a white gap: ≥4.76:1 against the page _and_ against a filled control.
   The gap is what makes a ring visible around a checked `Switch`, `Checkbox`
   or `Radio`, whose track is already the ring's own colour.
 - A clickable `Avatar` inside an `AvatarGroup` has a focus ring. The group's
@@ -735,7 +767,7 @@ Entries land here as work happens, not written retroactively at release time
 - `DataGrid` and `Table` constrain `T extends object` rather than
   `T extends Record<string, unknown>`, so a plain `interface` row type is
   accepted. Row types written as `interface Row extends Record<string,
-  unknown>` to satisfy the old constraint should drop the `extends`: an index
+unknown>` to satisfy the old constraint should drop the `extends`: an index
   signature widens `keyof T` to `string` and silently disables all of the
   checking above.
 

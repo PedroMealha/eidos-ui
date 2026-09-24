@@ -4,6 +4,7 @@ import './Header.scss';
 import { Button } from '../Button';
 import { Popover } from '../Popover';
 import { renderIcon } from '../../utils';
+import { Ellipsis } from 'lucide-react';
 
 export const Header: React.FC<HeaderProps> = ({
   title,
@@ -11,6 +12,7 @@ export const Header: React.FC<HeaderProps> = ({
   media,
   meta,
   variant = 'default',
+  titleAs: TitleElement = 'h1',
   actions,
   collapseActionsBelow = 640,
   actionsVisibleWhenCollapsed = 1,
@@ -73,8 +75,11 @@ export const Header: React.FC<HeaderProps> = ({
   }, [isCollapsed, overflowOpen]);
 
   const renderOverflowAction = (action: HeaderActionProps, index: number) => {
-    const handleClick: HeaderActionProps['onClick'] = (event) => {
-      action.onClick?.(event);
+    // Typed on `HTMLElement` so it satisfies both the button and the link
+    // form's handler; the action's own handler is one or the other, and is
+    // only ever called with the element it was attached to.
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      (action.onClick as React.MouseEventHandler<HTMLElement> | undefined)?.(event);
       setOverflowOpen(false);
     };
 
@@ -95,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const titles = (
     <div className="eidos-header__titles">
-      <h1 className="eidos-header__title">{title}</h1>
+      <TitleElement className="eidos-header__title">{title}</TitleElement>
       {subtitle && <span className="eidos-header__subtitle">{subtitle}</span>}
       {!!meta?.length && (
         <div className="eidos-header__meta">
@@ -131,7 +136,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="eidos-header__actions">
           {overflowActions.length > 0 && (
             <Popover
-              isOpen={overflowOpen}
+              open={overflowOpen}
               onOpenChange={setOverflowOpen}
               placement="bottom"
               maxWidth={260}
@@ -142,7 +147,7 @@ export const Header: React.FC<HeaderProps> = ({
                 // No `aria-haspopup`/`aria-expanded` here: Popover already
                 // sets both on the wrapper it renders around this button.
                 <Button
-                  icon="ellipsis"
+                  icon={Ellipsis}
                   size="md"
                   variant="outlined"
                   color="secondary"

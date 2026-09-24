@@ -25,6 +25,14 @@ The default text button. Use the controls below to explore the available props.
 
 <Controls of={ButtonStories.Playground} />
 
+## As link
+
+Pass `href` to render the button as a link. It looks exactly like a button, but navigates like a link - middle-click, "open in new tab" and the browser's link preview all work. Use it whenever the action _goes somewhere_, and keep `onClick` for actions that _do something_.
+
+Links render as `<a>` by default. Wrap your app in a [`LinkProvider`](?path=/docs/navigation-linkprovider--docs) to render them with your router's link instead. A disabled or loading link has no `href`, so it cannot be followed by mouse, keyboard or assistive technology.
+
+<Canvas of={ButtonStories.AsLink} />
+
 ## Colors
 
 <Canvas of={ButtonStories.Colors} />
@@ -40,6 +48,25 @@ The default text button. Use the controls below to explore the available props.
 For actions represented by a single icon. Pass `icon` instead of `children` - the two are mutually exclusive in the type, so a button is either a text button or an icon button, never both.
 
 <Canvas of={ButtonStories.IconOnly} />
+
+## Icon names
+
+Icon props also accept a string. Register the icons your app uses once, at its root, and any icon prop in the library resolves their names - kebab-case or PascalCase:
+
+```tsx
+import { registerIcons } from 'eidos-ui';
+import { Rocket, Sparkles } from 'lucide-react';
+
+registerIcons({ Rocket, Sparkles });
+
+<Button preIcon="rocket">Launch</Button>;
+```
+
+`import 'eidos-ui/lucide-icons'` registers every Lucide icon instead - convenient, but it puts the whole icon set in your bundle. A string that isn't registered is treated as CSS classes for an icon font (`"fas fa-heart"`).
+
+> **Deprecated**: an unregistered Lucide name still resolves, with a development warning, until 4.0. That lookup bundles every Lucide icon whether you use it or not, which is why it is going away.
+
+<Canvas of={ButtonStories.RegisteredIconNames} />
 
 ## Sizes
 
@@ -59,6 +86,6 @@ For actions represented by a single icon. Pass `icon` instead of `children` - th
 
 ## With icons
 
-`preIcon` and `posIcon` accept either a Lucide component (`Download`) or its string name (`"download"`).
+`preIcon` and `posIcon` take an icon component (`Download`) - any component that accepts `className`, from Lucide or elsewhere. Only the icons you import reach your bundle. They also accept a registered name; see [Icon names](#icon-names).
 
 <Canvas of={ButtonStories.WithIcons} />

@@ -46,10 +46,11 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['sm', 'md', 'lg'],
-      description: 'Avatar dimensions.',
+      options: ['sm', 'md', 'lg', 'xl', '2xl'],
+      description:
+        'Avatar dimensions: 32, 40, 48, 64 or 96px. `xl` and `2xl` are for identity media such as a profile header.',
       table: {
-        type: { summary: '"sm" | "md" | "lg"' },
+        type: { summary: '"sm" | "md" | "lg" | "xl" | "2xl"' },
         defaultValue: { summary: 'md' },
       },
     },
@@ -162,7 +163,7 @@ export const Shapes: Story = {
 export const Sizes: Story = {
   render: () => (
     <StoryRow align="flex-end">
-      {(['sm', 'md', 'lg'] as const).map((size) => (
+      {(['sm', 'md', 'lg', 'xl', '2xl'] as const).map((size) => (
         <StoryGroup key={size} label={size}>
           <Avatar name="Jane Smith" size={size} />
         </StoryGroup>

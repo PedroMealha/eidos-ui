@@ -9,7 +9,7 @@ Page-level header combining a title with an optional subtitle, leading media, a 
 
 For an account or profile page - avatar beside the name, facts below it, on a hero surface - reach for `IdentityHeader`, which is this component preconfigured for that shape. A settings-style page wants a plain `Header`; it has no identity to lead with.
 
-> **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `HeaderActionProps`.
+> **Note**: `actions` accepts a restricted subset of `Button` props (`icon` for an icon-only action, or `children`/`preIcon`/`posIcon` for a labeled one) rather than the full `ButtonProps` API - see `HeaderActionProps`. Add `href` to make an action a link.
 
 ## Usage
 
@@ -39,6 +39,12 @@ import { Header } from 'eidos-ui';
 
 <Canvas of={HeaderStories.Hero} />
 
+## Link actions
+
+Give an action an `href` and it renders as a link - use it for actions that navigate, such as opening a billing page, and keep `onClick` for ones that act in place. Links go through [`LinkProvider`](?path=/docs/navigation-linkprovider--docs)'s component when one is set.
+
+<Canvas of={HeaderStories.LinkActions} />
+
 ## Responsive behaviour
 
 `Header` reflows against **its own width**, not the viewport - so it behaves correctly in a narrow column on a wide screen, which is exactly the case inside `PageLayout`, where it shares a grid row with a collapsible navigation rail. Both headers in the story below are in the same window; only their container widths differ.
@@ -54,6 +60,12 @@ Set `collapseActionsBelow={0}` to switch the overflow behaviour off and always r
 
 > **Note**: `Header` declares itself a CSS container (`container-type: inline-size`), which applies layout containment. Every overlay in this library is portalled to `document.body`, so tooltips and popovers on actions are unaffected - but if you absolutely-position your own content inside `media` or `title`, the header is its containing block rather than the page.
 
+## Title level
+
+The title is an `h1` by default, which is right for a page header. For a header introducing a section further down the page, set `titleAs="h2"` (or lower) so the document outline stays correct. Only the element changes: the title looks identical at every level.
+
+<Canvas of={HeaderStories.TitleLevel} />
+
 ## Title only
 
 `subtitle` and `actions` are both optional.
@@ -68,7 +80,7 @@ Set `collapseActionsBelow={0}` to switch the overflow behaviour off and always r
 
 ## With media
 
-`media` renders any node on the leading edge, centered against the title stack. It takes a node rather than an `Avatar` config so it can equally hold a logo or an icon block - and so it can hold identity media larger than `Avatar`'s own `lg` size (48px), which `Avatar` cannot currently express.
+`media` renders any node on the leading edge, centered against the title stack. It takes a node rather than an `Avatar` config so it can equally hold a logo or an icon block. For a profile header, `Avatar`'s `xl` (64px) and `2xl` (96px) sizes are built for this slot.
 
 <Canvas of={HeaderStories.WithMedia} />
 

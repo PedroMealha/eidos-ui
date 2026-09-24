@@ -53,6 +53,6 @@
   // Note: this comment cannot use block form - the glob below contains `*` and
   // `/` in a sequence that would close a block comment early, which broke this
   // file once already.
-  "include": ["src", "dev", ".storybook/**/*.ts", "*.config.ts", "scripts"],
+  "include": ["src", "dev", ".storybook/**/*.ts", ".storybook/**/*.tsx", "*.config.ts", "scripts"],
   "exclude": ["node_modules", "dist", "storybook-static"]
 }

@@ -5,6 +5,7 @@ import { errorMessage } from '../api/client';
 import type { Role } from '../api/types';
 import { useAuth } from './auth-context';
 import { useRouter } from '../routes/router';
+import { ArrowLeft, ArrowRight, Mail } from 'lucide-react';
 
 const STEPS = [
   { label: 'Your email', description: 'Where we send the code' },
@@ -80,7 +81,7 @@ export const SignInPage: React.FC = () => {
               label="Work email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              preIcon="mail"
+              preIcon={Mail}
               placeholder="you@company.com"
               error={fieldError ?? undefined}
               fullWidth
@@ -106,7 +107,7 @@ export const SignInPage: React.FC = () => {
               type="submit"
               loading={pending}
               loadingText="Sending code"
-              posIcon="arrow-right"
+              posIcon={ArrowRight}
               className="mrd-block"
             >
               Send code
@@ -141,7 +142,7 @@ export const SignInPage: React.FC = () => {
             <Button
               variant="text"
               color="secondary"
-              preIcon="arrow-left"
+              preIcon={ArrowLeft}
               disabled={pending}
               onClick={() => {
                 setStep(0);

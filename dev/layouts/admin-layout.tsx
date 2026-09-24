@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Divider, PageLayout, Pill, Switch, Tooltip, useSnackbar } from 'eidos-ui';
-import { ChevronRight, LifeBuoy, LogOut } from 'lucide-react';
+import { ChevronRight, LifeBuoy, LogOut, Settings, User } from 'lucide-react';
 import type { BreadcrumbItem, CommandItem, MenuItemType, NavigationItem } from 'eidos-ui';
 import { getForceFailures, setForceFailures } from '../api/client';
 import { useAuth } from '../auth/auth-context';
@@ -127,21 +127,21 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         type: 'item',
         id: 'account',
         label: 'Account',
-        icon: 'user',
+        icon: User,
         onClick: () => navigate('/app/account'),
       },
       {
         type: 'item',
         id: 'settings',
         label: 'Settings',
-        icon: 'settings',
+        icon: Settings,
         onClick: () => navigate('/app/settings'),
       },
       {
         type: 'item',
         id: 'sign-out',
         label: 'Sign out',
-        icon: 'log-out',
+        icon: LogOut,
         color: 'danger',
         onClick: () => void signOut(),
       },

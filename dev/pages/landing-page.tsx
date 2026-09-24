@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card, Chip, Pill } from 'eidos-ui';
-import { Gauge, Inbox, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Gauge, Inbox, KeyRound, ShieldCheck } from 'lucide-react';
 import { useRouter } from '../routes/router';
 
 const FEATURES = [
@@ -37,10 +37,10 @@ export const LandingPage: React.FC = () => {
           public/authenticated split.
         </p>
         <div className="mrd-hero__actions">
-          <Button posIcon="arrow-right" onClick={() => navigate('/sign-in')}>
+          <Button posIcon={ArrowRight} onClick={() => navigate('/sign-in')}>
             Try the demo
           </Button>
-          <Chip variant="outlined" color="secondary" preIcon="key-round">
+          <Chip variant="outlined" color="secondary" preIcon={KeyRound}>
             Code 123456
           </Chip>
         </div>

@@ -20,6 +20,9 @@ export default defineConfig({
     index: 'src/index.ts',
     // Per-component entries - enables `import { Button } from 'eidos-ui/button'`
     ...componentEntries,
+    // Opt-in side-effect entry - `import 'eidos-ui/lucide-icons'` registers
+    // every Lucide icon for string icon props. Resolved by the `./*` export.
+    'lucide-icons/index': 'src/lucide-icons/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,

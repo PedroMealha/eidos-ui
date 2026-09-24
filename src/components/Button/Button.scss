@@ -12,6 +12,17 @@
   gap: var(--spacing-sm);
   // will-change: transform;
 
+  // The link form (`href`). A `<button>` is shrink-to-fit even with
+  // `display: flex`; an `<a>` is not, and would stretch to its container's
+  // full width. `inline-flex` gives the anchor the button's footprint. Its
+  // colours already win over the global `a` rules on specificity.
+  // A disabled link cannot match `:disabled`, so the `:not(:disabled)` hover
+  // rules below still match it; `--disabled`'s `!important` paint is what
+  // keeps it inert-looking.
+  &:is(a) {
+    display: inline-flex;
+  }
+
   // Sizes
   &--sm {
     padding: var(--spacing-xs) var(--spacing-sm);

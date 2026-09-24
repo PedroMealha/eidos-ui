@@ -1,6 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
-import { User, Settings, LogOut, FileText, Copy, Trash2, Share2, Mail } from 'lucide-react';
+import {
+  Clipboard,
+  Copy,
+  FileText,
+  LogOut,
+  Mail,
+  Scissors,
+  Settings,
+  Share2,
+  Trash2,
+  User,
+} from 'lucide-react';
 import { Menu } from './Menu.component';
 import { Button } from '../Button';
 import { Dropdown } from '../Dropdown';
@@ -171,7 +182,7 @@ export const WithDisabledItems: Story = {
         type: 'item',
         id: '1',
         label: 'Cut',
-        icon: 'scissors',
+        icon: Scissors,
         shortcut: '⌘X',
         onClick: action('Cut'),
       },
@@ -179,7 +190,7 @@ export const WithDisabledItems: Story = {
         type: 'item',
         id: '2',
         label: 'Copy',
-        icon: 'copy',
+        icon: Copy,
         shortcut: '⌘C',
         onClick: action('Copy'),
         disabled: true,
@@ -188,7 +199,7 @@ export const WithDisabledItems: Story = {
         type: 'item',
         id: '3',
         label: 'Paste',
-        icon: 'clipboard',
+        icon: Clipboard,
         shortcut: '⌘V',
         onClick: action('Paste'),
         disabled: true,

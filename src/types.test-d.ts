@@ -15,6 +15,10 @@
  * direction is silent otherwise.
  */
 import type {
+  ButtonProps,
+  ChipProps,
+  HeaderActionProps,
+  ToolbarActionProps,
   DataGridColumn,
   DataGridFilterField,
   DataGridProps,
@@ -134,8 +138,43 @@ const widenedParam: DataGridColumn<Row> = {
   renderCell: (value: unknown, row) => `${String(value)}${row.id}`,
 };
 
+// ─── Button: the link form is discriminated on `href` ────────────────────────
+
+const linkButton: ButtonProps = {
+  href: '/settings',
+  children: 'Settings',
+  target: '_blank',
+  // An anchor's handler - only accepted because `href` selected the link form
+  onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void event.currentTarget.href,
+};
+
+const iconLinkButton: ButtonProps = { href: '/help', icon: 'circle-help', tooltip: 'Help' };
+
+// @ts-expect-error `form` is a button attribute; with `href` the link form is selected
+const submitLink: ButtonProps = { href: '/x', children: 'x', form: 'profile' };
+
+const headerLinkAction: HeaderActionProps = {
+  href: '/billing',
+  children: 'Manage billing',
+  variant: 'outlined',
+};
+
+// @ts-expect-error Header actions stay a restricted subset - no arbitrary anchor attributes
+const headerActionExtraAttr: HeaderActionProps = { href: '/x', children: 'x', download: true };
+
+const toolbarLinkAction: ToolbarActionProps = { href: '/inbox', icon: 'inbox', tooltip: 'Inbox' };
+
+const chipLink: ChipProps = { href: '/tags/react', children: 'react', target: '_blank' };
+
 export type { Row };
 export {
+  linkButton,
+  iconLinkButton,
+  submitLink,
+  headerLinkAction,
+  headerActionExtraAttr,
+  toolbarLinkAction,
+  chipLink,
   badFilterKey,
   badColumnKey,
   badQuickFilterKey,

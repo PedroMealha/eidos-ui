@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { PopoverProps, PopoverState, PopoverPlacement } from './Popover.types';
-import { useDialogFocus, useIsClient } from '../../utils';
+import { devWarn, useDialogFocus, useIsClient } from '../../utils';
 
 export const Popover: React.FC<PopoverProps> = ({
   trigger,
@@ -30,6 +30,12 @@ export const Popover: React.FC<PopoverProps> = ({
   // `open` is the canonical name, matching `Dropdown` and `CommandPalette`.
   // `isOpen` is the original spelling, kept working rather than renamed out
   // from under anyone.
+  if (isOpen !== undefined) {
+    devWarn(
+      'popover-is-open',
+      'Popover: `isOpen` is deprecated - pass `open` instead, the name `Dropdown` and `CommandPalette` use.',
+    );
+  }
   const controlledOpen = openProp ?? isOpen;
   const isControlled = controlledOpen !== undefined;
   const [localOpen, setLocalOpen] = useState(defaultOpen ?? false);

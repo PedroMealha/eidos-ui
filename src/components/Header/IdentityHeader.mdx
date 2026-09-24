@@ -13,13 +13,14 @@ import * as IdentityHeaderStories from './IdentityHeader.stories';
 
 ```tsx
 import { IdentityHeader } from 'eidos-ui';
+import { Pencil, Shield } from 'lucide-react';
 
 <IdentityHeader
   title="Ana Ferreira"
   subtitle="ana.ferreira@meridian.app"
-  avatar={{ name: 'Ana Ferreira', color: 'primary' }}
-  meta={[{ label: 'Role', value: 'Admin', icon: 'shield' }]}
-  actions={[{ children: 'Edit profile', preIcon: 'pencil', variant: 'outlined' }]}
+  avatar={{ name: 'Ana Ferreira', color: 'primary', size: 'xl' }}
+  meta={[{ label: 'Role', value: 'Admin', icon: Shield }]}
+  actions={[{ children: 'Edit profile', preIcon: Pencil, variant: 'outlined' }]}
 />;
 ```
 
@@ -47,7 +48,7 @@ An account page leads with the organisation. A `square` avatar reads better for 
 
 ## Custom media
 
-`avatar` is a shorthand that renders an `Avatar` at `lg` (48px). Pass `media` instead for anything else - a logo, an icon block, or an avatar at the larger size a hero header usually wants, which `Avatar` cannot currently express. If both are given, `media` wins and a development warning is logged.
+`avatar` is a shorthand that renders an `Avatar` at `lg` (48px) by default. Set `avatar.size` to `xl` (64px) or `2xl` (96px) for the larger mark a profile page usually wants. Pass `media` instead for anything that isn't an avatar - a logo or an icon block. If both are given, `media` wins and a development warning is logged.
 
 <Canvas of={IdentityHeaderStories.CustomMedia} />
 

@@ -76,7 +76,13 @@ with a comment, mirroring what a real consumer has to do.
 
 Always: `sm | md | lg` - abbreviated forms that match the CSS variable convention (`--component-size-sm`, `--spacing-sm`, etc.).
 Never use full words (`small`, `medium`, `large`) or other abbreviations.
-Avatar is the only component with a defined `AvatarSize` type; it also uses `sm | md | lg` (3 sizes, no `xs` or `xl`).
+Avatar is the one exception: `AvatarSize` is `sm | md | lg | xl | 2xl`. The first
+three share `--component-size-*` with every control; `xl` (64px) and `2xl`
+(96px) exist because a profile header's identity mark at 48px reads as a list
+thumbnail, and consumers were hand-rolling larger avatars in `Header`'s `media`
+slot. They live on Avatar-only tokens (`--avatar-size-xl/2xl`) on purpose -
+adding `--component-size-xl` would imply every sized control has an xl. Do not
+add `xl` to another component without a real consumer need of the same kind.
 
 ### Color naming
 
@@ -666,6 +672,70 @@ either. Any such API is limited to one winner.
 half, page-registered context for the dynamic half) as **application** code,
 with relative imports, so it cannot be misread as a library export - it was,
 previously. `dev/layouts/page-chrome.tsx` is the worked implementation.
+
+### Every library link goes through `EidosLink`
+
+Anything with an `href` - `Button`, `Chip`, `Header`/`Toolbar` actions,
+`Breadcrumb` - renders `src/components/LinkProvider/Link.component.tsx`, never
+a bare `<a>`. It owns three rules nobody should re-derive:
+
+- **Enabled** → `LinkProvider`'s component (the app's router link), else `<a>`.
+- **Disabled/loading** → `<a>` with **no `href`**, `role="link"`,
+  `aria-disabled="true"`, `tabIndex={-1}`. An anchor with a destination cannot
+  be disabled any other way, and a router link cannot render without one.
+- **`target="_blank"`** → defaults `rel="noopener noreferrer"`.
+
+`LinkProvider` is a context, not a per-component prop, because the router is
+app-wide and actions are often config objects with nowhere to pass a component.
+It writes nothing global (unlike `ThemeProvider`), so nesting is fine.
+
+An `<a>` styled by a component class needs two things a `<button>` does not:
+`display: inline-flex` (a block-level flex anchor stretches full-width, a
+button does not), and a check that the global `a:hover` colour (0,1,1) does not
+outrank a `color: inherit` at (0,1,0) - `Chip`'s inner action hit exactly this.
+
+### String icons resolve through a registry, never the whole Lucide map
+
+`renderIcon` must not reference `lucide-react`'s `icons` object: a lookup by a
+runtime string cannot be tree-shaken, so it put all ~1,800 icons in every
+consumer bundle (measured: 1,083 KB of JS for a site using a handful). String
+names resolve through `registerIcons()` (`src/utils/iconRegistry.ts`), and
+`eidos-ui/lucide-icons` is the opt-in "register everything" entry.
+
+- **Library code and stories pass components**, never string names - the
+  library must not trigger its own deprecation warning. Stories set icon args
+  by name only via `iconArgType()` (`src/story-icons.docs.ts`), which maps
+  names to components; a `text` control cannot hold a component.
+- **The registry lives on `globalThis` under `Symbol.for`**, because tsup
+  compiles each CJS entry separately and a module-level `Map` would split.
+- **`dist/lucide-icons/*` must stay in `package.json` `sideEffects`** - it
+  exports nothing, so a bundler would otherwise drop the import silently.
+- 3.8 keeps the full-map lookup as a deprecated fallback with a `devWarn`;
+  4.0 removes it and the `icons` import (and should add a bundle-size guard).
+
+### Deprecation: tag, parameter, JSDoc, warning
+
+A deprecation is four facts, each with one reader, and
+`scripts/check-story-docs.js` fails when they disagree:
+
+| Fact                                                          | Read by                                            |
+| ------------------------------------------------------------- | -------------------------------------------------- |
+| `tags: ['deprecated']` in the stories meta                    | sidebar badge (`.storybook/manager.tsx`), filter   |
+| `parameters.deprecation: { since, removeIn?, use?, reason? }` | `<DeprecationNotice of={X} />` under the `#` title |
+| JSDoc `@deprecated` on the component/prop                     | editors (strikethrough)                            |
+| `devWarn` on use                                              | the consumer's console                             |
+
+A deprecated **prop** gets its argTypes entry `table: { category: 'Deprecated' }`
+with a description starting `**Deprecated.**` - never `table: { disable: true }`,
+which hides the migration path. `Popover.isOpen` was the first case the check
+caught, and `Header` was itself still passing it.
+
+Two traps found while building this, both verified: the manager bundles with
+the **classic** JSX runtime, so `manager.tsx` must `import React` or the first
+badge crashes the whole manager UI; and the manager only rebuilds on a
+Storybook restart, so a stale bundle looks like "the badge doesn't work".
+Only `component` rows are badged - stories inherit the tag, and badging them
+repeats it on every row.
 
 ---
 
@@ -1816,9 +1886,20 @@ with icons, nested submenus, and a custom component item - walking and
 warning on every node in a tree that deep is expensive enough to actually
 freeze the tab, not just log noise.
 
+**Size is not the only trigger.** `Timeline`'s `RichContent` story froze the
+Docs tab with a _small_ tree: two items, but each `description` was JSX nested
+inside an array-of-objects prop (`items={[{ description: <>…<Chip/>…</> }]}`) -
+a fragment holding a list and components, several levels down. Removing that
+one canvas made the page responsive again; a static source string fixed it
+with the canvas kept. The same file's `icon: <Upload />` items were fine, so
+the cost appears to come from rich JSX _inside object props_, not JSX in props
+as such. The story passed `test:stories`, because that renders each story
+alone - only the Docs page runs the source serializer, so **no automated check
+covers this**. After adding a story with JSX in data props, open its Docs page.
+
 If a component's `Examples`-style story stacks many real instances (not
-just a handful), give it an explicit static source string instead of
-letting Storybook derive one dynamically:
+just a handful), or passes rich JSX through data props, give it an explicit
+static source string instead of letting Storybook derive one dynamically:
 
 ```ts
 parameters: {

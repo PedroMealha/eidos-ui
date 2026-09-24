@@ -4,6 +4,7 @@ import { expect } from 'storybook/test';
 import { Tag, Star, Check } from 'lucide-react';
 import { Chip } from './Chip.component';
 import { StoryRow } from '../../story-layout.docs';
+import { iconArgType } from '../../story-icons.docs';
 
 const meta = {
   title: 'Elements/Chip',
@@ -54,24 +55,12 @@ const meta = {
       description: 'Tooltip message to display on hover',
       table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
     },
-    preIcon: {
-      control: 'text',
-      description: 'Icon to display before text. Pass Lucide component (Tag) or string ("tag").',
-      table: {
-        type: { summary: 'React.ComponentType | string' },
-        category: 'Icons',
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    posIcon: {
-      control: 'text',
-      description: 'Icon to display after text. Pass Lucide component (Check) or string ("check").',
-      table: {
-        type: { summary: 'React.ComponentType | string' },
-        category: 'Icons',
-        defaultValue: { summary: 'undefined' },
-      },
-    },
+    preIcon: iconArgType(
+      'Icon before the label: a component (`Tag`), or a registered string name.',
+    ),
+    posIcon: iconArgType(
+      'Icon after the label: a component (`Check`), or a registered string name.',
+    ),
     onClick: {
       control: false,
       description: 'Callback when chip is clicked (makes chip clickable)',
@@ -87,6 +76,26 @@ const meta = {
       description: 'Make chip full width',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
     },
+    href: {
+      control: 'text',
+      description:
+        'Makes the chip a link to this URL, through `LinkProvider`’s component when one is set.',
+      table: {
+        type: { summary: 'string' },
+        category: 'Link',
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    target: {
+      control: 'text',
+      description: 'Link target. `_blank` defaults `rel` to `noopener noreferrer`.',
+      table: { type: { summary: 'string' }, category: 'Link' },
+    },
+    rel: {
+      control: 'text',
+      description: 'Link relationship. An explicit value always wins over the `_blank` default.',
+      table: { type: { summary: 'string' }, category: 'Link' },
+    },
     className: { table: { disable: true } },
   },
 } satisfies Meta<typeof Chip>;
@@ -97,6 +106,34 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = {
   args: {
     children: 'Chip Label',
+  },
+};
+
+/**
+ * A chip with `href` is a link, styled as a clickable chip. Combined with
+ * `onRemove`, the link and the remove button stay separate sibling controls.
+ */
+export const AsLink: Story = {
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip href="#react" preIcon={Tag}>
+        react
+      </Chip>
+      <Chip href="#typescript" variant="outlined" onRemove={action('Chip removed')}>
+        typescript
+      </Chip>
+    </StoryRow>
+  ),
+  play: async ({ canvas }) => {
+    const link = canvas.getByRole('link', { name: 'react' });
+    await expect(link).toHaveAttribute('href', '#react');
+    await expect(link).toHaveClass('eidos-chip--clickable');
+
+    // Removable: the link moves inside, so the two controls are siblings
+    // rather than a button nested in a link.
+    const removable = canvas.getByRole('link', { name: 'typescript' });
+    await expect(removable).toHaveClass('eidos-chip--action');
+    await expect(removable.querySelector('button')).toBeNull();
   },
 };
 
@@ -166,6 +203,39 @@ export const Interactive: Story = {
     expect(removable).not.toHaveClass('eidos-chip--clickable');
 
     expect(canvas.getByRole('button', { name: 'Clickable' })).toHaveClass('eidos-chip--clickable');
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * The label is `line-height: 1`, so descenders (g, j, p, q, y) extend below
+ * its box. It used to truncate with `overflow: hidden`, which clips both axes
+ * and cut the tails off every descender - measured as a 12.25px box around
+ * 14px of glyph. Only the inline axis should clip.
+ */
+export const DescendersNotClipped: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: () => (
+    <StoryRow gap="sm">
+      <Chip>Typography gjpqy</Chip>
+      <div style={{ width: 120 }}>
+        <Chip>A very long label that has to be truncated with an ellipsis</Chip>
+      </div>
+    </StoryRow>
+  ),
+  play: async ({ canvas }) => {
+    const copy = canvas.getByText('Typography gjpqy');
+    await expect(getComputedStyle(copy).overflowY).toBe('visible');
+
+    // Horizontal truncation must survive the change: the long label stays
+    // inside its 120px column instead of overflowing it.
+    const long = canvas.getByText(/A very long label/);
+    const column = long.closest('.eidos-chip')!.parentElement!;
+    await expect(long.scrollWidth).toBeGreaterThan(long.clientWidth);
+    await expect(long.closest('.eidos-chip')!.getBoundingClientRect().width).toBeLessThanOrEqual(
+      column.getBoundingClientRect().width,
+    );
   },
 };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { BreadcrumbProps } from './Breadcrumb.types';
+import { EidosLink } from '../LinkProvider/Link.component';
 
 export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   items,
@@ -27,10 +28,10 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 {item.label}
               </span>
             ) : item.href ? (
-              <a href={item.href} onClick={item.onClick} className="eidos-breadcrumb-link">
+              <EidosLink href={item.href} onClick={item.onClick} className="eidos-breadcrumb-link">
                 {item.icon && <span className="eidos-breadcrumb-icon">{item.icon}</span>}
                 {item.label}
-              </a>
+              </EidosLink>
             ) : (
               <button
                 type="button"

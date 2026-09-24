@@ -2,7 +2,23 @@ import React, { useRef, useState, type ComponentProps } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
 import { expect, waitFor } from 'storybook/test';
-import { ChevronRight, LayoutDashboard, Settings, Ticket, Users } from 'lucide-react';
+import {
+  ArrowUp,
+  Bell,
+  Calendar,
+  ChevronRight,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Pencil,
+  RefreshCw,
+  Settings,
+  Shield,
+  Ticket,
+  User,
+  Users,
+} from 'lucide-react';
 import { PageLayout } from './PageLayout.component';
 import { CMDP_ITEMS } from '../CommandPalette/CommandPalette.fixtures';
 import { Avatar } from '../Avatar';
@@ -88,19 +104,19 @@ const meta = {
       actions: [
         {
           tooltip: 'Notifications',
-          icon: 'Bell',
+          icon: Bell,
           color: 'secondary',
           onClick: action('Notifications clicked'),
         },
         {
           tooltip: 'Settings',
-          icon: 'Settings',
+          icon: Settings,
           color: 'secondary',
           onClick: action('Settings clicked'),
         },
         {
           tooltip: 'User',
-          icon: 'User',
+          icon: User,
           onClick: action('Settings clicked'),
         },
       ],
@@ -131,14 +147,14 @@ const meta = {
           type: 'item',
           id: 'settings',
           label: 'Settings',
-          icon: 'settings',
+          icon: Settings,
           onClick: action('Settings clicked'),
         },
         {
           type: 'item',
           id: 'logout',
           label: 'Logout',
-          icon: 'log-out',
+          icon: LogOut,
           color: 'danger',
           onClick: action('Logout clicked'),
         },
@@ -150,7 +166,7 @@ const meta = {
       actions: [
         {
           children: 'Refresh',
-          preIcon: 'refresh-cw',
+          preIcon: RefreshCw,
           variant: 'outlined',
           onClick: action('Settings clicked'),
         },
@@ -252,7 +268,7 @@ const BackToTopDemo: React.FC<Partial<ComponentProps<typeof PageLayout>>> = (arg
           <Button
             variant="outlined"
             size="sm"
-            preIcon="arrow-up"
+            preIcon={ArrowUp}
             onClick={() => contentRef.current?.scrollTo({ top: 0 })}
           >
             Back to top
@@ -455,7 +471,7 @@ export const NarrowViewport: Story = {
  * header={{
  *   variant: 'hero',
  *   media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
- *   meta: [{ label: 'Role', value: 'Admin', icon: 'shield' }],
+ *   meta: [{ label: 'Role', value: 'Admin', icon: Shield }],
  * }}
  * ```
  *
@@ -493,13 +509,13 @@ export const IdentityPageHeader: Story = {
       subtitle: 'Customer Support · Lisbon',
       media: <Avatar name="Ana Ferreira" size="lg" color="primary" />,
       meta: [
-        { label: 'Role', value: 'Admin', icon: 'shield' },
-        { label: 'Email', value: 'ana.ferreira@meridian.app', icon: 'mail' },
-        { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+        { label: 'Role', value: 'Admin', icon: Shield },
+        { label: 'Email', value: 'ana.ferreira@meridian.app', icon: Mail },
+        { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
       ],
       actions: [
-        { children: 'Message', preIcon: 'message-square', variant: 'outlined' },
-        { children: 'Edit profile', preIcon: 'pencil' },
+        { children: 'Message', preIcon: MessageSquare, variant: 'outlined' },
+        { children: 'Edit profile', preIcon: Pencil },
       ],
     },
     children: <p>Profile content goes here.</p>,

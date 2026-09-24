@@ -1,6 +1,6 @@
 # Getting Started with Eidos UI
 
-A React component library with 59 components, a consistent design language, and full TypeScript support.
+A React component library with 60 components, a consistent design language, and full TypeScript support.
 
 ## Quick commands
 
@@ -131,6 +131,12 @@ import { Button } from 'eidos-ui';
 
 <Button preIcon={Download}>Export</Button>;
 ```
+
+Passing components is the recommended form: only the icons you import reach your
+bundle. To use string names (`preIcon="download"`), register the icons once at your
+app root with `registerIcons({ Download, Plus })`, or `import 'eidos-ui/lucide-icons'`
+to register the whole Lucide set. Resolving an unregistered Lucide name still works
+until 4.0, with a development warning.
 
 ## TypeScript
 
@@ -348,7 +354,7 @@ case up front.
 
 ## Component inventory
 
-59 component directories under `src/components/`, grouped exactly as the
+60 component directories under `src/components/`, grouped exactly as the
 Storybook sidebar groups them - the sidebar is generated from the `title` in
 each `*.stories.tsx`, so that is the authoritative list:
 
@@ -358,7 +364,7 @@ each `*.stories.tsx`, so that is the authoritative list:
 | Theming    | ThemeProvider, ThemeEditor                                                                                                               |
 | Elements   | Avatar, Badge, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, Pill, SegmentedControl, SplitButton, SplitChip                 |
 | Forms      | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
-| Navigation | Accordion, Pagination, Stepper, Tabs, TreeView                                                                                           |
+| Navigation | Accordion, LinkProvider, Pagination, Stepper, Tabs, TreeView                                                                             |
 | Overlays   | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip                                                   |
 | Data       | Chat, CommentThread, DataGrid, DatePicker, MessageComposer, Table, TableFiltersDropdown, Timeline, VirtualList                           |
 | Feedback   | Alert, Progress, Skeleton, Spinner                                                                                                       |

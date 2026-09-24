@@ -16,6 +16,7 @@ import type { Organization, Plan } from '../api/types';
 import { usePageChrome } from '../layouts/page-chrome';
 import { useAsync } from '../lib/use-async';
 import { useRouter } from '../routes/router';
+import { Calendar, Clock, Mail, TriangleAlert, UserPlus, Users } from 'lucide-react';
 
 type AccountData = { organization: Organization; seatsUsed: number };
 
@@ -86,15 +87,15 @@ export const AccountPage: React.FC = () => {
         ) : undefined,
         meta: organization
           ? [
-              { label: 'Owner', value: organization.ownerEmail, icon: 'mail' },
-              { label: 'Renews', value: formatDate(organization.renewsAt), icon: 'calendar' },
-              { label: 'Created', value: formatDate(organization.createdAt), icon: 'clock' },
+              { label: 'Owner', value: organization.ownerEmail, icon: Mail },
+              { label: 'Renews', value: formatDate(organization.renewsAt), icon: Calendar },
+              { label: 'Created', value: formatDate(organization.createdAt), icon: Clock },
             ]
           : undefined,
         actions: [
           {
             children: 'Manage team',
-            preIcon: 'users',
+            preIcon: Users,
             variant: 'outlined' as const,
             onClick: () => navigate('/app/team'),
           },
@@ -190,11 +191,7 @@ export const AccountPage: React.FC = () => {
                 stored separately.
               </p>
               <div className="mrd-form__actions">
-                <Button
-                  variant="outlined"
-                  preIcon="user-plus"
-                  onClick={() => navigate('/app/team')}
-                >
+                <Button variant="outlined" preIcon={UserPlus} onClick={() => navigate('/app/team')}>
                   Invite people
                 </Button>
               </div>
@@ -215,7 +212,7 @@ export const AccountPage: React.FC = () => {
           <div className="mrd-form__actions">
             <Button
               color="danger"
-              preIcon="triangle-alert"
+              preIcon={TriangleAlert}
               loading={closing}
               loadingText="Closing"
               disabled={loading || !organization}

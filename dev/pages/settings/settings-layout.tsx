@@ -1,12 +1,13 @@
 import React from 'react';
 import { Tab, TabPanel, Tabs } from 'eidos-ui';
 import { useRouter } from '../../routes/router';
+import { Bell, Palette, TriangleAlert, User } from 'lucide-react';
 
 const TABS = [
-  { value: 'profile', label: 'Profile', icon: 'user' },
-  { value: 'notifications', label: 'Notifications', icon: 'bell' },
-  { value: 'advanced', label: 'Advanced', icon: 'triangle-alert' },
-  { value: 'theme', label: 'Theme', icon: 'palette' },
+  { value: 'profile', label: 'Profile', icon: User },
+  { value: 'notifications', label: 'Notifications', icon: Bell },
+  { value: 'advanced', label: 'Advanced', icon: TriangleAlert },
+  { value: 'theme', label: 'Theme', icon: Palette },
 ] as const;
 
 /**

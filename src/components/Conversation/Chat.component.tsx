@@ -68,7 +68,8 @@ export const Chat: React.FC<ChatProps> = ({
   ariaLabel = 'Conversation',
   className = '',
 }) => {
-  const { scrollRef, atBottom, scrollToBottom, handleScroll } = useStickToBottom(messages);
+  const { scrollRef, contentRef, atBottom, scrollToBottom, handleScroll } =
+    useStickToBottom(messages);
   const newIds = useNewMessageIds(messages, animateNewMessages);
   useScrollAnchor(scrollRef, messages);
 
@@ -157,51 +158,56 @@ export const Chat: React.FC<ChatProps> = ({
         aria-label={ariaLabel}
         tabIndex={0}
       >
-        {hasMore && (
-          <div className="eidos-chat-load-more">
-            {loadingMore ? (
-              <span className="eidos-chat-loading-more">
-                <Spinner size="sm" color="secondary" />
-                Loading earlier messages…
+        {/* One wrapper whose height is the content height, so
+            `useStickToBottom` can observe growth that doesn't change the
+            message count - a streamed reply, the typing indicator. */}
+        <div ref={contentRef} className="eidos-chat-scroll-content">
+          {hasMore && (
+            <div className="eidos-chat-load-more">
+              {loadingMore ? (
+                <span className="eidos-chat-loading-more">
+                  <Spinner size="sm" color="secondary" />
+                  Loading earlier messages…
+                </span>
+              ) : (
+                <Button variant="text" color="secondary" size="sm" onClick={onLoadMore}>
+                  Load earlier messages
+                </Button>
+              )}
+            </div>
+          )}
+
+          {loading && <ChatSkeleton />}
+
+          {isEmpty &&
+            (emptyContent ?? (
+              <EmptyState
+                icon={<MessagesSquare />}
+                title="No messages yet"
+                description={
+                  showComposer ? 'Send the first message to start the conversation.' : undefined
+                }
+                size="sm"
+              />
+            ))}
+
+          {!loading && messages.length > 0 && (
+            <ol className="eidos-conversation-list">{messages.map(renderMessage)}</ol>
+          )}
+
+          {typing && typing.length > 0 && (
+            <div className="eidos-chat-typing" aria-live="polite">
+              <span className="eidos-chat-typing-dots" aria-hidden="true">
+                <i />
+                <i />
+                <i />
               </span>
-            ) : (
-              <Button variant="text" color="secondary" size="sm" onClick={onLoadMore}>
-                Load earlier messages
-              </Button>
-            )}
-          </div>
-        )}
-
-        {loading && <ChatSkeleton />}
-
-        {isEmpty &&
-          (emptyContent ?? (
-            <EmptyState
-              icon={<MessagesSquare />}
-              title="No messages yet"
-              description={
-                showComposer ? 'Send the first message to start the conversation.' : undefined
-              }
-              size="sm"
-            />
-          ))}
-
-        {!loading && messages.length > 0 && (
-          <ol className="eidos-conversation-list">{messages.map(renderMessage)}</ol>
-        )}
-
-        {typing && typing.length > 0 && (
-          <div className="eidos-chat-typing" aria-live="polite">
-            <span className="eidos-chat-typing-dots" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            {typing.length === 1
-              ? `${typing[0].name} is typing…`
-              : `${typing.length} people are typing…`}
-          </div>
-        )}
+              {typing.length === 1
+                ? `${typing[0].name} is typing…`
+                : `${typing.length} people are typing…`}
+            </div>
+          )}
+        </div>
       </div>
 
       {!atBottom && messages.length > 0 && (

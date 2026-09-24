@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import type { ChipProps } from './Chip.types';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 import { renderIcon } from '../../utils';
+import { EidosLink } from '../LinkProvider/Link.component';
 
 export const Chip: React.FC<ChipProps> = ({
   variant = 'filled',
@@ -17,9 +18,12 @@ export const Chip: React.FC<ChipProps> = ({
   children,
   onClick,
   onRemove,
+  href,
+  target,
+  rel,
   ...chipProps
 }) => {
-  const isClickable = !!onClick;
+  const isClickable = !!onClick || href !== undefined;
   const isRemovable = !!onRemove;
 
   // Build CSS classes
@@ -64,7 +68,6 @@ export const Chip: React.FC<ChipProps> = ({
   // just the content. Each control is separately reachable and separately
   // named.
   const hasBothControls = isClickable && isRemovable;
-  const ChipElement = isClickable && !isRemovable ? 'button' : 'div';
 
   const body = (
     <>
@@ -76,6 +79,34 @@ export const Chip: React.FC<ChipProps> = ({
     </>
   );
 
+  // A link chip follows the same two-control rule: alone, the chip *is* the
+  // link; with a remove button, the link moves to the inner action slot so
+  // the two stay siblings.
+  const renderLink = (
+    linkHref: string,
+    className: string,
+    attributes?: React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  ) => (
+    <EidosLink
+      {...attributes}
+      href={linkHref}
+      target={target}
+      rel={rel}
+      className={className}
+      disabled={disabled}
+      onClick={onClick ? handleClick : undefined}
+    >
+      {body}
+    </EidosLink>
+  );
+
+  if (href !== undefined && !isRemovable) {
+    const link = renderLink(href, chipClasses, chipProps);
+    return tooltip ? <Tooltip message={tooltip}>{link}</Tooltip> : link;
+  }
+
+  const ChipElement = isClickable && !isRemovable ? 'button' : 'div';
+
   const chipContent = (
     <ChipElement
       className={chipClasses}
@@ -84,14 +115,18 @@ export const Chip: React.FC<ChipProps> = ({
       {...chipProps}
     >
       {hasBothControls ? (
-        <button
-          type="button"
-          className="eidos-chip--action"
-          onClick={handleClick}
-          disabled={disabled}
-        >
-          {body}
-        </button>
+        href !== undefined ? (
+          renderLink(href, 'eidos-chip--action')
+        ) : (
+          <button
+            type="button"
+            className="eidos-chip--action"
+            onClick={handleClick}
+            disabled={disabled}
+          >
+            {body}
+          </button>
+        )
       ) : (
         body
       )}

@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CheckCircle, AlertCircle, Clock, Upload, Star, Zap } from 'lucide-react';
+import { expect } from 'storybook/test';
 import { Timeline } from './Timeline.component';
+import { Chip } from '../Chip';
+import { StoryRow, StoryStack } from '../../story-layout.docs';
 import type { TimelineItem } from './Timeline.types';
 
 // ============================================================================
@@ -13,6 +16,17 @@ const meta = {
   parameters: { layout: 'padded' },
   argTypes: {
     items: { table: { disable: true } },
+    ariaLabel: {
+      control: 'text',
+      description:
+        'Accessible name for the list. Omit it when a visible heading introduces the timeline - point `aria-labelledby` at that heading instead.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
+    'aria-labelledby': {
+      control: 'text',
+      description: 'Id of a visible element naming the list, usually its heading.',
+      table: { type: { summary: 'string' }, defaultValue: { summary: 'undefined' } },
+    },
     className: { table: { disable: true } },
   },
   // Required props live at meta level so the render-only stories below
@@ -134,6 +148,96 @@ export const Simple: Story = {
 };
 
 // ============================================================================
+// RICH CONTENT - block content in the title and description
+// ============================================================================
+
+/**
+ * Title and description accept block content - a bullet list, a row of chips -
+ * which is what an Experience or Education section needs. Named through
+ * `aria-labelledby`, pointing at the visible heading.
+ */
+export const RichContent: Story = {
+  parameters: {
+    docs: {
+      source: {
+        type: 'code',
+        code: `<h3 id="experience">Experience</h3>
+<Timeline
+  aria-labelledby="experience"
+  items={[
+    {
+      id: 'meridian',
+      title: 'Staff Engineer · Meridian',
+      timestamp: '2023 - present',
+      color: 'primary',
+      description: (
+        <>
+          <ul>
+            <li>Led the design system used by four product teams.</li>
+            <li>Cut the dashboard's first paint from 3.1s to 1.2s.</li>
+          </ul>
+          <Chip size="sm" variant="outlined">React</Chip>
+          <Chip size="sm" variant="outlined">TypeScript</Chip>
+        </>
+      ),
+    },
+  ]}
+/>`,
+      },
+    },
+  },
+  render: () => (
+    <StoryStack gap="sm">
+      <h3 id="timeline-experience" style={{ margin: 0 }}>
+        Experience
+      </h3>
+      <Timeline
+        aria-labelledby="timeline-experience"
+        items={[
+          {
+            id: 'meridian',
+            title: 'Staff Engineer · Meridian',
+            timestamp: '2023 - present',
+            color: 'primary',
+            description: (
+              <>
+                <ul>
+                  <li>Led the design system used by four product teams.</li>
+                  <li>Cut the dashboard's first paint from 3.1s to 1.2s.</li>
+                </ul>
+                <StoryRow gap="sm">
+                  <Chip size="sm" variant="outlined">
+                    React
+                  </Chip>
+                  <Chip size="sm" variant="outlined">
+                    TypeScript
+                  </Chip>
+                </StoryRow>
+              </>
+            ),
+          },
+          {
+            id: 'northwind',
+            title: 'Senior Engineer · Northwind',
+            timestamp: '2019 - 2023',
+            description: (
+              <ul>
+                <li>Built the billing platform's invoicing pipeline.</li>
+              </ul>
+            ),
+          },
+        ]}
+      />
+    </StoryStack>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    await expect(canvas.getByRole('list', { name: 'Experience' })).toBeInTheDocument();
+    // No block content inside a paragraph - the reason for the `div`s.
+    await expect(canvasElement.querySelector('.eidos-timeline p')).toBeNull();
+  },
+};
+
+// ============================================================================
 // ALL COLORS - one item per color variant
 // ============================================================================
 
@@ -146,6 +250,8 @@ export const AllColors: Story = {
         { id: '3', title: 'Secondary', description: 'Secondary accent color.', color: 'secondary' },
         { id: '4', title: 'Success', description: 'Green success state.', color: 'success' },
         { id: '5', title: 'Danger', description: 'Red danger / error state.', color: 'danger' },
+        { id: '6', title: 'Warning', description: 'Needs attention soon.', color: 'warning' },
+        { id: '7', title: 'Info', description: 'Informational update.', color: 'info' },
       ]}
     />
   ),

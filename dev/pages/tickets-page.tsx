@@ -1,7 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Button, Card, Chip, Input, Menu, Modal, Pill, Table, useSnackbar } from 'eidos-ui';
 import type { BulkAction, FilterValue, MenuItemType, TableColumn, TableFilters } from 'eidos-ui';
-import { CircleCheck, Clock, Lock } from 'lucide-react';
+import {
+  CircleCheck,
+  Clock,
+  Copy,
+  EllipsisVertical,
+  Lock,
+  PanelRightOpen,
+  Search,
+  Trash2,
+} from 'lucide-react';
 import { errorMessage } from '../api/client';
 import { ticketsApi } from '../api/tickets';
 import {
@@ -91,14 +100,14 @@ export const TicketsPage: React.FC = () => {
         type: 'item',
         id: 'open',
         label: 'Open details',
-        icon: 'panel-right-open',
+        icon: PanelRightOpen,
         onClick: () => setActiveId(ticket.id),
       },
       {
         type: 'item',
         id: 'copy',
         label: 'Copy reference',
-        icon: 'copy',
+        icon: Copy,
         onClick: () => {
           void navigator.clipboard?.writeText(ticket.reference);
           showSuccess(`${ticket.reference} copied to your clipboard.`);
@@ -109,7 +118,7 @@ export const TicketsPage: React.FC = () => {
         type: 'item',
         id: 'delete',
         label: 'Delete ticket',
-        icon: 'trash-2',
+        icon: Trash2,
         color: 'danger',
         onClick: () => setPendingDelete(ticket),
       },
@@ -177,7 +186,7 @@ export const TicketsPage: React.FC = () => {
         type: 'action',
         render: (_value, ticket) => (
           <Menu
-            trigger={<Button variant="text" color="secondary" size="sm" icon="ellipsis-vertical" />}
+            trigger={<Button variant="text" color="secondary" size="sm" icon={EllipsisVertical} />}
             items={rowMenu(ticket)}
             minWidth={190}
           />
@@ -253,7 +262,7 @@ export const TicketsPage: React.FC = () => {
         placeholder="Search reference, subject, customer…"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        preIcon="search"
+        preIcon={Search}
         clearable
         width={320}
       />

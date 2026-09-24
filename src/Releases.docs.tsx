@@ -34,7 +34,7 @@ import { Accordion, AccordionItem } from './components/Accordion';
  */
 
 type BumpKind = 'major' | 'minor' | 'patch' | 'initial';
-type ReleaseCategory = 'added' | 'changed' | 'fixed' | 'removed';
+type ReleaseCategory = 'added' | 'changed' | 'deprecated' | 'fixed' | 'removed';
 
 interface ReleaseSection {
   category: ReleaseCategory;
@@ -51,6 +51,10 @@ const BUMP_META: Record<BumpKind, { label: string; color: string }> = {
 const CATEGORY_META: Record<ReleaseCategory, { label: string; color: string }> = {
   added: { label: 'Added', color: 'var(--success-color)' },
   changed: { label: 'Changed', color: 'var(--warning-dark)' },
+  // Neutral rather than a warning hue: a deprecation asks for nothing yet -
+  // the code still works - and `removed` already owns the danger colour for
+  // the release where it stops working.
+  deprecated: { label: 'Deprecated', color: 'var(--secondary-color)' },
   fixed: { label: 'Fixed', color: 'var(--info-color)' },
   removed: { label: 'Removed', color: 'var(--danger-color)' },
 };

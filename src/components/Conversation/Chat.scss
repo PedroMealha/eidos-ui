@@ -41,7 +41,6 @@
   padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
 
   // The region is focusable so keyboard users can scroll it. An outward ring
   // would be clipped by the scroll container itself, hence inset.
@@ -49,6 +48,17 @@
     outline: none;
     box-shadow: focus-ring-shadow-inset(primary);
   }
+}
+
+// The scroll region's only child, observed by `useStickToBottom` to follow
+// content that grows without a new message arriving. `flex-grow` keeps it as
+// tall as the region when content is short, so the empty state still has the
+// full height to centre in.
+.eidos-chat-scroll-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 // ----------------------------------------------------------------------------

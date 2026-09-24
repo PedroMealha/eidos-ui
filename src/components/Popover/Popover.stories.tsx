@@ -54,7 +54,11 @@ const meta = {
     },
     trigger: { table: { disable: true } },
     children: { table: { disable: true } },
-    isOpen: { table: { disable: true } },
+    isOpen: {
+      control: false,
+      description: '**Deprecated.** Use `open` instead, the name used across the library.',
+      table: { type: { summary: 'boolean' }, category: 'Deprecated' },
+    },
     open: { table: { disable: true } },
     defaultOpen: { table: { disable: true } },
     onOpenChange: { table: { disable: true } },
@@ -227,7 +231,7 @@ export const Controlled: Story = {
           placement="bottom"
         >
           <p style={{ margin: 0 }}>
-            This popover is controlled externally via <code>isOpen</code> and{' '}
+            This popover is controlled externally via <code>open</code> and{' '}
             <code>onOpenChange</code>. Use the button on the right to force-close it from outside.
           </p>
         </Popover>

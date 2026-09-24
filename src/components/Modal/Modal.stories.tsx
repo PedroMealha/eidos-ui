@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
 import { useState, type ComponentProps } from 'react';
-import { CircleAlert, CircleCheck, Info, CircleX, Trash2 } from 'lucide-react';
+import { CircleAlert, CircleCheck, CircleX, Info, Trash2 } from 'lucide-react';
 import { Modal } from './Modal.component';
 import { Button } from '../Button';
 import { StoryRow } from '../../story-layout.docs';
@@ -167,7 +167,7 @@ export const WithStringIcon: Story = {
     <ModalDemo
       triggerLabel="Open with string icon"
       title="Delete confirmation"
-      icon="trash-2"
+      icon={Trash2}
       type="danger"
     >
       <p>

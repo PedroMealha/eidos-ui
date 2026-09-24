@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IdentityHeader } from './IdentityHeader.component';
 import { Pill } from '../Pill';
+import {
+  Bell,
+  Calendar,
+  CreditCard,
+  Mail,
+  MessageSquare,
+  Pencil,
+  Shield,
+  UserPlus,
+} from 'lucide-react';
 
 const meta = {
   title: 'Layout/Components/IdentityHeader',
@@ -9,12 +19,12 @@ const meta = {
   args: {
     title: 'Ana Ferreira',
     subtitle: 'ana.ferreira@meridian.app',
-    avatar: { name: 'Ana Ferreira', color: 'primary' },
+    avatar: { name: 'Ana Ferreira', color: 'primary', size: 'xl' },
     meta: [
-      { label: 'Role', value: 'Admin', icon: 'shield' },
-      { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+      { label: 'Role', value: 'Admin', icon: Shield },
+      { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
     ],
-    actions: [{ children: 'Edit profile', preIcon: 'pencil', variant: 'outlined' }],
+    actions: [{ children: 'Edit profile', preIcon: Pencil, variant: 'outlined' }],
   },
   argTypes: {
     title: {
@@ -29,9 +39,12 @@ const meta = {
     },
     avatar: {
       control: 'object',
-      description: 'Avatar shorthand for the leading media, rendered at `lg`.',
+      description:
+        'Avatar shorthand for the leading media, rendered at `lg` unless `size` says otherwise.',
       table: {
-        type: { summary: "Pick<AvatarProps, 'name' | 'src' | 'alt' | 'color' | 'shape'>" },
+        type: {
+          summary: "Pick<AvatarProps, 'name' | 'src' | 'alt' | 'color' | 'shape' | 'size'>",
+        },
         defaultValue: { summary: 'undefined' },
       },
     },
@@ -83,14 +96,14 @@ export const AccountHeader: Story = {
     subtitle: 'meridian-support · 42 seats',
     avatar: { name: 'Meridian Support', color: 'info', shape: 'square' },
     meta: [
-      { label: 'Plan', value: 'Business annual', icon: 'credit-card' },
-      { label: 'Renews', value: '1 Jan 2027', icon: 'calendar' },
-      { label: 'Owner', value: 'ana.ferreira@meridian.app', icon: 'mail' },
+      { label: 'Plan', value: 'Business annual', icon: CreditCard },
+      { label: 'Renews', value: '1 Jan 2027', icon: Calendar },
+      { label: 'Owner', value: 'ana.ferreira@meridian.app', icon: Mail },
     ],
     actions: [
-      { icon: 'bell', variant: 'text', color: 'secondary', tooltip: 'Notification settings' },
-      { children: 'Manage billing', preIcon: 'credit-card', variant: 'outlined' },
-      { children: 'Invite people', preIcon: 'user-plus' },
+      { icon: Bell, variant: 'text', color: 'secondary', tooltip: 'Notification settings' },
+      { children: 'Manage billing', preIcon: CreditCard, variant: 'outlined' },
+      { children: 'Invite people', preIcon: UserPlus },
     ],
   },
 };
@@ -112,23 +125,21 @@ export const ProfileHeader: Story = {
     ),
     subtitle: 'Customer Support · Lisbon',
     meta: [
-      { label: 'Role', value: 'Admin', icon: 'shield' },
-      { label: 'Email', value: 'ana.ferreira@meridian.app', icon: 'mail' },
-      { label: 'Joined', value: '14 Feb 2024', icon: 'calendar' },
+      { label: 'Role', value: 'Admin', icon: Shield },
+      { label: 'Email', value: 'ana.ferreira@meridian.app', icon: Mail },
+      { label: 'Joined', value: '14 Feb 2024', icon: Calendar },
     ],
     actions: [
-      { children: 'Message', preIcon: 'message-square', variant: 'outlined' },
-      { children: 'Edit profile', preIcon: 'pencil' },
+      { children: 'Message', preIcon: MessageSquare, variant: 'outlined' },
+      { children: 'Edit profile', preIcon: Pencil },
     ],
   },
 };
 
 /**
- * `avatar` is only a shorthand. Pass `media` for anything else - a logo, an
- * icon block, or an avatar larger than `Avatar`'s own `lg` size (48px), which
- * is what a hero band usually wants and what `Avatar` cannot currently
- * express. If both are given, `media` wins and a development warning is
- * logged.
+ * `avatar` is only a shorthand. Pass `media` for anything that isn't an
+ * avatar - a logo or an icon block. If both are given, `media` wins and a
+ * development warning is logged.
  */
 export const CustomMedia: Story = {
   args: {

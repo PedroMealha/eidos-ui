@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'eidos-ui';
 import { useRouter } from '../routes/router';
+import { ArrowRight } from 'lucide-react';
 
 export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { path, navigate } = useRouter();
@@ -14,7 +15,7 @@ export const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children
         </button>
 
         {path !== '/sign-in' && (
-          <Button size="sm" posIcon="arrow-right" onClick={() => navigate('/sign-in')}>
+          <Button size="sm" posIcon={ArrowRight} onClick={() => navigate('/sign-in')}>
             Sign in
           </Button>
         )}

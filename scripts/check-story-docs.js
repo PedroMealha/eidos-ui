@@ -34,8 +34,8 @@
  * Runs from `npm run verify`, not `release:preflight`: `.mdx` never reaches
  * `dist/`, so a misordered docs page must not be able to block a release.
  */
-import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
 
 const COMPONENTS = './src/components';
 const PRIMARY = 'Playground';
@@ -152,6 +152,94 @@ for (const file of mdxFiles()) {
         `      got:      ${rest.join(' > ')}\n` +
         `      expected: ${sorted.join(' > ')}`,
     );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Deprecation - see `src/deprecation.docs.ts` for the convention.
+//
+// Each fact has exactly one reader: the `deprecated` tag badges the sidebar,
+// `parameters.deprecation` fills the docs banner, and a prop's JSDoc
+// `@deprecated` strikes it through in an editor. Nothing else connects them,
+// so without this a component could be badged in the sidebar with no banner
+// explaining what to use instead, or a prop could be deprecated in the types
+// and still sit in the Controls table looking current.
+// ---------------------------------------------------------------------------
+
+/** The `const meta = { ... } satisfies Meta` block of a stories file. */
+const metaBlock = (source) => {
+  const start = source.indexOf('const meta = {');
+  if (start === -1) return '';
+  const end = source.indexOf('} satisfies Meta', start);
+  return end === -1 ? '' : source.slice(start, end);
+};
+
+/** Props preceded by a JSDoc block containing `@deprecated`. */
+const deprecatedProps = (typesSource) =>
+  [...typesSource.matchAll(/\/\*\*((?:(?!\*\/)[\s\S])*?)\*\/\s*'?([A-Za-z0-9_-]+)'?\??:/g)]
+    .filter((match) => /@deprecated\b/.test(match[1]))
+    .map((match) => match[2]);
+
+/** The body of a top-level `argTypes` entry for `prop`, or `null`. */
+const argTypeEntry = (meta, prop) => {
+  const key = new RegExp(`\\n {4}'?${prop}'?: \\{`);
+  const match = key.exec(meta);
+  if (!match) return null;
+  const end = meta.indexOf('\n    },', match.index);
+  return meta.slice(match.index, end === -1 ? undefined : end);
+};
+
+for (const file of mdxFiles()) {
+  const mdx = readFileSync(file, 'utf8');
+  const importMatch = mdx.match(/import \* as (\w+) from '\.\/([\w.]+)';/);
+  if (!importMatch) continue;
+  const [, storiesVar, storiesModule] = importMatch;
+  const storiesPath = join(dirname(file), `${storiesModule.replace(/\.tsx?$/, '')}.tsx`);
+  if (!existsSync(storiesPath)) continue;
+  const meta = metaBlock(readFileSync(storiesPath, 'utf8'));
+  const stories = relative('.', storiesPath);
+
+  const tagged = /tags:\s*\[[^\]]*'deprecated'/.test(meta);
+  const hasInfo = /\bdeprecation:\s*\{/.test(meta);
+
+  if (tagged && !hasInfo) {
+    note(
+      stories,
+      "meta is tagged 'deprecated' but has no `parameters.deprecation` - add { since, removeIn?, use?, reason? } so the docs banner can say what to use instead",
+    );
+  }
+  if (hasInfo && !tagged) {
+    note(
+      stories,
+      "meta has `parameters.deprecation` but no 'deprecated' tag - add it to `tags` so the sidebar shows the badge",
+    );
+  }
+  if (tagged) {
+    const afterTitle = mdx.split(/^# .*$/m)[1] ?? '';
+    const firstBlock = afterTitle.trimStart().split('\n', 1)[0];
+    if (!new RegExp(`^<DeprecationNotice\\s+of=\\{${storiesVar}\\}\\s*/>`).test(firstBlock)) {
+      note(
+        file,
+        `deprecated component - put <DeprecationNotice of={${storiesVar}} /> directly under the "# " title`,
+      );
+    }
+  }
+
+  // Props: every `@deprecated` prop in this component's types is grouped
+  // under "Deprecated" in the Controls table. Scoped to the types file named
+  // after the stories file (`Header.stories.tsx` -> `Header.types.ts`), since
+  // a folder can hold several components.
+  const typesPath = storiesPath.replace(/\.stories\.tsx$/, '.types.ts');
+  if (!existsSync(typesPath)) continue;
+  for (const prop of deprecatedProps(readFileSync(typesPath, 'utf8'))) {
+    const entry = argTypeEntry(meta, prop);
+    if (!entry || !/category:\s*'Deprecated'/.test(entry)) {
+      note(
+        stories,
+        `\`${prop}\` is @deprecated in ${relative('.', typesPath)} - give its argTypes entry ` +
+          `\`table: { category: 'Deprecated' }\` and a description starting "**Deprecated.**"`,
+      );
+    }
   }
 }
 

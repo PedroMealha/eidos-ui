@@ -47,6 +47,20 @@
     font-size: var(--font-size-lg);
   }
 
+  // Avatar-only steps, on their own tokens: `--component-size-xl` would imply
+  // that every sized control has an xl, and none of them do.
+  &--xl {
+    width: var(--avatar-size-xl);
+    height: var(--avatar-size-xl);
+    font-size: var(--font-size-2xl);
+  }
+
+  &--2xl {
+    width: var(--avatar-size-2xl);
+    height: var(--avatar-size-2xl);
+    font-size: var(--font-size-3xl);
+  }
+
   // ========================================================================
   // Colors - used for initials backgrounds
   // ========================================================================
