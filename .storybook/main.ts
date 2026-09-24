@@ -18,6 +18,7 @@ const config: StorybookConfig = {
     // single `outline: none` in a reset, and systemically illegible text on
     // themeable fills. Both were invisible to lint, tsc and the build.
     '@storybook/addon-a11y',
+    '@chromatic-com/storybook',
   ],
 
   framework: {
