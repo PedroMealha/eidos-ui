@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [4.0.0] - 2026-09-24
+
 ### Removed
 
 - **Breaking**: string icon names no longer resolve against the whole Lucide set - pass the component, `registerIcons({ ... })`, or `import 'eidos-ui/lucide-icons'`.
