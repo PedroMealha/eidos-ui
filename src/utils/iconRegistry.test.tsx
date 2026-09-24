@@ -41,21 +41,23 @@ describe('registerIcons', () => {
 describe('renderIcon', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('prefers a registered icon over the Lucide name lookup', () => {
-    // Registering a *different* component under a real Lucide name proves the
-    // registry is consulted first.
+  it('renders a registered icon by name', () => {
     registerIcons({ Bell: Star });
     expect(typeOf(renderIcon('bell'))).toBe(Star);
   });
 
-  it('still resolves an unregistered Lucide name, with a deprecation warning', () => {
+  // The lookup against Lucide's full `icons` map is gone as of 4.0 - it is
+  // what bundled every Lucide icon. A real Lucide name that nobody registered
+  // must therefore *not* resolve to an SVG.
+  it('does not resolve an unregistered Lucide name, and warns', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const node = renderIcon('anchor');
-    expect(typeOf(node)).not.toBe('i');
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('removed in 4.0'));
+    expect(typeOf(renderIcon('anchor'))).toBe('i');
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('registerIcons({ Anchor })'));
   });
 
-  it('renders anything else as icon-font classes', () => {
+  it('renders icon-font classes without warning', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     expect(typeOf(renderIcon('fas fa-heart'))).toBe('i');
+    expect(warn).not.toHaveBeenCalled();
   });
 });

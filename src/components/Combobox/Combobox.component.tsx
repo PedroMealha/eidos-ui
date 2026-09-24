@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect, useMemo, useId } from 
 import { Check, ChevronDown, X, Loader2, CircleAlert } from 'lucide-react';
 import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
-import { fullWidthModifier } from '../../utils';
+
 import type { ComboboxProps, ComboboxOption } from './Combobox.types';
 import './Combobox.scss';
 
@@ -513,7 +513,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
 
   const containerClasses = [
     'eidos-combobox',
-    fullWidth && fullWidthModifier('eidos-combobox'),
+    fullWidth && 'eidos-combobox--full-width',
     error && 'eidos-combobox--error',
     disabled && 'eidos-combobox--disabled',
     className,

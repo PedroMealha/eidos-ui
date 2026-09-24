@@ -82,8 +82,8 @@ registerIcons({ Plus, Download });
 ```
 
 `import 'eidos-ui/lucide-icons'` registers every Lucide icon by name, at the cost of
-the whole icon set in your bundle. Resolving an _unregistered_ Lucide name is
-deprecated and is removed in 4.0.
+the whole icon set in your bundle. An unregistered name is treated as icon-font
+classes.
 
 ## Components
 

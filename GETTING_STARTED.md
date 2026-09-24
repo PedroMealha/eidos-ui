@@ -135,8 +135,8 @@ import { Button } from 'eidos-ui';
 Passing components is the recommended form: only the icons you import reach your
 bundle. To use string names (`preIcon="download"`), register the icons once at your
 app root with `registerIcons({ Download, Plus })`, or `import 'eidos-ui/lucide-icons'`
-to register the whole Lucide set. Resolving an unregistered Lucide name still works
-until 4.0, with a development warning.
+to register the whole Lucide set. An unregistered name is treated as icon-font classes,
+with a development warning if it is a single word.
 
 ## TypeScript
 

@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useId } from 'react';
 import { Eye, EyeOff, CircleAlert, X, ChevronDown } from 'lucide-react';
-import { renderIcon, fullWidthModifier, devWarn } from '../../utils';
+import { renderIcon, devWarn } from '../../utils';
 import type { InputProps } from './Input.types';
 import { Tooltip } from '../Tooltip/Tooltip.component';
 
@@ -191,7 +191,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       `eidos-input--${variant}`,
       `eidos-input--${color}`,
       `eidos-input--${size}`,
-      fullWidth && fullWidthModifier('eidos-input'),
+      fullWidth && 'eidos-input--full-width',
       loading && `eidos-input--loading`,
       error && `eidos-input--error`,
     ]
@@ -203,7 +203,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       `eidos-input-wrapper--${variant}`,
       `eidos-input-wrapper--${color}`,
       `eidos-input-wrapper--${size}`,
-      fullWidth && fullWidthModifier('eidos-input-wrapper'),
+      fullWidth && 'eidos-input-wrapper--full-width',
       loading && `eidos-input-wrapper--loading`,
       isFocused && `eidos-input-wrapper--focused`,
       error && `eidos-input-wrapper--error`,
@@ -222,7 +222,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div
-        className={`eidos-input-container ${fullWidth ? fullWidthModifier('eidos-input-container') : ''} ${className}`}
+        className={`eidos-input-container ${fullWidth ? 'eidos-input-container--full-width' : ''} ${className}`}
         // `width` sizes the whole field, so it belongs on the container rather
         // than on the inner <input> (which is a `flex: 1 1 0` child of the
         // wrapper and only ever fills whatever the wrapper gives it). Applying

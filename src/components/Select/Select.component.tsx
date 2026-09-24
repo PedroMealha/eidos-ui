@@ -3,7 +3,7 @@ import { X, Check } from 'lucide-react';
 import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import type { SelectProps, SelectOption } from './Select.types';
-import { renderIcon, fullWidthModifier, devWarn } from '../../utils';
+import { renderIcon, devWarn } from '../../utils';
 
 export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
   (
@@ -367,7 +367,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const triggerElement = (
       <div
         ref={triggerRef}
-        className={`eidos-select-trigger ${fullWidth ? fullWidthModifier('eidos-select-trigger') : ''}`}
+        className={`eidos-select-trigger ${fullWidth ? 'eidos-select-trigger--full-width' : ''}`}
         onKeyDown={handleKeyDown}
         tabIndex={disabled ? -1 : undefined}
         role="combobox"
@@ -408,7 +408,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       <div
         ref={ref}
         className={`${'eidos-select-container'} ${
-          fullWidth ? fullWidthModifier('eidos-select-container') : ''
+          fullWidth ? 'eidos-select-container--full-width' : ''
         } ${className}`}
       >
         <Dropdown

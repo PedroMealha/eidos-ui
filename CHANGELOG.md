@@ -13,6 +13,17 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Removed
+
+- **Breaking**: string icon names no longer resolve against the whole Lucide set - pass the component, `registerIcons({ ... })`, or `import 'eidos-ui/lucide-icons'`.
+- **Breaking**: `Popover`'s `isOpen` prop - use `open`.
+- **Breaking**: the camelCase modifier classes `--fullWidth` and `--hideScrollbar` - target `--full-width` and `--hide-scrollbar`.
+
+### Changed
+
+- `import { Button } from 'eidos-ui'` bundles to 10 KB minified instead of 604 KB, since Lucide's full icon set is no longer referenced.
+- An unregistered single-word icon name logs a development warning, as it is usually a Lucide icon that was never registered.
+
 ## [3.8.1] - 2026-09-24
 
 ### Fixed

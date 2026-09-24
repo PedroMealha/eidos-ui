@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { devWarn, fullWidthModifier, useIsClient } from '../../utils';
+import { devWarn, useIsClient } from '../../utils';
 import type { DropdownProps, DropdownState } from './Dropdown.types';
 import { DropdownProvider } from './Dropdown.context';
 import { useDropdownContext } from './Dropdown.hooks';
@@ -469,7 +469,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       <div
         ref={triggerRef}
         onClick={handleTriggerClick}
-        className={`eidos-dropdown-trigger ${fullWidth ? fullWidthModifier('eidos-dropdown-trigger') : ''} ${triggerClassName}`}
+        className={`eidos-dropdown-trigger ${fullWidth ? 'eidos-dropdown-trigger--full-width' : ''} ${triggerClassName}`}
       >
         {trigger}
       </div>

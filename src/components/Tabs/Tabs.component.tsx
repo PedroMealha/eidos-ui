@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext, useEffect, useLayoutEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { renderIcon, dualModifier, fullWidthModifier } from '../../utils';
+import { renderIcon } from '../../utils';
 import type { TabsProps, TabProps, TabPanelProps, TabsContextValue } from './Tabs.types';
 
 // ============================================================================
@@ -58,7 +58,7 @@ export const Tab: React.FC<TabProps> = ({
     `eidos-tab--${size}`,
     isActive && 'eidos-tab--active',
     disabled && 'eidos-tab--disabled',
-    fullWidth && fullWidthModifier('eidos-tab'),
+    fullWidth && 'eidos-tab--full-width',
     className,
   ]
     .filter(Boolean)
@@ -268,11 +268,11 @@ export const Tabs: React.FC<TabsProps> = ({
   const listClasses = [
     'eidos-tabs-list',
     `eidos-tabs-list--${size}`,
-    fullWidth && fullWidthModifier('eidos-tabs-list'),
+    fullWidth && 'eidos-tabs-list--full-width',
     // With buttons, they are the affordance - a native scrollbar underneath
     // them is redundant, and on a space-taking one it would also sit over the
     // `line` variant's rule.
-    hasScrollButtons && dualModifier('eidos-tabs-list', 'hide-scrollbar', 'hideScrollbar'),
+    hasScrollButtons && 'eidos-tabs-list--hide-scrollbar',
   ]
     .filter(Boolean)
     .join(' ');

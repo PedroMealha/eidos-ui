@@ -25,9 +25,7 @@ export interface PopoverProps {
   closeOnEscape?: boolean;
   /** Disable the trigger from opening the popover. */
   disabled?: boolean;
-  /** @deprecated Use `open` instead, the name used across the library. */
-  isOpen?: boolean;
-  /** Controlled open state. Takes precedence over the deprecated `isOpen`. */
+  /** Controlled open state. */
   open?: boolean;
   /** Uncontrolled initial open state. */
   defaultOpen?: boolean;

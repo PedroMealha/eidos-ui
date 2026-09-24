@@ -714,8 +714,9 @@ names resolve through `registerIcons()` (`src/utils/iconRegistry.ts`), and
   compiles each CJS entry separately and a module-level `Map` would split.
 - **`dist/lucide-icons/*` must stay in `package.json` `sideEffects`** - it
   exports nothing, so a bundler would otherwise drop the import silently.
-- 3.8 keeps the full-map lookup as a deprecated fallback with a `devWarn`;
-  4.0 removes it and the `icons` import (and should add a bundle-size guard).
+- 3.8 deprecated the full-map lookup; 4.0 removed it. `scripts/check-bundle.js`
+  (in `verify`) fails if the `icons` map, or more than a handful of Lucide
+  icons, reach a minimal consumer bundle again.
 
 ### Deprecation: tag, parameter, JSDoc, warning
 
@@ -2042,8 +2043,10 @@ runtime:
 - **`fontScale` out of range falls back, it does not clamp.** Silently turning
   a requested 2.0 into 1.25 gives the caller a layout they did not ask for and
   no signal.
-- **`dualModifier` still emits the legacy alias.** Nothing in this repo would
-  notice if it stopped; a stranger's stylesheet would.
+
+(`dualModifier`, which emitted the camelCase `--fullWidth`/`--hideScrollbar`
+class aliases, was removed in 4.0 as its changelog entry promised. Modifiers
+are kebab-case only; do not reintroduce a second spelling.)
 
 ---
 

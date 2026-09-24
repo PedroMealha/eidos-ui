@@ -54,11 +54,6 @@ const meta = {
     },
     trigger: { table: { disable: true } },
     children: { table: { disable: true } },
-    isOpen: {
-      control: false,
-      description: '**Deprecated.** Use `open` instead, the name used across the library.',
-      table: { type: { summary: 'boolean' }, category: 'Deprecated' },
-    },
     open: { table: { disable: true } },
     defaultOpen: { table: { disable: true } },
     onOpenChange: { table: { disable: true } },

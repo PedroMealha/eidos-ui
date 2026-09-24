@@ -7,7 +7,7 @@ import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Calendar } from './Calendar.component';
 import { TimeInput } from './TimeInput.component';
-import { fullWidthModifier, useDialogFocus, devWarn } from '../../utils';
+import { useDialogFocus, devWarn } from '../../utils';
 import type {
   DatePickerProps,
   DateSelectionMode,
@@ -528,7 +528,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   const triggerElement = (
     <div
       ref={triggerRef}
-      className={`eidos-date-picker-trigger${fullWidth ? ` ${fullWidthModifier('eidos-date-picker-trigger')}` : ''}`}
+      className={`eidos-date-picker-trigger${fullWidth ? ` eidos-date-picker-trigger--full-width` : ''}`}
       // Handled here rather than on the `Input` so the keys work wherever inside
       // the field they are pressed. A click opens the calendar because it
       // bubbles to the overlay's trigger wrapper; a keypress has nothing
@@ -741,7 +741,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
   return (
     <div
-      className={`eidos-date-picker-container${fullWidth ? ` ${fullWidthModifier('eidos-date-picker-container')}` : ''} ${className}`.trim()}
+      className={`eidos-date-picker-container${fullWidth ? ` eidos-date-picker-container--full-width` : ''} ${className}`.trim()}
     >
       <Dropdown
         open={isOpen}

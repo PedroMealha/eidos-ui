@@ -1,5 +1,4 @@
 import React from 'react';
-import { icons } from 'lucide-react';
 import { devWarn } from './devWarn';
 import { resolveRegisteredIcon, toIconKey, type IconComponent } from './iconRegistry';
 
@@ -36,24 +35,25 @@ export const renderIcon = (icon: IconType | undefined, className?: string): Reac
       return <Registered className={className} aria-hidden="true" />;
     }
 
-    // Deprecated fallback, removed in 4.0: resolving an unregistered name
-    // against Lucide's full `icons` map. Referencing that map is what puts
-    // every Lucide icon (~1,800 modules) into a consumer's bundle, however
-    // few they use - no bundler can tree-shake a lookup by a runtime string.
-    // It stays for one minor so existing string names keep working while
-    // the warning below points at the migration.
-    const iconName = toIconKey(icon);
-    const LucideIcon = icons[iconName as keyof typeof icons] as IconComponent | undefined;
-
-    if (LucideIcon) {
+    // No lookup against Lucide's full `icons` map. There was one until 4.0,
+    // and referencing that map put every Lucide icon (~1,800 modules) into
+    // every consumer's bundle, however few they used - no bundler can
+    // tree-shake a lookup by a runtime string. Do not reintroduce it: a
+    // consumer who wants every name opts in with `eidos-ui/lucide-icons`.
+    //
+    // An unregistered string is treated as icon-font classes. A single token
+    // with no space is far more often a forgotten registration than a font
+    // class, so it warns - once per name. The cost is one dev-only warning
+    // for single-class fonts (Remixicon's `ri-home-line`); the alternative is
+    // an upgrade that silently renders empty `<i>` elements where icons were.
+    if (!/\s/.test(icon)) {
+      const iconName = toIconKey(icon);
       devWarn(
-        `icon-string-fallback-${iconName}`,
-        `Icon "${icon}" was resolved by name from the full Lucide icon set. That lookup is deprecated and is removed in 4.0, because it bundles every Lucide icon. Pass the component instead (\`import { ${iconName} } from 'lucide-react'\`), register it once with \`registerIcons({ ${iconName} })\`, or \`import 'eidos-ui/lucide-icons'\` to register them all.`,
+        `icon-unregistered-${iconName}`,
+        `Icon "${icon}" is not registered, so it is rendered as the CSS class "${icon}". If it is a Lucide icon, pass the component (\`import { ${iconName} } from 'lucide-react'\`), register it once with \`registerIcons({ ${iconName} })\`, or \`import 'eidos-ui/lucide-icons'\` to register them all. If it is an icon-font class, ignore this.`,
       );
-      return <LucideIcon className={className} aria-hidden="true" />;
     }
 
-    // Fallback: render as a CSS class (for Font Awesome, Remixicon, etc.)
     return <i className={`${icon} ${className || ''}`} aria-hidden="true" />;
   }
 

@@ -62,9 +62,7 @@ registerIcons({ Rocket, Sparkles });
 <Button preIcon="rocket">Launch</Button>;
 ```
 
-`import 'eidos-ui/lucide-icons'` registers every Lucide icon instead - convenient, but it puts the whole icon set in your bundle. A string that isn't registered is treated as CSS classes for an icon font (`"fas fa-heart"`).
-
-> **Deprecated**: an unregistered Lucide name still resolves, with a development warning, until 4.0. That lookup bundles every Lucide icon whether you use it or not, which is why it is going away.
+`import 'eidos-ui/lucide-icons'` registers every Lucide icon instead - convenient, but it puts the whole icon set in your bundle. A string that isn't registered is treated as CSS classes for an icon font (`"fas fa-heart"`); a single word that isn't registered also logs a development warning, since it is usually a Lucide name someone forgot to register.
 
 <Canvas of={ButtonStories.RegisteredIconNames} />
 

@@ -106,6 +106,10 @@ step('build', 'npm run build');
 // than throwing, and that no component serialises a `style` attribute into an
 // SSR payload - which is the claim `ContentSecurityPolicy.mdx` makes.
 step('ssr', 'node scripts/check-ssr.js');
+// Bundles `import { Button } from 'eidos-ui'` the way a consumer's bundler
+// would. The 3.x icon lookup put all of Lucide into that bundle (604 KB) and
+// nothing else in this list could see it - the library works either way.
+step('bundle', 'node scripts/check-bundle.js');
 
 const storybook = storybookAffected();
 if (storybook.changed) {

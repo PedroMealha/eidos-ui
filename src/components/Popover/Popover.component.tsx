@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { PopoverProps, PopoverState, PopoverPlacement } from './Popover.types';
-import { devWarn, useDialogFocus, useIsClient } from '../../utils';
+import { useDialogFocus, useIsClient } from '../../utils';
 
 export const Popover: React.FC<PopoverProps> = ({
   trigger,
@@ -13,7 +13,6 @@ export const Popover: React.FC<PopoverProps> = ({
   closeOnClickOutside = true,
   closeOnEscape = true,
   disabled = false,
-  isOpen,
   open: openProp,
   defaultOpen,
   onOpenChange,
@@ -21,22 +20,15 @@ export const Popover: React.FC<PopoverProps> = ({
   className,
   contentClassName,
 }) => {
-  // `isOpen`/`defaultOpen` make the portal reachable on the first render,
+  // `open`/`defaultOpen` make the portal reachable on the first render,
   // which cannot happen on a server - see `useIsClient`.
   const isClient = useIsClient();
 
   // ── Controlled / uncontrolled bridge ──────────────────────────────────────
   //
-  // `open` is the canonical name, matching `Dropdown` and `CommandPalette`.
-  // `isOpen` is the original spelling, kept working rather than renamed out
-  // from under anyone.
-  if (isOpen !== undefined) {
-    devWarn(
-      'popover-is-open',
-      'Popover: `isOpen` is deprecated - pass `open` instead, the name `Dropdown` and `CommandPalette` use.',
-    );
-  }
-  const controlledOpen = openProp ?? isOpen;
+  // `open` matches `Dropdown` and `CommandPalette`. The original spelling,
+  // `isOpen`, was deprecated in 3.8 and removed in 4.0.
+  const controlledOpen = openProp;
   const isControlled = controlledOpen !== undefined;
   const [localOpen, setLocalOpen] = useState(defaultOpen ?? false);
   const isVisible = isControlled ? controlledOpen! : localOpen;
