@@ -10,9 +10,10 @@ anyone browsing the component docs - keep both in sync when cutting a release.
 ## [Unreleased]
 
 Entries land here as work happens, not written retroactively at release time
-
 - see the "Changelog discipline" section in
-  `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
+`.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
+
+## [3.8.0] - 2026-09-24
 
 ### Added
 
