@@ -1,0 +1,65 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SplitChipStories from './SplitChip.stories';
+
+<Meta of={SplitChipStories} />
+
+# SplitChip
+
+One chip split into independent segments - a key/value filter, a status with its label, a build badge. Each segment has its own label, variant, colour and optional click handler, and renders exactly like a `Chip`.
+
+> **Note**: `SplitChip` has no remove button. For a single removable tag, use `Chip` with `onRemove`.
+
+## Usage
+
+```tsx
+import { SplitChip } from 'eidos-ui';
+
+<SplitChip
+  segments={[
+    { id: 'key', label: 'Status', variant: 'outlined' },
+    { id: 'value', label: 'Open', color: 'success', onClick: () => openStatusFilter() },
+  ]}
+/>;
+```
+
+## Segments
+
+A segment's `variant` and `color` fall back to the ones set on `SplitChip`, so a chip that is mostly one style only needs to override the segments that differ. `size` and `disabled` apply to the whole chip; `disabled` can also be set on a single segment.
+
+A segment with `onClick` is a button, with a pointer cursor and hover feedback. A segment without it is static and flat - nothing about it suggests it can be pressed.
+
+Segments join seamlessly by default. Set `showDividers` to draw a 1px line between them. An `outlined` or disabled segment always keeps its own border, so beside one the divider is that border, in that segment's colour; elsewhere it is drawn in the label colour of the segment to its right.
+
+## Playground
+
+<Canvas of={SplitChipStories.Playground} />
+
+<Controls of={SplitChipStories.Playground} />
+
+## Dividers
+
+<Canvas of={SplitChipStories.Dividers} />
+
+## Interactive
+
+<Canvas of={SplitChipStories.Interactive} />
+
+## Sizes
+
+<Canvas of={SplitChipStories.Sizes} />
+
+## States
+
+A disabled segment, a fully disabled chip, and a segment with a tooltip.
+
+<Canvas of={SplitChipStories.States} />
+
+## Variants
+
+Segments mix variants and colours freely.
+
+<Canvas of={SplitChipStories.Variants} />
+
+## With icons
+
+<Canvas of={SplitChipStories.WithIcons} />

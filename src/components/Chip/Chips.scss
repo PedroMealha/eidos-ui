@@ -1,5 +1,16 @@
 @use '../../styles/mixins.scss' as *;
 
+// Hover feedback belongs to chips that do something. Every hover rule used to
+// be a bare `&:hover`, so a static chip - or the body of a remove-only chip,
+// whose only control is its × - tinted under the pointer and advertised an
+// action that did not exist. `cursor` was already gated on `--clickable`;
+// this gates the paint the same way, in one place instead of per rule.
+@mixin chip-hover {
+  &.eidos-chip--clickable:hover:not(.eidos-chip--disabled) {
+    @content;
+  }
+}
+
 .eidos-chip {
   @include flex-center-y;
   @include button-reset;
@@ -55,7 +66,7 @@
     background-color: var(--primary-color);
     color: var(--primary-contrast);
 
-    &:hover:not(.eidos-chip--disabled) {
+    @include chip-hover {
       background-color: var(--primary-dark);
     }
 
@@ -63,7 +74,7 @@
       background-color: var(--primary-color);
       color: var(--primary-contrast);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         background-color: var(--primary-dark);
       }
     }
@@ -72,7 +83,7 @@
       background-color: var(--secondary-color);
       color: var(--secondary-contrast);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         background-color: var(--secondary-dark);
       }
     }
@@ -81,7 +92,7 @@
       background-color: var(--success-color);
       color: var(--success-contrast);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         background-color: var(--success-dark);
       }
     }
@@ -90,7 +101,7 @@
       background-color: var(--danger-color);
       color: var(--danger-contrast);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         background-color: var(--danger-dark);
       }
     }
@@ -99,7 +110,7 @@
       background-color: var(--warning-color);
       color: var(--warning-contrast);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         background-color: var(--warning-dark);
       }
     }
@@ -108,7 +119,7 @@
       background-color: var(--info-color);
       color: var(--info-contrast);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         background-color: var(--info-dark);
       }
     }
@@ -120,7 +131,7 @@
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
 
-    &:hover:not(.eidos-chip--disabled) {
+    @include chip-hover {
       @include bg-color-opacity(primary, 0.05);
     }
 
@@ -128,7 +139,7 @@
       border-color: var(--primary-color);
       color: var(--primary-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(primary, 0.05);
       }
     }
@@ -137,7 +148,7 @@
       border-color: var(--secondary-color);
       color: var(--secondary-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(secondary, 0.05);
       }
     }
@@ -146,7 +157,7 @@
       border-color: var(--success-color);
       color: var(--success-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(success, 0.05);
       }
     }
@@ -155,7 +166,7 @@
       border-color: var(--danger-color);
       color: var(--danger-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(danger, 0.05);
       }
     }
@@ -164,7 +175,7 @@
       border-color: var(--warning-color);
       color: var(--warning-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(warning, 0.05);
       }
     }
@@ -173,7 +184,7 @@
       border-color: var(--info-color);
       color: var(--info-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(info, 0.05);
       }
     }
@@ -181,8 +192,8 @@
 
   // Text variant - no background; the colour is carried by the label alone.
   // This matches Button's `text` variant, so `text` means the same thing
-  // everywhere in the library. A tint appears on hover only, as an
-  // interaction affordance for clickable chips.
+  // everywhere in the library. A tint appears on hover only, and only on
+  // clickable chips (see `chip-hover`), as an interaction affordance.
   &--text {
     background-color: transparent;
     border: 1px solid transparent;
@@ -190,7 +201,7 @@
     &.eidos-chip--primary {
       color: var(--primary-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(primary, 0.1);
       }
     }
@@ -198,7 +209,7 @@
     &.eidos-chip--secondary {
       color: var(--secondary-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(secondary, 0.1);
       }
     }
@@ -206,7 +217,7 @@
     &.eidos-chip--success {
       color: var(--success-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(success, 0.1);
       }
     }
@@ -214,7 +225,7 @@
     &.eidos-chip--danger {
       color: var(--danger-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(danger, 0.1);
       }
     }
@@ -222,7 +233,7 @@
     &.eidos-chip--warning {
       color: var(--warning-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(warning, 0.1);
       }
     }
@@ -230,7 +241,7 @@
     &.eidos-chip--info {
       color: var(--info-color);
 
-      &:hover:not(.eidos-chip--disabled) {
+      @include chip-hover {
         @include bg-color-opacity(info, 0.1);
       }
     }

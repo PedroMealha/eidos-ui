@@ -34,6 +34,7 @@ export { SplitButton } from './components/SplitButton';
 export { ContextMenu } from './components/ContextMenu';
 export { Tooltip } from './components/Tooltip';
 export { Chip } from './components/Chip';
+export { SplitChip } from './components/SplitChip';
 export { Divider } from './components/Divider';
 export { Spinner } from './components/Spinner';
 export { Dropdown, DropdownProvider } from './components/Dropdown';
@@ -129,6 +130,7 @@ export type {
 } from './components/Button';
 export type { TooltipProps } from './components/Tooltip';
 export type { ChipProps, TextChipProps, ChipColorProps, ChipVariantProps } from './components/Chip';
+export type { SplitChipProps, SplitChipSegment } from './components/SplitChip';
 export type { DividerProps } from './components/Divider';
 export type {
   DropdownProps,

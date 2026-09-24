@@ -20,12 +20,12 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **502 stories** covering **58
+Against **WCAG 2.2 Level AA**, across **509 stories** covering **59
 components**.
 
 |                     |                                                                                                                                                                                                                  |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| axe-core violations | **7**, all documented exemptions (below)                                                                                                                                                                         |
+| axe-core violations | **8**, all documented exemptions (below)                                                                                                                                                                         |
 | Rules at zero       | `label`, `button-name`, `nested-interactive`, `target-size`, `aria-allowed-attr`, `aria-valid-attr-value`, `link-in-text-block`, `scrollable-region-focusable`, `aria-required-children`, `aria-prohibited-attr` |
 
 These numbers are not hand-maintained. Every build re-runs the audit across
@@ -40,7 +40,7 @@ are part of the audited set, which is what makes
 `aria-required-children: 0` above a measurement rather than an artefact of
 when the screenshot was taken.
 
-## The 7 remaining nodes
+## The 8 remaining nodes
 
 All are **disabled** controls, which
 [SC 1.4.3](https://www.w3.org/TR/WCAG22/#contrast-minimum) exempts:
@@ -51,6 +51,7 @@ All are **disabled** controls, which
 | Component     | Element                    | Ratio |
 | ------------- | -------------------------- | ----- |
 | `Chip`        | disabled chip label        | 1.60  |
+| `SplitChip`   | disabled static segment    | 1.60  |
 | `ColorPicker` | label of a disabled picker | 3.04  |
 | `InlineEdit`  | disabled value             | 2.56  |
 | `OTPInput`    | disabled label             | 2.63  |
@@ -58,12 +59,12 @@ All are **disabled** controls, which
 | `TagInput`    | disabled chips (x2)        | 2.06  |
 
 Each is verified against the source rather than assumed from its colour: all
-seven resolve to `--text-disabled`, or sit under a `--disabled` modifier
+eight resolve to `--text-disabled`, or sit under a `--disabled` modifier
 applying `opacity: 0.5`/`0.6`. That distinction is worth drawing carefully,
 because a muted grey is not by itself evidence that a control is inactive.
 
 They stay **counted** in the baseline rather than tagged out. A visible,
-explained 7 is more honest than a hidden 0.
+explained 8 is more honest than a hidden 0.
 
 ## Criteria verified beyond axe
 

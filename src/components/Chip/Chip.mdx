@@ -40,6 +40,10 @@ import { Tag } from 'lucide-react';
 
 `onClick` makes the whole chip activatable; `onRemove` adds a separate close button. They compose - a chip can be both, and the remove button stops the click from propagating to the chip itself.
 
+Only a chip with `onClick` shows a pointer cursor and hover feedback. A chip without it stays flat, and a remove-only chip reacts on its close button alone.
+
+To split one chip into independently styled, separately clickable parts, use `SplitChip`.
+
 <Canvas of={ChipStories.Interactive} />
 
 ## Sizes
@@ -52,7 +56,7 @@ import { Tag } from 'lucide-react';
 
 ## Variants
 
-`text` paints no resting background - a tint appears on hover only, as an affordance. If you want a permanently tinted chip, that is `filled`.
+`text` paints no resting background - a tint appears on hover of a clickable chip only, as an affordance. If you want a permanently tinted chip, that is `filled`.
 
 <Canvas of={ChipStories.Variants} />
 

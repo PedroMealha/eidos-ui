@@ -1,0 +1,72 @@
+@use '../../styles/mixins.scss' as *;
+
+// ─── SplitChip ────────────────────────────────────────────────────────────────
+// A row of `Chip`s joined into one. Each segment keeps all of its own Chip
+// styling (variant, colour, hover gating, disabled); this file only removes
+// what would make them read as separate chips: the inner borders and the
+// inner corner radii.
+
+.eidos-split-chip {
+  // `inline-flex`, not `flex` - see the note on small inline elements in the
+  // project rules. A block-level row would stretch to its parent's width.
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 100%;
+
+  // A segment with a `tooltip` is wrapped in the Tooltip's trigger `div`; let
+  // that wrapper take part in the row so the chip inside matches its siblings'
+  // height.
+  > .eidos-tooltip-trigger {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .eidos-split-chip__segment {
+    border-radius: 0;
+
+    // Which inner edges survive is decided per seam, from both neighbours, in
+    // `resolveSegmentEdges` (SplitChip.utils.ts) - CSS cannot see a sibling's
+    // variant or disabled state. These classes only apply the result.
+    &--joined-start {
+      border-left-width: 0;
+    }
+
+    &--joined-end {
+      border-right-width: 0;
+    }
+
+    // `currentColor` is the segment's own label colour: `--x-contrast` on a
+    // `filled` segment and `--x-color` on `text`. That keeps the divider
+    // legible against its own segment for any theme, where a fixed tint would
+    // not be. Only drawn between segments with no visible border of their own.
+    &--divided {
+      border-left: 1px solid currentColor;
+    }
+
+    &--first {
+      border-top-left-radius: var(--border-radius-sm);
+      border-bottom-left-radius: var(--border-radius-sm);
+    }
+
+    &--last {
+      border-top-right-radius: var(--border-radius-sm);
+      border-bottom-right-radius: var(--border-radius-sm);
+    }
+
+    // 24px floor for SC 2.5.8. A one-character segment ("3") is otherwise
+    // well under the minimum target size at `sm`, and the padding is
+    // `em`-based, so a smaller `fontScale` would shrink it further.
+    &.eidos-chip--clickable {
+      min-width: 24px;
+      justify-content: center;
+    }
+
+    // Inset, because the next segment paints over an outward ring on this
+    // one's trailing edge. Same reasoning as `.eidos-chip--action`.
+    &:focus-visible {
+      outline: none;
+      box-shadow: focus-ring-shadow-inset(primary);
+    }
+  }
+}

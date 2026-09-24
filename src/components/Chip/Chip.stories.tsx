@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { action } from 'storybook/actions';
+import { expect } from 'storybook/test';
 import { Tag, Star, Check } from 'lucide-react';
 import { Chip } from './Chip.component';
 import { StoryRow } from '../../story-layout.docs';
@@ -143,16 +145,28 @@ export const WithIcons: Story = {
   ),
 };
 
+/**
+ * Only a chip with `onClick` is a button and shows hover feedback. The
+ * remove-only chip is a plain container whose close button is the sole
+ * control.
+ */
 export const Interactive: Story = {
   render: () => (
     <StoryRow gap="sm">
-      <Chip onClick={() => {}}>Clickable</Chip>
-      <Chip onRemove={() => {}}>Removable</Chip>
-      <Chip onClick={() => {}} onRemove={() => {}}>
+      <Chip onClick={action('Chip clicked')}>Clickable</Chip>
+      <Chip onRemove={action('Chip removed')}>Removable</Chip>
+      <Chip onClick={action('Chip clicked')} onRemove={action('Chip removed')}>
         Both
       </Chip>
     </StoryRow>
   ),
+  play: async ({ canvas }) => {
+    const removable = canvas.getByText('Removable').closest('.eidos-chip');
+    expect(removable?.tagName).toBe('DIV');
+    expect(removable).not.toHaveClass('eidos-chip--clickable');
+
+    expect(canvas.getByRole('button', { name: 'Clickable' })).toHaveClass('eidos-chip--clickable');
+  },
 };
 
 export const States: Story = {

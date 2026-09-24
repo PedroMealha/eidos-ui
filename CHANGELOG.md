@@ -13,6 +13,14 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Added
+
+- `SplitChip` component - one chip split into independently styled, optionally clickable segments.
+
+### Fixed
+
+- A `Chip` without `onClick` no longer shows hover feedback, having never been clickable.
+
 ## [3.6.3] - 2026-09-23
 
 ### Changed

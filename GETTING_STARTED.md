@@ -1,6 +1,6 @@
 # Getting Started with Eidos UI
 
-A React component library with 58 components, a consistent design language, and full TypeScript support.
+A React component library with 59 components, a consistent design language, and full TypeScript support.
 
 ## Quick commands
 
@@ -348,7 +348,7 @@ case up front.
 
 ## Component inventory
 
-58 component directories under `src/components/`, grouped exactly as the
+59 component directories under `src/components/`, grouped exactly as the
 Storybook sidebar groups them - the sidebar is generated from the `title` in
 each `*.stories.tsx`, so that is the authoritative list:
 
@@ -356,7 +356,7 @@ each `*.stories.tsx`, so that is the authoritative list:
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Layout     | PageLayout, Breadcrumb, Footer, Header, IdentityHeader, Navigation, Toolbar                                                              |
 | Theming    | ThemeProvider, ThemeEditor                                                                                                               |
-| Elements   | Avatar, Badge, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, Pill, SegmentedControl, SplitButton                            |
+| Elements   | Avatar, Badge, Button, ButtonGroup, Card, Chip, Divider, EmptyState, Kbd, Pill, SegmentedControl, SplitButton, SplitChip                 |
 | Forms      | Checkbox, ColorPicker, Combobox, FileUpload, InlineEdit, Input, NumberInput, OTPInput, Radio, Select, Slider, Switch, TagInput, Textarea |
 | Navigation | Accordion, Pagination, Stepper, Tabs, TreeView                                                                                           |
 | Overlays   | CommandPalette, ContextMenu, Drawer, Dropdown, Menu, Modal, Popover, Snackbar, Tooltip                                                   |
