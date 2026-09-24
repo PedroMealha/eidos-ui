@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [3.8.1] - 2026-09-24
+
 ### Fixed
 
 - `PageLayout.scrollRestorationKey` records a scroll made immediately after the layout mounts, instead of restoring that page to the top.
