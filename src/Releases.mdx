@@ -15,6 +15,23 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="3.8.1"
+  date="2026-09-24"
+  bump="patch"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>PageLayout.scrollRestorationKey</Code> records a scroll made immediately after the
+          layout mounts, instead of restoring that page to the top.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="3.8.0"
   date="2026-09-24"
   bump="minor"
