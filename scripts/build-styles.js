@@ -1,8 +1,17 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { compileString } from 'sass';
 
+// `compressed` rather than Sass's default `expanded`: the published stylesheet
+// is only ever read by browsers and bundlers, never by people, and the
+// indentation and comments were ~13% of it (264 KB -> 229 KB raw, 31.6 KB ->
+// 29.1 KB gzipped). Sass's own minifier, so no extra tool. Anyone debugging a
+// rule should read the SCSS under `src/` anyway - that is where the comments
+// explaining each decision live.
 const compile = (entry) =>
-  compileString(readFileSync(entry, 'utf8'), { loadPaths: ['./src/styles'] }).css;
+  compileString(readFileSync(entry, 'utf8'), {
+    loadPaths: ['./src/styles'],
+    style: 'compressed',
+  }).css;
 
 // `tsup` normally creates `dist/` before this runs, so this only matters when
 // the script is invoked on its own - which `typecheck` now does, because the

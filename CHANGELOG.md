@@ -13,6 +13,10 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Changed
+
+- `eidos-ui/styles` and `eidos-ui/fonts` are minified - 229 KB instead of 264 KB (29 KB gzipped instead of 32 KB).
+
 ## [4.1.0] - 2026-09-24
 
 ### Added
