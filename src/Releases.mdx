@@ -15,6 +15,79 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="4.1.0"
+  date="2026-09-24"
+  bump="minor"
+  sections={[
+    {
+      category: 'added',
+      items: [
+        <>
+          Light, dark and system colour schemes, set with{' '}
+          <Code>
+            {'<'}html data-color-scheme{'>'}
+          </Code>{' '}
+          - every text, fill, hover and focus-ring pairing clears WCAG AA in both.
+        </>,
+        <>
+          <Code>ThemeProvider</Code> <Code>colorScheme</Code>, <Code>defaultColorScheme</Code> and{' '}
+          <Code>onColorSchemeChange</Code>; <Code>useTheme()</Code> returns <Code>colorScheme</Code>
+          , <Code>resolvedColorScheme</Code> and <Code>setColorScheme</Code>.
+        </>,
+        <>
+          Custom theme colours get an accessible dark tone automatically;{' '}
+          <Code>ThemeConfig.dark.colors</Code> sets exact dark colours instead.
+        </>,
+        <>
+          <Code>--surface</Code>, <Code>--surface-raised</Code>, <Code>--text-default</Code>,{' '}
+          <Code>--text-default-rgb</Code> and <Code>--code-text</Code> tokens, which follow the
+          colour scheme.
+        </>,
+        <>
+          <Code>ThemeEditor</Code> has a light/dark/system switch and optional separate dark
+          colours, and grades contrast against the scheme being previewed.
+        </>,
+        <>
+          <Code>SegmentedControl</Code> <Code>ariaLabel</Code> and <Code>aria-labelledby</Code>, to
+          name the radio group.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>toCss()</Code> and ThemeEditor's "Copy as CSS" also emit the dark-scheme blocks.
+        </>,
+        <>
+          Components paint surfaces and body text with the scheme-aware tokens instead of{' '}
+          <Code>--white</Code> and <Code>--dark-color</Code> - identical in the light scheme.
+        </>,
+        <>
+          <Code>Chat</Code>'s quote and attachment chip backgrounds use <Code>--primary-dark</Code>,
+          so they stay legible when the bubble is light.
+        </>,
+      ],
+    },
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>ThemeEditor</Code>'s "Copy as CSS" button showed no icon since 4.0.0.
+        </>,
+        <>
+          <Code>Menu</Code>'s danger item hover used a fixed pink from undefined tokens; it is now a
+          danger tint with AA text.
+        </>,
+        <>
+          <Code>Card</Code>'s border used hardcoded colours instead of the gray tokens.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="4.0.0"
   date="2026-09-24"
   bump="major"
