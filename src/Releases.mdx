@@ -15,6 +15,55 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="4.2.0"
+  date="2026-09-27"
+  bump="minor"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>Select</Code> no longer empties a{' '}
+          <Code>
+            clearable={'{'}false{'}'}
+          </Code>{' '}
+          field when the selected option is clicked again - re-clicking is a no-op that still closes
+          the dropdown.
+        </>,
+        <>
+          <Code>Calendar</Code>'s month/year selects reject non-numeric values instead of
+          propagating an Invalid date.
+        </>,
+        <>
+          <Code>DatePicker</Code> refuses to store an Invalid date in its calendar state, so a bad
+          upstream value can no longer brick the picker.
+        </>,
+        <>
+          <Code>Dropdown</Code> panels no longer overflow the viewport - width is always bounded,
+          and height is bounded whenever a <Code>minHeight</Code>/<Code>maxHeight</Code> constraint
+          is set.
+        </>,
+        <>
+          <Code>DatePicker</Code>'s month/year selects wrap onto their own lines and its calendars
+          reflow on narrow viewports instead of overflowing - calendars now sit side by side
+          whenever they fit rather than stacking below a fixed 1200px threshold, so visual snapshots
+          will differ.
+        </>,
+      ],
+    },
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>TagInput</Code> regression story verifying the suggestions dropdown anchors to the
+          field when rendered inside a <Code>Modal</Code>.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="4.1.1"
   date="2026-09-25"
   bump="patch"
