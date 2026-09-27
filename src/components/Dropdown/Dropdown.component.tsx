@@ -5,6 +5,11 @@ import type { DropdownProps, DropdownState } from './Dropdown.types';
 import { DropdownProvider } from './Dropdown.context';
 import { useDropdownContext } from './Dropdown.hooks';
 
+// The gutter `calculateOptimalPosition` keeps between the panel and each
+// viewport edge. `calculateDynamicSizing` derives the panel's size cap from
+// the same constant so the two cannot drift apart.
+const VIEWPORT_GAP = 8;
+
 const DropdownInternal: React.FC<DropdownProps> = ({
   trigger,
   content,
@@ -128,6 +133,24 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       // the trigger is wider than the content, as CSS min-width overrides width.
       const styles: Record<string, string | number> = { width: 'max-content' };
 
+      // The panel must also be *sized* to fit, not only positioned to fit:
+      // `calculateOptimalPosition` clamps coordinates, which is no help once
+      // the content itself is wider than the screen. Measured on a 375px
+      // viewport: DatePicker's panel rendered 507px wide, its right edge 140px
+      // off-screen no matter where it was anchored. `clientWidth/Height` is
+      // used rather than `window.innerWidth/Height` so a classic scrollbar is
+      // excluded and the cap can never exceed what the position clamp assumed.
+      const availableWidth = Math.max(0, document.documentElement.clientWidth - 2 * VIEWPORT_GAP);
+      const availableHeight = Math.max(0, document.documentElement.clientHeight - 2 * VIEWPORT_GAP);
+      const capToViewport = (requested: number | string | undefined, available: number) => {
+        // `none`/`auto` mean "no *consumer* cap" - they must not mean "may run
+        // off the screen", so they still resolve to the viewport bound.
+        if (requested === undefined || requested === 'none' || requested === 'auto')
+          return `${available}px`;
+        const value = typeof requested === 'number' ? `${requested}px` : requested;
+        return `min(${value}, ${available}px)`;
+      };
+
       if (autoWidth && triggerRect && (externalTriggerRef?.current || triggerRef.current)) {
         const triggerWidth = triggerRect.width;
         styles.minWidth = triggerWidth;
@@ -136,26 +159,17 @@ const DropdownInternal: React.FC<DropdownProps> = ({
       if (minWidth !== undefined) {
         styles.minWidth = typeof minWidth === 'number' ? `${minWidth}px` : minWidth;
       }
-      if (maxWidth !== undefined) {
-        if (maxWidth === 'auto') {
-          styles.maxWidth = 'none';
-        } else {
-          styles.maxWidth = typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth;
-        }
-      }
+      styles.maxWidth = capToViewport(maxWidth, availableWidth);
       if (minHeight !== undefined) {
         styles.minHeight = typeof minHeight === 'number' ? `${minHeight}px` : minHeight;
-      }
-      if (maxHeight !== undefined) {
-        if (maxHeight === 'auto') {
-          styles.maxHeight = 'none';
-        } else {
-          styles.maxHeight = typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight;
-        }
       }
 
       const hasHeightConstraint = minHeight !== undefined || maxHeight !== undefined;
       if (hasHeightConstraint) {
+        // The height cap lives only inside the constrained branch: applying it
+        // unconditionally would turn every dropdown into a scroll container,
+        // which clips descendant paint and outward focus rings on both axes.
+        styles.maxHeight = capToViewport(maxHeight, availableHeight);
         styles.overflowY = 'auto';
       } else {
         styles.overflowY = 'visible';
@@ -170,7 +184,7 @@ const DropdownInternal: React.FC<DropdownProps> = ({
     (triggerRect: DOMRect, contentRect: DOMRect) => {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      const gap = 8;
+      const gap = VIEWPORT_GAP;
 
       let placement: 'top' | 'bottom' | 'left' | 'right' = preferredPlacement;
       let top = 0;

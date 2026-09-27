@@ -68,8 +68,18 @@ export interface DropdownProps {
   dropdownGroup?: string;
 
   minWidth?: number | string;
+  /**
+   * Upper bound on the panel's width. The panel is always bounded by the
+   * viewport (minus the positioning gutter); `'none'` and `'auto'` remove only
+   * this consumer cap, not the viewport bound.
+   */
   maxWidth?: number | string;
   minHeight?: number | string;
+  /**
+   * Upper bound on the panel's height, enabling vertical scrolling. The panel
+   * is always bounded by the viewport (minus the positioning gutter); `'none'`
+   * and `'auto'` remove only this consumer cap, not the viewport bound.
+   */
   maxHeight?: number | string;
   autoWidth?: boolean;
   fullWidth?: boolean;

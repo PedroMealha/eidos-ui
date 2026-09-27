@@ -7,7 +7,9 @@
   padding: var(--spacing-md);
   background-color: var(--surface-raised);
   border-radius: var(--border-radius-md);
-  min-width: 280px;
+  // 32px leaves room for the panel's own padding inside the viewport cap.
+  min-width: min(280px, calc(100vw - 32px));
+  max-width: 100%;
   user-select: none;
 }
 
@@ -22,9 +24,22 @@
 
 .eidos-calendar-selectors {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-xs);
   flex: 1;
+  min-width: 0;
   justify-content: center;
+
+  // The month/year selects each carry the UA's ~200px intrinsic input width,
+  // which overflows a phone viewport as an unbreakable pair. `flex-basis: 0`
+  // shares the row evenly when both fit (the desktop case); `min-width`
+  // forces a wrap onto separate full lines once each would drop below ~150px.
+  // `flex-basis: auto` must not be used here - the ~200px bases plus the gap
+  // exceed the row at every viewport, so the selects stack even on desktop.
+  > * {
+    flex: 1 1 0;
+    min-width: 11em;
+  }
 }
 
 // Read-only month/year label shown instead of `.eidos-calendar-selectors` +
@@ -257,9 +272,8 @@
 }
 
 // Responsive adjustments
-@media (max-width: 480px) {
+@include media-down('xs') {
   .eidos-calendar {
-    min-width: 260px;
     padding: var(--spacing-sm);
   }
 

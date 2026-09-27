@@ -50,22 +50,43 @@
 .eidos-date-picker-content {
   padding: 0;
   width: 100%;
-  min-width: 300px;
+  // `vw`, not `%`: the parent is `width: max-content`, so a percentage would
+  // resolve against an indefinite containing block during intrinsic sizing.
+  // 16px is the two 8px viewport gutters the panel keeps on each side.
+  min-width: min(300px, calc(100vw - 16px));
   background-color: var(--surface-raised);
   border-radius: var(--border-radius-md);
 }
 
-// Align navigation buttons with calendar headers
-.eidos-date-picker-container-nav-button {
-  flex-shrink: 0;
-  // Align with calendar header - calendar has padding + header height
-  margin-top: var(--spacing-md); // calendar padding + header height
-}
-
 .eidos-date-picker-calendars-wrapper {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--spacing-md);
   padding: var(--spacing-lg) var(--spacing-sm);
+
+  // Each calendar fills its own line once they wrap - which happens on its own
+  // whenever the viewport can no longer fit them side by side. A single shared
+  // bound makes every calendar exactly `min(30em, line width)`, so stacked and
+  // side-by-side calendars are equal at every viewport; a per-item
+  // `max-content` cap cannot do that, because the calendars' natural widths
+  // differ (the first carries the header, the rest only a label). `30em` is
+  // the width one calendar wants - the header needs ~378px for two selects at
+  // their `11em` floor plus both arrows and gaps, so a narrower cap would
+  // wrap the month/year selects even on desktop - and it keeps the stretch
+  // bounded: unbounded, a stacked calendar's day grid measured 760px on an
+  // 820px viewport.
+  //
+  // The floor's second term must be `vw`, not `%`: the panel is
+  // `width: max-content`, so a percentage is indefinite while it computes its
+  // intrinsic size and the floor would collapse. 48px budgets everything
+  // between viewport edge and calendar box (2 x 8px gutters, the panel's 1px
+  // borders, the wrapper's `--spacing-sm` padding on each side).
+  > .eidos-calendar {
+    flex: 1 1 auto;
+    min-width: min(30em, calc(100vw - 48px));
+    max-width: 30em;
+  }
 }
 
 .eidos-date-picker-time-container {
@@ -78,58 +99,7 @@
 
 .eidos-date-picker-range-time-inputs {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--spacing-md);
-}
-
-// Responsive styles
-@media (max-width: 1200px) {
-  .eidos-date-picker-calendars-wrapper {
-    flex-direction: column;
-    width: 100%;
-    gap: var(--spacing-sm);
-  }
-
-  .eidos-date-picker-container-nav-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    margin-top: 0; // Reset margin for absolute positioning
-
-    &:first-of-type {
-      left: var(--spacing-xs);
-    }
-
-    &:last-of-type {
-      right: var(--spacing-xs);
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .eidos-date-picker-calendars-container {
-    padding: var(--spacing-xs);
-  }
-
-  .eidos-date-picker-container-nav-button {
-    &:first-of-type {
-      left: 4px;
-    }
-
-    &:last-of-type {
-      right: 4px;
-    }
-  }
-}
-
-// Placeholder styles (will be replaced with actual calendar)
-.eidos-date-picker-placeholder {
-  text-align: center;
-  color: var(--gray-600);
-  font-size: var(--font-size-sm);
-  line-height: 1.5;
-  padding: var(--spacing-lg);
-  background-color: var(--gray-50);
-  border-radius: var(--border-radius-md);
-  border: 2px dashed var(--gray-300);
 }

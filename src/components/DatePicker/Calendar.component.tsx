@@ -229,11 +229,13 @@ export const Calendar: React.FC<CalendarProps> = ({
               />
 
               <div className={'eidos-calendar-selectors'}>
+                {/* `fullWidth` as on the day-granularity selects below - same reason. */}
                 <Select
                   options={yearOptions}
                   value={currentDate.year().toString()}
                   onChange={handleYearSelect}
                   clearable={false}
+                  fullWidth
                   inputProps={{ 'aria-label': 'Year' }}
                   dropdownProps={{
                     dropdownGroup: 'calendar-navigation',
@@ -258,11 +260,16 @@ export const Calendar: React.FC<CalendarProps> = ({
               />
 
               <div className={'eidos-calendar-selectors'}>
+                {/* `fullWidth` reaches `Select`'s `inline-block` trigger wrapper,
+                    which otherwise shrink-wraps the visible box at ~200px no
+                    matter how wide `.eidos-calendar-selectors > *` grows - the
+                    difference rendered as dead space next to the select. */}
                 <Select
                   options={monthOptions}
                   value={currentDate.month().toString()}
                   onChange={handleMonthSelect}
                   clearable={false}
+                  fullWidth
                   inputProps={{ 'aria-label': 'Month' }}
                   dropdownProps={{
                     dropdownGroup: 'calendar-navigation',
@@ -273,6 +280,7 @@ export const Calendar: React.FC<CalendarProps> = ({
                   value={currentDate.year().toString()}
                   onChange={handleYearSelect}
                   clearable={false}
+                  fullWidth
                   inputProps={{ 'aria-label': 'Year' }}
                   dropdownProps={{
                     dropdownGroup: 'calendar-navigation',

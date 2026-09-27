@@ -18,6 +18,8 @@ Entries land here as work happens, not written retroactively at release time
 - `Select` no longer empties a `clearable={false}` field when the selected option is clicked again - re-clicking is a no-op that still closes the dropdown.
 - `Calendar`'s month/year selects reject non-numeric values instead of propagating an Invalid date.
 - `DatePicker` refuses to store an Invalid date in its calendar state, so a bad upstream value can no longer brick the picker.
+- `Dropdown` panels no longer overflow the viewport - width is always bounded, and height is bounded whenever a `minHeight`/`maxHeight` constraint is set.
+- `DatePicker`'s month/year selects wrap onto their own lines and its calendars reflow on narrow viewports instead of overflowing - calendars now sit side by side whenever they fit rather than stacking below a fixed 1200px threshold, so visual snapshots will differ.
 
 ### Added
 
