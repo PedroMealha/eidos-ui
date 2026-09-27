@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [4.2.0] - 2026-09-27
+
 ### Fixed
 
 - `Select` no longer empties a `clearable={false}` field when the selected option is clicked again - re-clicking is a no-op that still closes the dropdown.
