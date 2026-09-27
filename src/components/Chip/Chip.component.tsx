@@ -73,7 +73,7 @@ export const Chip: React.FC<ChipProps> = ({
     <>
       {preIcon && renderIcon(preIcon, 'eidos-chip--pre-icon')}
 
-      <span className="eidos-chip--copy">{children}</span>
+      {children && <span className="eidos-chip--copy">{children}</span>}
 
       {posIcon && renderIcon(posIcon, 'eidos-chip--pos-icon')}
     </>

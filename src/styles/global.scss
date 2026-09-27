@@ -9,12 +9,7 @@
 
 html,
 body {
-  /* `100%`, not `100vh`: on mobile `100vh` resolves against the *large*
-     viewport, so a full-height app shell ends up taller than what is actually
-     visible and its bottom chrome hides behind the browser UI. `height: 100%`
-     on `html` already resolves against the viewport, and on `body` against
-     `html`, so this is the same thing on desktop without that bug. */
-  height: 100%;
+  height: auto;
   font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

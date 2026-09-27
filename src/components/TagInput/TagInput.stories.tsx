@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState } from 'react';
 import { TagInput } from './TagInput.component';
+import { Button } from '../Button';
+import { Modal } from '../Modal';
 import { expectErrorWiring } from '../../story-a11y.docs';
-import { expect, waitFor } from 'storybook/test';
+import { expect, screen, waitFor } from 'storybook/test';
 
 const meta = {
   title: 'Forms/TagInput',
@@ -209,6 +212,66 @@ export const SuggestionsOpenAndClose: Story = {
       await userEvent.keyboard('{Escape}');
       await waitFor(() => expect(panels()).toHaveLength(0));
       expect(document.activeElement).toBe(field);
+    });
+  },
+};
+
+/**
+ * The suggestions dropdown is portaled to `document.body` and positioned
+ * `fixed` against `triggerRef={fieldRef}` - correct on a plain page, and the
+ * question this story pins is whether a `Modal`'s own containing/stacking
+ * context changes that (a consumer renders `TagInput` inside `Modal` for its
+ * main form). The dropdown is only measured while open inside the dialog,
+ * so this is a `play`-only story.
+ */
+export const InsideModal: Story = {
+  tags: ['!dev', '!autodocs'],
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <>
+        <Button onClick={() => setIsOpen(true)}>Open form</Button>
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit medicine">
+          <TagInput
+            label="Tags"
+            placeholder="Add a tag…"
+            suggestions={['Pain', 'Fever', 'Allergy', 'Antibiotic']}
+            fullWidth
+          />
+        </Modal>
+      </>
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+
+    await step('open the modal and type into the TagInput', async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'Open form' }));
+      // The modal is portaled, so its field lives outside `canvas`.
+      const field = await screen.findByRole('combobox', { name: 'Tags' });
+      await userEvent.click(field);
+      await userEvent.type(field, 'pa');
+      await waitFor(() => expect(panels()).toHaveLength(1));
+    });
+
+    await step('the dropdown lands adjacent to the field inside the modal', async () => {
+      const field = screen.getByRole('combobox', { name: 'Tags' });
+      const panel = panels()[0] as HTMLElement;
+      const fieldRect = field.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      // Fixed-positioned against the field: directly below it (or flipped
+      // above when the viewport is short) with a small gap, horizontally
+      // aligned - not anchored to the viewport corner or the modal's edge.
+      const gapBelow = panelRect.top - fieldRect.bottom;
+      const gapAbove = fieldRect.top - panelRect.bottom;
+      const horizontalOverlap =
+        Math.min(fieldRect.right, panelRect.right) - Math.max(fieldRect.left, panelRect.left);
+      expect(
+        (gapBelow >= 0 && gapBelow <= 24) || (gapAbove >= 0 && gapAbove <= 24),
+        `expected the dropdown adjacent to the field (gapBelow=${gapBelow}, gapAbove=${gapAbove})`,
+      ).toBe(true);
+      expect(horizontalOverlap).toBeGreaterThan(0);
+      expect(panelRect.width).toBeGreaterThanOrEqual(fieldRect.width);
     });
   },
 };

@@ -155,6 +155,10 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   );
   const handleCalendarMonthChange = useCallback(
     (index: number, newDate: Dayjs) => {
+      // `calendarDates` is internal state - once an Invalid dayjs lands in
+      // it, every cell formats as NaN/Invalid and nothing a consumer can
+      // pass recovers it. Refuse it here no matter what produced it.
+      if (!newDate.isValid()) return;
       if (!independentCalendars) {
         // Coupled: every calendar shifts together, re-anchored so `index`
         // lands on `newDate` - e.g. moving calendar 1 to November re-anchors

@@ -471,3 +471,72 @@ export const KeyboardOperation: StoryObj<typeof DatePicker> = {
     });
   },
 };
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Re-clicking the already-selected year in a `granularity="month"` picker used
+ * to emit `''` from `Select` (re-click deselected even with `clearable=false`),
+ * which `Calendar` parsed as `NaN` and stored as an Invalid dayjs - bricking
+ * the calendar permanently. The story ends with the picker reopened so the
+ * panel stays in the DOM for the axe pass.
+ */
+export const MonthGranularityReselect: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function MonthGranularityStory() {
+    const [value, setValue] = useState<DateTimeValue<'single'> | undefined>(undefined);
+    return (
+      <DatePicker
+        mode="single"
+        granularity="month"
+        value={value}
+        onChange={setValue}
+        inputProps={{ label: 'Month' }}
+      />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = () => canvas.getByRole('combobox');
+    const yearField = () => document.querySelector<HTMLInputElement>('[aria-label="Year"]');
+    const currentYear = String(new Date().getFullYear());
+
+    await step('the picker opens on the month grid', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels().length).toBeGreaterThan(0));
+      expect(yearField(), 'no Year select rendered').not.toBeNull();
+    });
+
+    await step('re-clicking the selected year keeps it selected', async () => {
+      await userEvent.click(yearField()!);
+      await waitFor(() =>
+        expect(document.querySelectorAll('.eidos-select-option').length).toBeGreaterThan(0),
+      );
+      const selected = document.querySelector<HTMLElement>('.eidos-select-option--selected');
+      expect(selected, 'no selected year option rendered').not.toBeNull();
+      await userEvent.click(selected!);
+
+      await waitFor(() => expect(yearField()).toHaveValue(currentYear));
+    });
+
+    await step('no calendar cell shows NaN', async () => {
+      const cells = document.querySelectorAll('.eidos-calendar-month-cell');
+      expect(cells.length, 'no month cells rendered').toBe(12);
+      cells.forEach((cell) => expect(cell.textContent).not.toContain('NaN'));
+    });
+
+    await step('picking a month still works', async () => {
+      const cells = document.querySelectorAll<HTMLButtonElement>(
+        '.eidos-calendar-month-cell:not([disabled])',
+      );
+      expect(cells.length, 'no selectable month cell was rendered').toBeGreaterThan(0);
+      await userEvent.click(cells[0]);
+      await waitFor(() => expect(field()).not.toHaveValue(''));
+    });
+
+    await step('and it can be reopened afterwards', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels().length).toBeGreaterThan(0));
+    });
+  },
+};

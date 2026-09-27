@@ -52,10 +52,14 @@ export const Calendar: React.FC<CalendarProps> = ({
   // Handle month selection
   const handleMonthSelect = useCallback(
     (value: string | string[]) => {
-      if (typeof value === 'string') {
-        const newDate = currentDate.month(parseInt(value));
-        onMonthChange(newDate);
-      }
+      if (typeof value !== 'string') return;
+      const month = Number.parseInt(value, 10);
+      // `Select` can emit '' - `parseInt('')` is NaN, and `month(NaN)`
+      // produces an Invalid dayjs that must never reach `onMonthChange`.
+      if (!Number.isFinite(month)) return;
+      const newDate = currentDate.month(month);
+      if (!newDate.isValid()) return;
+      onMonthChange(newDate);
     },
     [currentDate, onMonthChange],
   );
@@ -63,10 +67,12 @@ export const Calendar: React.FC<CalendarProps> = ({
   // Handle year selection
   const handleYearSelect = useCallback(
     (value: string | string[]) => {
-      if (typeof value === 'string') {
-        const newDate = currentDate.year(parseInt(value));
-        onMonthChange(newDate);
-      }
+      if (typeof value !== 'string') return;
+      const year = Number.parseInt(value, 10);
+      if (!Number.isFinite(year)) return;
+      const newDate = currentDate.year(year);
+      if (!newDate.isValid()) return;
+      onMonthChange(newDate);
     },
     [currentDate, onMonthChange],
   );

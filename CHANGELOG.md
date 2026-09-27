@@ -13,6 +13,16 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- `Select` no longer empties a `clearable={false}` field when the selected option is clicked again - re-clicking is a no-op that still closes the dropdown.
+- `Calendar`'s month/year selects reject non-numeric values instead of propagating an Invalid date.
+- `DatePicker` refuses to store an Invalid date in its calendar state, so a bad upstream value can no longer brick the picker.
+
+### Added
+
+- `TagInput` regression story verifying the suggestions dropdown anchors to the field when rendered inside a `Modal`.
+
 ## [4.1.1] - 2026-09-25
 
 ### Changed

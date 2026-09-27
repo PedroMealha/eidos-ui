@@ -95,6 +95,16 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           }
         } else {
           if (newSelectedValues.has(option.value)) {
+            if (!clearable) {
+              // `clearable={false}` means the value is not allowed to
+              // become empty - re-clicking the selected option changes
+              // nothing and emits no `onChange`, but still closes the
+              // dropdown like any selection so the control does not
+              // feel broken.
+              setIsOpen(false);
+              inputRef.current?.focus();
+              return;
+            }
             newSelectedValues.clear();
           } else {
             newSelectedValues.clear();
@@ -124,11 +134,15 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           inputRef.current?.focus();
         }
       },
-      [multiple, onChange, selectedValues, isControlled],
+      [multiple, onChange, selectedValues, isControlled, clearable],
     );
 
     const handleClear = useCallback(
       (e?: React.MouseEvent) => {
+        // `clearable` is the single meaning of "the value may become
+        // empty" - the clear button is already hidden, this guards any
+        // other path here (and any future one) reaching the same end.
+        if (!clearable) return;
         if (e) {
           e.stopPropagation();
         }
@@ -142,7 +156,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           onChange(multiple ? [] : '');
         }
       },
-      [multiple, onChange, isControlled],
+      [multiple, onChange, isControlled, clearable],
     );
 
     // A form control with no accessible name is announced as just "combobox".
