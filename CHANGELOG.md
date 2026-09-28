@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [4.4.1] - 2026-09-28
+
 ### Fixed
 
 - `DatePicker`'s preset shortcuts wrap onto multiple rows instead of stretching the panel wider than its calendar.
