@@ -15,6 +15,34 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="4.3.0"
+  date="2026-09-28"
+  bump="minor"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>DatePicker</Code>'s month-granularity range now anchors its start to the first of
+          the picked month instead of the last, so a range no longer silently excludes the start
+          month.
+        </>,
+      ],
+    },
+    {
+      category: 'added',
+      items: [
+        <>
+          <Code>DatePicker</Code> <Code>showActions</Code> prop - an opt-in Cancel/Apply footer that
+          defers <Code>onChange</Code> until Apply is pressed, with Escape and outside-click
+          discarding the pending selection.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="4.2.0"
   date="2026-09-27"
   bump="minor"
