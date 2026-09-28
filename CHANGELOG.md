@@ -13,6 +13,8 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+## [4.4.0] - 2026-09-28
+
 ### Added
 
 - `DatePicker` `presets` prop - quick-range shortcuts rendered inside the panel that commit immediately (or draft under `showActions`) and highlight while the value matches at the picker's granularity.
