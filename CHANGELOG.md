@@ -13,6 +13,16 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- `DatePicker`'s preset shortcuts wrap onto multiple rows instead of stretching the panel wider than its calendar.
+- `Calendar`'s selected, range and in-range cells keep their own foreground on hover and press instead of falling back to the default text colour - dark-on-indigo previously.
+- `Calendar` renders a disabled date inside a selected range as disabled rather than as a normal range cell that only looked disabled on hover.
+
+### Changed
+
+- `DatePicker`'s presets sit in a row above the calendars, separated by a rule, and inactive presets render as `text` buttons - visual snapshots will differ.
+
 ## [4.4.0] - 2026-09-28
 
 ### Added

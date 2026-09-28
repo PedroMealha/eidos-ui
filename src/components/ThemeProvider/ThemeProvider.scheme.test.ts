@@ -143,6 +143,14 @@ describe.each(Object.entries(schemes))('%s scheme contrast', (_scheme, tokens) =
     expect(contrastRatio(t('text-muted'), t('gray-200'))).toBeGreaterThanOrEqual(4.5);
   });
 
+  it('the calendar selected fill and its hover step keep their foreground (>= 4.5:1)', () => {
+    // Calendar's selected / range-start / range-end cells sit on
+    // `--primary-600` and darken to `--primary-700` on hover/active - the
+    // foreground stays `--primary-contrast` across both.
+    expect(contrastRatio(t('primary-contrast'), t('primary-600'))).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(t('primary-contrast'), t('primary-700'))).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('a primary tint keeps its text legible: -700 on -50 and -100', () => {
     expect(contrastRatio(t('primary-700'), t('primary-50'))).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(t('primary-700'), t('primary-100'))).toBeGreaterThanOrEqual(4.5);

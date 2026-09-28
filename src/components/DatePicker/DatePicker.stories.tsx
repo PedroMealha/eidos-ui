@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import dayjs from 'dayjs';
 import { DatePicker } from './DatePicker.component';
 import { useEffect, useState } from 'react';
 import type { DatePickerPreset, DateTimeValue } from './DatePicker.types';
 import { expect, waitFor } from 'storybook/test';
+import { contrastRatio } from '../ThemeProvider/ThemeProvider.color';
 
 const meta: Meta<typeof DatePicker> = {
   title: 'Data/DatePicker',
@@ -1041,6 +1043,187 @@ export const PresetsDraftWithActions: StoryObj<typeof DatePicker> = {
       await userEvent.click(apply()!);
       await waitFor(() => expect(commits()).toBe('1'));
       await waitFor(() => expect(panels()).toHaveLength(0));
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Regression for the preset strip's intrinsic-width bug: the panel is
+ * `width: max-content`, so a `nowrap` row of preset buttons contributed its
+ * full one-line width and stretched the panel far past the calendar (the
+ * `overflow-x: auto` on the strip never engaged - nothing bounded it).
+ * Asserts the strip actually wraps (the last button lands below the first),
+ * that the panel ends up narrower than the sum of the buttons' widths -
+ * the bug itself, stated without a magic number - and that nothing
+ * overflows horizontally.
+ */
+export const PresetsWrap: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function PresetsWrapStory() {
+    const [value, setValue] = useState<DateTimeValue<'single'>>({ date: null });
+    const year = dayjs().year();
+    const month = (m: number) => dayjs().year(year).month(m).startOf('month').toISOString();
+    const presets: DatePickerPreset<'single'>[] = [
+      { id: 'this-month', label: 'This month', getValue: () => month(dayjs().month()) },
+      { id: 'last-quarter', label: 'Last quarter', getValue: () => month(0) },
+      { id: 'next-quarter', label: 'Next quarter', getValue: () => month(3) },
+      { id: 'this-year', label: 'This year', getValue: () => month(0) },
+      { id: 'next-year', label: 'Next year', getValue: () => month(0) },
+      { id: 'next-6-months', label: 'Next 6 months', getValue: () => month(5) },
+      { id: 'holiday-season', label: 'Holiday season', getValue: () => month(11) },
+      { id: 'fiscal-year-end', label: 'Fiscal year end', getValue: () => month(2) },
+    ];
+    return (
+      <DatePicker
+        mode="single"
+        granularity="month"
+        value={value}
+        onChange={setValue}
+        presets={presets}
+        inputProps={{ label: 'Month' }}
+      />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const strip = () => document.querySelector<HTMLElement>('.eidos-date-picker-presets');
+    const panel = () => document.querySelector<HTMLElement>('[data-dropdown-content]');
+
+    await step('the preset strip wraps without widening or overflowing the panel', async () => {
+      await userEvent.click(canvas.getByRole('combobox'));
+      await waitFor(() => expect(panel()).not.toBeNull());
+      const el = strip();
+      expect(el, 'no preset strip rendered').not.toBeNull();
+      const buttons = [...el!.querySelectorAll('button')];
+      const first = buttons[0].getBoundingClientRect();
+      const last = buttons[buttons.length - 1].getBoundingClientRect();
+      // The strip wrapped: the last button sits on a row below the first.
+      expect(last.top, 'the preset strip did not wrap').toBeGreaterThanOrEqual(first.bottom);
+      // The panel is narrower than one row of all presets would be - the
+      // intrinsic-width bug itself, stated without a magic number.
+      const oneRowWidth = buttons.reduce((w, b) => w + b.getBoundingClientRect().width, 0);
+      expect(panel()!.getBoundingClientRect().width).toBeLessThan(oneRowWidth);
+      // No horizontal overflow inside the strip.
+      expect(el!.scrollWidth).toBeLessThanOrEqual(el!.clientWidth + 1);
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Regression for the hovered-state foreground bug: the base cell's
+ * `&:hover` set `color: var(--text-default)` at a specificity that
+ * outranked every state's own foreground, so a hovered selected /
+ * range-boundary cell repainted dark text on the indigo fill (~1.85:1)
+ * in the light scheme, and light-on-light in dark. Asserts the computed
+ * foreground on the hovered fill clears 4.5:1. The pre-hover vs
+ * post-hover background comparison is what proves real `:hover` engaged -
+ * without it the assertion would measure the resting pair and pass
+ * vacuously.
+ */
+export const SelectedHoverContrast: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function SelectedHoverContrastStory() {
+    const month = dayjs().startOf('month');
+    const start = month.add(7, 'day').toISOString();
+    const end = month.add(19, 'day').toISOString();
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start, end },
+    });
+    return (
+      <DatePicker
+        mode="range"
+        value={value}
+        onChange={setValue}
+        calendar={{ numberOfCalendars: 1 }}
+        // One disabled date inside the range and one outside it, so the
+        // disabled-in-range cell can be compared against a plain disabled
+        // cell rather than a hardcoded colour.
+        disabledDates={[month.add(12, 'day').toISOString(), month.add(25, 'day').toISOString()]}
+        inputProps={{ label: 'Range' }}
+      />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    // `getComputedStyle` reports `rgb(r, g, b)`; contrastRatio wants hex.
+    const toHex = (css: string) => {
+      const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(css);
+      if (!m) return css;
+      return `#${[m[1], m[2], m[3]].map((n) => Number(n).toString(16).padStart(2, '0')).join('')}`;
+    };
+    const cell = (cls: string) =>
+      document.querySelector<HTMLButtonElement>(`button.eidos-calendar-${cls}`);
+
+    // Real CSS `:hover` needs Playwright's mouse, which only the Vitest
+    // browser runner provides - `storybook/test`'s `userEvent` dispatches
+    // synthetic pointer events and never engages the pseudo-class. Outside
+    // that runner (Chromatic's production build, the Interactions panel)
+    // the import resolves but there is no provider, so degrade to the
+    // resting pair rather than throwing the whole story.
+    let browserUserEvent: {
+      hover: (el: Element) => Promise<void>;
+      unhover: (el: Element) => Promise<void>;
+    } | null = null;
+    try {
+      ({ userEvent: browserUserEvent } = await import('vitest/browser'));
+    } catch {
+      browserUserEvent = null;
+    }
+
+    await step('hovered range cells keep their own foreground', async () => {
+      await userEvent.click(canvas.getByRole('combobox'));
+      await waitFor(() => expect(document.querySelector('[data-dropdown-content]')).not.toBeNull());
+      const ratioOf = (el: HTMLElement) => {
+        const cs = getComputedStyle(el);
+        return contrastRatio(toHex(cs.color), toHex(cs.backgroundColor));
+      };
+      for (const cls of ['range-start', 'in-range', 'range-end'] as const) {
+        const el = cell(cls);
+        expect(el, `no ${cls} cell rendered`).not.toBeNull();
+        if (browserUserEvent) {
+          const resting = getComputedStyle(el!).backgroundColor;
+          await browserUserEvent.hover(el!);
+          // The fill must actually move (600 -> 700, or 100 -> 200 in-range),
+          // proving `:hover` engaged under the browser runner rather than the
+          // assertion below measuring the resting pair.
+          await waitFor(() =>
+            expect(getComputedStyle(el!).backgroundColor, `${cls}: hover never engaged`).not.toBe(
+              resting,
+            ),
+          );
+        }
+        const ratio = ratioOf(el!);
+        expect(ratio, `${cls} at ${ratio.toFixed(2)}:1`).toBeGreaterThanOrEqual(4.5);
+        if (browserUserEvent) await browserUserEvent.unhover(el!);
+      }
+    });
+
+    await step('a disabled date inside the range renders as disabled, not in-range', async () => {
+      const inRangeDisabled = document.querySelector<HTMLButtonElement>(
+        'button.eidos-calendar-in-range.eidos-calendar-disabled',
+      );
+      const plainDisabled = [
+        ...document.querySelectorAll<HTMLButtonElement>(
+          'button.eidos-calendar-disabled:not(.eidos-calendar-in-range)',
+        ),
+      ].find((b) => !b.className.includes('eidos-calendar-other-month'));
+      expect(inRangeDisabled, 'no disabled cell inside the range rendered').not.toBeNull();
+      expect(plainDisabled, 'no plain disabled cell rendered').not.toBeNull();
+      const assertDisabledAppearance = (state: string) => {
+        const a = getComputedStyle(inRangeDisabled!).backgroundColor;
+        const b = getComputedStyle(plainDisabled!).backgroundColor;
+        expect(a, `disabled in-range cell does not look disabled ${state}`).toBe(b);
+      };
+      assertDisabledAppearance('at rest');
+      if (browserUserEvent) {
+        await browserUserEvent.hover(inRangeDisabled!);
+        // The disabled pair is unchanged by hover, so equality below can
+        // only hold if the cell resolved to it - not the range appearance.
+        assertDisabledAppearance('on hover');
+        await browserUserEvent.unhover(inRangeDisabled!);
+      }
     });
   },
 };

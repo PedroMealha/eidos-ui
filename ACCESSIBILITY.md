@@ -20,7 +20,7 @@ for and which remain yours.
 
 ## Scope and results
 
-Against **WCAG 2.2 Level AA**, across **529 stories** covering **60
+Against **WCAG 2.2 Level AA**, across **531 stories** covering **60
 components** - each story audited twice, in the light and the dark colour
 scheme.
 

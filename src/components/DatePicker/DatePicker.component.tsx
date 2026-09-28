@@ -724,38 +724,40 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   // Create dropdown content with calendar(s) and time inputs
   const dropdownContent = (
     <div ref={panelRef} id={panelId} className={'eidos-date-picker-content'}>
+      {/* Quick ranges - a wrapping row above the calendars, separated by a
+          rule. It must not contribute to the panel's intrinsic width (the
+          panel is `width: max-content`), which is what the SCSS rule's
+          `width: 0` / `min-width: 100%` pair is for - see DatePicker.scss. */}
+      {presets && presets.length > 0 && (
+        <div className={'eidos-date-picker-presets'} role="group" aria-label="Quick ranges">
+          {presets.map((preset) => {
+            // Compared against the effective value so the highlight
+            // follows a pending draft under `showActions`, not just the
+            // committed one.
+            const active = presetDateEquals(
+              preset.getValue(),
+              effectiveValue?.date,
+              mode,
+              presetCompareKey,
+            );
+            return (
+              <Button
+                key={preset.id}
+                variant={active ? 'filled' : 'text'}
+                color={active ? 'primary' : 'info'}
+                size="sm"
+                aria-pressed={active}
+                onClick={() => handlePresetSelect(preset)}
+              >
+                {preset.label}
+              </Button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Multiple calendars with container-level navigation */}
       <div className={'eidos-date-picker-calendars-wrapper'}>
-        {/* Quick ranges - first in the wrap order, so they sit as a column
-            beside the calendars while they fit and take their own line
-            (a scrollable strip) once they do not */}
-        {presets && presets.length > 0 && (
-          <div className={'eidos-date-picker-presets'} role="group" aria-label="Quick ranges">
-            {presets.map((preset) => {
-              // Compared against the effective value so the highlight
-              // follows a pending draft under `showActions`, not just the
-              // committed one.
-              const active = presetDateEquals(
-                preset.getValue(),
-                effectiveValue?.date,
-                mode,
-                presetCompareKey,
-              );
-              return (
-                <Button
-                  key={preset.id}
-                  size="sm"
-                  variant={active ? 'filled' : 'outlined'}
-                  color="primary"
-                  aria-pressed={active}
-                  onClick={() => handlePresetSelect(preset)}
-                >
-                  {preset.label}
-                </Button>
-              );
-            })}
-          </div>
-        )}
         {Array.from({ length: numberOfCalendars }, (_, index) => {
           const calendarDate = calendarDates[index] ?? dayjs().add(index, 'month');
           return (

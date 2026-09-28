@@ -63,7 +63,6 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg) var(--spacing-sm);
 
   // Each calendar fills its own line once they wrap - which happens on its own
   // whenever the viewport can no longer fit them side by side. A single shared
@@ -89,29 +88,23 @@
   }
 }
 
-// Quick-range shortcuts: a narrow column beside the calendars while one
-// fits next to them, wrapping to its own line via the wrapper's flex-wrap
-// once it cannot (same intrinsic reflow as the calendars themselves).
+// Quick-range shortcuts: a wrapping row above the calendars, separated
+// from them by the same 1px rule the time container and actions use.
 .eidos-date-picker-presets {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: var(--spacing-xs);
-  align-self: flex-start;
-  max-width: 12em;
-
-  // Below the `sm` threshold the column becomes a single horizontally
-  // scrollable strip - a stacked full-width list of buttons would eat the
-  // space the calendars need. The padding reserves room for the buttons'
-  // focus rings, which the scrollport clips to its padding box.
-  @include media-down('sm') {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    align-self: stretch;
-    max-width: none;
-    width: 100%;
-    padding: var(--spacing-xs);
-  }
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
+  // Zero intrinsic width contribution, then fill whatever the calendars
+  // resolved to. `width: 0` is what stops it: the panel is
+  // `width: max-content`, so an auto-width row of N buttons would set the
+  // panel's width to the sum of all of them - they never wrap, and an
+  // `overflow-x: auto` strip never scrolls because nothing bounds it.
+  // A percentage `min-width` is indefinite during intrinsic sizing, so it
+  // contributes nothing, then resolves against the settled panel width.
+  width: 0;
+  min-width: 100%;
 }
 
 .eidos-date-picker-time-container {

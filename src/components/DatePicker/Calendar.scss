@@ -142,9 +142,15 @@
   transition: all 0.15s ease;
   position: relative;
 
+  // No `color` here: a bare `&:hover` carries one more pseudo-class than
+  // `&.eidos-calendar-selected`, so a foreground set at this level silently
+  // outranks every state's own `color` and repaints it - dark text on the
+  // indigo fill in the light scheme, light-on-light in dark. The
+  // same-property, same-or-higher-specificity neighbour trap AvatarGroup
+  // documents. Each state re-declares its foreground inside its own
+  // hover/active rule below, at matching specificity.
   &:hover:not(.eidos-calendar-disabled) {
     background-color: var(--gray-100);
-    color: var(--text-default);
   }
 
   &:active:not(.eidos-calendar-disabled) {
@@ -168,8 +174,10 @@
     border: 2px solid var(--primary-400);
     position: relative;
 
-    &:hover:not(.disabled) {
+    &:hover:not(.eidos-calendar-disabled),
+    &:active:not(.eidos-calendar-disabled) {
       background-color: var(--primary-100);
+      color: var(--primary-700);
       border-color: var(--primary-500);
     }
 
@@ -182,8 +190,10 @@
       color: var(--primary-contrast);
       border-color: var(--primary-300);
 
-      &:hover:not(.eidos-calendar-disabled) {
+      &:hover:not(.eidos-calendar-disabled),
+      &:active:not(.eidos-calendar-disabled) {
         background-color: var(--primary-700);
+        color: var(--primary-contrast);
         border-color: var(--primary-300);
       }
     }
@@ -195,10 +205,16 @@
     }
 
     // Today + In range combination
-    &.eidos-calendar-in-range {
+    &.eidos-calendar-in-range:not(.eidos-calendar-disabled) {
       border-color: var(--primary-400);
       background-color: var(--primary-200);
       color: var(--primary-800);
+
+      &:hover:not(.eidos-calendar-disabled),
+      &:active:not(.eidos-calendar-disabled) {
+        background-color: var(--primary-300);
+        color: var(--primary-800);
+      }
     }
   }
 
@@ -208,8 +224,10 @@
     color: var(--primary-contrast);
     font-weight: var(--font-weight-semibold);
 
-    &:hover:not(.eidos-calendar-disabled) {
+    &:hover:not(.eidos-calendar-disabled),
+    &:active:not(.eidos-calendar-disabled) {
       background-color: var(--primary-700);
+      color: var(--primary-contrast);
     }
   }
 
@@ -225,36 +243,48 @@
     }
   }
 
-  // Range styling
-  &.eidos-calendar-range-start {
+  // Range styling. The range rules must not paint over a disabled date:
+  // `.eidos-calendar-disabled` is declared before them at equal (0,2,0)
+  // specificity, so without the `:not()` a disabled cell inside a range kept
+  // the *range* appearance at rest and only flipped to the disabled one on
+  // hover (its `:hover` rule then had no matching competitor) - an inverted
+  // affordance. The `:not()` also deliberately breaks the tint band across a
+  // disabled day: a date the user cannot pick must not look pickable.
+  &.eidos-calendar-range-start:not(.eidos-calendar-disabled) {
     background-color: var(--primary-600);
     color: var(--primary-contrast);
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 
-    &:hover:not(.eidos-calendar-disabled) {
+    &:hover:not(.eidos-calendar-disabled),
+    &:active:not(.eidos-calendar-disabled) {
       background-color: var(--primary-700);
+      color: var(--primary-contrast);
     }
   }
 
-  &.eidos-calendar-range-end {
+  &.eidos-calendar-range-end:not(.eidos-calendar-disabled) {
     background-color: var(--primary-600);
     color: var(--primary-contrast);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 
-    &:hover:not(.eidos-calendar-disabled) {
+    &:hover:not(.eidos-calendar-disabled),
+    &:active:not(.eidos-calendar-disabled) {
       background-color: var(--primary-700);
+      color: var(--primary-contrast);
     }
   }
 
-  &.eidos-calendar-in-range {
+  &.eidos-calendar-in-range:not(.eidos-calendar-disabled) {
     background-color: var(--primary-100);
     color: var(--primary-800);
     border-radius: 0;
 
-    &:hover:not(.eidos-calendar-disabled) {
+    &:hover:not(.eidos-calendar-disabled),
+    &:active:not(.eidos-calendar-disabled) {
       background-color: var(--primary-200);
+      color: var(--primary-800);
     }
   }
 
