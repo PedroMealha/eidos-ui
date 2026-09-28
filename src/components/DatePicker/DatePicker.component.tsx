@@ -3,6 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { Button } from '../Button/Button.component';
 import { Input } from '../Input/Input.component';
 import { Dropdown } from '../Dropdown/Dropdown.component';
 import { Calendar } from './Calendar.component';
@@ -25,6 +26,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
   value,
   onChange,
   granularity = 'day',
+  showActions = false,
   time = { enabled: false },
   calendar = { numberOfCalendars: 2 },
   format = {
@@ -221,15 +223,49 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
     [time.enabled, pickerTimezone],
   );
 
+  // Deferred-commit draft: while `showActions` is on, calendar clicks and
+  // TimeInput edits land here instead of `onChange`, and only Apply emits.
+  // The effect acts ONLY on the open/close transition - `value` is in the
+  // deps so the lint rule stays satisfied, but a consumer passing an inline
+  // object gets a fresh reference every parent render, and keying the
+  // re-seed on that would wipe the pending selection mid-pick. It is also
+  // what makes Escape and outside-click behave as Cancel for free.
+  const [draft, setDraft] = useState<DateTimeValue<T> | undefined>(undefined);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (!showActions) return;
+    if (isOpen && !wasOpen.current)
+      setDraft(value); // opening: seed from committed value
+    else if (!isOpen && wasOpen.current) setDraft(undefined); // closing: discard
+    wasOpen.current = isOpen;
+  }, [isOpen, showActions, value]);
+
+  // What the panel edits and renders from: the draft while one is pending,
+  // the committed value otherwise. When `showActions` is off there is never
+  // a draft, so this collapses to `value` - every immediate-commit path
+  // below is bit-identical to before.
+  const effectiveValue = showActions ? (draft ?? value) : value;
+
+  // Routes a produced value to the pending draft (deferred) or straight to
+  // `onChange` (immediate). Everything downstream - calendars, time inputs,
+  // the clear affordance - goes through this single switch.
+  const commit = useCallback(
+    (newValue: DateTimeValue<T>) => {
+      if (showActions) setDraft(newValue);
+      else onChange?.(newValue);
+    },
+    [showActions, onChange],
+  );
+
   // Convert current value to calendar-compatible format
   const { selectedDates, rangeStart, rangeEnd } = useMemo(() => {
-    if (!value?.date) {
+    if (!effectiveValue?.date) {
       return { selectedDates: [], rangeStart: null, rangeEnd: null };
     }
 
     switch (mode) {
       case 'single': {
-        const isoString = value.date as string | null;
+        const isoString = effectiveValue.date as string | null;
         const localDateStr = toLocalDateString(isoString);
         return {
           selectedDates: localDateStr ? [dayjs(localDateStr)] : [],
@@ -238,7 +274,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         };
       }
       case 'multiple': {
-        const isoStrings = value.date as string[];
+        const isoStrings = effectiveValue.date as string[];
         const localDateStrings = isoStrings
           .map((d) => toLocalDateString(d))
           .filter(Boolean) as string[];
@@ -249,7 +285,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         };
       }
       case 'range': {
-        const range = value.date as { start: string | null; end: string | null };
+        const range = effectiveValue.date as { start: string | null; end: string | null };
         const startStr = toLocalDateString(range.start);
         const endStr = toLocalDateString(range.end);
         return {
@@ -261,7 +297,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       default:
         return { selectedDates: [], rangeStart: null, rangeEnd: null };
     }
-  }, [value, mode, toLocalDateString]);
+  }, [effectiveValue, mode, toLocalDateString]);
 
   // Handle date selection from calendar - always return ISO strings. Uses
   // `composeDateOnly` (fixed `pickerTimezone` anchor) when time.enabled is
@@ -273,8 +309,12 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
       // day *within* the picked month (see Calendar's month grid) - the
       // stored/returned value is always that month's last day, while the
       // day-of-week boundary semantics below ('start' of day vs 'end' of
-      // day) are unaffected.
+      // day) are unaffected. Range *starts* are the exception: collapsing
+      // the picked month to its last day would silently drop everything
+      // earlier in the start month, so they anchor to the first instead.
       const effectiveDate = granularity === 'month' ? selectedDate.endOf('month') : selectedDate;
+      const effectiveRangeStart =
+        granularity === 'month' ? selectedDate.startOf('month') : selectedDate;
       const compareUnit = granularity === 'month' ? 'month' : 'day';
 
       switch (mode) {
@@ -283,7 +323,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           // Preserve whatever time the user already configured via
           // TimeInput rather than resetting to the default every time a
           // different date is picked.
-          const activeTime = (value?.time as TimeValue) ?? defaultStartTime;
+          const activeTime = (effectiveValue?.time as TimeValue) ?? defaultStartTime;
           if (time.enabled) {
             dateWithTime = composeLocalDateTime(effectiveDate, activeTime);
           } else {
@@ -295,13 +335,13 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
             time: time.enabled ? (activeTime as DateTimeValue<T>['time']) : undefined,
           };
 
-          onChange?.(newValue);
-          setIsOpen(false);
+          commit(newValue);
+          if (!showActions) setIsOpen(false);
           break;
         }
 
         case 'multiple': {
-          const currentDates = (value?.date as string[]) || [];
+          const currentDates = (effectiveValue?.date as string[]) || [];
           const currentDayjs = currentDates.map((d) => dayjs(d));
 
           // Check if date is already selected
@@ -313,7 +353,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
             newDates = currentDayjs.filter((_, index) => index !== existingIndex);
           } else {
             // Add new date, preserving the shared time already configured.
-            const activeTime = (value?.time as TimeValue) ?? defaultStartTime;
+            const activeTime = (effectiveValue?.time as TimeValue) ?? defaultStartTime;
             const dateWithTime = time.enabled
               ? composeLocalDateTime(effectiveDate, activeTime)
               : composeDateOnly(effectiveDate, 'start');
@@ -324,29 +364,36 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           const newValue: DateTimeValue<T> = {
             date: newDates.map((d) => d.toISOString()) as DateTimeValue<T>['date'],
             time: time.enabled
-              ? (((value?.time as TimeValue) ?? defaultStartTime) as DateTimeValue<T>['time'])
+              ? (((effectiveValue?.time as TimeValue) ??
+                  defaultStartTime) as DateTimeValue<T>['time'])
               : undefined,
           };
 
-          onChange?.(newValue);
+          commit(newValue);
           break;
         }
 
         case 'range': {
-          const currentRange = (value?.date as { start: string | null; end: string | null }) || {
+          const currentRange = (effectiveValue?.date as {
+            start: string | null;
+            end: string | null;
+          }) || {
             start: null,
             end: null,
           };
-          const currentRangeTime = (value?.time as RangeTimeValue) || {
+          const currentRangeTime = (effectiveValue?.time as RangeTimeValue) || {
             start: defaultStartTime,
             end: defaultEndTime,
           };
 
           if (!currentRange.start || (currentRange.start && currentRange.end)) {
             // Start new range, preserving the already-configured start time.
+            // `effectiveRangeStart` anchors a month-granularity pick to the
+            // month's FIRST day - the same pick that ends a range anchors to
+            // its last, see `effectiveDate` above.
             const startWithTime = time.enabled
-              ? composeLocalDateTime(effectiveDate, currentRangeTime.start)
-              : composeDateOnly(effectiveDate, 'start');
+              ? composeLocalDateTime(effectiveRangeStart, currentRangeTime.start)
+              : composeDateOnly(effectiveRangeStart, 'start');
 
             // Always return ISO string
             const newValue: DateTimeValue<T> = {
@@ -354,7 +401,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
               time: time.enabled ? (currentRangeTime as DateTimeValue<T>['time']) : undefined,
             };
 
-            onChange?.(newValue);
+            commit(newValue);
           } else {
             // Complete the range. Date-only starts were anchored to
             // `pickerTimezone` when stored (see `composeDateOnly`) -
@@ -386,8 +433,8 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
               time: time.enabled ? (currentRangeTime as DateTimeValue<T>['time']) : undefined,
             };
 
-            onChange?.(newValue);
-            setIsOpen(false); // the range is complete
+            commit(newValue);
+            if (!showActions) setIsOpen(false); // the range is complete
           }
           break;
         }
@@ -396,8 +443,9 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
     [
       mode,
       time,
-      value,
-      onChange,
+      effectiveValue,
+      commit,
+      showActions,
       defaultStartTime,
       defaultEndTime,
       composeDateOnly,
@@ -522,11 +570,43 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         }
       })();
 
-      onChange?.(clearedValue);
-      setIsOpen(false);
+      if (showActions && isOpen) {
+        // A draft is in play: discard just the pending selection and stay
+        // open - committing the clear still needs Apply.
+        setDraft(clearedValue);
+      } else {
+        // No draft to discard (immediate mode, or the field X pressed
+        // while the panel is closed): clear the committed value for real.
+        onChange?.(clearedValue);
+        setIsOpen(false);
+      }
     },
-    [mode, time, onChange, defaultStartTime, defaultEndTime],
+    [mode, time, onChange, showActions, isOpen, defaultStartTime, defaultEndTime],
   );
+
+  // Deferred-commit footer: Apply emits the draft (or the unchanged value
+  // when nothing was picked), Cancel simply closes - the draft is dropped
+  // by the close effect either way.
+  const applyDraft = useCallback(() => {
+    const next = draft ?? value;
+    // `value` is optional and `applyDisabled` only guards an incomplete
+    // range - with neither a draft nor a value there is nothing to emit,
+    // so close without calling `onChange` rather than passing undefined.
+    if (next !== undefined) onChange?.(next);
+    setIsOpen(false);
+  }, [onChange, draft, value]);
+
+  const cancelDraft = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  // A range with a start but no end is a selection in progress - committing
+  // it would emit a half-range, so Apply waits for the second pick.
+  const applyDisabled =
+    mode === 'range' &&
+    !!draft &&
+    !!(draft.date as { start: string | null; end: string | null }).start &&
+    !(draft.date as { start: string | null; end: string | null }).end;
 
   // Create trigger element
   const triggerElement = (
@@ -621,20 +701,20 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
         <div className={'eidos-date-picker-time-container'}>
           {mode === 'single' && (
             <TimeInput
-              value={(value?.time as TimeValue) || defaultStartTime}
+              value={(effectiveValue?.time as TimeValue) || defaultStartTime}
               onChange={(newTime) => {
                 // Recompose the actual returned value with the new
                 // time, not just the separate `time` field - see
                 // `recomposeIsoWithTime`.
-                const currentIso = value?.date as string | null;
+                const currentIso = effectiveValue?.date as string | null;
                 const newValue = {
-                  ...value,
+                  ...effectiveValue,
                   date: (currentIso
                     ? recomposeIsoWithTime(currentIso, newTime)
                     : currentIso) as DateTimeValue<T>['date'],
                   time: newTime,
                 } as DateTimeValue<T>;
-                onChange?.(newValue);
+                commit(newValue);
               }}
               includeSeconds={time.includeSeconds}
               disabled={disabled}
@@ -644,19 +724,19 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
 
           {mode === 'multiple' && (
             <TimeInput
-              value={(value?.time as TimeValue) || defaultStartTime}
+              value={(effectiveValue?.time as TimeValue) || defaultStartTime}
               onChange={(newTime) => {
                 // Recompose every selected date with the new shared
                 // time - see `recomposeIsoWithTime`.
-                const currentDates = (value?.date as string[]) || [];
+                const currentDates = (effectiveValue?.date as string[]) || [];
                 const newValue = {
-                  ...value,
+                  ...effectiveValue,
                   date: currentDates.map((d) =>
                     recomposeIsoWithTime(d, newTime),
                   ) as DateTimeValue<T>['date'],
                   time: newTime,
                 } as DateTimeValue<T>;
-                onChange?.(newValue);
+                commit(newValue);
               }}
               includeSeconds={time.includeSeconds}
               disabled={disabled}
@@ -667,15 +747,15 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
           {mode === 'range' && (
             <div className={'eidos-date-picker-range-time-inputs'}>
               <TimeInput
-                value={(value?.time as RangeTimeValue)?.start || defaultStartTime}
+                value={(effectiveValue?.time as RangeTimeValue)?.start || defaultStartTime}
                 onChange={(newTime) => {
-                  const currentRangeTime = (value?.time as RangeTimeValue) || {
+                  const currentRangeTime = (effectiveValue?.time as RangeTimeValue) || {
                     start: defaultStartTime,
                     end: defaultEndTime,
                   };
                   // Recompose just the start of the range with the new
                   // time - see `recomposeIsoWithTime`.
-                  const currentRange = (value?.date as {
+                  const currentRange = (effectiveValue?.date as {
                     start: string | null;
                     end: string | null;
                   }) || {
@@ -683,7 +763,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
                     end: null,
                   };
                   const newValue = {
-                    ...value,
+                    ...effectiveValue,
                     date: {
                       ...currentRange,
                       start: currentRange.start
@@ -695,22 +775,22 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
                       start: newTime,
                     },
                   } as DateTimeValue<T>;
-                  onChange?.(newValue);
+                  commit(newValue);
                 }}
                 includeSeconds={time.includeSeconds}
                 disabled={disabled}
                 label="Start time"
               />
               <TimeInput
-                value={(value?.time as RangeTimeValue)?.end || defaultEndTime}
+                value={(effectiveValue?.time as RangeTimeValue)?.end || defaultEndTime}
                 onChange={(newTime) => {
-                  const currentRangeTime = (value?.time as RangeTimeValue) || {
+                  const currentRangeTime = (effectiveValue?.time as RangeTimeValue) || {
                     start: defaultStartTime,
                     end: defaultEndTime,
                   };
                   // Recompose just the end of the range with the new
                   // time - see `recomposeIsoWithTime`.
-                  const currentRange = (value?.date as {
+                  const currentRange = (effectiveValue?.date as {
                     start: string | null;
                     end: string | null;
                   }) || {
@@ -718,7 +798,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
                     end: null,
                   };
                   const newValue = {
-                    ...value,
+                    ...effectiveValue,
                     date: {
                       ...currentRange,
                       end: currentRange.end
@@ -730,7 +810,7 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
                       end: newTime,
                     },
                   } as DateTimeValue<T>;
-                  onChange?.(newValue);
+                  commit(newValue);
                 }}
                 includeSeconds={time.includeSeconds}
                 disabled={disabled}
@@ -738,6 +818,18 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
               />
             </div>
           )}
+        </div>
+      )}
+
+      {/* Deferred-commit actions - only rendered when showActions is on */}
+      {showActions && (
+        <div className={'eidos-date-picker-actions'}>
+          <Button variant="text" color="secondary" onClick={cancelDraft}>
+            Cancel
+          </Button>
+          <Button variant="filled" color="primary" disabled={applyDisabled} onClick={applyDraft}>
+            Apply
+          </Button>
         </div>
       )}
     </div>

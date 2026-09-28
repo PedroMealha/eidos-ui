@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DatePicker } from './DatePicker.component';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { DateTimeValue } from './DatePicker.types';
 import { expect, waitFor } from 'storybook/test';
 
@@ -64,6 +64,12 @@ const meta: Meta<typeof DatePicker> = {
     },
     name: { control: 'text', description: 'Hidden input name for form submission' },
     id: { control: 'text', description: 'ID attribute for the underlying input' },
+    showActions: {
+      control: 'boolean',
+      description:
+        'Show Cancel/Apply actions and defer `onChange` until Apply is pressed. `false` commits every selection immediately.',
+      table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
     // Complex / callback props - hide controls, keep in docs table
     value: { control: false },
     onChange: { control: false },
@@ -302,6 +308,32 @@ export const DateRangeWithTime: Story = {
   },
 };
 
+export const WithActions: Story = {
+  render: () => {
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start: null, end: null },
+    });
+    return (
+      <div style={{ width: '300px' }}>
+        <DatePicker
+          mode="range"
+          value={value}
+          onChange={setValue}
+          showActions
+          label="Date range"
+          placeholder="Select date range..."
+        />
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
+          Committed:{' '}
+          <strong>
+            {value.date.start ?? 'None'} → {value.date.end ?? 'None'}
+          </strong>
+        </div>
+      </div>
+    );
+  },
+};
+
 export const IndependentCalendars: Story = {
   render: () => {
     const [value, setValue] = useState<DateTimeValue<'range'>>({
@@ -469,6 +501,239 @@ export const KeyboardOperation: StoryObj<typeof DatePicker> = {
       await userEvent.keyboard('{ArrowDown}');
       await waitFor(() => expect(panels()).toHaveLength(1));
     });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `showActions` defers the commit: calendar clicks must not call `onChange`
+ * and must not close the panel, Apply emits exactly once, and Escape /
+ * outside-click discard the pending range instead of committing it.
+ */
+export const ActionsDeferCommit: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function ActionsDeferStory() {
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start: null, end: null },
+    });
+    const [commits, setCommits] = useState(0);
+    return (
+      <div>
+        <DatePicker
+          mode="range"
+          showActions
+          value={value}
+          onChange={(next) => {
+            setCommits((c) => c + 1);
+            setValue(next);
+          }}
+          inputProps={{ label: 'Range' }}
+        />
+        <span data-testid="commits">{commits}</span>
+      </div>
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = () => canvas.getByRole('combobox');
+    const commits = () => canvas.getByTestId('commits').textContent;
+    const apply = () =>
+      document.querySelector<HTMLButtonElement>('.eidos-date-picker-actions button:last-child');
+    const cancel = () =>
+      document.querySelector<HTMLButtonElement>('.eidos-date-picker-actions button:first-child');
+    const dayCells = () =>
+      document.querySelectorAll<HTMLButtonElement>(
+        'button.eidos-calendar-date-cell:not(.eidos-calendar-other-month):not(.eidos-calendar-disabled)',
+      );
+
+    await step('the panel opens with the actions footer', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(apply(), 'no Apply button rendered').not.toBeNull();
+      expect(cancel(), 'no Cancel button rendered').not.toBeNull();
+    });
+
+    await step('picking a range drafts it without committing or closing', async () => {
+      const cells = dayCells();
+      expect(cells.length, 'no day cells rendered').toBeGreaterThan(0);
+      await userEvent.click(cells[10]);
+      expect(commits()).toBe('0');
+      expect(panels()).toHaveLength(1);
+      await waitFor(() => expect(apply()).toBeDisabled());
+
+      await userEvent.click(dayCells()[15]);
+      expect(commits()).toBe('0');
+      expect(panels()).toHaveLength(1);
+      await waitFor(() => expect(apply()).not.toBeDisabled());
+    });
+
+    await step('Apply commits the draft once and closes', async () => {
+      await userEvent.click(apply()!);
+      await waitFor(() => expect(commits()).toBe('1'));
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(field()).not.toHaveValue('');
+    });
+    const committed = () => (field() as HTMLInputElement).value;
+
+    await step('Escape discards the next draft like Cancel', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.click(dayCells()[5]);
+      expect(commits()).toBe('1');
+      await userEvent.keyboard('{Escape}');
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(commits()).toBe('1');
+      expect(committed()).toBe((field() as HTMLInputElement).value);
+    });
+
+    await step('outside-click discards too', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.click(dayCells()[8]);
+      expect(commits()).toBe('1');
+      await userEvent.click(document.body);
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(commits()).toBe('1');
+    });
+
+    await step('Cancel closes without committing', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.click(dayCells()[3]);
+      await userEvent.click(cancel()!);
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(commits()).toBe('1');
+      expect(committed()).not.toBe('');
+    });
+
+    await step('the field X with the panel closed clears for real', async () => {
+      // No draft is in play, so the clear commits directly - a visibly
+      // enabled affordance that only wrote a discarded draft would be a
+      // dead control.
+      await userEvent.click(canvas.getByRole('button', { name: 'Clear date' }));
+      await waitFor(() => expect(commits()).toBe('2'));
+      expect(field()).toHaveValue('');
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * `value` is a fresh inline object on every render - the shape Cabinet's
+ * expiry filter actually passes - and an interval forces parent re-renders
+ * while the panel is open (the equivalent of a Firestore listener update).
+ * A re-render mid-pick must not wipe the pending selection: keying the
+ * draft re-seed on `value`'s reference identity would reset it. The
+ * interval, not a clicked button, drives the re-renders because a DOM
+ * click would also be an outside-click that closes the panel.
+ */
+export const ActionsDraftSurvivesRerender: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function RerenderStory() {
+    const [ticks, setTicks] = useState(0);
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start: null, end: null },
+    });
+    const [commits, setCommits] = useState(0);
+    useEffect(() => {
+      const interval = setInterval(() => setTicks((t) => t + 1), 150);
+      return () => clearInterval(interval);
+    }, []);
+    return (
+      <div>
+        <span data-testid="ticks">{ticks}</span>
+        <DatePicker
+          mode="range"
+          showActions
+          // Deliberately inline: a new object identity every render, so any
+          // effect keyed on `value` would fire on each parent render.
+          value={{ date: { start: value.date.start, end: value.date.end } }}
+          onChange={(next) => {
+            setCommits((c) => c + 1);
+            setValue(next);
+          }}
+          inputProps={{ label: 'Range' }}
+        />
+        <span data-testid="commits">{commits}</span>
+      </div>
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = () => canvas.getByRole('combobox');
+    const commits = () => canvas.getByTestId('commits').textContent;
+    const apply = () =>
+      document.querySelector<HTMLButtonElement>('.eidos-date-picker-actions button:last-child');
+    const rangeStart = () => document.querySelector('.eidos-calendar-range-start');
+    const dayCells = () =>
+      document.querySelectorAll<HTMLButtonElement>(
+        'button.eidos-calendar-date-cell:not(.eidos-calendar-other-month):not(.eidos-calendar-disabled)',
+      );
+
+    await step('a pending pick survives parent re-renders', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.click(dayCells()[10]);
+      await waitFor(() => expect(rangeStart(), 'no range-start cell rendered').not.toBeNull());
+      await waitFor(() => expect(apply()).toBeDisabled());
+
+      // Let several interval ticks pass while the pick is pending - each one
+      // is a parent re-render with a fresh `value` object identity.
+      await waitFor(() =>
+        expect(Number(canvas.getByTestId('ticks').textContent)).toBeGreaterThan(2),
+      );
+
+      // The draft is still there: the start cell stays highlighted and the
+      // pending range can still be completed.
+      expect(rangeStart(), 'draft was reset by the re-renders').not.toBeNull();
+      expect(commits()).toBe('0');
+      await userEvent.click(dayCells()[15]);
+      await waitFor(() => expect(apply()).not.toBeDisabled());
+    });
+
+    await step('Apply still commits the surviving draft', async () => {
+      await userEvent.click(apply()!);
+      await waitFor(() => expect(commits()).toBe('1'));
+      expect(field()).not.toHaveValue('');
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * With no `value` prop and nothing picked, Apply must close without calling
+ * `onChange` at all - emitting `undefined` would crash any consumer that
+ * destructures its argument.
+ */
+export const ActionsApplyWithoutValue: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function ApplyWithoutValueStory() {
+    const [commits, setCommits] = useState(0);
+    return (
+      <div>
+        <DatePicker
+          mode="single"
+          showActions
+          onChange={() => setCommits((c) => c + 1)}
+          inputProps={{ label: 'Date' }}
+        />
+        <span data-testid="commits">{commits}</span>
+      </div>
+    );
+  },
+  play: async ({ canvas, userEvent }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const apply = () =>
+      document.querySelector<HTMLButtonElement>('.eidos-date-picker-actions button:last-child');
+
+    await userEvent.click(canvas.getByRole('combobox'));
+    await waitFor(() => expect(panels()).toHaveLength(1));
+    await userEvent.click(apply()!);
+    await waitFor(() => expect(panels()).toHaveLength(0));
+    expect(canvas.getByTestId('commits').textContent).toBe('0');
   },
 };
 

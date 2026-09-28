@@ -91,6 +91,14 @@ The most common mode - the user picks one date and receives an ISO string value.
 
 <Canvas of={DatePickerStories.SingleDate} />
 
+## With actions
+
+`showActions` adds a Cancel / Apply footer and defers the commit: calendar clicks and time edits update a pending selection shown in the calendar, and `onChange` only fires on Apply. Cancel, Escape and outside-click all discard the pending selection. The field's clear (X) discards the pending selection while the panel is open - Apply still commits it - and clears the committed value directly when the panel is closed. Apply stays disabled until a range has both a start and an end.
+
+The field keeps displaying the committed value while a selection is pending: it reflects what is applied, and the calendar highlighting is what shows the pending pick.
+
+<Canvas of={DatePickerStories.WithActions} />
+
 ## With time
 
 Pass `time={{ enabled: true }}` to show an hour/minute picker below the calendar. Add `includeSeconds: true` to expose a seconds field as well.

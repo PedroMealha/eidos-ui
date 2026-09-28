@@ -13,6 +13,14 @@ Entries land here as work happens, not written retroactively at release time
 - see the "Changelog discipline" section in
 `.devin/skills/eidos-ui-rules/SKILL.md` for the convention this follows.
 
+### Fixed
+
+- `DatePicker`'s month-granularity range now anchors its start to the first of the picked month instead of the last, so a range no longer silently excludes the start month.
+
+### Added
+
+- `DatePicker` `showActions` prop - an opt-in Cancel/Apply footer that defers `onChange` until Apply is pressed, with Escape and outside-click discarding the pending selection.
+
 ## [4.2.0] - 2026-09-27
 
 ### Fixed

@@ -85,6 +85,21 @@ interface DatePickerProps<T extends DateSelectionMode = 'single'> {
   // Selection precision. Default: 'day'.
   granularity?: DateGranularity;
 
+  /**
+   * When true, the panel gains a footer with Cancel and Apply actions and
+   * commits become deferred: calendar clicks and `TimeInput` edits update a
+   * pending selection, `onChange` is only called once Apply is pressed, and
+   * the panel no longer closes on selection. Cancel, Escape and
+   * outside-click all discard the pending selection. The clear (X)
+   * affordance on the field discards the pending selection while the panel
+   * is open - Apply still commits it - and clears the committed value
+   * directly when the panel is closed, since there is no draft to discard.
+   *
+   * Default: false - every selection commits to `onChange` immediately and
+   * closes the panel exactly as before.
+   */
+  showActions?: boolean;
+
   // Time configuration
   time?: TimeConfig;
 
