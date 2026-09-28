@@ -99,6 +99,14 @@ The field keeps displaying the committed value while a selection is pending: it 
 
 <Canvas of={DatePickerStories.WithActions} />
 
+## With presets
+
+`presets` renders a group of quick-range shortcuts inside the panel. Each preset is `{ id, label, getValue }`, where `getValue` returns the date value to apply - compute it inside the function so relative ranges like "this year" are evaluated when clicked, not when declared.
+
+Clicking a preset behaves like a selection: it commits and closes the panel, or - with `showActions` - updates the pending selection so Apply still commits it. A preset shows as active while the current value matches it at the picker's `granularity`, so a hand-picked equivalent range highlights its preset too.
+
+<Canvas of={DatePickerStories.WithPresets} />
+
 ## With time
 
 Pass `time={{ enabled: true }}` to show an hour/minute picker below the calendar. Add `includeSeconds: true` to expose a seconds field as well.

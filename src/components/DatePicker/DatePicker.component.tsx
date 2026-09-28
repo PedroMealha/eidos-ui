@@ -11,6 +11,7 @@ import { TimeInput } from './TimeInput.component';
 import { useDialogFocus, devWarn } from '../../utils';
 import type {
   DatePickerProps,
+  DatePickerPreset,
   DateSelectionMode,
   DateTimeValue,
   TimeValue,
@@ -21,12 +22,41 @@ import type {
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+// Whether a preset's `date` equals the picker's current `date`, compared at
+// a shared key ('YYYY-MM' or 'YYYY-MM-DD') rather than by string equality -
+// a consumer's stored ISO formatting needn't match what the picker produces
+// (Cabinet stores `YYYY-MM-DD`, hands the picker `...T00:00:00.000Z`), and a
+// month-granularity preset must match any instant inside the month.
+function presetDateEquals(
+  presetDate: DateTimeValue<DateSelectionMode>['date'] | undefined,
+  currentDate: DateTimeValue<DateSelectionMode>['date'] | undefined,
+  mode: DateSelectionMode,
+  toKey: (iso: string) => string,
+): boolean {
+  const key = (iso: unknown): string | null => (typeof iso === 'string' ? toKey(iso) : null);
+  switch (mode) {
+    case 'range': {
+      const a = presetDate as { start?: string | null; end?: string | null } | undefined;
+      const b = currentDate as { start?: string | null; end?: string | null } | undefined;
+      return key(a?.start) === key(b?.start) && key(a?.end) === key(b?.end);
+    }
+    case 'multiple': {
+      const a = (Array.isArray(presetDate) ? presetDate : []).map(key).sort();
+      const b = (Array.isArray(currentDate) ? currentDate : []).map(key).sort();
+      return a.length === b.length && a.every((k, i) => k === b[i]);
+    }
+    default:
+      return key(presetDate) === key(currentDate);
+  }
+}
+
 export const DatePicker = <T extends DateSelectionMode = 'single'>({
   mode,
   value,
   onChange,
   granularity = 'day',
   showActions = false,
+  presets,
   time = { enabled: false },
   calendar = { numberOfCalendars: 2 },
   format = {
@@ -600,6 +630,34 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
     setIsOpen(false);
   }, []);
 
+  // Preset active-state key: the calendar day (or month) an ISO string
+  // represents, via the same timezone-aware read the calendar highlight
+  // uses, so the comparison lands on the same day the grid shows.
+  const presetCompareKey = useCallback(
+    (iso: string) => {
+      const day = toLocalDateString(iso);
+      return day ? (granularity === 'month' ? day.slice(0, 7) : day) : '';
+    },
+    [toLocalDateString, granularity],
+  );
+
+  // A preset routes through the same `commit` switch as a calendar pick:
+  // immediate mode commits and closes (the range is complete by
+  // definition); `showActions` drafts it and Apply commits. The time half
+  // of the effective value is carried over - a preset changes *which*
+  // dates, not *when* in them.
+  const handlePresetSelect = useCallback(
+    (preset: DatePickerPreset<T>) => {
+      const newValue = {
+        date: preset.getValue(),
+        time: time.enabled ? effectiveValue?.time : undefined,
+      } as DateTimeValue<T>;
+      commit(newValue);
+      if (!showActions) setIsOpen(false);
+    },
+    [time.enabled, effectiveValue, commit, showActions],
+  );
+
   // A range with a start but no end is a selection in progress - committing
   // it would emit a half-range, so Apply waits for the second pick.
   const applyDisabled =
@@ -668,6 +726,36 @@ export const DatePicker = <T extends DateSelectionMode = 'single'>({
     <div ref={panelRef} id={panelId} className={'eidos-date-picker-content'}>
       {/* Multiple calendars with container-level navigation */}
       <div className={'eidos-date-picker-calendars-wrapper'}>
+        {/* Quick ranges - first in the wrap order, so they sit as a column
+            beside the calendars while they fit and take their own line
+            (a scrollable strip) once they do not */}
+        {presets && presets.length > 0 && (
+          <div className={'eidos-date-picker-presets'} role="group" aria-label="Quick ranges">
+            {presets.map((preset) => {
+              // Compared against the effective value so the highlight
+              // follows a pending draft under `showActions`, not just the
+              // committed one.
+              const active = presetDateEquals(
+                preset.getValue(),
+                effectiveValue?.date,
+                mode,
+                presetCompareKey,
+              );
+              return (
+                <Button
+                  key={preset.id}
+                  size="sm"
+                  variant={active ? 'filled' : 'outlined'}
+                  color="primary"
+                  aria-pressed={active}
+                  onClick={() => handlePresetSelect(preset)}
+                >
+                  {preset.label}
+                </Button>
+              );
+            })}
+          </div>
+        )}
         {Array.from({ length: numberOfCalendars }, (_, index) => {
           const calendarDate = calendarDates[index] ?? dayjs().add(index, 'month');
           return (

@@ -180,6 +180,7 @@ export type {
   RangeTimeValue,
   CalendarConfig,
   DateFormatConfig,
+  DatePickerPreset,
   CalendarProps,
   SingleDateValue,
   MultipleDateValue,

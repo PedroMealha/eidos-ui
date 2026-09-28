@@ -89,6 +89,31 @@
   }
 }
 
+// Quick-range shortcuts: a narrow column beside the calendars while one
+// fits next to them, wrapping to its own line via the wrapper's flex-wrap
+// once it cannot (same intrinsic reflow as the calendars themselves).
+.eidos-date-picker-presets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  align-self: flex-start;
+  max-width: 12em;
+
+  // Below the `sm` threshold the column becomes a single horizontally
+  // scrollable strip - a stacked full-width list of buttons would eat the
+  // space the calendars need. The padding reserves room for the buttons'
+  // focus rings, which the scrollport clips to its padding box.
+  @include media-down('sm') {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    align-self: stretch;
+    max-width: none;
+    width: 100%;
+    padding: var(--spacing-xs);
+  }
+}
+
 .eidos-date-picker-time-container {
   padding: var(--spacing-md);
   border-top: 1px solid var(--gray-200);

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DatePicker } from './DatePicker.component';
 import { useEffect, useState } from 'react';
-import type { DateTimeValue } from './DatePicker.types';
+import type { DatePickerPreset, DateTimeValue } from './DatePicker.types';
 import { expect, waitFor } from 'storybook/test';
 
 const meta: Meta<typeof DatePicker> = {
@@ -69,6 +69,11 @@ const meta: Meta<typeof DatePicker> = {
       description:
         'Show Cancel/Apply actions and defer `onChange` until Apply is pressed. `false` commits every selection immediately.',
       table: { type: { summary: 'boolean' }, defaultValue: { summary: 'false' } },
+    },
+    presets: {
+      control: false,
+      description:
+        'Quick-range shortcuts rendered inside the panel: `{ id, label, getValue }[]`. Clicking applies the computed value like a selection - it commits immediately, or drafts under `showActions`.',
     },
     // Complex / callback props - hide controls, keep in docs table
     value: { control: false },
@@ -328,6 +333,72 @@ export const WithActions: Story = {
           <strong>
             {value.date.start ?? 'None'} → {value.date.end ?? 'None'}
           </strong>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const WithPresets: Story = {
+  render: () => {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const utc = (date: string) => `${date}T00:00:00.000Z`;
+    const presets: DatePickerPreset<'range'>[] = [
+      {
+        id: 'this-year',
+        label: 'This year',
+        getValue: () => {
+          const y = new Date().getFullYear();
+          return { start: utc(`${y}-01-01`), end: utc(`${y}-12-31`) };
+        },
+      },
+      {
+        id: 'next-year',
+        label: 'Next year',
+        getValue: () => {
+          const y = new Date().getFullYear() + 1;
+          return { start: utc(`${y}-01-01`), end: utc(`${y}-12-31`) };
+        },
+      },
+      {
+        id: 'next-6-months',
+        label: 'Next 6 months',
+        getValue: () => {
+          const now = new Date();
+          // Day 0 of the month six ahead = last day of the month five
+          // ahead: six calendar months inclusive, starting at the first of
+          // this month.
+          const end = new Date(now.getFullYear(), now.getMonth() + 6, 0);
+          const fmt = (d: Date) =>
+            `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+          return {
+            start: utc(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`),
+            end: utc(fmt(end)),
+          };
+        },
+      },
+    ];
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start: null, end: null },
+    });
+    return (
+      <div style={{ width: '300px' }}>
+        <DatePicker
+          mode="range"
+          granularity="month"
+          value={value}
+          onChange={setValue}
+          presets={presets}
+          label="Expires between"
+          placeholder="Any date"
+        />
+        <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
+          <div>
+            Start: <strong>{value.date.start ?? 'Not selected'}</strong>
+          </div>
+          <div>
+            End: <strong>{value.date.end ?? 'Not selected'}</strong>
+          </div>
         </div>
       </div>
     );
@@ -802,6 +873,174 @@ export const MonthGranularityReselect: StoryObj<typeof DatePicker> = {
     await step('and it can be reopened afterwards', async () => {
       await userEvent.click(field());
       await waitFor(() => expect(panels().length).toBeGreaterThan(0));
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Immediate mode: a preset click goes through the same commit path as a
+ * completed range - `onChange` fires and the panel closes. The active
+ * highlight is a granularity comparison, not string equality: it must
+ * follow the preset click AND an equivalent hand-picked range, whose
+ * stored instants (picker-produced end-of-day/month boundaries) differ
+ * from the preset's own ISO strings.
+ */
+export const PresetsCommit: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function PresetsCommitStory() {
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start: null, end: null },
+    });
+    const presets: DatePickerPreset<'range'>[] = [
+      {
+        id: 'first-half',
+        label: 'First half',
+        getValue: () => ({
+          start: '2026-01-01T00:00:00.000Z',
+          end: '2026-06-30T00:00:00.000Z',
+        }),
+      },
+      {
+        id: 'second-half',
+        label: 'Second half',
+        getValue: () => ({
+          start: '2026-07-01T00:00:00.000Z',
+          end: '2026-12-31T00:00:00.000Z',
+        }),
+      },
+    ];
+    return (
+      <DatePicker
+        mode="range"
+        granularity="month"
+        value={value}
+        onChange={setValue}
+        presets={presets}
+        inputProps={{ label: 'Range' }}
+      />
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const field = () => canvas.getByRole('combobox');
+    const presetByName = (name: string) =>
+      [...document.querySelectorAll<HTMLButtonElement>('.eidos-date-picker-presets button')].find(
+        (b) => b.textContent === name,
+      );
+    const monthCells = () =>
+      document.querySelectorAll<HTMLButtonElement>(
+        'button.eidos-calendar-month-cell:not(.eidos-calendar-disabled)',
+      );
+
+    await step('the presets render as a named group', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(
+        document.querySelector('[role="group"][aria-label="Quick ranges"]'),
+        'no named preset group rendered',
+      ).not.toBeNull();
+      expect(presetByName('First half'), 'no preset buttons rendered').not.toBeNull();
+    });
+
+    await step('a preset click commits and closes the panel', async () => {
+      await userEvent.click(presetByName('First half')!);
+      await waitFor(() => expect(panels()).toHaveLength(0));
+      expect(field()).not.toHaveValue('');
+    });
+
+    await step('the matching preset shows as active', async () => {
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(presetByName('First half')).toHaveAttribute('aria-pressed', 'true');
+      expect(presetByName('Second half')).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    await step('the highlight follows an equivalent hand-picked range', async () => {
+      // Pick Jan → Jun by hand. The stored end is the picker's own
+      // end-of-month boundary, not the preset's T00:00 instant - only a
+      // month-granularity comparison keeps the preset active here.
+      const cells = monthCells();
+      expect(cells.length, 'no month cells rendered').toBe(12);
+      await userEvent.click(cells[0]); // January -> range start
+      await userEvent.click(monthCells()[5]); // June -> range end, commits + closes
+      await waitFor(() => expect(panels()).toHaveLength(0));
+
+      await userEvent.click(field());
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      expect(
+        presetByName('First half'),
+        'a hand-picked Jan-Jun range did not light its matching preset',
+      ).toHaveAttribute('aria-pressed', 'true');
+      expect(presetByName('Second half')).toHaveAttribute('aria-pressed', 'false');
+    });
+  },
+};
+
+/**
+ * Hidden from the sidebar and docs, but run by `npm run test:stories`.
+ *
+ * Under `showActions` a preset click must draft, not commit: the panel
+ * stays open, the highlight moves to the pending selection, and only
+ * Apply emits `onChange`.
+ */
+export const PresetsDraftWithActions: StoryObj<typeof DatePicker> = {
+  tags: ['!dev', '!autodocs'],
+  render: function PresetsDraftStory() {
+    const [value, setValue] = useState<DateTimeValue<'range'>>({
+      date: { start: null, end: null },
+    });
+    const [commits, setCommits] = useState(0);
+    const presets: DatePickerPreset<'range'>[] = [
+      {
+        id: 'first-half',
+        label: 'First half',
+        getValue: () => ({
+          start: '2026-01-01T00:00:00.000Z',
+          end: '2026-06-30T00:00:00.000Z',
+        }),
+      },
+    ];
+    return (
+      <div>
+        <DatePicker
+          mode="range"
+          showActions
+          value={value}
+          onChange={(next) => {
+            setCommits((c) => c + 1);
+            setValue(next);
+          }}
+          presets={presets}
+          inputProps={{ label: 'Range' }}
+        />
+        <span data-testid="commits">{commits}</span>
+      </div>
+    );
+  },
+  play: async ({ canvas, userEvent, step }) => {
+    const panels = () => document.querySelectorAll('[data-dropdown-content]');
+    const commits = () => canvas.getByTestId('commits').textContent;
+    const preset = () =>
+      document.querySelector<HTMLButtonElement>('.eidos-date-picker-presets button');
+    const apply = () =>
+      document.querySelector<HTMLButtonElement>('.eidos-date-picker-actions button:last-child');
+
+    await step('a preset click drafts without committing or closing', async () => {
+      await userEvent.click(canvas.getByRole('combobox'));
+      await waitFor(() => expect(panels()).toHaveLength(1));
+      await userEvent.click(preset()!);
+      expect(commits()).toBe('0');
+      expect(panels()).toHaveLength(1);
+      // The highlight already tracks the pending selection.
+      await waitFor(() => expect(preset()).toHaveAttribute('aria-pressed', 'true'));
+    });
+
+    await step('Apply commits the drafted preset', async () => {
+      await userEvent.click(apply()!);
+      await waitFor(() => expect(commits()).toBe('1'));
+      await waitFor(() => expect(panels()).toHaveLength(0));
     });
   },
 };

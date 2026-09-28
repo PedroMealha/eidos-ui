@@ -13,6 +13,7 @@ export type {
   DateTimeValue,
   CalendarConfig,
   DateFormatConfig,
+  DatePickerPreset,
   DatePickerProps,
   CalendarProps,
 } from './DatePicker.types';

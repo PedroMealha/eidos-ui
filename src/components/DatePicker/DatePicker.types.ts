@@ -75,6 +75,18 @@ interface DateFormatConfig {
 // only the month and year.
 type DateGranularity = 'day' | 'month';
 
+// A quick-range shortcut rendered inside the picker panel.
+interface DatePickerPreset<T extends DateSelectionMode = 'single'> {
+  /** Stable identity - React key and active-state lookup. */
+  id: string;
+  label: string;
+  /**
+   * The value to apply, computed at click time so relative ranges
+   * ("this year") are evaluated when used rather than when declared.
+   */
+  getValue: () => DateTimeValue<T>['date'];
+}
+
 // Main DatePicker props
 interface DatePickerProps<T extends DateSelectionMode = 'single'> {
   // Core functionality
@@ -99,6 +111,16 @@ interface DatePickerProps<T extends DateSelectionMode = 'single'> {
    * closes the panel exactly as before.
    */
   showActions?: boolean;
+
+  /**
+   * Quick-range shortcuts rendered as a group inside the picker panel.
+   * Clicking one applies its `getValue()` result like a selection: it
+   * commits and closes the panel immediately, or - with `showActions` -
+   * updates the pending selection so Apply still commits it. A preset
+   * shows as active while the current value matches its computed value
+   * at the picker's `granularity`. Absent or empty renders nothing.
+   */
+  presets?: DatePickerPreset<T>[];
 
   // Time configuration
   time?: TimeConfig;
@@ -176,6 +198,7 @@ export type {
   DateTimeValue,
   CalendarConfig,
   DateFormatConfig,
+  DatePickerPreset,
   DatePickerProps,
   CalendarProps,
 };
