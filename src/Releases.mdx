@@ -15,6 +15,41 @@ Every release below is collapsed to its version, bump and date - expand one to
 read its entries. The current version starts open.
 
 <ReleaseCard
+  version="4.4.1"
+  date="2026-09-28"
+  bump="patch"
+  sections={[
+    {
+      category: 'fixed',
+      items: [
+        <>
+          <Code>DatePicker</Code>'s preset shortcuts wrap onto multiple rows instead of stretching
+          the panel wider than its calendar.
+        </>,
+        <>
+          <Code>Calendar</Code>'s selected, range and in-range cells keep their own foreground on
+          hover and press instead of falling back to the default text colour - dark-on-indigo
+          previously.
+        </>,
+        <>
+          <Code>Calendar</Code> renders a disabled date inside a selected range as disabled rather
+          than as a normal range cell that only looked disabled on hover.
+        </>,
+      ],
+    },
+    {
+      category: 'changed',
+      items: [
+        <>
+          <Code>DatePicker</Code>'s presets sit in a row above the calendars, separated by a rule,
+          and inactive presets render as <Code>text</Code> buttons - visual snapshots will differ.
+        </>,
+      ],
+    },
+  ]}
+/>
+
+<ReleaseCard
   version="4.4.0"
   date="2026-09-28"
   bump="minor"
