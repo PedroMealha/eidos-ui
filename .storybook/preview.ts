@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import type { Preview } from '@storybook/react-vite';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
+import { themes } from 'storybook/theming';
 // Mirrors what a consumer importing both `eidos-ui/styles` and the optional
 // `eidos-ui/fonts` gets. Without the second import the docs render in the
 // system fallback rather than the theme's own Plus Jakarta Sans.
@@ -56,15 +57,13 @@ const preview: Preview & {
     // Stories that drive the scheme themselves (`ThemeProvider`'s) override
     // this from inside the story, which runs after it.
     //
-    // **Docs pages stay light.** They render in this same iframe, around
-    // Storybook's own prose, which is always light - so the dark scheme there
-    // would put dark-token components (and the Releases page, and the
-    // deprecation banner) on a light page. The scheme is previewed in the
-    // Canvas view, which is also what the a11y audit measures.
+    // Component docs pages follow the toolbar too - `docs.container` below
+    // switches Storybook's prose theme to match. Guide pages (no stories) stay
+    // light.
     (Story, context) => {
       document.documentElement.setAttribute(
         'data-color-scheme',
-        context.viewMode === 'docs' ? 'light' : String(context.globals.colorScheme ?? 'light'),
+        String(context.globals.colorScheme ?? 'light'),
       );
       return Story();
     },
@@ -115,8 +114,23 @@ const preview: Preview & {
       // and the preview iframe keeps `data-color-scheme` across navigations. A
       // guide page opened after a dark story would inherit the dark tokens.
       container: (props: Parameters<typeof DocsContainer>[0]) => {
-        document.documentElement.setAttribute('data-color-scheme', 'light');
-        return createElement(DocsContainer, props);
+        // A component's docs page follows the toolbar, so toggling on `Chat`'s
+        // Docs tab themes `Chat`. Storybook's own prose theme is switched with
+        // it, otherwise dark components would sit on a light page. Guide pages
+        // are hand-styled light and have no attached stories, so they stay light.
+        let scheme = 'light';
+        try {
+          const [story] = props.context.componentStories();
+          if (story) scheme = String(props.context.getStoryContext(story).globals.colorScheme);
+        } catch {
+          scheme = 'light';
+        }
+        const isDark = scheme === 'dark';
+        document.documentElement.setAttribute('data-color-scheme', isDark ? 'dark' : 'light');
+        return createElement(DocsContainer, {
+          ...props,
+          theme: isDark ? themes.dark : themes.light,
+        });
       },
       // Force the "Show code" panel to always serialize the actual rendered
       // React tree to JSX, instead of falling back to the raw literal source
