@@ -9,7 +9,6 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-docs',
     '@storybook/addon-vitest',
-    '@storybook/addon-themes',
     // Runs axe-core against every story and reports in the "Accessibility"
     // panel. It is a regression net, not a conformance check - axe covers
     // roughly a third of the WCAG success criteria and cannot certify AA,
